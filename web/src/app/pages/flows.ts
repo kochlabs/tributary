@@ -44,14 +44,14 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
 
       <clr-dg-row *ngFor="let f of rows()" [clrDgItem]="f">
         <clr-dg-cell class="nowrap" [title]="dt(f.timeReceived)">{{ st(f.timeReceived) }}</clr-dg-cell>
-        <clr-dg-cell><a href="javascript:void(0)" (click)="filterOn('exporter', f.exporter)" [title]="f.exporter">{{ f.exporterName || f.exporter }}</a></clr-dg-cell>
+        <clr-dg-cell><a href="#" (click)="$event.preventDefault(); filterOn('exporter', f.exporter)" [title]="f.exporter">{{ f.exporterName || f.exporter }}</a></clr-dg-cell>
         <clr-dg-cell>
-          <div class="mono"><a href="javascript:void(0)" (click)="filterOn('host', f.srcAddr)">{{ f.srcAddr }}</a>{{ f.srcPort ? ':' + f.srcPort : '' }}
+          <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.srcAddr)">{{ f.srcAddr }}</a>{{ f.srcPort ? ':' + f.srcPort : '' }}
             @if (f.srcCountry) {<span class="cc" [title]="f.srcAsName || ''">{{ f.srcCountry }}</span>}</div>
           @if (f.srcHost) {<div class="host" [title]="f.srcHost">{{ f.srcHost }}</div>}
         </clr-dg-cell>
         <clr-dg-cell>
-          <div class="mono"><a href="javascript:void(0)" (click)="filterOn('host', f.dstAddr)">{{ f.dstAddr }}</a>{{ f.dstPort ? ':' + f.dstPort : '' }}
+          <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.dstAddr)">{{ f.dstAddr }}</a>{{ f.dstPort ? ':' + f.dstPort : '' }}
             @if (f.dstCountry) {<span class="cc" [title]="f.dstAsName || ''">{{ f.dstCountry }}</span>}</div>
           @if (f.dstHost) {<div class="host" [title]="f.dstHost">{{ f.dstHost }}</div>}
         </clr-dg-cell>

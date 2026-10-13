@@ -95,7 +95,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
             <button class="action-item" (click)="showFlowsFor(r)"><cds-icon shape="table"></cds-icon> Show flows</button>
           </clr-dg-action-overflow>
           <clr-dg-cell class="rank-col">{{ r.rank }}</clr-dg-cell>
-          <clr-dg-cell><span class="swatch" [style.background]="r.color"></span><a href="javascript:void(0)" (click)="addFilter(r, false)">{{ r.label.split(' ⇄ ')[0] }}</a>
+          <clr-dg-cell><span class="swatch" [style.background]="r.color"></span><a href="#" (click)="$event.preventDefault(); addFilter(r, false)">{{ r.label.split(' ⇄ ')[0] }}</a>
             @if (r.label.includes(' ⇄ ')) {
               <div class="peer">⇄ {{ r.label.split(' ⇄ ')[1] }}</div>
             }
