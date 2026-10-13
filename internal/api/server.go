@@ -40,6 +40,7 @@ type Server struct {
 
 	started time.Time
 	limiter loginLimiter
+	sso     ssoState
 }
 
 const cookieName = "nfa_session"
@@ -54,12 +55,15 @@ func userFrom(r *http.Request) *config.User {
 func (s *Server) Handler() http.Handler {
 	s.started = time.Now()
 	s.limiter.m = map[string][]time.Time{}
+	s.sso.pending = map[string]ssoPending{}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /healthz", s.healthz)
 	mux.HandleFunc("GET /api/public/info", s.publicInfo)
 	mux.HandleFunc("POST /api/auth/login", s.login)
 	mux.HandleFunc("POST /api/auth/logout", s.logout)
+	mux.HandleFunc("GET /api/auth/sso/{id}/start", s.ssoStart)
+	mux.HandleFunc("GET /api/auth/sso/{id}/callback", s.ssoCallback)
 
 	auth := func(pattern string, h http.HandlerFunc) { mux.Handle(pattern, s.requireUser(h, false)) }
 	admin := func(pattern string, h http.HandlerFunc) { mux.Handle(pattern, s.requireUser(h, true)) }
@@ -87,6 +91,12 @@ func (s *Server) Handler() http.Handler {
 	admin("PUT /api/users/{name}", s.updateUser)
 	admin("DELETE /api/users/{name}", s.deleteUser)
 	admin("GET /api/audit", s.audit)
+	admin("GET /api/identity-sources", s.identitySources)
+	admin("GET /api/identity-sources/{id}", s.identitySourceGet)
+	admin("POST /api/identity-sources", s.identitySourceSave)
+	admin("PUT /api/identity-sources/{id}", s.identitySourceSave)
+	admin("DELETE /api/identity-sources/{id}", s.identitySourceDelete)
+	admin("POST /api/identity-sources/test", s.identitySourceTest)
 	auth("GET /api/geo", s.geoStatus)
 	auth("GET /api/local-suggestions", s.localSuggestions)
 	admin("POST /api/geo/update", s.geoUpdate)

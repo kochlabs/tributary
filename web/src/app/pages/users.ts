@@ -25,6 +25,7 @@ import { loader } from '../core/util';
       <clr-dg-column [clrDgField]="'username'" [clrDgSortOrder]="1">Username</clr-dg-column>
       <clr-dg-column [clrDgField]="'fullName'">Full name</clr-dg-column>
       <clr-dg-column [clrDgField]="'role'">Role</clr-dg-column>
+      <clr-dg-column [clrDgField]="'source'">Source</clr-dg-column>
       <clr-dg-column [clrDgField]="'lastLogin'">Last sign-in</clr-dg-column>
       <clr-dg-column [clrDgField]="'createdAt'">Created</clr-dg-column>
       <clr-dg-row *clrDgItems="let u of users.value() ?? []" [clrDgItem]="u">
@@ -37,6 +38,7 @@ import { loader } from '../core/util';
         <clr-dg-cell><cds-icon shape="user"></cds-icon> {{ u.username }} @if (u.username === auth.user()?.username) {<span class="label">you</span>}</clr-dg-cell>
         <clr-dg-cell>{{ u.fullName }}</clr-dg-cell>
         <clr-dg-cell><span class="label" [class.label-purple]="u.role === 'admin'" [class.label-blue]="u.role === 'viewer'">{{ u.role }}</span></clr-dg-cell>
+        <clr-dg-cell>{{ u.sourceId ? u.source || 'Identity source' : 'Local' }}</clr-dg-cell>
         <clr-dg-cell>{{ dt(u.lastLogin) }}</clr-dg-cell>
         <clr-dg-cell>{{ dt(u.createdAt) }}</clr-dg-cell>
       </clr-dg-row>
@@ -57,6 +59,9 @@ import { loader } from '../core/util';
             <label>Full name</label>
             <input clrInput name="fullName" [(ngModel)]="form.fullName" maxlength="128" />
           </clr-input-container>
+          @if (external) {
+            <p class="managed">Signs in with <b>{{ externalSource }}</b>. The role is set by that source's group mappings at every sign-in, and there is no local password.</p>
+          } @else {
           <clr-radio-container clrInline>
             <label>Role</label>
             <clr-radio-wrapper>
@@ -73,6 +78,7 @@ import { loader } from '../core/util';
             <input clrPassword name="password" [(ngModel)]="form.password" autocomplete="new-password" [required]="!editing" />
             <clr-control-helper>At least 8 characters.</clr-control-helper>
           </clr-password-container>
+          }
         </form>
         @if (formError()) {
           <div class="alert alert-danger alert-sm" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ formError() }}</span></div></div></div>
@@ -93,7 +99,7 @@ import { loader } from '../core/util';
       </div>
     </clr-modal>
   `,
-  styles: `.label { margin-left: 6px; }`,
+  styles: `.label { margin-left: 6px; } .managed { font-size: 13px; margin-top: 18px; }`,
 })
 export class Users {
   private api = inject(Api);
@@ -105,12 +111,15 @@ export class Users {
   editing = false;
   readonly confirmDelete = signal<User | null>(null);
   form = { username: '', fullName: '', role: 'viewer', password: '' };
+  external = false;
+  externalSource = '';
   readonly formError = signal('');
   readonly actionError = signal('');
 
   openCreate() {
     this.editing = false;
     this.form = { username: '', fullName: '', role: 'viewer', password: '' };
+    this.external = false;
     this.formError.set('');
     this.formOpen.set(true);
   }
@@ -118,6 +127,8 @@ export class Users {
   openEdit(u: User) {
     this.editing = true;
     this.form = { username: u.username, fullName: u.fullName, role: u.role, password: '' };
+    this.external = u.sourceId !== 0;
+    this.externalSource = u.source || 'an identity source';
     this.formError.set('');
     this.formOpen.set(true);
   }
@@ -127,8 +138,8 @@ export class Users {
       if (this.editing) {
         await this.api.updateUser(this.form.username, {
           fullName: this.form.fullName,
-          role: this.form.role,
-          ...(this.form.password ? { password: this.form.password } : {}),
+          ...(this.external ? {} : { role: this.form.role }),
+          ...(this.form.password && !this.external ? { password: this.form.password } : {}),
         });
       } else {
         await this.api.createUser(this.form);

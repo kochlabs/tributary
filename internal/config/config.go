@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"net/netip"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -20,7 +21,8 @@ import (
 )
 
 type DB struct {
-	db *sql.DB
+	db  *sql.DB
+	key []byte // encrypts secrets at rest (identity source client secrets)
 
 	mu    sync.RWMutex
 	names map[string]Exporter // cached exporter metadata by address
@@ -81,7 +83,14 @@ func Open(path string) (*DB, error) {
 	if _, err := db.Exec(schema); err != nil {
 		return nil, fmt.Errorf("config schema: %w", err)
 	}
-	c := &DB{db: db}
+	key, err := loadKey(filepath.Join(filepath.Dir(path), "secret.key"))
+	if err != nil {
+		return nil, fmt.Errorf("secret key: %w", err)
+	}
+	c := &DB{db: db, key: key}
+	if err := c.migrateIdentity(); err != nil {
+		return nil, fmt.Errorf("identity schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}
@@ -188,6 +197,8 @@ type User struct {
 	FullName  string `json:"fullName"`
 	CreatedAt int64  `json:"createdAt"`
 	LastLogin int64  `json:"lastLogin"`
+	SourceID  int64  `json:"sourceId"`         // 0 = local account
+	Source    string `json:"source,omitempty"` // identity source name
 }
 
 func validRole(r string) bool { return r == "admin" || r == "viewer" }
@@ -229,6 +240,13 @@ func (c *DB) CreateUser(u User, password string) error {
 }
 
 func (c *DB) UpdateUser(username string, role, fullName *string, password *string) error {
+	var src int64
+	if err := c.db.QueryRow("SELECT source_id FROM users WHERE username = ?", username).Scan(&src); err != nil {
+		return ErrNotFound
+	}
+	if src != 0 && (password != nil || role != nil) {
+		return errors.New("this account is managed by an identity source: its password and role come from the provider")
+	}
 	if role != nil {
 		if !validRole(*role) {
 			return errors.New("role must be admin or viewer")
@@ -292,7 +310,8 @@ func (c *DB) DeleteUser(username string) error {
 }
 
 func (c *DB) Users() ([]User, error) {
-	rows, err := c.db.Query("SELECT username, role, full_name, created_at, last_login FROM users ORDER BY username")
+	rows, err := c.db.Query(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login, u.source_id, coalesce(s.name, '')
+		FROM users u LEFT JOIN identity_sources s ON s.id = u.source_id ORDER BY u.username`)
 	if err != nil {
 		return nil, err
 	}
@@ -300,7 +319,7 @@ func (c *DB) Users() ([]User, error) {
 	out := []User{}
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin); err != nil {
+		if err := rows.Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID, &u.Source); err != nil {
 			return nil, err
 		}
 		out = append(out, u)
@@ -315,7 +334,7 @@ var dummyHash, _ = bcrypt.GenerateFromPassword([]byte("dummy-password"), bcrypt.
 func (c *DB) Authenticate(username, password string) (*User, error) {
 	var u User
 	var hash string
-	err := c.db.QueryRow("SELECT username, password, role, full_name, created_at, last_login FROM users WHERE username = ?", username).
+	err := c.db.QueryRow("SELECT username, password, role, full_name, created_at, last_login FROM users WHERE username = ? AND source_id = 0", username).
 		Scan(&u.Username, &hash, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin)
 	if err != nil {
 		_ = bcrypt.CompareHashAndPassword(dummyHash, []byte(password))
@@ -348,9 +367,9 @@ func (c *DB) CreateSession(username string, ttl time.Duration) (string, error) {
 
 func (c *DB) SessionUser(token string) (*User, error) {
 	var u User
-	err := c.db.QueryRow(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login FROM sessions s
+	err := c.db.QueryRow(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login, u.source_id FROM sessions s
 		JOIN users u ON u.username = s.username WHERE s.token_hash = ? AND s.expires_at > ?`, hashToken(token), time.Now().UnixMilli()).
-		Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin)
+		Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID)
 	if err != nil {
 		return nil, ErrNotFound
 	}

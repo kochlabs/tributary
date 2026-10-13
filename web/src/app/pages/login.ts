@@ -38,6 +38,12 @@ import { Auth } from '../core/auth';
             <div class="error active">{{ error() }}</div>
           }
           <button type="submit" class="btn btn-primary" [clrLoading]="busy()" [disabled]="!username || !password">Sign in</button>
+          @if (sso().length) {
+            <div class="divider"><span>or</span></div>
+            @for (s of sso(); track s.id) {
+              <a class="btn btn-outline sso-btn" [href]="ssoHref(s.id)"><cds-icon shape="login"></cds-icon> Sign in with {{ s.name }}</a>
+            }
+          }
         </div>
         <div class="version">Version {{ version() }}</div>
       </form>
@@ -53,6 +59,9 @@ import { Auth } from '../core/auth';
     .dark-only { display: none; }
     :host-context([cds-theme='dark']) .dark-only { display: block; }
     :host-context([cds-theme='dark']) .light-only { display: none; }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 18px 0 6px; font-size: 12px; color: var(--cds-alias-typography-color-300); }
+    .divider::before, .divider::after { content: ''; flex: 1; border-top: 1px solid var(--cds-alias-object-border-color); }
+    .sso-btn { margin: 6px 0 0; width: 100%; max-width: none; }
     .version { margin-top: 24px; font-size: 11px; color: var(--cds-alias-typography-color-300); }
   `,
 })
@@ -63,6 +72,7 @@ export class Login {
   private route = inject(ActivatedRoute);
   readonly name = signal('Tributary');
   readonly version = signal('');
+  readonly sso = signal<{ id: number; name: string }[]>([]);
   readonly error = signal('');
   readonly busy = signal(false);
   username = '';
@@ -72,7 +82,10 @@ export class Login {
     this.api.publicInfo().then((i) => {
       this.name.set(i.name);
       this.version.set(i.version);
+      this.sso.set(i.sso ?? []);
     });
+    const ssoError = this.route.snapshot.queryParamMap.get('sso_error');
+    if (ssoError) this.error.set(ssoError);
   }
 
   async submit() {
@@ -89,4 +102,8 @@ export class Login {
     }
   }
 
+  ssoHref(id: number) {
+    const next = this.route.snapshot.queryParamMap.get('next');
+    return `/api/auth/sso/${id}/start` + (next && next.startsWith('/') && !next.startsWith('//') ? `?next=${encodeURIComponent(next)}` : '');
+  }
 }

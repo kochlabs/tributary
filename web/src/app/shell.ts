@@ -58,6 +58,7 @@ import { TimeRangePicker } from './shared/time-range';
               <clr-vertical-nav-group-children>
                 <a clrVerticalNavLink routerLink="/admin/settings" routerLinkActive="active">Settings</a>
                 <a clrVerticalNavLink routerLink="/admin/users" routerLinkActive="active">Users</a>
+                <a clrVerticalNavLink routerLink="/admin/identity-sources" routerLinkActive="active">Identity Sources</a>
                 <a clrVerticalNavLink routerLink="/admin/services" routerLinkActive="active">Services</a>
                 <a clrVerticalNavLink routerLink="/admin/time" routerLinkActive="active">Time</a>
                 <a clrVerticalNavLink routerLink="/admin/updates" routerLinkActive="active">Updates</a>

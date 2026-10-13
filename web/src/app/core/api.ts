@@ -12,6 +12,47 @@ export interface User {
   fullName: string;
   createdAt: number;
   lastLogin: number;
+  sourceId: number; // 0 = local account
+  source?: string;
+}
+
+export interface RoleMapping {
+  group: string;
+  role: 'admin' | 'viewer';
+}
+
+export interface OIDCConfig {
+  issuer: string;
+  clientId: string;
+  clientSecret?: string; // write-only
+  scopes: string[];
+  usernameClaim: string;
+  groupsClaim: string;
+}
+
+export interface IdentitySource {
+  id: number;
+  type: 'oidc' | 'ldap' | 'radius' | 'saml';
+  name: string;
+  enabled: boolean;
+  priority: number;
+  oidc?: OIDCConfig;
+  mappings: RoleMapping[];
+  defaultRole: '' | 'viewer' | 'admin';
+  hasSecret: boolean;
+  users: number;
+  createdAt: number;
+}
+
+export interface ProviderTest {
+  ok: boolean;
+  message: string;
+  authorizationEndpoint?: string;
+  tokenEndpoint?: string;
+  userinfoEndpoint?: string;
+  scopes?: string[];
+  claims?: string[];
+  pkce?: string[];
 }
 
 export interface LocalSuggestions {
@@ -294,7 +335,7 @@ export class Api {
   }
 
   publicInfo() {
-    return this.get<{ name: string; version: string }>('/api/public/info');
+    return this.get<{ name: string; version: string; sso: { id: number; name: string }[] }>('/api/public/info');
   }
   me() {
     return this.get<User>('/api/auth/me');
@@ -405,6 +446,22 @@ export class Api {
   }
   storageEstimate() {
     return this.get<StorageEstimate>('/api/storage-estimate');
+  }
+  identitySources() {
+    return this.get<IdentitySource[]>('/api/identity-sources');
+  }
+  identitySource(id: number) {
+    return this.get<{ source: IdentitySource; redirectUri: string }>(`/api/identity-sources/${id}`);
+  }
+  saveIdentitySource(s: Partial<IdentitySource>) {
+    const req = s.id ? this.http.put<{ id: number; redirectUri: string }>(`/api/identity-sources/${s.id}`, s) : this.http.post<{ id: number; redirectUri: string }>('/api/identity-sources', s);
+    return firstValueFrom(req);
+  }
+  deleteIdentitySource(id: number) {
+    return firstValueFrom(this.http.delete(`/api/identity-sources/${id}`));
+  }
+  testIdentitySource(issuer: string) {
+    return firstValueFrom(this.http.post<ProviderTest>('/api/identity-sources/test', { issuer }));
   }
   audit() {
     return this.get<AuditEntry[]>('/api/audit');
