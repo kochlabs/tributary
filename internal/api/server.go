@@ -76,6 +76,7 @@ func (s *Server) Handler() http.Handler {
 	auth("GET /api/exporters/{addr}/interfaces", s.interfaces)
 	auth("GET /api/system", s.system)
 	auth("GET /api/settings", s.getSettings)
+	auth("GET /api/storage-estimate", s.storageEstimate)
 
 	admin("PUT /api/exporters/{addr}", s.updateExporter)
 	admin("DELETE /api/exporters/{addr}", s.deleteExporter)

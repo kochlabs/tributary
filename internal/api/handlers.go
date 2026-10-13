@@ -1027,3 +1027,14 @@ func (s *Server) serviceAction(w http.ResponseWriter, r *http.Request) {
 	s.Config.Audit(userFrom(r).Username, "service."+op, unit)
 	s.finish(w, id, 30*time.Second)
 }
+
+func (s *Server) storageEstimate(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := queryCtx(r)
+	defer cancel()
+	est, err := s.Store.StorageEstimate(ctx)
+	if err != nil {
+		s.dbErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, est)
+}

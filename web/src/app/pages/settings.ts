@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage, GeoStatus, Settings } from '../core/api';
-import { dateTime } from '../core/format';
+import { Api, errorMessage, GeoStatus, Settings, StorageEstimate, StorageRate } from '../core/api';
+import { bytes, count, dateTime } from '../core/format';
 
 @Component({
   selector: 'nfa-settings',
@@ -65,11 +65,31 @@ import { dateTime } from '../core/format';
             <clr-input-container>
               <label>Raw flows (days)</label>
               <input clrInput type="number" name="raw" [(ngModel)]="s.rawRetentionDays" min="1" max="3650" required />
+              @if (rate('flows'); as r) {
+                <clr-control-helper>≈ {{ size(r, s.rawRetentionDays) }} at the current rate ({{ count(r.rowsPerDay) }} flows/day)</clr-control-helper>
+              }
             </clr-input-container>
             <clr-input-container>
               <label>1-minute rollup (days)</label>
               <input clrInput type="number" name="rollup" [(ngModel)]="s.rollupRetentionDays" min="1" max="3650" required />
+              @if (rate('traffic_1m'); as r) {
+                <clr-control-helper>≈ {{ size(r, s.rollupRetentionDays) }} at the current rate</clr-control-helper>
+              }
             </clr-input-container>
+            @if (storage(); as st) {
+              @let total = totalEstimate(s.rawRetentionDays, s.rollupRetentionDays);
+              @let budget = st.diskFree + current();
+              <div class="estimate" [class.over]="total > budget * 0.75">
+                Estimated total <b>{{ fmtBytes(total) }}</b> of {{ fmtBytes(budget) }} available for flow data
+                ({{ fmtBytes(st.diskFree) }} free on a {{ fmtBytes(st.diskTotal) }} disk).
+                @if (total > budget * 0.75) {
+                  <br />That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.
+                }
+                @if (sampleHours() < 24) {
+                  <br /><span class="muted">Based on {{ sampleHours().toFixed(1) }} hours of data; the estimate firms up after a full day.</span>
+                }
+              </div>
+            }
           </div>
         </div>
 
@@ -145,6 +165,10 @@ import { dateTime } from '../core/format';
     .settings-form .card:first-child { margin-top: 0; }
     .hint { font-size: 12px; color: var(--cds-alias-typography-color-300); margin-top: 0; }
     .actions { margin-top: 16px; }
+    .estimate { margin: 16px 0 4px; padding: 10px 12px; font-size: 13px; border-radius: 4px; border: 1px solid var(--cds-alias-object-border-color); background: var(--cds-alias-object-container-background-tint, transparent); }
+    .estimate.over { border-color: var(--cds-alias-status-danger); }
+    .muted { color: var(--cds-alias-typography-color-300); font-size: 12px; }
+
     .geo-table { max-width: 640px; margin: 12px 0; }
     .geo-table td { text-align: left; padding: 2px 0; }
     .geo-table td:first-child { width: 180px; color: var(--cds-alias-typography-color-300); }
@@ -157,6 +181,9 @@ export class SettingsPage {
   readonly saved = signal(false);
   readonly error = signal('');
   readonly geo = signal<GeoStatus | null>(null);
+  readonly storage = signal<StorageEstimate | null>(null);
+  fmtBytes = bytes;
+  count = count;
   readonly localText = signal('');
   readonly dnsText = signal('');
   readonly geoBusy = signal(false);
@@ -175,6 +202,7 @@ export class SettingsPage {
       this.localText.set((st.localNetworks ?? []).join('\n'));
       this.dnsText.set((st.dnsServers ?? []).join('\n'));
       this.geo.set(await this.api.geo());
+      this.storage.set(await this.api.storageEstimate());
     } catch (e) {
       this.error.set(errorMessage(e));
     }
@@ -226,5 +254,29 @@ export class SettingsPage {
     } finally {
       this.geoBusy.set(false);
     }
+  }
+
+  rate(table: string): StorageRate | undefined {
+    const r = this.storage()?.tables.find((t) => t.table === table);
+    return r && r.rowsPerDay > 0 ? r : undefined;
+  }
+
+  size(r: StorageRate, days: number) {
+    return bytes(r.rowsPerDay * r.bytesPerRow * (Number(days) || 0));
+  }
+
+  totalEstimate(rawDays: number, rollupDays: number) {
+    const raw = this.rate('flows');
+    const roll = this.rate('traffic_1m');
+    return (raw ? raw.rowsPerDay * raw.bytesPerRow * (Number(rawDays) || 0) : 0) + (roll ? roll.rowsPerDay * roll.bytesPerRow * (Number(rollupDays) || 0) : 0);
+  }
+
+  /** Space flow data occupies now; it is reusable under a new retention. */
+  current() {
+    return (this.storage()?.tables ?? []).reduce((a, t) => a + t.bytesNow, 0);
+  }
+
+  sampleHours() {
+    return this.rate('flows')?.sampleHours ?? 0;
   }
 }

@@ -590,3 +590,49 @@ func (s *Store) Stats(ctx context.Context) (*DBStats, error) {
 	sort.Slice(st.Tables, func(i, j int) bool { return strings.Compare(st.Tables[i].Table, st.Tables[j].Table) < 0 })
 	return st, rows.Err()
 }
+
+// StorageRate describes how fast each table grows, measured from recent data,
+// so the UI can estimate disk use for a given retention.
+type StorageRate struct {
+	Table       string  `json:"table"`
+	BytesPerRow float64 `json:"bytesPerRow"`
+	RowsPerDay  float64 `json:"rowsPerDay"`
+	BytesNow    uint64  `json:"bytesNow"`
+	SampleHours float64 `json:"sampleHours"` // how much history the rate is based on
+}
+
+type StorageEstimate struct {
+	Tables    []StorageRate `json:"tables"`
+	DiskFree  uint64        `json:"diskFree"`
+	DiskTotal uint64        `json:"diskTotal"`
+}
+
+func (s *Store) StorageEstimate(ctx context.Context) (*StorageEstimate, error) {
+	est := &StorageEstimate{}
+	for _, t := range []struct{ table, col string }{{"flows", "time_received"}, {"traffic_1m", "ts"}} {
+		r := StorageRate{Table: t.table}
+		err := s.conn.QueryRow(ctx, `SELECT sum(bytes_on_disk), sum(rows) FROM system.parts
+			WHERE database = 'netflow' AND table = ? AND active`, t.table).Scan(&r.BytesNow, new(uint64))
+		if err != nil {
+			return nil, err
+		}
+		var rows, total uint64
+		var spanSecs int64
+		// Rate over the last 24 hours, or over all data if there is less.
+		q := fmt.Sprintf(`SELECT countIf(%[1]s >= now() - INTERVAL 1 DAY), count(),
+			toInt64(least(86400, dateDiff('second', min(%[1]s), max(%[1]s)))) FROM netflow.%[2]s`, t.col, t.table)
+		if err := s.conn.QueryRow(ctx, q).Scan(&rows, &total, &spanSecs); err != nil {
+			return nil, err
+		}
+		if total > 0 {
+			r.BytesPerRow = float64(r.BytesNow) / float64(total)
+		}
+		if spanSecs > 0 {
+			r.RowsPerDay = float64(rows) * 86400 / float64(spanSecs)
+			r.SampleHours = float64(spanSecs) / 3600
+		}
+		est.Tables = append(est.Tables, r)
+	}
+	err := s.conn.QueryRow(ctx, "SELECT free_space, total_space FROM system.disks WHERE name = 'default'").Scan(&est.DiskFree, &est.DiskTotal)
+	return est, err
+}

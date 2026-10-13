@@ -228,6 +228,20 @@ export interface AdminResult {
   pending: boolean;
 }
 
+export interface StorageRate {
+  table: string;
+  bytesPerRow: number;
+  rowsPerDay: number;
+  bytesNow: number;
+  sampleHours: number;
+}
+
+export interface StorageEstimate {
+  tables: StorageRate[];
+  diskFree: number;
+  diskTotal: number;
+}
+
 export interface AuditEntry {
   id: number;
   ts: number;
@@ -388,6 +402,9 @@ export class Api {
   }
   serviceAction(unit: string, op: string) {
     return firstValueFrom(this.http.post<AdminResult>(`/api/services/${encodeURIComponent(unit)}/${op}`, {}));
+  }
+  storageEstimate() {
+    return this.get<StorageEstimate>('/api/storage-estimate');
   }
   audit() {
     return this.get<AuditEntry[]>('/api/audit');
