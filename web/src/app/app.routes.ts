@@ -23,6 +23,7 @@ export const routes: Routes = [
         children: [
           { path: 'settings', loadComponent: () => import('./pages/settings').then((m) => m.SettingsPage), title: 'Settings' },
           { path: 'users', loadComponent: () => import('./pages/users').then((m) => m.Users), title: 'Users' },
+          { path: 'certificates', loadComponent: () => import('./pages/certificates').then((m) => m.Certificates), title: 'Certificates' },
           { path: 'identity-sources', loadComponent: () => import('./pages/identity-sources').then((m) => m.IdentitySources), title: 'Identity Sources' },
           { path: 'updates', loadComponent: () => import('./pages/updates').then((m) => m.Updates), title: 'Updates' },
           { path: 'time', loadComponent: () => import('./pages/time').then((m) => m.Time), title: 'Time' },

@@ -16,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"nfa/internal/certs"
 	"nfa/internal/collector"
 	"nfa/internal/config"
 	"nfa/internal/enrich"
@@ -32,6 +33,8 @@ type Server struct {
 	Geo           *enrich.Geo
 	RDNS          *enrich.Resolver
 	System        *system.Manager
+	Certs         *certs.Manager
+	Trust         *certs.TrustStore
 	UI            fs.FS
 	Version       string
 	SecureCookies bool
@@ -91,6 +94,16 @@ func (s *Server) Handler() http.Handler {
 	admin("PUT /api/users/{name}", s.updateUser)
 	admin("DELETE /api/users/{name}", s.deleteUser)
 	admin("GET /api/audit", s.audit)
+	admin("GET /api/certificates/appliance", s.certStatus)
+	admin("GET /api/certificates/appliance/download", s.certDownload)
+	admin("POST /api/certificates/appliance/upload", s.certUpload)
+	admin("POST /api/certificates/appliance/csr", s.certCSR)
+	admin("DELETE /api/certificates/appliance/csr", s.certCSRDiscard)
+	admin("POST /api/certificates/appliance/self-signed", s.certSelfSigned)
+	admin("POST /api/certificates/appliance/restore", s.certRestore)
+	admin("GET /api/certificates/trusted", s.trustedList)
+	admin("POST /api/certificates/trusted", s.trustedAdd)
+	admin("DELETE /api/certificates/trusted/{id}", s.trustedDelete)
 	admin("GET /api/identity-sources", s.identitySources)
 	admin("GET /api/identity-sources/{id}", s.identitySourceGet)
 	admin("POST /api/identity-sources", s.identitySourceSave)

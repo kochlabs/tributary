@@ -84,8 +84,19 @@ func (s *Server) redirectURI(r *http.Request, id int64) string {
 	return fmt.Sprintf("%s://%s/api/auth/sso/%d/callback", scheme, r.Host, id)
 }
 
+// httpCtx makes go-oidc and oauth2 use the appliance trust store, so
+// providers with certificates from a private CA (added under Trusted CAs)
+// verify normally.
+func (s *Server) httpCtx(ctx context.Context) context.Context {
+	if s.Trust == nil {
+		return ctx
+	}
+	c := s.Trust.Client()
+	return context.WithValue(oidc.ClientContext(ctx, c), oauth2.HTTPClient, c)
+}
+
 func (s *Server) oauthConfig(ctx context.Context, r *http.Request, src *config.IdentitySource) (*oidc.Provider, *oauth2.Config, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(s.httpCtx(ctx), 10*time.Second)
 	defer cancel()
 	p, err := oidc.NewProvider(ctx, src.OIDC.Issuer)
 	if err != nil {
@@ -164,7 +175,7 @@ func (s *Server) ssoCallback(w http.ResponseWriter, r *http.Request) {
 		ssoFail(w, r, "That sign-in option is not available.")
 		return
 	}
-	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(s.httpCtx(r.Context()), 15*time.Second)
 	defer cancel()
 	prov, oc, err := s.oauthConfig(ctx, r, src)
 	if err != nil {
@@ -346,7 +357,7 @@ func (s *Server) identitySourceTest(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "message": "Enter a valid issuer URL."})
 		return
 	}
-	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(s.httpCtx(r.Context()), 10*time.Second)
 	defer cancel()
 	p, err := oidc.NewProvider(ctx, issuer)
 	if err != nil {

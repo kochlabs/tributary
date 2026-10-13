@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"nfa/internal/api"
+	"nfa/internal/certs"
 	"nfa/internal/collector"
 	"nfa/internal/config"
 	"nfa/internal/enrich"
@@ -35,8 +36,6 @@ func main() {
 		listen     = flag.String("listen", ":8443", "HTTPS listen address for UI and API")
 		plainHTTP  = flag.Bool("http", false, "serve plain HTTP instead of HTTPS (only behind a TLS-terminating proxy)")
 		dataDir    = flag.String("data", "/var/lib/nfa", "directory for configuration database and TLS material")
-		certFile   = flag.String("tls-cert", "", "TLS certificate (default: <data>/tls.crt, self-signed if missing)")
-		keyFile    = flag.String("tls-key", "", "TLS key (default: <data>/tls.key)")
 		chAddr     = flag.String("ch-addr", "127.0.0.1:9000", "ClickHouse native protocol address")
 		chUser     = flag.String("ch-user", "netflow", "ClickHouse user")
 		chPassFile = flag.String("ch-password-file", "/etc/netflow/clickhouse.pw", "file containing the ClickHouse password")
@@ -51,13 +50,13 @@ func main() {
 	var lvl slog.Level
 	_ = lvl.UnmarshalText([]byte(*logLevel))
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
-	if err := run(log, *listen, *plainHTTP, *dataDir, *certFile, *keyFile, *chAddr, *chUser, *chPassFile); err != nil {
+	if err := run(log, *listen, *plainHTTP, *dataDir, *chAddr, *chUser, *chPassFile); err != nil {
 		log.Error("fatal", "err", err)
 		os.Exit(1)
 	}
 }
 
-func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, keyFile, chAddr, chUser, chPassFile string) error {
+func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUser, chPassFile string) error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
@@ -97,6 +96,16 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, key
 		return err
 	}
 
+	// HTTPS certificate in <data>/tls.crt, managed from the UI and swapped
+	// without a restart; trusted CAs apply to outbound TLS (identity providers).
+	certMgr := certs.NewManager(dataDir)
+	if created, err := certMgr.Load(); err != nil {
+		return fmt.Errorf("TLS certificate: %w", err)
+	} else if created {
+		log.Info("generated self-signed TLS certificate", "dir", dataDir)
+	}
+	trust := certs.NewTrustStore()
+
 	writer := st.NewWriter(log)
 	writerDone := make(chan struct{})
 	wctx, wcancel := context.WithCancel(context.Background())
@@ -132,7 +141,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, key
 	}
 
 	srv := &api.Server{
-		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, RDNS: rdns, System: system.New(), UI: webui.FS(), Version: version, SecureCookies: !plainHTTP,
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, RDNS: rdns, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)
@@ -152,6 +161,9 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, key
 			return errors.Join(errs...)
 		},
 	}
+	if err := srv.ReloadTrust(); err != nil {
+		log.Warn("trusted CAs could not be loaded", "err", err)
+	}
 	httpSrv := &http.Server{
 		Addr:              listen,
 		Handler:           srv.Handler(),
@@ -159,7 +171,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, key
 		ReadTimeout:       30 * time.Second,
 		WriteTimeout:      120 * time.Second,
 		IdleTimeout:       120 * time.Second,
-		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12},
+		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12, GetCertificate: certMgr.GetCertificate},
 	}
 
 	go func() {
@@ -182,19 +194,8 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, key
 			errc <- httpSrv.ListenAndServe()
 			return
 		}
-		if certFile == "" {
-			certFile, keyFile = filepath.Join(dataDir, "tls.crt"), filepath.Join(dataDir, "tls.key")
-			created, err := ensureSelfSigned(certFile, keyFile)
-			if err != nil {
-				errc <- err
-				return
-			}
-			if created {
-				log.Info("generated self-signed TLS certificate", "cert", certFile)
-			}
-		}
 		log.Info("web UI listening (HTTPS)", "addr", listen)
-		errc <- httpSrv.ListenAndServeTLS(certFile, keyFile)
+		errc <- httpSrv.ListenAndServeTLS("", "") // certificate comes from TLSConfig.GetCertificate
 	}()
 
 	select {

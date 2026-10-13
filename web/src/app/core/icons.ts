@@ -1,5 +1,8 @@
 import {
   angleIcon,
+  certificateIcon,
+  fileIcon,
+  uploadIcon,
   loginIcon,
   playIcon,
   zoomInIcon,
@@ -55,6 +58,9 @@ import {
 export function registerIcons() {
   ClarityIcons.addIcons(
     angleIcon,
+    certificateIcon,
+    fileIcon,
+    uploadIcon,
     loginIcon,
     playIcon,
     zoomInIcon,

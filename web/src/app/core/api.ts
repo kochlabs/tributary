@@ -283,6 +283,50 @@ export interface StorageEstimate {
   diskTotal: number;
 }
 
+export interface CertDetails {
+  commonName: string;
+  subject: string;
+  issuer: string;
+  selfSigned: boolean;
+  dnsNames: string[];
+  ipAddresses: string[];
+  notBefore: number;
+  notAfter: number;
+  daysLeft: number;
+  key: string;
+  chain: number;
+  serial: string;
+  sha256: string;
+  isCa: boolean;
+}
+
+export interface CSRInfo {
+  commonName: string;
+  dnsNames: string[];
+  ipAddresses: string[];
+  key: string;
+  created: number;
+  pem: string;
+}
+
+export interface CertIdentity {
+  commonName: string;
+  organization: string;
+  dnsNames: string[];
+  ipAddresses: string[];
+}
+
+export interface CertStatus {
+  status: { certificate: CertDetails; pendingCsr?: CSRInfo; hasPrevious: boolean };
+  defaults: CertIdentity;
+}
+
+export interface TrustedCA extends CertDetails {
+  id: number;
+  name: string;
+  createdAt: number;
+}
+
 export interface AuditEntry {
   id: number;
   ts: number;
@@ -462,6 +506,33 @@ export class Api {
   }
   testIdentitySource(issuer: string) {
     return firstValueFrom(this.http.post<ProviderTest>('/api/identity-sources/test', { issuer }));
+  }
+  certificate() {
+    return this.get<CertStatus>('/api/certificates/appliance');
+  }
+  uploadCertificate(certificate: string, privateKey: string) {
+    return firstValueFrom(this.http.post<CertDetails>('/api/certificates/appliance/upload', { certificate, privateKey }));
+  }
+  generateCSR(identity: CertIdentity, keyType: string) {
+    return firstValueFrom(this.http.post<CSRInfo>('/api/certificates/appliance/csr', { identity, keyType }));
+  }
+  discardCSR() {
+    return firstValueFrom(this.http.delete('/api/certificates/appliance/csr'));
+  }
+  selfSigned(identity: CertIdentity, keyType: string, days: number) {
+    return firstValueFrom(this.http.post<CertDetails>('/api/certificates/appliance/self-signed', { identity, keyType, days }));
+  }
+  restoreCertificate() {
+    return firstValueFrom(this.http.post<CertDetails>('/api/certificates/appliance/restore', {}));
+  }
+  trustedCAs() {
+    return this.get<TrustedCA[]>('/api/certificates/trusted');
+  }
+  addTrustedCA(name: string, pem: string) {
+    return firstValueFrom(this.http.post<{ added: string[] }>('/api/certificates/trusted', { name, pem }));
+  }
+  deleteTrustedCA(id: number) {
+    return firstValueFrom(this.http.delete(`/api/certificates/trusted/${id}`));
   }
   audit() {
     return this.get<AuditEntry[]>('/api/audit');
