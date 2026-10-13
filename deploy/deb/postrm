@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+UNITS="nfad.service tributary-admin.path tributary-update-check.timer"
+case "$1" in
+  remove)
+    for u in $UNITS; do deb-systemd-helper mask "$u" >/dev/null || true; done
+    [ -d /run/systemd/system ] && systemctl --system daemon-reload >/dev/null || true
+    ;;
+  purge)
+    for u in $UNITS; do
+      deb-systemd-helper purge "$u" >/dev/null || true
+      deb-systemd-helper unmask "$u" >/dev/null || true
+    done
+    [ -d /run/systemd/system ] && systemctl --system daemon-reload >/dev/null || true
+    rm -rf /var/lib/nfa /var/lib/tributary-admin /etc/netflow
+    rm -f /etc/clickhouse-server/users.d/netflow.xml
+    if getent passwd nfa >/dev/null; then deluser --system nfa >/dev/null 2>&1 || true; fi
+    if getent group nfa >/dev/null; then delgroup --system nfa >/dev/null 2>&1 || true; fi
+    [ -d /run/systemd/system ] && deb-systemd-invoke try-restart clickhouse-server.service >/dev/null 2>&1 || true
+    echo "tributary: purged. Flow data remains in ClickHouse database 'netflow';"
+    echo "  remove it with: clickhouse-client -q 'DROP DATABASE netflow'"
+    ;;
+esac
+exit 0

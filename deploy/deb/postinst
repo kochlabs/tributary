@@ -1,0 +1,103 @@
+#!/bin/sh
+# Tributary post-installation: service account, directories, ClickHouse
+# credentials, migration from the old install.sh layout, and unit start-up.
+set -e
+
+[ "$1" = configure ] || exit 0
+
+CH_RESTART=no
+
+# Service account and state directories.
+if ! getent passwd nfa >/dev/null; then
+  adduser --system --group --home /var/lib/nfa --no-create-home --shell /usr/sbin/nologin nfa >/dev/null
+fi
+install -d -o nfa -g nfa -m 750 /var/lib/nfa /var/lib/nfa/admin-request
+install -d -o root -g nfa -m 750 /var/lib/tributary-admin
+
+# ClickHouse user for Tributary, with a generated password kept in /etc/netflow.
+install -d -m 755 /etc/netflow
+if [ ! -s /etc/netflow/clickhouse.pw ]; then
+  umask 077
+  openssl rand -hex 16 > /etc/netflow/clickhouse.pw
+fi
+chgrp nfa /etc/netflow/clickhouse.pw
+chmod 640 /etc/netflow/clickhouse.pw
+HASH=$(tr -d '\n' < /etc/netflow/clickhouse.pw | sha256sum | cut -d' ' -f1)
+USERS=/etc/clickhouse-server/users.d/netflow.xml
+NEW=$(cat <<XML
+<clickhouse>
+  <profiles><default><max_memory_usage>1000000000</max_memory_usage><max_threads>2</max_threads></default></profiles>
+  <users>
+    <netflow>
+      <password_sha256_hex>$HASH</password_sha256_hex>
+      <networks><ip>127.0.0.1</ip><ip>::1</ip></networks>
+      <profile>default</profile><quota>default</quota>
+      <access_management>0</access_management>
+    </netflow>
+  </users>
+</clickhouse>
+XML
+)
+if [ ! -f "$USERS" ] || [ "$(cat "$USERS")" != "$NEW" ]; then
+  install -d -m 755 /etc/clickhouse-server/users.d
+  printf '%s\n' "$NEW" > "$USERS"
+  chmod 640 "$USERS"; chgrp clickhouse "$USERS" 2>/dev/null || true
+  CH_RESTART=yes
+fi
+
+# Migrate from the pre-package layout (deploy/install.sh into /usr/local).
+legacy=no
+for f in /etc/systemd/system/nfad.service /etc/systemd/system/tributary-admin.path \
+         /etc/systemd/system/tributary-admin.service /etc/systemd/system/tributary-update-check.service \
+         /etc/systemd/system/tributary-update-check.timer /etc/systemd/system/tributary-update.path \
+         /etc/systemd/system/tributary-update.service; do
+  if [ -f "$f" ]; then rm -f "$f"; legacy=yes; fi
+done
+for f in /etc/systemd/system/multi-user.target.wants/nfad.service \
+         /etc/systemd/system/multi-user.target.wants/tributary-admin.path \
+         /etc/systemd/system/timers.target.wants/tributary-update-check.timer; do
+  [ -L "$f" ] && rm -f "$f"
+done
+rm -f /usr/local/bin/nfad /usr/local/bin/nfa-flowgen
+rm -rf /usr/local/lib/tributary
+rm -f /etc/sysctl.d/99-nfa.conf
+if [ -f /etc/clickhouse-server/config.d/netflow-appliance.xml ]; then
+  rm -f /etc/clickhouse-server/config.d/netflow-appliance.xml
+  CH_RESTART=yes
+fi
+[ "$legacy" = yes ] && echo "tributary: migrated the previous install.sh layout to the packaged layout"
+
+# Restart ClickHouse only when its configuration changed (or on first install).
+STAMP=/var/lib/tributary-admin/.clickhouse-config
+SUM=$(cat /etc/clickhouse-server/config.d/tributary.xml "$USERS" | sha256sum | cut -d' ' -f1)
+[ "$(cat "$STAMP" 2>/dev/null)" = "$SUM" ] || CH_RESTART=yes
+
+sysctl -q --load /usr/lib/sysctl.d/99-tributary.conf || true
+
+UNITS="nfad.service tributary-admin.path tributary-update-check.timer"
+for u in $UNITS; do
+  deb-systemd-helper unmask "$u" >/dev/null || true
+  deb-systemd-helper enable "$u" >/dev/null || true
+done
+# Only touch running services on a live systemd host (not in chroots/images).
+if [ -d /run/systemd/system ]; then
+  systemctl --system daemon-reload >/dev/null || true
+  if [ "$CH_RESTART" = yes ]; then
+    deb-systemd-invoke restart clickhouse-server.service
+    echo "$SUM" > "$STAMP"
+  fi
+  deb-systemd-invoke restart nfad.service
+  deb-systemd-invoke start tributary-admin.path tributary-update-check.timer
+fi
+
+[ -d /run/systemd/system ] || exit 0
+for _ in $(seq 30); do
+  curl -sfk https://localhost/healthz >/dev/null 2>&1 && break
+  sleep 1
+done
+echo "Tributary is running: https://$(hostname -I 2>/dev/null | awk '{print $1}')/"
+if [ -f /var/lib/nfa/initial-admin-password ]; then
+  echo "Initial login: admin / $(cat /var/lib/nfa/initial-admin-password)"
+  echo "(change it after signing in, then delete /var/lib/nfa/initial-admin-password)"
+fi
+exit 0

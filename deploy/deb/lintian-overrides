@@ -1,0 +1,9 @@
+# Go binaries are built with CGO_ENABLED=0 and are statically linked by design.
+tributary: statically-linked-binary [usr/bin/nfad]
+tributary: statically-linked-binary [usr/bin/tributary-flowgen]
+# Usage is documented in /usr/share/doc/tributary/README.md and `nfad -help`.
+tributary: no-manual-page [usr/bin/nfad]
+tributary: no-manual-page [usr/bin/tributary-flowgen]
+# daemon-reload after (un)installing unit files, guarded by /run/systemd/system,
+# exactly as debhelper's generated snippets do.
+tributary: maintainer-script-calls-systemctl *

@@ -27,8 +27,8 @@ func New() *Manager {
 	return &Manager{
 		RequestDir:   "/var/lib/nfa/admin-request",
 		StateDir:     "/var/lib/tributary-admin",
-		HelperPath:   "/usr/local/lib/tributary/tributary-admin.sh",
-		ServicesConf: "/usr/local/lib/tributary/services.conf",
+		HelperPath:   "/usr/lib/tributary/tributary-admin.sh",
+		ServicesConf: "/etc/tributary/services.conf",
 	}
 }
 

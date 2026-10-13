@@ -11,7 +11,7 @@ export LC_ALL=C DEBIAN_FRONTEND=noninteractive
 
 REQ=/var/lib/nfa/admin-request/request.json
 STATE=/var/lib/tributary-admin
-SERVICES_CONF=/usr/local/lib/tributary/services.conf
+SERVICES_CONF=/etc/tributary/services.conf
 TIMESYNC_CONF=/etc/systemd/timesyncd.conf.d/tributary.conf
 LOG=$STATE/log
 STATUS=$STATE/status.json

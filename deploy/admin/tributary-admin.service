@@ -3,5 +3,5 @@ Description=Tributary administrative action (requested from the web UI)
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/lib/tributary/tributary-admin.sh
+ExecStart=/usr/lib/tributary/tributary-admin.sh
 TimeoutStartSec=2h

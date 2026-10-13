@@ -1,0 +1,16 @@
+Package: tributary
+Version: @VERSION@
+Architecture: amd64
+Maintainer: dkoch <drkoch@gmail.com>
+Installed-Size: @SIZE@
+Depends: clickhouse-server, clickhouse-client, jq, curl, ca-certificates, openssl, systemd, adduser
+Section: net
+Priority: optional
+Homepage: https://git.kochlabs.io/dkoch/tributary
+Description: network flow analytics appliance (NetFlow, IPFIX, sFlow)
+ Collects NetFlow v5/v9, IPFIX and sFlow v5 from routers, switches and
+ firewalls, stores flows in ClickHouse and serves dashboards, a traffic
+ explorer and flow search through an HTTPS web interface.
+ .
+ clickhouse-server comes from the ClickHouse apt repository
+ (packages.clickhouse.com); deploy/install.sh adds it before installing.

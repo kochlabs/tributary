@@ -1,0 +1,12 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: tributary
+Source: https://git.kochlabs.io/dkoch/tributary
+
+Files: *
+Copyright: 2026 dkoch
+License: Proprietary
+
+Files: geoip data (downloaded at runtime)
+Copyright: DB-IP.com
+License: CC-BY-4.0
+ IP geolocation by DB-IP (https://db-ip.com).

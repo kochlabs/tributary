@@ -65,23 +65,38 @@ on disk (≈6× compression), so 20 GB holds roughly a billion flows.
 
 ## Build & install
 
-Requires Go 1.27+, Node 24+.
+Requires Go 1.27+ and Node 24+ to build. Run `make` to list all targets.
 
 ```bash
-make            # builds the UI and both binaries into bin/
-make test       # vet + unit tests
-sudo deploy/install.sh   # ClickHouse + nfad service on :443
+make deb                 # dist/tributary_<version>_amd64.deb
+sudo deploy/install.sh   # adds the ClickHouse apt repo, installs the newest .deb
 ```
 
+On another Debian/Ubuntu box, copy the `.deb` and `deploy/install.sh` (or add
+the ClickHouse repository yourself and `apt install ./tributary_*.deb`). The
+package installs:
+
+| Path | Contents |
+|---|---|
+| `/usr/bin/nfad`, `/usr/bin/tributary-flowgen` | daemon and traffic simulator |
+| `/usr/lib/systemd/system/` | `nfad.service`, `tributary-admin.path/.service`, `tributary-update-check.timer` |
+| `/usr/lib/tributary/tributary-admin.sh` | root helper for Updates, Time and Services |
+| `/etc/tributary/services.conf` | Services page allowlist (conffile) |
+| `/etc/clickhouse-server/config.d/tributary.xml` | ClickHouse tuning (conffile) |
+| `/var/lib/nfa` | configuration database, TLS certificate, GeoIP data |
+
 The installer prints the initial `admin` password (also in
-`/var/lib/nfa/initial-admin-password`).
+`/var/lib/nfa/initial-admin-password`). `apt purge tributary` removes
+everything except the ClickHouse `netflow` database.
 
 ### Development
 
 ```bash
-make dev                      # backend on https://localhost:8443 (admin / admin12345)
-cd web && npx ng serve        # UI with hot reload on :4200, proxies /api
-bin/flowgen -rate 500         # simulated exporters on 127.0.1.1–4
+make deploy              # build the .deb and install it on this box
+make check               # gofmt, vet, tests, web build: run before committing
+make dev                 # backend on https://localhost:8443 (admin / admin12345)
+make serve               # UI with hot reload on :4200, proxies /api
+make demo-start          # simulated exporters on 127.0.1.1–4 (make demo-stop)
 bin/flowgen -backfill 72h -geoip-dir /var/lib/nfa/geoip   # history
 ```
 

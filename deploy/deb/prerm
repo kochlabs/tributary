@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+case "$1" in
+  remove|deconfigure)
+    if [ -d /run/systemd/system ]; then
+      deb-systemd-invoke stop nfad.service tributary-admin.path tributary-update-check.timer >/dev/null || true
+    fi
+    ;;
+  upgrade)
+    # postinst restarts the new version; nothing to stop here.
+    ;;
+esac
+exit 0

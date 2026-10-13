@@ -1,12 +1,18 @@
 export PATH := /usr/local/go/bin:/usr/local/node/bin:$(PATH)
 
-VERSION  ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+# Package versions must increase with every commit for apt to see upgrades:
+# 0.1.0+git<commit count>.<sha>, with .dirty for uncommitted changes.
+BASE     := 0.1.0
+SHA      := $(shell git rev-parse --short HEAD 2>/dev/null || echo 0)
+COUNT    := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
+DIRTY    := $(shell git diff --quiet HEAD 2>/dev/null || echo .dirty)
+VERSION  ?= $(BASE)+git$(COUNT).$(SHA)$(DIRTY)
 LDFLAGS  := -s -w -X main.version=$(VERSION)
-DIST     := dist/tributary-$(VERSION)-linux-amd64
+DEB      := dist/tributary_$(VERSION)_amd64.deb
 URL      ?= https://localhost
 
 .DEFAULT_GOAL := help
-.PHONY: help all web build test check fmt fuzz bench serve dev install deploy status logs dist demo-start demo-stop clean
+.PHONY: help all web build deb test check fmt fuzz bench serve dev install deploy status logs demo-start demo-stop clean
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -24,6 +30,9 @@ web: web/node_modules/.stamp ## Build the web UI into the embedded dist director
 
 build: ## Build nfad and flowgen into bin/ (embeds the last web build)
 	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o bin/ ./cmd/...
+
+deb: all ## Build the Debian package into dist/
+	deploy/deb/build.sh $(VERSION)
 
 # ---- quality ----
 
@@ -55,15 +64,12 @@ serve: web/node_modules/.stamp ## UI with hot reload on :4200, proxying /api to 
 
 # ---- this appliance ----
 
-install: all ## Full install or upgrade via deploy/install.sh (ClickHouse, units, helper)
-	sudo deploy/install.sh
+install: deb ## Install or upgrade from the package (adds the ClickHouse repo if needed)
+	sudo deploy/install.sh $(DEB)
 
-deploy: all ## Rebuild, replace the running binary and helper, restart, health-check
-	sudo install -m 755 bin/nfad /usr/local/bin/nfad
-	sudo install -m 755 deploy/admin/tributary-admin.sh /usr/local/lib/tributary/
-	sudo install -m 644 deploy/admin/services.conf /usr/local/lib/tributary/
-	sudo systemctl restart nfad
-	@for i in $$(seq 30); do curl -sfk $(URL)/healthz >/dev/null && { echo "nfad $(VERSION) is up"; exit 0; }; sleep 1; done; \
+deploy: deb ## Build the package and install it on this box, then health-check
+	sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --reinstall $(CURDIR)/$(DEB)
+	@for i in $$(seq 30); do curl -sfk $(URL)/healthz >/dev/null && { echo "tributary $(VERSION) is up"; exit 0; }; sleep 1; done; \
 	  echo "nfad did not become healthy; see 'make logs'"; exit 1
 
 status: ## Show appliance services and health
@@ -78,17 +84,6 @@ demo-start: build ## Send simulated flows from four fake exporters (stop with de
 
 demo-stop: ## Stop simulated flows
 	sudo systemctl stop nfa-demo
-
-# ---- release ----
-
-dist: all ## Package binaries, deploy scripts and README into dist/*.tar.gz
-	rm -rf $(DIST)
-	mkdir -p $(DIST)/bin
-	cp bin/nfad bin/flowgen $(DIST)/bin/
-	cp -r deploy README.md $(DIST)/
-	tar -C dist -czf $(DIST).tar.gz $(notdir $(DIST))
-	rm -rf $(DIST)
-	@echo "$(DIST).tar.gz  (install: tar xzf, then sudo deploy/install.sh)"
 
 clean: ## Remove build outputs and the dev data dir
 	rm -rf bin dist .devdata
