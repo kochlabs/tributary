@@ -1,0 +1,395 @@
+import { HttpClient, HttpErrorResponse, HttpInterceptorFn, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
+
+export type Filters = Record<string, string>;
+export type Metric = 'bps' | 'pps' | 'fps';
+
+export interface User {
+  username: string;
+  role: 'admin' | 'viewer';
+  fullName: string;
+  createdAt: number;
+  lastLogin: number;
+}
+
+export interface LocalSuggestions {
+  transitPct: number;
+  suggestions: { prefix: string; hosts: number; peers: number; bytes: number }[];
+}
+
+export interface Summary {
+  downloadBytes: number;
+  uploadBytes: number;
+  downloadBps: number;
+  uploadBps: number;
+  peakDownloadBps: number;
+  peakUploadBps: number;
+  localHosts: number;
+  remoteHosts: number;
+  bytes: number;
+  packets: number;
+  flows: number;
+  exporters: number;
+  srcHosts: number;
+  dstHosts: number;
+  avgBps: number;
+  peakBps: number;
+  avgPps: number;
+}
+
+export interface Series {
+  key: string;
+  label: string;
+  values: number[];
+  total: number;
+}
+
+export interface TimeSeries {
+  step: number;
+  metric: Metric;
+  times: number[];
+  series: Series[];
+  source: string;
+}
+
+export interface TopRow {
+  key: string;
+  label: string;
+  detail?: string;
+  ends?: { addr: string; name: string; detail: string; local: boolean }[];
+  bytes: number;
+  packets: number;
+  flows: number;
+  rate: number;
+  pct: number;
+}
+
+export interface TopResult {
+  dimension: string;
+  metric: Metric;
+  rows: TopRow[];
+  total: TopRow;
+  source: string;
+}
+
+export interface FlowRow {
+  timeReceived: number;
+  timeStart: number;
+  timeEnd: number;
+  flowType: number;
+  exporter: string;
+  sampling: number;
+  inIf: number;
+  outIf: number;
+  srcAddr: string;
+  dstAddr: string;
+  nextHop: string;
+  srcPort: number;
+  dstPort: number;
+  proto: number;
+  tcpFlags: number;
+  tos: number;
+  srcAs: number;
+  dstAs: number;
+  vlan: number;
+  bytes: number;
+  packets: number;
+  exporterName?: string;
+  srcCountry: string;
+  dstCountry: string;
+  srcHost?: string;
+  dstHost?: string;
+  srcAsName?: string;
+  dstAsName?: string;
+}
+
+export interface FlowPage {
+  total: number;
+  rows: FlowRow[];
+}
+
+export interface ExporterLive {
+  addr: string;
+  types: string[];
+  packets: number;
+  flows: number;
+  errors: number;
+  missingTemplates: number;
+  lost: number;
+  templates: number;
+  sampling: number;
+  samplingSource: 'announced' | 'remembered' | 'packet' | 'unsampled';
+  firstSeen: number;
+  lastSeen: number;
+  flowsPerSec: number;
+  bitsPerSec: number;
+  lastError?: string;
+}
+
+export interface Exporter {
+  addr: string;
+  name: string;
+  description: string;
+  location: string;
+  sampling: number;
+  firstSeen: number;
+  live: ExporterLive | null;
+  bytes24h: number;
+  flows24h: number;
+  status: 'active' | 'idle' | 'stale';
+}
+
+export interface Interface {
+  exporter: string;
+  index: number;
+  name: string;
+  description: string;
+  speed: number;
+  inBytes24h: number;
+  outBytes24h: number;
+}
+
+export interface Settings {
+  rawRetentionDays: number;
+  rollupRetentionDays: number;
+  netflowPort: number;
+  ipfixPort: number;
+  sflowPort: number;
+  applianceName: string;
+  sessionHours: number;
+  reverseDns: boolean;
+  geoAutoUpdate: boolean;
+  onlineAsnLookup: boolean;
+  localNetworks: string[];
+  dnsServers: string[];
+}
+
+export interface GeoStatus {
+  geo: { country: string; countryBuilt: number; asn: string; asnBuilt: number; lastUpdate: string; attribution?: string };
+  rdnsEnabled: boolean;
+  rdnsCache: number;
+  systemDnsServers: string[];
+}
+
+export interface UpdateStatus {
+  installed: boolean;
+  state: 'idle' | 'running' | 'done' | 'failed';
+  action: string;
+  startedAt: number | null;
+  finishedAt: number | null;
+  exitCode: number | null;
+  lastCheck: number | null;
+  lastInstall: number | null;
+  lastInstallExit: number | null;
+  upgradable: { name: string; suite: string; version: string; from: string; security: boolean }[];
+  rebootRequired: boolean;
+  os: string;
+  kernel: string;
+  pending?: string;
+}
+
+export interface TimeStatus {
+  timezone: string;
+  ntpEnabled: boolean;
+  synchronized: boolean;
+  now: number;
+  servers: string[];
+  defaultServers: string[];
+  serverName: string;
+  serverAddress: string;
+  stratum: number;
+  offset: string;
+  delay: string;
+  jitter: string;
+  pollInterval: string;
+  lastSync: number;
+}
+
+export interface ServiceUnit {
+  unit: string;
+  description: string;
+  active: string;
+  sub: string;
+  onBoot: string;
+  since: number;
+  mainPid: number;
+  memory: number;
+  ops: string[];
+}
+
+export interface AdminResult {
+  id: string;
+  action: string;
+  ok: boolean;
+  message: string;
+  at: number;
+  pending: boolean;
+}
+
+export interface AuditEntry {
+  id: number;
+  ts: number;
+  username: string;
+  action: string;
+  detail: string;
+}
+
+export interface TimeQuery {
+  from: number;
+  to: number;
+}
+
+/** Adds the CSRF header and sends the user to the login page on 401. */
+export const apiInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
+  const r = req.clone({ setHeaders: { 'X-Requested-With': 'nfa' } });
+  return next(r).pipe(
+    catchError((err: HttpErrorResponse) => {
+      if (err.status === 401 && !req.url.endsWith('/api/auth/login') && !req.url.endsWith('/api/auth/me')) {
+        router.navigate(['/login'], { queryParams: { next: router.url } });
+      }
+      return throwError(() => err);
+    }),
+  );
+};
+
+export function errorMessage(err: unknown): string {
+  if (err instanceof HttpErrorResponse) {
+    if (err.error && typeof err.error === 'object' && 'error' in err.error) return String(err.error.error);
+    if (err.status === 0) return 'Cannot reach the appliance.';
+    return `${err.status} ${err.statusText}`;
+  }
+  return String(err);
+}
+
+@Injectable({ providedIn: 'root' })
+export class Api {
+  private http = inject(HttpClient);
+
+  private params(t: TimeQuery, filters: Filters = {}, extra: Record<string, string | number | boolean | undefined> = {}) {
+    let p = new HttpParams().set('from', Math.round(t.from)).set('to', Math.round(t.to));
+    for (const [k, v] of Object.entries(filters)) if (v) p = p.set(k, v);
+    for (const [k, v] of Object.entries(extra)) if (v !== undefined && v !== '') p = p.set(k, String(v));
+    return p;
+  }
+
+  private get<T>(url: string, params?: HttpParams) {
+    return firstValueFrom(this.http.get<T>(url, { params }));
+  }
+
+  publicInfo() {
+    return this.get<{ name: string; version: string }>('/api/public/info');
+  }
+  me() {
+    return this.get<User>('/api/auth/me');
+  }
+  login(username: string, password: string) {
+    return firstValueFrom(this.http.post<User>('/api/auth/login', { username, password }));
+  }
+  logout() {
+    return firstValueFrom(this.http.post('/api/auth/logout', {}));
+  }
+  changePassword(current: string, next: string) {
+    return firstValueFrom(this.http.post('/api/auth/password', { current, new: next }));
+  }
+
+  summary(t: TimeQuery, f: Filters) {
+    return this.get<Summary>('/api/summary', this.params(t, f));
+  }
+  timeseries(t: TimeQuery, f: Filters, metric: Metric, groupBy = '', limit = 8) {
+    return this.get<TimeSeries>('/api/timeseries', this.params(t, f, { metric, groupBy, limit }));
+  }
+  top(t: TimeQuery, f: Filters, dimension: string, metric: Metric, limit = 10) {
+    return this.get<TopResult>('/api/top', this.params(t, f, { dimension, metric, limit }));
+  }
+  flows(t: TimeQuery, f: Filters, opts: { sort?: string; desc?: boolean; limit?: number; offset?: number }) {
+    return this.get<FlowPage>('/api/flows', this.params(t, f, opts));
+  }
+  flowsCsvUrl(t: TimeQuery, f: Filters, sort?: string, desc?: boolean) {
+    return '/api/flows.csv?' + this.params(t, f, { sort, desc }).toString();
+  }
+
+  exporters() {
+    return this.get<Exporter[]>('/api/exporters');
+  }
+  updateExporter(e: Pick<Exporter, 'addr' | 'name' | 'description' | 'location' | 'sampling'>) {
+    const { addr, name, description, location, sampling } = e;
+    return firstValueFrom(this.http.put(`/api/exporters/${encodeURIComponent(addr)}`, { name, description, location, sampling }));
+  }
+  deleteExporter(addr: string) {
+    return firstValueFrom(this.http.delete(`/api/exporters/${encodeURIComponent(addr)}`));
+  }
+  interfaces(addr: string) {
+    return this.get<Interface[]>(`/api/exporters/${encodeURIComponent(addr)}/interfaces`);
+  }
+  updateInterface(i: Pick<Interface, 'exporter' | 'index' | 'name' | 'description' | 'speed'>) {
+    return firstValueFrom(
+      this.http.put(`/api/exporters/${encodeURIComponent(i.exporter)}/interfaces/${i.index}`, {
+        name: i.name,
+        description: i.description,
+        speed: i.speed,
+      }),
+    );
+  }
+
+  system() {
+    return this.get<any>('/api/system');
+  }
+  settings() {
+    return this.get<Settings>('/api/settings');
+  }
+  saveSettings(s: Settings) {
+    return firstValueFrom(this.http.put<Settings>('/api/settings', s));
+  }
+
+  users() {
+    return this.get<User[]>('/api/users');
+  }
+  createUser(u: { username: string; password: string; role: string; fullName: string }) {
+    return firstValueFrom(this.http.post('/api/users', u));
+  }
+  updateUser(name: string, u: { role?: string; fullName?: string; password?: string }) {
+    return firstValueFrom(this.http.put(`/api/users/${encodeURIComponent(name)}`, u));
+  }
+  deleteUser(name: string) {
+    return firstValueFrom(this.http.delete(`/api/users/${encodeURIComponent(name)}`));
+  }
+  localSuggestions() {
+    return this.get<LocalSuggestions>('/api/local-suggestions');
+  }
+  geo() {
+    return this.get<GeoStatus>('/api/geo');
+  }
+  updateGeo() {
+    return firstValueFrom(this.http.post('/api/geo/update', {}));
+  }
+  updates() {
+    return this.get<UpdateStatus>('/api/updates');
+  }
+  updatesLog(offset: number) {
+    return this.get<{ text: string; offset: number }>('/api/updates/log', new HttpParams().set('offset', offset));
+  }
+  requestUpdate(action: 'check' | 'upgrade' | 'reboot') {
+    return firstValueFrom(this.http.post('/api/updates', { action }));
+  }
+  time() {
+    return this.get<{ status: TimeStatus; installed: boolean }>('/api/time');
+  }
+  timeZones() {
+    return this.get<string[]>('/api/time/zones');
+  }
+  setTime(t: { timezone: string; ntp: boolean; servers: string[] }) {
+    return firstValueFrom(this.http.put<AdminResult>('/api/time', t));
+  }
+  services() {
+    return this.get<{ services: ServiceUnit[]; installed: boolean }>('/api/services');
+  }
+  serviceAction(unit: string, op: string) {
+    return firstValueFrom(this.http.post<AdminResult>(`/api/services/${encodeURIComponent(unit)}/${op}`, {}));
+  }
+  audit() {
+    return this.get<AuditEntry[]>('/api/audit');
+  }
+}

@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch for Tributary administrative requests
+
+[Path]
+PathExists=/var/lib/nfa/admin-request/request.json
+Unit=tributary-admin.service
+
+[Install]
+WantedBy=multi-user.target

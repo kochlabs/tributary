@@ -1,0 +1,26 @@
+[Unit]
+Description=Tributary flow analytics (collector, API and web UI)
+After=network-online.target clickhouse-server.service
+Wants=network-online.target clickhouse-server.service
+
+[Service]
+Type=simple
+User=nfa
+Group=nfa
+ExecStart=/usr/local/bin/nfad -data /var/lib/nfa -listen :443 -ch-password-file /etc/netflow/clickhouse.pw
+Restart=always
+RestartSec=3
+LimitNOFILE=65536
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/nfa
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

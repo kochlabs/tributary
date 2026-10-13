@@ -1,0 +1,243 @@
+// Command nfad is the NetFlow appliance daemon: flow collector, storage
+// writer, REST API and web UI in one process.
+package main
+
+import (
+	"context"
+	"crypto/rand"
+	"crypto/tls"
+	"encoding/hex"
+	"errors"
+	"flag"
+	"fmt"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"strings"
+	"syscall"
+	"time"
+
+	"nfa/internal/api"
+	"nfa/internal/collector"
+	"nfa/internal/config"
+	"nfa/internal/enrich"
+	"nfa/internal/store"
+	"nfa/internal/system"
+	"nfa/internal/webui"
+)
+
+var version = "dev"
+
+func main() {
+	var (
+		listen     = flag.String("listen", ":8443", "HTTPS listen address for UI and API")
+		plainHTTP  = flag.Bool("http", false, "serve plain HTTP instead of HTTPS (only behind a TLS-terminating proxy)")
+		dataDir    = flag.String("data", "/var/lib/nfa", "directory for configuration database and TLS material")
+		certFile   = flag.String("tls-cert", "", "TLS certificate (default: <data>/tls.crt, self-signed if missing)")
+		keyFile    = flag.String("tls-key", "", "TLS key (default: <data>/tls.key)")
+		chAddr     = flag.String("ch-addr", "127.0.0.1:9000", "ClickHouse native protocol address")
+		chUser     = flag.String("ch-user", "netflow", "ClickHouse user")
+		chPassFile = flag.String("ch-password-file", "/etc/netflow/clickhouse.pw", "file containing the ClickHouse password")
+		logLevel   = flag.String("log-level", "info", "debug, info, warn or error")
+		showVer    = flag.Bool("version", false, "print version and exit")
+	)
+	flag.Parse()
+	if *showVer {
+		fmt.Println(version)
+		return
+	}
+	var lvl slog.Level
+	_ = lvl.UnmarshalText([]byte(*logLevel))
+	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
+	if err := run(log, *listen, *plainHTTP, *dataDir, *certFile, *keyFile, *chAddr, *chUser, *chPassFile); err != nil {
+		log.Error("fatal", "err", err)
+		os.Exit(1)
+	}
+}
+
+func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, certFile, keyFile, chAddr, chUser, chPassFile string) error {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	if err := os.MkdirAll(dataDir, 0o750); err != nil {
+		return err
+	}
+	cfg, err := config.Open(filepath.Join(dataDir, "config.db"))
+	if err != nil {
+		return err
+	}
+	defer cfg.Close()
+	if err := bootstrapAdmin(log, cfg, dataDir); err != nil {
+		return err
+	}
+	settings := cfg.Settings()
+
+	pw, err := os.ReadFile(chPassFile)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("read clickhouse password: %w", err)
+	}
+	var st *store.Store
+	for attempt := 1; ; attempt++ {
+		octx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		st, err = store.Open(octx, store.Options{Addr: chAddr, User: chUser, Password: strings.TrimSpace(string(pw))})
+		cancel()
+		if err == nil {
+			break
+		}
+		if attempt >= 30 || ctx.Err() != nil {
+			return err
+		}
+		log.Warn("waiting for clickhouse", "err", err)
+		time.Sleep(2 * time.Second)
+	}
+	defer st.Close()
+	if err := st.Migrate(ctx, store.Retention{RawDays: settings.RawRetentionDays, RollupDays: settings.RollupRetentionDays}); err != nil {
+		return err
+	}
+
+	writer := st.NewWriter(log)
+	writerDone := make(chan struct{})
+	wctx, wcancel := context.WithCancel(context.Background())
+	go func() { writer.Run(wctx); close(writerDone) }()
+
+	geo := enrich.NewGeo(filepath.Join(dataDir, "geoip"), log)
+	geo.Online = enrich.NewASNLookup()
+	geo.Online.Enabled.Store(settings.OnlineASNLookup)
+	asnCache := filepath.Join(dataDir, "geoip", "asn-online.json")
+	_ = geo.Online.Load(asnCache) // before collectors start, so labels and ingest use it
+	go geo.Online.Persist(ctx, asnCache, 5*time.Minute)
+	geo.SetLocalNetworks(settings.LocalPrefixes())
+	store.SetLocalNetworks(settings.LocalPrefixes())
+	if err := geo.Load(); err != nil {
+		log.Warn("geoip databases could not be loaded", "err", err)
+	}
+	go geo.AutoUpdate(ctx, func() bool { return cfg.Settings().GeoAutoUpdate })
+	enrich.SetDNSServers(settings.DNSServers)
+	rdns := enrich.NewResolver()
+	rdns.Enabled.Store(settings.ReverseDNS)
+
+	col := collector.New(log, collector.Hooks{
+		Sink:             writer.Submit,
+		NewExporter:      cfg.SeenExporter,
+		SamplingOverride: cfg.SamplingOverride,
+		Enrich:           geo.Enrich,
+		InterfaceName:    cfg.LearnInterface,
+		LearnedSampling:  cfg.SetLearnedSampling,
+		SeedSampling:     cfg.LearnedSampling,
+	})
+	if err := col.Start(collector.Ports{NetFlow: settings.NetFlowPort, IPFIX: settings.IPFIXPort, SFlow: settings.SFlowPort}); err != nil {
+		log.Error("collector listener failed", "err", err)
+	}
+
+	srv := &api.Server{
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, RDNS: rdns, System: system.New(), UI: webui.FS(), Version: version, SecureCookies: !plainHTTP,
+		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
+			var errs []error
+			rdns.Enabled.Store(ns.ReverseDNS)
+			enrich.SetDNSServers(ns.DNSServers)
+			geo.Online.Enabled.Store(ns.OnlineASNLookup)
+			geo.SetLocalNetworks(ns.LocalPrefixes())
+			store.SetLocalNetworks(ns.LocalPrefixes())
+			if ns.GeoAutoUpdate && !old.GeoAutoUpdate {
+				go func() { _ = geo.Update(context.Background()) }()
+			}
+			if old.NetFlowPort != ns.NetFlowPort || old.IPFIXPort != ns.IPFIXPort || old.SFlowPort != ns.SFlowPort {
+				errs = append(errs, col.Start(collector.Ports{NetFlow: ns.NetFlowPort, IPFIX: ns.IPFIXPort, SFlow: ns.SFlowPort}))
+			}
+			if old.RawRetentionDays != ns.RawRetentionDays || old.RollupRetentionDays != ns.RollupRetentionDays {
+				errs = append(errs, st.SetRetention(ctx, store.Retention{RawDays: ns.RawRetentionDays, RollupDays: ns.RollupRetentionDays}))
+			}
+			return errors.Join(errs...)
+		},
+	}
+	httpSrv := &http.Server{
+		Addr:              listen,
+		Handler:           srv.Handler(),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      120 * time.Second,
+		IdleTimeout:       120 * time.Second,
+		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12},
+	}
+
+	go func() {
+		t := time.NewTicker(time.Hour)
+		defer t.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				cfg.PurgeSessions()
+			}
+		}
+	}()
+
+	errc := make(chan error, 1)
+	go func() {
+		if plainHTTP {
+			log.Info("web UI listening (plain HTTP)", "addr", listen)
+			errc <- httpSrv.ListenAndServe()
+			return
+		}
+		if certFile == "" {
+			certFile, keyFile = filepath.Join(dataDir, "tls.crt"), filepath.Join(dataDir, "tls.key")
+			created, err := ensureSelfSigned(certFile, keyFile)
+			if err != nil {
+				errc <- err
+				return
+			}
+			if created {
+				log.Info("generated self-signed TLS certificate", "cert", certFile)
+			}
+		}
+		log.Info("web UI listening (HTTPS)", "addr", listen)
+		errc <- httpSrv.ListenAndServeTLS(certFile, keyFile)
+	}()
+
+	select {
+	case <-ctx.Done():
+		log.Info("shutting down")
+	case err := <-errc:
+		if !errors.Is(err, http.ErrServerClosed) {
+			col.Stop()
+			wcancel()
+			<-writerDone
+			return err
+		}
+	}
+	sctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_ = httpSrv.Shutdown(sctx)
+	col.Stop()
+	wcancel()
+	<-writerDone
+	return nil
+}
+
+// bootstrapAdmin creates the initial administrator when no users exist. The
+// password comes from NFA_ADMIN_PASSWORD or is generated and written to
+// <data>/initial-admin-password (mode 0600).
+func bootstrapAdmin(log *slog.Logger, cfg *config.DB, dataDir string) error {
+	n, err := cfg.UserCount()
+	if err != nil || n > 0 {
+		return err
+	}
+	pw := os.Getenv("NFA_ADMIN_PASSWORD")
+	if pw == "" {
+		b := make([]byte, 9)
+		_, _ = rand.Read(b)
+		pw = hex.EncodeToString(b)
+	}
+	if err := cfg.CreateUser(config.User{Username: "admin", Role: "admin", FullName: "Administrator"}, pw); err != nil {
+		return err
+	}
+	path := filepath.Join(dataDir, "initial-admin-password")
+	if err := os.WriteFile(path, []byte(pw+"\n"), 0o600); err != nil {
+		return err
+	}
+	log.Warn("created initial administrator account", "username", "admin", "password_file", path)
+	return nil
+}
