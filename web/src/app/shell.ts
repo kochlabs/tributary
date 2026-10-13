@@ -15,8 +15,12 @@ import { TimeRangePicker } from './shared/time-range';
       <header class="header header-6">
         <div class="branding">
           <a routerLink="/dashboard" class="nav-link">
-            <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#fff" fill-opacity=".15"/><path d="M5 8.5c6.5 0 8 7.5 15 7.5M5 16h15M5 23.5c6.5 0 8-7.5 15-7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M20 16h7" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg>
-            <span class="title">{{ name() }}</span>
+            <img class="logo" src="brand/mark-light.png" alt="" />
+            @if (name() === 'Tributary') {
+              <img class="wordmark" src="brand/wordmark-light.png" alt="Tributary" />
+            } @else {
+              <span class="title">{{ name() }}</span>
+            }
           </a>
         </div>
         <div class="header-actions">
@@ -98,7 +102,8 @@ import { TimeRangePicker } from './shared/time-range';
   `,
   styles: `
     .branding .nav-link { display: flex; align-items: center; gap: 10px; }
-    .logo { width: 28px; height: 28px; }
+    .logo { height: 26px; width: auto; }
+    .wordmark { height: 26px; width: auto; }
     .title { white-space: nowrap; }
     .user-btn { display: flex; align-items: center; gap: 6px; background: none; border: 0; color: inherit; cursor: pointer; padding: 0 16px; height: 100%; font: inherit; }
     .header-actions { align-items: stretch; }

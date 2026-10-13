@@ -12,9 +12,17 @@ import { Auth } from '../core/auth';
     <div class="login-wrapper">
       <form class="login" (ngSubmit)="submit()">
         <section class="title">
-          <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#0072a3"/><path d="M5 8.5c6.5 0 8 7.5 15 7.5M5 16h15M5 23.5c6.5 0 8-7.5 15-7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M20 16h7" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg>
-          <h3 class="welcome">Welcome to</h3>
-          {{ name() }}
+          <div class="brand">
+            <img class="logo light-only" src="brand/mark.png" alt="" />
+            <img class="logo dark-only" src="brand/mark-light.png" alt="" />
+            @if (name() === 'Tributary') {
+              <h1 class="clr-sr-only">Tributary</h1>
+              <img class="wordmark light-only" src="brand/wordmark.png" alt="Tributary" />
+              <img class="wordmark dark-only" src="brand/wordmark-light.png" alt="Tributary" />
+            } @else {
+              <span class="name">{{ name() }}</span>
+            }
+          </div>
           <h5 class="hint">Network flow analytics</h5>
         </section>
         <div class="login-group">
@@ -36,7 +44,15 @@ import { Auth } from '../core/auth';
     </div>
   `,
   styles: `
-    .logo { width: 48px; height: 48px; display: block; margin-bottom: 16px; }
+    .login-wrapper { background: #02060c url('/brand/login-background.webp') right center / cover no-repeat; }
+    /* Clarity centres the login column; span it so the brand lines up with the form's left edge. */
+    .title { align-self: stretch; text-align: left; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .logo, .wordmark { height: 48px; width: auto; display: block; }
+    .name { line-height: 48px; }
+    .dark-only { display: none; }
+    :host-context([cds-theme='dark']) .dark-only { display: block; }
+    :host-context([cds-theme='dark']) .light-only { display: none; }
     .version { margin-top: 24px; font-size: 11px; color: var(--cds-alias-typography-color-300); }
   `,
 })
@@ -72,4 +88,5 @@ export class Login {
       this.busy.set(false);
     }
   }
+
 }
