@@ -83,7 +83,16 @@ const SOURCE_HINT: Record<string, string> = {
       <clr-dg-placeholder>
         No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are configured under Settings.
       </clr-dg-placeholder>
-      <clr-dg-footer>{{ (list.value() ?? []).length }} devices</clr-dg-footer>
+      <clr-dg-footer>
+        <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} devices
+          } @else {
+            No devices
+          }
+        </clr-dg-pagination>
+      </clr-dg-footer>
     </clr-datagrid>
 
     <p class="hint">

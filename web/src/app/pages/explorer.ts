@@ -114,8 +114,16 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
         <clr-dg-placeholder>No traffic matches the current filters.</clr-dg-placeholder>
         <clr-dg-footer>
           @if (top.value(); as t) {
-            Top {{ t.rows.length }} of {{ fmtBytes(t.total.bytes) }} total · {{ fmtCount(t.total.flows) }} flows
+            <span class="footer-summary">{{ fmtBytes(t.total.bytes) }} total · {{ fmtCount(t.total.flows) }} flows</span>
           }
+          <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} rows
+          } @else {
+            No rows
+          }
+        </clr-dg-pagination>
         </clr-dg-footer>
       </clr-datagrid>
     }
@@ -137,6 +145,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
     .bar { width: 60px; height: 6px; background: var(--cds-alias-object-border-color); border-radius: 3px; overflow: hidden; }
     .fill { height: 100%; }
     clr-datagrid { margin-top: 12px; }
+    .footer-summary { margin-right: auto; }
   `,
 })
 export class Explorer {

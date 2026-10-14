@@ -57,7 +57,16 @@ const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
         <clr-dg-cell class="nowrap">{{ s.memory && s.memory < 1e15 ? fmtBytes(s.memory) : '–' }}</clr-dg-cell>
         <clr-dg-cell>{{ boot(s.onBoot) }}</clr-dg-cell>
       </clr-dg-row>
-      <clr-dg-footer>{{ (list.value()?.services ?? []).length }} services</clr-dg-footer>
+      <clr-dg-footer>
+        <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} services
+          } @else {
+            No services
+          }
+        </clr-dg-pagination>
+      </clr-dg-footer>
     </clr-datagrid>
 
     <clr-modal [clrModalOpen]="!!pending()" (clrModalOpenChange)="!$event && pending.set(null)" clrModalSize="md">

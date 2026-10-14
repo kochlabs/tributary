@@ -27,7 +27,14 @@ import { loader } from '../core/util';
         <clr-dg-cell>{{ e.detail }}</clr-dg-cell>
       </clr-dg-row>
       <clr-dg-footer>
-        <clr-dg-pagination #p [clrDgPageSize]="50">{{ p.firstItem + 1 }} - {{ p.lastItem + 1 }} of {{ p.totalItems }} entries</clr-dg-pagination>
+        <clr-dg-pagination #p [clrDgPageSize]="50">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (p.totalItems) {
+            {{ p.firstItem + 1 }}–{{ p.lastItem + 1 }} of {{ p.totalItems.toLocaleString() }} entries
+          } @else {
+            No entries
+          }
+        </clr-dg-pagination>
       </clr-dg-footer>
     </clr-datagrid>
   `,

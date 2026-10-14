@@ -84,7 +84,16 @@ import { loader } from '../core/util';
       <clr-dg-placeholder>
         No exporters yet. Point your devices' NetFlow/IPFIX export at this appliance on UDP 2055 / 4739, or sFlow on UDP 6343.
       </clr-dg-placeholder>
-      <clr-dg-footer>{{ (list.value() ?? []).length }} exporters</clr-dg-footer>
+      <clr-dg-footer>
+        <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} exporters
+          } @else {
+            No exporters
+          }
+        </clr-dg-pagination>
+      </clr-dg-footer>
     </clr-datagrid>
 
     <clr-modal [(clrModalOpen)]="editOpen" clrModalSize="md">

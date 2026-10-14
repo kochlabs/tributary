@@ -42,7 +42,16 @@ import { loader } from '../core/util';
         <clr-dg-cell>{{ dt(u.lastLogin) }}</clr-dg-cell>
         <clr-dg-cell>{{ dt(u.createdAt) }}</clr-dg-cell>
       </clr-dg-row>
-      <clr-dg-footer>{{ (users.value() ?? []).length }} users</clr-dg-footer>
+      <clr-dg-footer>
+        <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} users
+          } @else {
+            No users
+          }
+        </clr-dg-pagination>
+      </clr-dg-footer>
     </clr-datagrid>
 
     <clr-modal [(clrModalOpen)]="formOpen" clrModalSize="md">

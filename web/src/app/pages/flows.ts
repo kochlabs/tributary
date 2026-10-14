@@ -88,7 +88,11 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
       <clr-dg-footer>
         <clr-dg-pagination #pagination [clrDgPageSize]="50" [clrDgTotalItems]="total()">
           <clr-dg-page-size [clrPageSizeOptions]="[25, 50, 100, 250, 500]">Flows per page</clr-dg-page-size>
-          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ total().toLocaleString() }} flows
+          @if (total()) {
+            {{ pagination.firstItem + 1 }}–{{ pagination.lastItem + 1 }} of {{ total().toLocaleString() }} flows
+          } @else {
+            No flows
+          }
         </clr-dg-pagination>
       </clr-dg-footer>
     </clr-datagrid>

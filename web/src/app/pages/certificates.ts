@@ -154,7 +154,16 @@ function download(name: string, text: string) {
               <clr-dg-cell class="mono small" [title]="ca.sha256">{{ ca.sha256.slice(0, 23) }}…</clr-dg-cell>
             </clr-dg-row>
             <clr-dg-placeholder>No trusted CAs added. Only the operating system's public CAs are trusted.</clr-dg-placeholder>
-            <clr-dg-footer>{{ (cas.value() ?? []).length }} CA{{ (cas.value() ?? []).length === 1 ? '' : 's' }}</clr-dg-footer>
+            <clr-dg-footer>
+            <clr-dg-pagination #caPg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (caPg.totalItems) {
+            {{ caPg.firstItem + 1 }}–{{ caPg.lastItem + 1 }} of {{ caPg.totalItems.toLocaleString() }} CAs
+          } @else {
+            No CAs
+          }
+        </clr-dg-pagination>
+            </clr-dg-footer>
           </clr-datagrid>
         </clr-tab-content>
       </clr-tab>

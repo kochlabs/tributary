@@ -72,7 +72,16 @@ function blankForm(): Form {
         <clr-dg-cell>{{ s.users }}</clr-dg-cell>
       </clr-dg-row>
       <clr-dg-placeholder>No identity sources. Everyone signs in with local accounts.</clr-dg-placeholder>
-      <clr-dg-footer>{{ (list.value() ?? []).length }} source{{ (list.value() ?? []).length === 1 ? '' : 's' }}</clr-dg-footer>
+      <clr-dg-footer>
+        <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} sources
+          } @else {
+            No sources
+          }
+        </clr-dg-pagination>
+      </clr-dg-footer>
     </clr-datagrid>
 
     <div class="card how">

@@ -86,7 +86,16 @@ import { dateTime } from '../core/format';
             <clr-dg-cell class="mono">{{ p.version }}</clr-dg-cell>
             <clr-dg-cell>{{ p.suite }}</clr-dg-cell>
           </clr-dg-row>
-          <clr-dg-footer>{{ s.upgradable.length }} packages</clr-dg-footer>
+          <clr-dg-footer>
+          <clr-dg-pagination #pg [clrDgPageSize]="25">
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          @if (pg.totalItems) {
+            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} packages
+          } @else {
+            No packages
+          }
+        </clr-dg-pagination>
+          </clr-dg-footer>
         </clr-datagrid>
       }
 
