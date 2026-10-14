@@ -4,9 +4,30 @@ Source: https://git.kochlabs.io/dkoch/tributary
 
 Files: *
 Copyright: 2026 dkoch
-License: Proprietary
+License: AGPL-3.0-or-later
+ This program is free software: you can redistribute it and/or modify it
+ under the terms of the GNU Affero General Public License as published by the
+ Free Software Foundation, either version 3 of the License, or (at your
+ option) any later version.
+ .
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ for more details.
+ .
+ The full text of the license is in /usr/share/doc/tributary/LICENSE.
+ Licenses of the bundled Go modules and web packages are listed, with their
+ full texts, in /usr/share/doc/tributary/THIRD_PARTY_NOTICES.md.
+
+Files: internal/enrich/manuf.gz
+Copyright: The Wireshark project and contributors
+License: GPL-2.0-or-later
+ Wireshark manufacturer database, compiled from the public IEEE Registration
+ Authority registries. On Debian systems the GPL-2 text is in
+ /usr/share/common-licenses/GPL-2.
 
 Files: geoip data (downloaded at runtime)
 Copyright: DB-IP.com
 License: CC-BY-4.0
- IP geolocation by DB-IP (https://db-ip.com).
+ IP Geolocation by DB-IP (https://db-ip.com), downloaded at runtime when
+ selected. See https://creativecommons.org/licenses/by/4.0/.

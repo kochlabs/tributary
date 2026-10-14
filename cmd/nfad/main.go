@@ -33,6 +33,10 @@ import (
 
 var version = "dev"
 
+// sourceURL is where users of this build can get its source code, which the
+// AGPL requires offering to network users (override with -ldflags -X).
+var sourceURL = "https://git.kochlabs.io/dkoch/tributary"
+
 func main() {
 	var (
 		listen     = flag.String("listen", ":8443", "HTTPS listen address for UI and API")
@@ -121,10 +125,20 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 	go geo.Online.Persist(ctx, asnCache, 5*time.Minute)
 	geo.SetLocalNetworks(settings.LocalPrefixes())
 	store.SetLocalNetworks(settings.LocalPrefixes())
+	enrich.UserAgent = "Tributary/" + version
+	sources := cfg.Enrichment()
+	geo.SetSource(sources)
 	if err := geo.Load(); err != nil {
 		log.Warn("geoip databases could not be loaded", "err", err)
 	}
-	go geo.AutoUpdate(ctx, func() bool { return cfg.Settings().GeoAutoUpdate })
+	autoUpdate := func() bool { return cfg.Enrichment().AutoUpdate }
+	go geo.AutoUpdate(ctx, autoUpdate)
+	vendors := enrich.NewVendorDB(filepath.Join(dataDir, "oui"), log)
+	vendors.SetSource(sources)
+	if err := vendors.Load(); err != nil {
+		log.Warn("vendor database could not be loaded; using the built-in table", "err", err)
+	}
+	go vendors.AutoUpdate(ctx, autoUpdate)
 	enrich.SetDNSServers(settings.DNSServers)
 	rdns := enrich.NewResolver()
 	rdns.Enabled.Store(settings.ReverseDNS)
@@ -181,7 +195,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 	}
 
 	srv := &api.Server{
-		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, RDNS: rdns, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SecureCookies: !plainHTTP,
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)
@@ -189,9 +203,6 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 			geo.Online.Enabled.Store(ns.OnlineASNLookup)
 			geo.SetLocalNetworks(ns.LocalPrefixes())
 			store.SetLocalNetworks(ns.LocalPrefixes())
-			if ns.GeoAutoUpdate && !old.GeoAutoUpdate {
-				go func() { _ = geo.Update(context.Background()) }()
-			}
 			if old.NetFlowPort != ns.NetFlowPort || old.IPFIXPort != ns.IPFIXPort || old.SFlowPort != ns.SFlowPort {
 				errs = append(errs, col.Start(collector.Ports{NetFlow: ns.NetFlowPort, IPFIX: ns.IPFIXPort, SFlow: ns.SFlowPort}))
 			}

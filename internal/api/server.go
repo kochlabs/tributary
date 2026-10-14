@@ -31,12 +31,14 @@ type Server struct {
 	Writer        *store.Writer
 	Collector     *collector.Collector
 	Geo           *enrich.Geo
+	Vendors       *enrich.VendorDB
 	RDNS          *enrich.Resolver
 	System        *system.Manager
 	Certs         *certs.Manager
 	Trust         *certs.TrustStore
 	UI            fs.FS
 	Version       string
+	SourceURL     string
 	SecureCookies bool
 	// ApplySettings pushes new settings to the collector and database.
 	ApplySettings func(ctx context.Context, old, new config.Settings) error
@@ -115,6 +117,9 @@ func (s *Server) Handler() http.Handler {
 	auth("GET /api/geo", s.geoStatus)
 	auth("GET /api/local-suggestions", s.localSuggestions)
 	admin("POST /api/geo/update", s.geoUpdate)
+	admin("POST /api/oui/update", s.ouiUpdate)
+	admin("GET /api/enrichment", s.enrichmentGet)
+	admin("PUT /api/enrichment", s.enrichmentPut)
 	admin("GET /api/updates", s.updatesStatus)
 	admin("GET /api/updates/log", s.updatesLog)
 	admin("POST /api/updates", s.updatesRequest)

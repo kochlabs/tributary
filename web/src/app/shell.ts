@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage } from './core/api';
+import { Api, Attribution, errorMessage } from './core/api';
 import { Auth } from './core/auth';
 import { Theme } from './core/util';
 import { TimeRangePicker } from './shared/time-range';
@@ -38,6 +38,7 @@ import { TimeRangePicker } from './shared/time-range';
                 {{ theme.mode() === 'dark' ? 'Light theme' : 'Dark theme' }}
               </button>
               <button clrDropdownItem (click)="openPassword()"><cds-icon shape="lock"></cds-icon> Change password</button>
+              <button clrDropdownItem (click)="openAbout()"><cds-icon shape="info-circle"></cds-icon> About</button>
               <div class="dropdown-divider" role="separator"></div>
               <button clrDropdownItem (click)="logout()"><cds-icon shape="logout"></cds-icon> Log out</button>
             </clr-dropdown-menu>
@@ -60,6 +61,7 @@ import { TimeRangePicker } from './shared/time-range';
                 <a clrVerticalNavLink routerLink="/admin/settings" routerLinkActive="active">Settings</a>
                 <a clrVerticalNavLink routerLink="/admin/users" routerLinkActive="active">Users</a>
                 <a clrVerticalNavLink routerLink="/admin/identity-sources" routerLinkActive="active">Identity Sources</a>
+                <a clrVerticalNavLink routerLink="/admin/data-sources" routerLinkActive="active">Data Sources</a>
                 <a clrVerticalNavLink routerLink="/admin/certificates" routerLinkActive="active">Certificates</a>
                 <a clrVerticalNavLink routerLink="/admin/services" routerLinkActive="active">Services</a>
                 <a clrVerticalNavLink routerLink="/admin/time" routerLinkActive="active">Time</a>
@@ -102,8 +104,41 @@ import { TimeRangePicker } from './shared/time-range';
         <button type="submit" form="pwform" class="btn btn-primary" [clrLoading]="pwBusy()">Change password</button>
       </div>
     </clr-modal>
+
+    <clr-modal [clrModalOpen]="aboutOpen()" (clrModalOpenChange)="aboutOpen.set($event)" clrModalSize="md">
+      <h3 class="modal-title"><img class="about-logo" src="brand/mark.png" alt="" /> Tributary</h3>
+      <div class="modal-body about">
+        <p class="ver">Version {{ version() }}</p>
+        <p>
+          Tributary is free software, licensed under the
+          <a href="LICENSE.txt" target="_blank" rel="noopener">GNU Affero General Public License v3.0</a> or later.
+          @if (source()) {
+            <a [href]="source()" target="_blank" rel="noopener">Source code</a> is available to everyone who uses it.
+          }
+        </p>
+        @if (attributions().length) {
+          <h4>Data</h4>
+          <ul class="list-unstyled">
+            @for (a of attributions(); track a.text) {
+              <li><a [href]="a.url" target="_blank" rel="noopener">{{ a.text }}</a>{{ a.license ? ' (' + a.license + ')' : '' }}</li>
+            }
+          </ul>
+        }
+        <h4>Open-source components</h4>
+        <p>
+          <a href="THIRD_PARTY_NOTICES.txt" target="_blank" rel="noopener">Server components</a> ·
+          <a href="3rdpartylicenses.txt" target="_blank" rel="noopener">Web interface components</a>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="aboutOpen.set(false)">Close</button>
+      </div>
+    </clr-modal>
   `,
   styles: `
+    .about-logo { height: 24px; vertical-align: -4px; margin-right: 6px; }
+    .about h4 { margin-top: 16px; font-size: 14px; }
+    .about .ver { color: var(--cds-alias-typography-color-300); margin-top: 0; }
     .branding .nav-link { display: flex; align-items: center; gap: 10px; }
     .logo { height: 26px; width: auto; }
     .wordmark { height: 26px; width: auto; }
@@ -129,9 +164,16 @@ export class Shell {
   readonly pwError = signal('');
   readonly pwBusy = signal(false);
 
+  readonly aboutOpen = signal(false);
+  readonly version = signal('');
+  readonly source = signal('');
+  readonly attributions = signal<Attribution[]>([]);
+
   constructor() {
     this.api.publicInfo().then((i) => {
       this.name.set(i.name);
+      this.version.set(i.version);
+      this.source.set(i.source);
       document.title = i.name;
     });
   }
@@ -139,6 +181,16 @@ export class Shell {
   async logout() {
     await this.auth.logout();
     this.router.navigate(['/login']);
+  }
+
+  async openAbout() {
+    this.aboutOpen.set(true);
+    try {
+      const g = await this.api.geo();
+      this.attributions.set([...g.geo.attributions, ...(g.vendors.attribution ? [g.vendors.attribution] : [])]);
+    } catch {
+      this.attributions.set([]);
+    }
   }
 
   openPassword() {

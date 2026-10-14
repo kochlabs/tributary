@@ -24,6 +24,7 @@ export const routes: Routes = [
         children: [
           { path: 'settings', loadComponent: () => import('./pages/settings').then((m) => m.SettingsPage), title: 'Settings' },
           { path: 'users', loadComponent: () => import('./pages/users').then((m) => m.Users), title: 'Users' },
+          { path: 'data-sources', loadComponent: () => import('./pages/data-sources').then((m) => m.DataSources), title: 'Data Sources' },
           { path: 'certificates', loadComponent: () => import('./pages/certificates').then((m) => m.Certificates), title: 'Certificates' },
           { path: 'identity-sources', loadComponent: () => import('./pages/identity-sources').then((m) => m.IdentitySources), title: 'Identity Sources' },
           { path: 'updates', loadComponent: () => import('./pages/updates').then((m) => m.Updates), title: 'Updates' },

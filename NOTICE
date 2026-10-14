@@ -1,0 +1,51 @@
+Tributary
+Copyright (C) 2026 dkoch
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+details. A copy of the license is in the LICENSE file.
+
+If you run a modified version of Tributary for users over a network, the
+AGPL requires you to offer those users the corresponding source code.
+
+Tributary was developed with the assistance of AI coding tools (Claude, by
+Anthropic), under the direction of its author.
+
+------------------------------------------------------------------------------
+Third-party software and data
+------------------------------------------------------------------------------
+
+Tributary includes software from third parties, each under its own license.
+THIRD_PARTY_NOTICES.md lists every Go module compiled into the binary with
+its full license text; the web interface's bundled packages and their
+licenses ship with it as 3rdpartylicenses.txt.
+
+Data sources:
+
+* IP Geolocation by DB-IP (https://db-ip.com), licensed under the Creative
+  Commons Attribution 4.0 International License (CC BY 4.0). Downloaded at
+  runtime when "DB-IP Lite" is the selected GeoIP source (the default); the
+  attribution is shown in the web interface.
+
+* MaxMind GeoLite2 / GeoIP2 databases are only used when an administrator
+  configures their own MaxMind account, under MaxMind's terms. When GeoLite2
+  data is in use, the interface shows: "This product includes GeoLite2 data
+  created by MaxMind, available from https://www.maxmind.com".
+
+* MAC address vendor names: the built-in table is the Wireshark
+  manufacturer database (https://www.wireshark.org), distributed by the
+  Wireshark project (GPL-2.0-or-later) and compiled from the public IEEE
+  Registration Authority registries, which Tributary can also download
+  directly.
+
+* ASNs missing from the local database may be looked up through the RIPEstat
+  Data API (https://stat.ripe.net) when enabled, under RIPE NCC's terms.
+
+Tributary stores flow data in ClickHouse (Apache License 2.0), which is
+installed as a separate package and not distributed with Tributary.

@@ -20,6 +20,9 @@ for u in deploy/nfad.service deploy/admin/tributary-admin.path deploy/admin/trib
 done
 install -D -m 644 README.md                             "$ROOT/usr/share/doc/tributary/README.md"
 install -D -m 644 deploy/deb/copyright                  "$ROOT/usr/share/doc/tributary/copyright"
+install -D -m 644 LICENSE                                "$ROOT/usr/share/doc/tributary/LICENSE"
+install -D -m 644 NOTICE                                 "$ROOT/usr/share/doc/tributary/NOTICE"
+install -D -m 644 THIRD_PARTY_NOTICES.md                 "$ROOT/usr/share/doc/tributary/THIRD_PARTY_NOTICES.md"
 install -D -m 644 deploy/deb/lintian-overrides          "$ROOT/usr/share/lintian/overrides/tributary"
 # Native-package changelog generated from git history.
 {

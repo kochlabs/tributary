@@ -34,7 +34,7 @@ func (s *Server) healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) publicInfo(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]any{"name": s.Config.Settings().ApplianceName, "version": s.Version, "sso": s.ssoOptions()})
+	writeJSON(w, http.StatusOK, map[string]any{"name": s.Config.Settings().ApplianceName, "version": s.Version, "source": s.SourceURL, "sso": s.ssoOptions()})
 }
 
 func (s *Server) login(w http.ResponseWriter, r *http.Request) {
@@ -437,10 +437,10 @@ func (s *Server) dbErr(w http.ResponseWriter, err error) {
 
 type exporterView struct {
 	config.Exporter
-	Live    any    `json:"live"`
-	Bytes   uint64 `json:"bytes"`
-	Flows   uint64 `json:"flows"`
-	Status  string `json:"status"` // active | idle | stale
+	Live   any    `json:"live"`
+	Bytes  uint64 `json:"bytes"`
+	Flows  uint64 `json:"flows"`
+	Status string `json:"status"` // active | idle | stale
 }
 
 func (s *Server) exporters(w http.ResponseWriter, r *http.Request) {
@@ -888,7 +888,7 @@ func (s *Server) endpoint(ip netip.Addr, host string, withDetail bool) (string, 
 }
 
 func (s *Server) geoStatus(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]any{"geo": s.Geo.Status(), "rdnsEnabled": s.RDNS.Enabled.Load(), "rdnsCache": s.RDNS.CacheSize(),
+	writeJSON(w, http.StatusOK, map[string]any{"geo": s.Geo.Status(), "vendors": s.Vendors.Status(), "rdnsEnabled": s.RDNS.Enabled.Load(), "rdnsCache": s.RDNS.CacheSize(),
 		"systemDnsServers": enrich.SystemDNSServers()})
 }
 
@@ -896,6 +896,42 @@ func (s *Server) geoUpdate(w http.ResponseWriter, r *http.Request) {
 	s.Config.Audit(userFrom(r).Username, "geoip.update", "")
 	go func() { _ = s.Geo.Update(context.Background()) }()
 	writeJSON(w, http.StatusAccepted, map[string]string{"status": "update started"})
+}
+
+func (s *Server) ouiUpdate(w http.ResponseWriter, r *http.Request) {
+	s.Config.Audit(userFrom(r).Username, "oui.update", "")
+	go func() { _ = s.Vendors.Update(context.Background()) }()
+	writeJSON(w, http.StatusAccepted, map[string]string{"status": "update started"})
+}
+
+func (s *Server) enrichmentGet(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, s.Config.Enrichment().View())
+}
+
+// enrichmentPut stores the database sources and switches to them. Secrets
+// left empty keep their stored values.
+func (s *Server) enrichmentPut(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		config.Enrichment
+		ClearGeoASNURL bool `json:"clearGeoAsnUrl"`
+	}
+	if err := readJSON(r, &req); err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	if err := s.Config.SaveEnrichment(req.Enrichment, req.ClearGeoASNURL); err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	e := s.Config.Enrichment()
+	s.Config.Audit(userFrom(r).Username, "enrichment.update", "geo="+e.GeoSource+" vendors="+e.OUISource)
+	if s.Geo.SetSource(e) {
+		go s.Geo.Refresh(context.Background())
+	}
+	if s.Vendors.SetSource(e) {
+		go s.Vendors.Refresh(context.Background())
+	}
+	writeJSON(w, http.StatusOK, e.View())
 }
 
 func (s *Server) localSuggestions(w http.ResponseWriter, r *http.Request) {

@@ -7,12 +7,13 @@ SHA      := $(shell git rev-parse --short HEAD 2>/dev/null || echo 0)
 COUNT    := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
 DIRTY    := $(shell git diff --quiet HEAD 2>/dev/null || echo .dirty)
 VERSION  ?= $(BASE)+git$(COUNT).$(SHA)$(DIRTY)
-LDFLAGS  := -s -w -X main.version=$(VERSION)
+SOURCE_URL ?= https://git.kochlabs.io/dkoch/tributary
+LDFLAGS  := -s -w -X main.version=$(VERSION) -X main.sourceURL=$(SOURCE_URL)
 DEB      := dist/tributary_$(VERSION)_amd64.deb
 URL      ?= https://localhost
 
 .DEFAULT_GOAL := help
-.PHONY: help all web build brand oui deb test check fmt fuzz bench serve dev install deploy status logs demo-start demo-stop clean
+.PHONY: help all web build brand oui notices deb test check fmt fuzz bench serve dev install deploy status logs demo-start demo-stop clean
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -26,6 +27,8 @@ web/node_modules/.stamp: web/package-lock.json
 	@touch $@
 
 web: web/node_modules/.stamp ## Build the web UI into the embedded dist directory
+	install -m 644 LICENSE web/public/LICENSE.txt
+	install -m 644 THIRD_PARTY_NOTICES.md web/public/THIRD_PARTY_NOTICES.txt
 	cd web && npx ng build
 
 build: ## Build nfad and flowgen into bin/ (embeds the last web build)
@@ -36,6 +39,9 @@ brand: ## Regenerate web logos, favicon and login background from assets/brand/
 
 oui: ## Refresh the embedded MAC vendor database (Wireshark manuf, from the IEEE registry)
 	curl -sSfL https://www.wireshark.org/download/automated/data/manuf | gzip -9n > internal/enrich/manuf.gz
+
+notices: web/node_modules/.stamp ## Regenerate THIRD_PARTY_NOTICES.md from the Go modules and web packages in use
+	python3 -I scripts/third_party_notices.py
 
 deb: all ## Build the Debian package into dist/
 	deploy/deb/build.sh $(VERSION)

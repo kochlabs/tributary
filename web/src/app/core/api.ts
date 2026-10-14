@@ -204,17 +204,55 @@ export interface Settings {
   applianceName: string;
   sessionHours: number;
   reverseDns: boolean;
-  geoAutoUpdate: boolean;
   onlineAsnLookup: boolean;
   localNetworks: string[];
   dnsServers: string[];
 }
 
+export interface Attribution {
+  text: string;
+  url: string;
+  license?: string;
+}
+
 export interface GeoStatus {
-  geo: { country: string; countryBuilt: number; asn: string; asnBuilt: number; lastUpdate: string; attribution?: string };
+  geo: {
+    source: string;
+    country: string;
+    countryType: string;
+    countryBuilt: number;
+    countryKept: boolean;
+    asn: string;
+    asnType: string;
+    asnBuilt: number;
+    asnKept: boolean;
+    lastUpdate: string;
+    attributions: Attribution[];
+  };
+  vendors: { source: string; location: string; entries: number; updated: number; lastUpdate: string; attribution?: Attribution };
   rdnsEnabled: boolean;
   rdnsCache: number;
   systemDnsServers: string[];
+}
+
+/** GeoIP and MAC vendor database sources. Secrets are write-only. */
+export interface Enrichment {
+  autoUpdate: boolean;
+  geoSource: 'dbip-lite' | 'maxmind' | 'urls' | 'files';
+  maxmindAccountId: string;
+  maxmindLicenseKey?: string;
+  maxmindCountryEdition: string;
+  maxmindAsnEdition: string;
+  geoCountryUrl?: string;
+  geoAsnUrl?: string;
+  geoCountryFile: string;
+  geoAsnFile: string;
+  ouiSource: 'builtin' | 'ieee' | 'url' | 'file';
+  ouiUrl: string;
+  ouiFile: string;
+  hasLicenseKey?: boolean;
+  geoCountryHost?: string;
+  geoAsnHost?: string;
 }
 
 export interface UpdateStatus {
@@ -398,7 +436,7 @@ export class Api {
   }
 
   publicInfo() {
-    return this.get<{ name: string; version: string; sso: { id: number; name: string }[] }>('/api/public/info');
+    return this.get<{ name: string; version: string; source: string; sso: { id: number; name: string }[] }>('/api/public/info');
   }
   me() {
     return this.get<User>('/api/auth/me');
@@ -482,6 +520,15 @@ export class Api {
   }
   updateGeo() {
     return firstValueFrom(this.http.post('/api/geo/update', {}));
+  }
+  updateVendors() {
+    return firstValueFrom(this.http.post('/api/oui/update', {}));
+  }
+  enrichment() {
+    return this.get<Enrichment>('/api/enrichment');
+  }
+  saveEnrichment(e: Enrichment & { clearGeoAsnUrl?: boolean }) {
+    return firstValueFrom(this.http.put<Enrichment>('/api/enrichment', e));
   }
   updates() {
     return this.get<UpdateStatus>('/api/updates');

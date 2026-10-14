@@ -111,7 +111,6 @@ type Settings struct {
 	ApplianceName       string   `json:"applianceName"`
 	SessionHours        int      `json:"sessionHours"`
 	ReverseDNS          bool     `json:"reverseDns"`
-	GeoAutoUpdate       bool     `json:"geoAutoUpdate"`
 	OnlineASNLookup     bool     `json:"onlineAsnLookup"`
 	LocalNetworks       []string `json:"localNetworks"`
 	DNSServers          []string `json:"dnsServers"` // empty = system resolvers
@@ -129,7 +128,7 @@ func (s Settings) LocalPrefixes() []netip.Prefix {
 }
 
 func DefaultSettings() Settings {
-	return Settings{RawRetentionDays: 7, RollupRetentionDays: 365, NetFlowPort: 2055, IPFIXPort: 4739, SFlowPort: 6343, ApplianceName: "Tributary", SessionHours: 12, ReverseDNS: true, GeoAutoUpdate: true, OnlineASNLookup: true, LocalNetworks: []string{}, DNSServers: []string{}}
+	return Settings{RawRetentionDays: 7, RollupRetentionDays: 365, NetFlowPort: 2055, IPFIXPort: 4739, SFlowPort: 6343, ApplianceName: "Tributary", SessionHours: 12, ReverseDNS: true, OnlineASNLookup: true, LocalNetworks: []string{}, DNSServers: []string{}}
 }
 
 func (s Settings) Validate() error {

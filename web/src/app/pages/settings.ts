@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, GeoStatus, Settings, StorageEstimate, StorageRate } from '../core/api';
 import { bytes, count, dateTime } from '../core/format';
 
 @Component({
   selector: 'nfa-settings',
-  imports: [ClarityModule, FormsModule],
+  imports: [ClarityModule, FormsModule, RouterLink],
   template: `
     <div class="page-header">
       <div>
@@ -128,28 +129,12 @@ import { bytes, count, dateTime } from '../core/format';
               </clr-toggle-wrapper>
               <clr-control-helper>Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</clr-control-helper>
             </clr-toggle-container>
-            <clr-toggle-container>
-              <label>GeoIP / ASN updates</label>
-              <clr-toggle-wrapper>
-                <input type="checkbox" clrToggle name="geoauto" [(ngModel)]="s.geoAutoUpdate" />
-                <label>Download DB-IP Lite databases monthly</label>
-              </clr-toggle-wrapper>
-              <clr-control-helper>For MaxMind GeoLite2/GeoIP2, copy GeoLite2-Country.mmdb and GeoLite2-ASN.mmdb into the appliance's geoip directory; they take precedence.</clr-control-helper>
-            </clr-toggle-container>
-            @if (geo(); as g) {
-              <table class="table table-compact table-noborder geo-table">
-                <tbody>
-                  <tr><td>Country database</td><td>{{ g.geo.country || 'not installed' }}{{ g.geo.countryBuilt ? ' · built ' + dt(g.geo.countryBuilt) : '' }}</td></tr>
-                  <tr><td>ASN database</td><td>{{ g.geo.asn || 'not installed' }}{{ g.geo.asnBuilt ? ' · built ' + dt(g.geo.asnBuilt) : '' }}</td></tr>
-                  <tr><td>Last update</td><td>{{ g.geo.lastUpdate || '–' }}</td></tr>
-                  <tr><td>Hostname cache</td><td>{{ g.rdnsCache }} entries</td></tr>
-                </tbody>
-              </table>
-              @if (g.geo.attribution) {
-                <p class="hint"><a href="https://db-ip.com" target="_blank" rel="noopener">IP Geolocation by DB-IP</a> (CC BY 4.0)</p>
+            <p class="hint sources">
+              GeoIP, ASN and MAC vendor databases are chosen under <a routerLink="/admin/data-sources">Data Sources</a>.
+              @if (geo(); as g) {
+                Hostname cache: {{ g.rdnsCache }} entries.
               }
-            }
-            <button type="button" class="btn btn-sm btn-outline" (click)="updateGeo()" [clrLoading]="geoBusy()">Update GeoIP databases now</button>
+            </p>
           </div>
         </div>
 
@@ -169,9 +154,7 @@ import { bytes, count, dateTime } from '../core/format';
     .estimate.over { border-color: var(--cds-alias-status-danger); }
     .muted { color: var(--cds-alias-typography-color-300); font-size: 12px; }
 
-    .geo-table { max-width: 640px; margin: 12px 0; }
-    .geo-table td { text-align: left; padding: 2px 0; }
-    .geo-table td:first-child { width: 180px; color: var(--cds-alias-typography-color-300); }
+    .sources { margin-top: 18px; }
   `,
 })
 export class SettingsPage {
@@ -186,7 +169,6 @@ export class SettingsPage {
   count = count;
   readonly localText = signal('');
   readonly dnsText = signal('');
-  readonly geoBusy = signal(false);
   dt = dateTime;
 
   constructor() {
@@ -234,25 +216,6 @@ export class SettingsPage {
       this.error.set(errorMessage(e));
     } finally {
       this.busy.set(false);
-    }
-  }
-
-  async updateGeo() {
-    this.geoBusy.set(true);
-    try {
-      await this.api.updateGeo();
-      // The download runs in the background; poll until it reports a result.
-      const before = this.geo()?.geo.lastUpdate;
-      for (let i = 0; i < 60; i++) {
-        await new Promise((r) => setTimeout(r, 2000));
-        const g = await this.api.geo();
-        this.geo.set(g);
-        if (g.geo.lastUpdate !== before) break;
-      }
-    } catch (e) {
-      this.error.set(errorMessage(e));
-    } finally {
-      this.geoBusy.set(false);
     }
   }
 

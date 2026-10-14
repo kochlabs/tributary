@@ -28,9 +28,12 @@ with an enterprise UI built on [Clarity](https://clarity.design/).
 - **Sampling**: learned from v5 headers, v9/IPFIX options data (fields 34/50/305/306),
   sFlow sample rates; per-exporter manual override. Volumes are sampling-corrected.
 - **Loss detection**: per exporter/observation-domain sequence tracking.
-- **Enrichment**: country and ASN (with org names) at ingest from DB-IP Lite (auto
-  downloaded monthly) or MaxMind GeoLite2/GeoIP2 `.mmdb` files; reverse DNS at
-  query time with caching and a bounded wait.
+- **Enrichment**: country and ASN (with org names) at ingest. Choose the source
+  under Administration → Data Sources: DB-IP Lite (free, the default), a MaxMind
+  account (GeoLite2 or licensed GeoIP2 editions), your own download URLs (e.g. a
+  DB-IP subscription) or files maintained by `geoipupdate`. MAC vendor names from
+  the built-in table, the IEEE registry, a URL or a file. Reverse DNS at query
+  time with caching and a bounded wait.
 - **Analytics**: dashboard, Traffic Explorer (any dimension × any filter, stacked
   series with "Other", drag-to-zoom, URL-shareable views), Flow Search with
   server-side paging/sorting and CSV export, exporter/interface pages with
@@ -109,3 +112,16 @@ bin/flowgen -backfill 72h -geoip-dir /var/lib/nfa/geoip   # history
   MaxMind instead.
 - ClickHouse listens on localhost only and runs with a fixed memory cap
   (`deploy/clickhouse/netflow-appliance.xml`).
+
+## License
+
+Tributary is free software, licensed under the
+[GNU Affero General Public License v3.0](LICENSE) or later. If you run a
+modified version for users over a network, the AGPL requires you to offer them
+its source code. See [NOTICE](NOTICE) for attributions, and
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the licenses of the
+bundled components (regenerate it with `make notices`).
+
+The default GeoIP data is
+[IP Geolocation by DB-IP](https://db-ip.com), licensed
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
