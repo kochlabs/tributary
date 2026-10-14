@@ -2,6 +2,7 @@ import { Component, computed, DestroyRef, ElementRef, inject, signal, viewChild 
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, UpdateStatus } from '../core/api';
 import { dateTime } from '../core/format';
+import { trackByKey } from '../core/util';
 
 @Component({
   selector: 'nfa-updates',
@@ -80,7 +81,7 @@ import { dateTime } from '../core/format';
           <clr-dg-column>Installed</clr-dg-column>
           <clr-dg-column>Available</clr-dg-column>
           <clr-dg-column [clrDgField]="'suite'">Source</clr-dg-column>
-          <clr-dg-row *clrDgItems="let p of s.upgradable" [clrDgItem]="p">
+          <clr-dg-row *clrDgItems="let p of s.upgradable; trackBy: byName" [clrDgItem]="p">
             <clr-dg-cell>{{ p.name }} @if (p.security) {<span class="label label-danger">security</span>}</clr-dg-cell>
             <clr-dg-cell class="mono">{{ p.from || '–' }}</clr-dg-cell>
             <clr-dg-cell class="mono">{{ p.version }}</clr-dg-cell>
@@ -143,6 +144,7 @@ import { dateTime } from '../core/format';
   `,
 })
 export class Updates {
+  readonly byName = trackByKey<{ name: string }>((p) => p.name);
   private api = inject(Api);
   readonly st = signal<UpdateStatus | null>(null);
   readonly error = signal('');

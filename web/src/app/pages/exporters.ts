@@ -5,7 +5,7 @@ import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, Exporter } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, bits, bytes, count, samplingLabel } from '../core/format';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 
 @Component({
   selector: 'nfa-exporters',
@@ -35,7 +35,7 @@ import { loader } from '../core/util';
       <clr-dg-column [clrDgField]="'bytes24h'">24h volume</clr-dg-column>
       <clr-dg-column>Last seen</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let e of list.value() ?? []" [clrDgItem]="e">
+      <clr-dg-row *clrDgItems="let e of list.value() ?? []; trackBy: byAddr" [clrDgItem]="e">
         <clr-dg-action-overflow>
           <a class="action-item" [routerLink]="['/exporters', e.addr]"><cds-icon shape="details"></cds-icon> Details &amp; interfaces</a>
           <a class="action-item" [routerLink]="['/explorer']" [queryParams]="{ exporter: e.addr, groupBy: 'in_if' }"><cds-icon shape="line-chart"></cds-icon> Analyze traffic</a>
@@ -148,6 +148,7 @@ import { loader } from '../core/util';
   `,
 })
 export class Exporters {
+  readonly byAddr = trackByKey<{ addr: string }>((e) => e.addr);
   private api = inject(Api);
   readonly auth = inject(Auth);
   private tick = signal(0);

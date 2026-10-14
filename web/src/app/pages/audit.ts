@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ClarityModule } from '@clr/angular';
 import { Api } from '../core/api';
 import { dateTime } from '../core/format';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 
 @Component({
   selector: 'nfa-audit',
@@ -20,7 +20,7 @@ import { loader } from '../core/util';
       <clr-dg-column [clrDgField]="'username'">User</clr-dg-column>
       <clr-dg-column [clrDgField]="'action'">Action</clr-dg-column>
       <clr-dg-column [clrDgField]="'detail'">Detail</clr-dg-column>
-      <clr-dg-row *clrDgItems="let e of log.value() ?? []" [clrDgItem]="e">
+      <clr-dg-row *clrDgItems="let e of log.value() ?? []; trackBy: byId" [clrDgItem]="e">
         <clr-dg-cell>{{ dt(e.ts) }}</clr-dg-cell>
         <clr-dg-cell>{{ e.username }}</clr-dg-cell>
         <clr-dg-cell><span class="label" [class.label-danger]="e.action.endsWith('failed')" [class.label-info]="!e.action.endsWith('failed')">{{ e.action }}</span></clr-dg-cell>
@@ -40,6 +40,7 @@ import { loader } from '../core/util';
   `,
 })
 export class Audit {
+  readonly byId = trackByKey<{ id: number }>((e) => e.id);
   private api = inject(Api);
   readonly log = loader(() => true, () => this.api.audit());
   dt = dateTime;

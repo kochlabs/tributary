@@ -6,7 +6,7 @@ import { ClarityModule } from '@clr/angular';
 import { Api, DeviceInfo, errorMessage } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, bytes, dateTime } from '../core/format';
-import { loader } from '../core/util';
+import { ExpandedRows, loader, trackByKey } from '../core/util';
 
 const SOURCE_HINT: Record<string, string> = {
   name: 'Named by an administrator',
@@ -40,7 +40,7 @@ const SOURCE_HINT: Record<string, string> = {
       <clr-dg-column [clrDgField]="'bytes24h'" [clrDgSortOrder]="-1">Last 24h</clr-dg-column>
       <clr-dg-column [clrDgField]="'lastSeen'">Last seen</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let d of list.value() ?? []" [clrDgItem]="d">
+      <clr-dg-row *clrDgItems="let d of list.value() ?? []; trackBy: byMac" [clrDgItem]="d" [clrDgExpanded]="expanded.has(d.mac)" (clrDgExpandedChange)="expanded.set(d.mac, $event)">
         <clr-dg-action-overflow>
           @if (auth.isAdmin()) {
             <button class="action-item" (click)="openRename(d)"><cds-icon shape="pencil"></cds-icon> Rename</button>
@@ -130,6 +130,8 @@ const SOURCE_HINT: Record<string, string> = {
   `,
 })
 export class Devices {
+  readonly byMac = trackByKey<DeviceInfo>((d) => d.mac);
+  readonly expanded = new ExpandedRows();
   private api = inject(Api);
   private router = inject(Router);
   readonly auth = inject(Auth);

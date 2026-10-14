@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, IdentitySource, ProviderTest, RoleMapping } from '../core/api';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 
 const TYPE_LABELS: Record<string, string> = { oidc: 'OpenID Connect', ldap: 'LDAP / Active Directory', radius: 'RADIUS', saml: 'SAML 2.0' };
 
@@ -62,7 +62,7 @@ function blankForm(): Form {
       <clr-dg-column [clrDgField]="'priority'" [clrDgSortOrder]="1">Priority</clr-dg-column>
       <clr-dg-column>Role mappings</clr-dg-column>
       <clr-dg-column>Users</clr-dg-column>
-      <clr-dg-row *clrDgItems="let s of list.value() ?? []" [clrDgItem]="s">
+      <clr-dg-row *clrDgItems="let s of list.value() ?? []; trackBy: byId" [clrDgItem]="s">
         <clr-dg-cell><a href="#" (click)="$event.preventDefault(); openEdit(s)">{{ s.name }}</a></clr-dg-cell>
         <clr-dg-cell>{{ typeLabel(s.type) }}</clr-dg-cell>
         <clr-dg-cell><span class="dot" [class.ok]="s.enabled" [class.off]="!s.enabled"></span> {{ s.enabled ? 'Enabled' : 'Disabled' }}</clr-dg-cell>
@@ -311,6 +311,7 @@ function blankForm(): Form {
   `,
 })
 export class IdentitySources {
+  readonly byId = trackByKey<{ id: number }>((s) => s.id);
   private api = inject(Api);
   readonly list = loader(() => true, () => this.api.identitySources());
   readonly selected = signal<IdentitySource | undefined>(undefined);

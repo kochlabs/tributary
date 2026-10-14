@@ -66,3 +66,28 @@ export function filtersFromParams(params: Record<string, string>, allowed: strin
   for (const k of allowed) if (params[k]) out[k] = params[k];
   return out;
 }
+
+/**
+ * trackBy for Clarity datagrids. Reloaded data arrives as new objects; a
+ * stable key lets the grid update rows in place, so expanded details,
+ * selection, sorting and the current page survive auto-refresh.
+ */
+export function trackByKey<T>(key: (item: T) => string | number) {
+  return (_: number, item: T) => key(item);
+}
+
+/** Which detail rows are expanded, by row key, independent of row objects. */
+export class ExpandedRows {
+  private readonly open = signal(new Set<string>());
+  has(key: string) {
+    return this.open().has(key);
+  }
+  set(key: string, expanded: boolean) {
+    this.open.update((s) => {
+      const n = new Set(s);
+      if (expanded) n.add(key);
+      else n.delete(key);
+      return n;
+    });
+  }
+}

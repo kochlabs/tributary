@@ -5,7 +5,7 @@ import { ClarityModule } from '@clr/angular';
 import { Api, Filters, Metric, TopRow } from '../core/api';
 import { bytes, count, DIMENSIONS, dimLabel, drillFilter, FILTER_FIELDS, METRICS, rate } from '../core/format';
 import { TimeRange } from '../core/time';
-import { filtersFromParams, loader } from '../core/util';
+import { filtersFromParams, loader, trackByKey } from '../core/util';
 import { Chart, OTHER_COLOR, PALETTE } from '../shared/chart';
 import { FilterBar } from '../shared/filter-bar';
 import { RangeBar } from '../shared/range-bar';
@@ -88,7 +88,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
         <clr-dg-column [clrDgField]="'flows'">Flows</clr-dg-column>
         <clr-dg-column [clrDgField]="'pct'">Share</clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let r of rows(); let i = index" [clrDgItem]="r">
+        <clr-dg-row *clrDgItems="let r of rows(); let i = index; trackBy: byKey" [clrDgItem]="r">
           <clr-dg-action-overflow>
             <button class="action-item" (click)="addFilter(r, false)"><cds-icon shape="filter"></cds-icon> Filter on this</button>
             <button class="action-item" (click)="addFilter(r, true)"><cds-icon shape="times"></cds-icon> Exclude this</button>
@@ -149,6 +149,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
   `,
 })
 export class Explorer {
+  readonly byKey = trackByKey<{ key: string }>((r) => r.key);
   readonly time = inject(TimeRange);
   private api = inject(Api);
   private route = inject(ActivatedRoute);

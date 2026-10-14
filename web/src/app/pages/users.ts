@@ -4,7 +4,7 @@ import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, User } from '../core/api';
 import { Auth } from '../core/auth';
 import { dateTime } from '../core/format';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 
 @Component({
   selector: 'nfa-users',
@@ -28,7 +28,7 @@ import { loader } from '../core/util';
       <clr-dg-column [clrDgField]="'source'">Source</clr-dg-column>
       <clr-dg-column [clrDgField]="'lastLogin'">Last sign-in</clr-dg-column>
       <clr-dg-column [clrDgField]="'createdAt'">Created</clr-dg-column>
-      <clr-dg-row *clrDgItems="let u of users.value() ?? []" [clrDgItem]="u">
+      <clr-dg-row *clrDgItems="let u of users.value() ?? []; trackBy: byUsername" [clrDgItem]="u">
         <clr-dg-action-overflow>
           <button class="action-item" (click)="openEdit(u)"><cds-icon shape="pencil"></cds-icon> Edit</button>
           @if (u.username !== auth.user()?.username) {
@@ -111,6 +111,7 @@ import { loader } from '../core/util';
   styles: `.label { margin-left: 6px; } .managed { font-size: 13px; margin-top: 18px; }`,
 })
 export class Users {
+  readonly byUsername = trackByKey<{ username: string }>((u) => u.username);
   private api = inject(Api);
   readonly auth = inject(Auth);
   readonly users = loader(() => true, () => this.api.users());

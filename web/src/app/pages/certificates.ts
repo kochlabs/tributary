@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { Api, CertDetails, CertIdentity, CSRInfo, errorMessage, TrustedCA } from '../core/api';
 import { dateTime } from '../core/format';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 
 const KEY_TYPES = [
   { id: 'ecdsa-p256', label: 'ECDSA P-256 (recommended)' },
@@ -146,7 +146,7 @@ function download(name: string, text: string) {
             <clr-dg-column [clrDgField]="'notAfter'">Expires</clr-dg-column>
             <clr-dg-column>Key</clr-dg-column>
             <clr-dg-column>SHA-256</clr-dg-column>
-            <clr-dg-row *clrDgItems="let ca of cas.value() ?? []" [clrDgItem]="ca">
+            <clr-dg-row *clrDgItems="let ca of cas.value() ?? []; trackBy: byId" [clrDgItem]="ca">
               <clr-dg-cell>{{ ca.name }}<div class="sub">{{ ca.subject }}</div></clr-dg-cell>
               <clr-dg-cell>{{ ca.selfSigned ? 'Root' : 'Intermediate' }}@if (!ca.selfSigned) {<div class="sub">issued by {{ ca.issuer }}</div>}</clr-dg-cell>
               <clr-dg-cell><span class="dot" [class]="expiryClass(ca.daysLeft)"></span> {{ dt(ca.notAfter) }}<div class="sub">{{ daysText(ca.daysLeft) }}</div></clr-dg-cell>
@@ -336,6 +336,7 @@ function download(name: string, text: string) {
   `,
 })
 export class Certificates {
+  readonly byId = trackByKey<{ id: number }>((c) => c.id);
   private api = inject(Api);
   private tick = signal(0);
   readonly cert = loader(() => this.tick(), () => this.api.certificate());

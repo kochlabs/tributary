@@ -6,7 +6,7 @@ import { Api, errorMessage, Interface, Metric } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, bits, bytes, count, dateTime, METRICS, samplingLabel } from '../core/format';
 import { TimeRange } from '../core/time';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 import { Chart } from '../shared/chart';
 import { timeSeriesOption } from '../shared/options';
 
@@ -65,7 +65,7 @@ import { timeSeriesOption } from '../shared/options';
       <clr-dg-column [clrDgField]="'outBytes24h'">Out (24h)</clr-dg-column>
       <clr-dg-column>Avg utilization in / out</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let i of ifaces.value() ?? []" [clrDgItem]="i">
+      <clr-dg-row *clrDgItems="let i of ifaces.value() ?? []; trackBy: byIndex" [clrDgItem]="i">
         <clr-dg-action-overflow>
           <a class="action-item" [routerLink]="['/explorer']" [queryParams]="{ exporter: addr(), iface: i.index, groupBy: 'app' }">Analyze traffic</a>
           @if (auth.isAdmin()) {
@@ -151,6 +151,7 @@ import { timeSeriesOption } from '../shared/options';
   `,
 })
 export class ExporterDetail {
+  readonly byIndex = trackByKey<{ index: number }>((i) => i.index);
   readonly addr = input.required<string>();
   readonly time = inject(TimeRange);
   readonly auth = inject(Auth);

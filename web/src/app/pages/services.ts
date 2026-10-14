@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, ServiceUnit } from '../core/api';
 import { bytes, dateTime } from '../core/format';
-import { loader } from '../core/util';
+import { loader, trackByKey } from '../core/util';
 
 const OP_LABELS: Record<string, string> = { restart: 'Restart', start: 'Start', stop: 'Stop', enable: 'Enable on boot', disable: 'Disable on boot' };
 // Operations that interrupt something and deserve a confirmation.
@@ -40,7 +40,7 @@ const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
       <clr-dg-column>Memory</clr-dg-column>
       <clr-dg-column [clrDgField]="'onBoot'">On boot</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let s of list.value()?.services ?? []" [clrDgItem]="s">
+      <clr-dg-row *clrDgItems="let s of list.value()?.services ?? []; trackBy: byUnit" [clrDgItem]="s">
         @if (s.ops.length && list.value()?.installed) {
           <clr-dg-action-overflow>
             @for (op of s.ops; track op) {
@@ -91,6 +91,7 @@ const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
   `,
 })
 export class Services {
+  readonly byUnit = trackByKey<{ unit: string }>((s) => s.unit);
   private api = inject(Api);
   readonly list = loader(() => true, () => this.api.services());
   readonly pending = signal<{ unit: string; op: string } | null>(null);

@@ -5,7 +5,7 @@ import { ClarityModule, ClrDatagridStateInterface } from '@clr/angular';
 import { Api, Filters, FlowRow } from '../core/api';
 import { appPort, bytes, count, dateTime, FILTER_FIELDS, FLOW_TYPES, proto, serviceName, shortTime, tcpFlags } from '../core/format';
 import { TimeRange } from '../core/time';
-import { filtersFromParams, loader } from '../core/util';
+import { ExpandedRows, filtersFromParams, loader, trackByKey } from '../core/util';
 import { FilterBar } from '../shared/filter-bar';
 import { RangeBar } from '../shared/range-bar';
 
@@ -42,7 +42,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
       <clr-dg-column [clrDgField]="'packets'">Packets</clr-dg-column>
       <clr-dg-column>Duration</clr-dg-column>
 
-      <clr-dg-row *ngFor="let f of rows()" [clrDgItem]="f">
+      <clr-dg-row *ngFor="let f of rows(); trackBy: flowKey" [clrDgItem]="f" [clrDgExpanded]="expanded.has(key(f))" (clrDgExpandedChange)="expanded.set(key(f), $event)">
         <clr-dg-cell class="nowrap" [title]="dt(f.timeReceived)">{{ st(f.timeReceived) }}</clr-dg-cell>
         <clr-dg-cell><a href="#" (click)="$event.preventDefault(); filterOn('exporter', f.exporter)" [title]="f.exporter">{{ f.exporterName || f.exporter }}</a></clr-dg-cell>
         <clr-dg-cell>
@@ -112,6 +112,11 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
   `,
 })
 export class Flows {
+  readonly expanded = new ExpandedRows();
+  key(f: FlowRow) {
+    return `${f.timeReceived}|${f.exporter}|${f.srcAddr}|${f.srcPort}|${f.dstAddr}|${f.dstPort}|${f.proto}|${f.bytes}`;
+  }
+  readonly flowKey = (_: number, f: FlowRow) => this.key(f);
   readonly time = inject(TimeRange);
   private api = inject(Api);
   private route = inject(ActivatedRoute);
