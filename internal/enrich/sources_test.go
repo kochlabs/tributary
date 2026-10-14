@@ -39,9 +39,13 @@ func TestParseOUIFormats(t *testing.T) {
 	}
 }
 
-func TestBuiltinOUI(t *testing.T) {
-	if n := builtinOnce().size(); n < 30000 {
-		t.Fatalf("built-in table has %d entries", n)
+func TestVendorEmptyUntilLoaded(t *testing.T) {
+	ouiCur.Store(nil)
+	if v := Vendor(0x3C22FB010203); v != "" {
+		t.Fatalf("vendor data without a loaded table: %q", v)
+	}
+	if v := Vendor(0x3E22FB010203); v != "Private (randomized) address" {
+		t.Fatalf("randomized: %q", v)
 	}
 }
 

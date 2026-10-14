@@ -136,7 +136,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 	vendors := enrich.NewVendorDB(filepath.Join(dataDir, "oui"), log)
 	vendors.SetSource(sources)
 	if err := vendors.Load(); err != nil {
-		log.Warn("vendor database could not be loaded; using the built-in table", "err", err)
+		log.Warn("vendor database could not be loaded", "err", err)
 	}
 	go vendors.AutoUpdate(ctx, autoUpdate)
 	enrich.SetDNSServers(settings.DNSServers)

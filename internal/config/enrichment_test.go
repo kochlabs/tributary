@@ -70,6 +70,17 @@ func TestEnrichmentSecrets(t *testing.T) {
 		t.Fatalf("secrets kept: %+v", g)
 	}
 
+	// Records saved with the removed built-in vendor table load as IEEE.
+	db.db.Exec(`UPDATE settings SET value = '{"geoSource":"dbip-lite","ouiSource":"builtin","autoUpdate":true}' WHERE key = 'enrichment'`)
+	if g := db.Enrichment(); g.OUISource != OUIIEEE {
+		t.Fatalf("builtin not migrated: %q", g.OUISource)
+	}
+	b := DefaultEnrichment()
+	b.OUISource = "builtin"
+	if err := db.SaveEnrichment(b, false); err == nil {
+		t.Fatal("builtin vendor source accepted")
+	}
+
 	f := DefaultEnrichment()
 	f.GeoSource = GeoFiles
 	f.GeoCountryFile = "relative/GeoIP2-Country.mmdb"

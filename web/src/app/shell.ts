@@ -187,7 +187,7 @@ export class Shell {
     this.aboutOpen.set(true);
     try {
       const g = await this.api.geo();
-      this.attributions.set([...g.geo.attributions, ...(g.vendors.attribution ? [g.vendors.attribution] : [])]);
+      this.attributions.set(g.geo.attributions);
     } catch {
       this.attributions.set([]);
     }

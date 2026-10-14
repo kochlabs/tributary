@@ -12,10 +12,9 @@ const GEO_SOURCES = [
 ] as const;
 
 const OUI_SOURCES = [
-  { id: 'builtin', label: 'Built-in', help: 'The vendor table shipped with this release (Wireshark manufacturer database). Works offline; also used until the first IEEE download completes.' },
   { id: 'ieee', label: 'IEEE registry', help: 'The default. Downloads the MA-L, MA-M and MA-S registries from the IEEE Registration Authority weekly: the authoritative, most current source.' },
-  { id: 'url', label: 'Download URL', help: 'A Wireshark manuf file or an IEEE registry CSV from your own mirror (optionally gzipped).' },
-  { id: 'file', label: 'File on the appliance', help: 'A Wireshark manuf file or an IEEE registry CSV. Reloaded automatically when it changes.' },
+  { id: 'url', label: 'Download URL', help: 'An IEEE registry CSV (or a Wireshark-format manuf file) from your own mirror, optionally gzipped. Useful when the appliance cannot reach the IEEE.' },
+  { id: 'file', label: 'File on the appliance', help: 'An IEEE registry CSV (or a Wireshark-format manuf file), optionally gzipped. Reloaded automatically when it changes.' },
 ] as const;
 
 @Component({
@@ -156,20 +155,17 @@ const OUI_SOURCES = [
             @if (e.ouiSource === 'url') {
               <clr-input-container>
                 <label>Download URL</label>
-                <input clrInput name="ouiUrl" [(ngModel)]="e.ouiUrl" placeholder="https://mirror.example.com/manuf.gz" />
+                <input clrInput name="ouiUrl" [(ngModel)]="e.ouiUrl" placeholder="https://mirror.example.com/oui.csv" />
               </clr-input-container>
             }
             @if (e.ouiSource === 'file') {
               <clr-input-container>
                 <label>File</label>
-                <input clrInput name="ouiFile" [(ngModel)]="e.ouiFile" placeholder="/usr/share/wireshark/manuf" />
+                <input clrInput name="ouiFile" [(ngModel)]="e.ouiFile" placeholder="/srv/oui/oui.csv" />
                 <clr-control-helper>An absolute path readable by the <code>nfa</code> user.</clr-control-helper>
               </clr-input-container>
             }
-            @if (st()?.vendors?.attribution; as a) {
-              <p class="attrib"><span><a [href]="a.url" target="_blank" rel="noopener">{{ a.text }}</a>{{ a.license ? ' (' + a.license + ')' : '' }}</span></p>
-            }
-            @if (savedOui() !== 'builtin') {
+            @if (savedOui()) {
               <button type="button" class="btn btn-sm btn-outline" (click)="update('oui')" [clrLoading]="busyOui()" [disabled]="dirty()" [title]="dirty() ? 'Save your changes first' : ''">{{ e.ouiSource === 'file' ? 'Reload now' : 'Update now' }}</button>
             }
           </div>

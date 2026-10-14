@@ -13,7 +13,7 @@ DEB      := dist/tributary_$(VERSION)_amd64.deb
 URL      ?= https://localhost
 
 .DEFAULT_GOAL := help
-.PHONY: help all web build brand oui notices deb test check fmt fuzz bench serve dev install deploy status logs demo-start demo-stop clean
+.PHONY: help all web build brand notices deb test check fmt fuzz bench serve dev install deploy status logs demo-start demo-stop clean
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -36,9 +36,6 @@ build: ## Build nfad and flowgen into bin/ (embeds the last web build)
 
 brand: ## Regenerate web logos, favicon and login background from assets/brand/
 	python3 -I assets/brand/build.py
-
-oui: ## Refresh the embedded MAC vendor database (Wireshark manuf, from the IEEE registry)
-	curl -sSfL https://www.wireshark.org/download/automated/data/manuf | gzip -9n > internal/enrich/manuf.gz
 
 notices: web/node_modules/.stamp ## Regenerate THIRD_PARTY_NOTICES.md from the Go modules and web packages in use
 	python3 -I scripts/third_party_notices.py

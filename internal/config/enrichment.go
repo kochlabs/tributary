@@ -19,10 +19,9 @@ const (
 
 // Where the MAC vendor (OUI) table comes from.
 const (
-	OUIBuiltin = "builtin" // table compiled into the binary
-	OUIIEEE    = "ieee"    // downloaded from the IEEE registration authority
-	OUIURL     = "url"     // administrator-supplied download URL
-	OUIFile    = "file"    // file on the appliance
+	OUIIEEE = "ieee" // downloaded from the IEEE registration authority
+	OUIURL  = "url"  // administrator-supplied download URL
+	OUIFile = "file" // file on the appliance
 )
 
 var (
@@ -140,7 +139,7 @@ func (e *Enrichment) validate(stored Enrichment) error {
 		return fmt.Errorf("unknown GeoIP source %q", e.GeoSource)
 	}
 	switch e.OUISource {
-	case OUIBuiltin, OUIIEEE:
+	case OUIIEEE:
 	case OUIURL:
 		if err := checkURL("vendor database URL", e.OUIURL, true); err != nil {
 			return err
@@ -181,6 +180,10 @@ func (c *DB) Enrichment() Enrichment {
 				e.AutoUpdate = *legacy.GeoAutoUpdate
 			}
 		}
+	}
+	if e.OUISource == "builtin" {
+		// The built-in table was removed; the IEEE registry replaces it.
+		e.OUISource = OUIIEEE
 	}
 	for _, p := range []*string{&e.MaxMindLicenseKey, &e.GeoCountryURL, &e.GeoASNURL} {
 		if *p != "" {

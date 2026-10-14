@@ -2,6 +2,7 @@ package enrich
 
 import (
 	"net/netip"
+	"strings"
 	"testing"
 	"time"
 )
@@ -49,6 +50,19 @@ func TestASNCachePersist(t *testing.T) {
 }
 
 func TestVendor(t *testing.T) {
+	tbl := newOUITable()
+	registry := "Registry,Assignment,Organization Name,Organization Address\n" +
+		"MA-L,24E50F,\"Google, Inc.\",Mountain View\n" +
+		"MA-L,BC2411,Proxmox Server Solutions GmbH,Vienna\n" +
+		"MA-L,942A6F,Ubiquiti Inc,New York\n" +
+		"MA-L,001132,Synology Incorporated,Taipei\n" +
+		"MA-L,001BC5,IEEE Registration Authority,Piscataway\n" +
+		"MA-S,001BC5000,Converging Systems Inc.,Somewhere\n"
+	if err := parseOUI(strings.NewReader(registry), tbl); err != nil {
+		t.Fatal(err)
+	}
+	ouiCur.Store(tbl)
+	defer ouiCur.Store(nil)
 	cases := map[string]string{
 		"24:e5:0f:d8:b3:87": "Google, Inc.",
 		"bc:24:11:52:d1:06": "Proxmox Server Solutions GmbH",

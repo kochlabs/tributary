@@ -19,13 +19,6 @@ License: AGPL-3.0-or-later
  Licenses of the bundled Go modules and web packages are listed, with their
  full texts, in /usr/share/doc/tributary/THIRD_PARTY_NOTICES.md.
 
-Files: internal/enrich/manuf.gz
-Copyright: The Wireshark project and contributors
-License: GPL-2.0-or-later
- Wireshark manufacturer database, compiled from the public IEEE Registration
- Authority registries. On Debian systems the GPL-2 text is in
- /usr/share/common-licenses/GPL-2.
-
 Files: geoip data (downloaded at runtime)
 Copyright: DB-IP.com
 License: CC-BY-4.0

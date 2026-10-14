@@ -229,7 +229,7 @@ export interface GeoStatus {
     lastUpdate: string;
     attributions: Attribution[];
   };
-  vendors: { source: string; location: string; entries: number; updated: number; lastUpdate: string; attribution?: Attribution };
+  vendors: { source: string; location: string; entries: number; updated: number; lastUpdate: string };
   rdnsEnabled: boolean;
   rdnsCache: number;
   systemDnsServers: string[];
@@ -247,7 +247,7 @@ export interface Enrichment {
   geoAsnUrl?: string;
   geoCountryFile: string;
   geoAsnFile: string;
-  ouiSource: 'builtin' | 'ieee' | 'url' | 'file';
+  ouiSource: 'ieee' | 'url' | 'file';
   ouiUrl: string;
   ouiFile: string;
   hasLicenseKey?: boolean;

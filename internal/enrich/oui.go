@@ -3,9 +3,7 @@ package enrich
 import (
 	"bufio"
 	"bytes"
-	"compress/gzip"
 	"context"
-	_ "embed"
 	"encoding/csv"
 	"errors"
 	"fmt"
@@ -22,13 +20,9 @@ import (
 	"nfa/internal/config"
 )
 
-// manuf.gz is Wireshark's manufacturer database, compiled from the public
-// IEEE MA-L/MA-M/MA-S registries (refresh with `make oui`). Embedded so
-// vendor names work without internet access; an administrator can choose
-// another source (see VendorDB).
-//
-//go:embed manuf.gz
-var manufGz []byte
+// No vendor data ships with Tributary: the table is downloaded from the IEEE
+// registries (the default) or loaded from a URL or file the administrator
+// chooses. Until then vendor names are empty.
 
 type ouiTable struct {
 	by24, by28, by36 map[uint64]string
@@ -60,7 +54,7 @@ func (t *ouiTable) add(hex string, bits int, name string) {
 	}
 }
 
-// parseOUI reads either Wireshark's manuf format or an IEEE registry CSV
+// parseOUI reads either an IEEE registry CSV or the Wireshark manuf format
 // (oui.csv, mam.csv, oui36.csv) into t.
 func parseOUI(r io.Reader, t *ouiTable) error {
 	br := bufio.NewReader(r)
@@ -120,25 +114,16 @@ func parseIEEE(r io.Reader, t *ouiTable) error {
 	}
 }
 
-var ouiCur atomic.Pointer[ouiTable]
-
-func builtinOUI() *ouiTable {
-	t := newOUITable()
-	if zr, err := gzip.NewReader(bytes.NewReader(manufGz)); err == nil {
-		_ = parseOUI(zr, t)
-	}
-	return t
-}
-
-var builtinOnce = sync.OnceValue(builtinOUI)
+var (
+	ouiCur   atomic.Pointer[ouiTable]
+	ouiEmpty = newOUITable()
+)
 
 func currentOUI() *ouiTable {
 	if t := ouiCur.Load(); t != nil {
 		return t
 	}
-	t := builtinOnce()
-	ouiCur.CompareAndSwap(nil, t)
-	return ouiCur.Load()
+	return ouiEmpty
 }
 
 // Vendor returns the registered manufacturer for a MAC (as a 48-bit
@@ -186,7 +171,7 @@ func NewVendorDB(dir string, log *slog.Logger) *VendorDB {
 	v := &VendorDB{dir: dir, log: log}
 	d := config.DefaultEnrichment()
 	v.src.Store(&d)
-	v.location.Store("built-in")
+	v.location.Store("not loaded")
 	return v
 }
 
@@ -202,18 +187,16 @@ func (v *VendorDB) SetSource(e config.Enrichment) bool {
 func (v *VendorDB) files() []string {
 	e := v.source()
 	switch e.OUISource {
-	case config.OUIIEEE:
-		out := make([]string, len(ieeeRegistries))
-		for i, r := range ieeeRegistries {
-			out[i] = filepath.Join(v.dir, r.file)
-		}
-		return out
 	case config.OUIURL:
 		return []string{filepath.Join(v.dir, "custom-oui")}
 	case config.OUIFile:
 		return []string{e.OUIFile}
 	}
-	return nil
+	out := make([]string, len(ieeeRegistries))
+	for i, r := range ieeeRegistries {
+		out[i] = filepath.Join(v.dir, r.file)
+	}
+	return out
 }
 
 func parseOUIFiles(paths []string) (*ouiTable, int64, error) {
@@ -236,7 +219,7 @@ func parseOUIFiles(paths []string) (*ouiTable, int64, error) {
 		}
 	}
 	if t.size() < 100 {
-		return nil, 0, errors.New("no vendor entries found: expected a Wireshark manuf file or an IEEE registry CSV")
+		return nil, 0, errors.New("no vendor entries found: expected an IEEE registry CSV or a Wireshark manuf file")
 	}
 	return t, newest, nil
 }
@@ -246,23 +229,21 @@ func validOUI(path string) error {
 	return err
 }
 
-// Load builds the table from the current source. When the files of a
-// download source aren't there yet, the built-in table stays in use.
+// Load builds the table from the current source. If its files can't be
+// read (not downloaded yet, or a bad file), whatever table is loaded stays
+// in use until they can.
 func (v *VendorDB) Load() error {
 	paths := v.files()
-	if paths == nil {
-		ouiCur.Store(builtinOnce())
-		v.loadedMod.Store(0)
-		v.location.Store("built-in")
-		return nil
-	}
 	t, mod, err := parseOUIFiles(paths)
 	if err != nil {
+		v.loadedMod.Store(0) // so the files are fetched or re-read
+		if currentOUI().size() == 0 {
+			v.location.Store("not loaded yet")
+		} else if loc, _ := v.location.Load().(string); !strings.HasSuffix(loc, ")") {
+			v.location.Store(loc + " (previous source, until the new one loads)")
+		}
 		if v.source().OUISource != config.OUIFile && errors.Is(err, os.ErrNotExist) {
-			ouiCur.Store(builtinOnce())
-			v.loadedMod.Store(0)
-			v.location.Store("built-in (download pending)")
-			return nil
+			return nil // a download is pending
 		}
 		return err
 	}
@@ -310,8 +291,6 @@ func (v *VendorDB) Update(ctx context.Context) error {
 	case err != nil:
 		msg += "failed: " + err.Error()
 		v.log.Warn("vendor database update failed", "err", err)
-	case e.OUISource == config.OUIBuiltin:
-		msg += "using the built-in table"
 	case e.OUISource == config.OUIFile:
 		msg += "reloaded"
 	default:
@@ -320,6 +299,8 @@ func (v *VendorDB) Update(ctx context.Context) error {
 	v.lastUpdate.Store(msg)
 	return err
 }
+
+func (v *VendorDB) missing() bool { return v.loadedMod.Load() == 0 }
 
 func (v *VendorDB) stale() bool {
 	switch v.source().OUISource {
@@ -357,8 +338,9 @@ func (v *VendorDB) Refresh(ctx context.Context) {
 	v.lastUpdate.Store(msg)
 }
 
-// AutoUpdate refreshes downloaded tables weekly while enabled() is true and
-// reloads a local file when it changes.
+// AutoUpdate downloads the table when it is missing, refreshes it weekly
+// while enabled() is true, and reloads a local file when it changes.
+// Failed downloads are retried at most every 12 hours.
 func (v *VendorDB) AutoUpdate(ctx context.Context, enabled func() bool) {
 	check := func() {
 		if v.fileChanged() {
@@ -367,7 +349,8 @@ func (v *VendorDB) AutoUpdate(ctx context.Context, enabled func() bool) {
 			}
 			return
 		}
-		if !enabled() || !v.stale() || time.Now().Unix()-v.lastAttempt.Load() < 12*3600 {
+		if v.source().OUISource == config.OUIFile || !v.stale() || (!enabled() && !v.missing()) ||
+			time.Now().Unix()-v.lastAttempt.Load() < 12*3600 {
 			return
 		}
 		v.lastAttempt.Store(time.Now().Unix())
@@ -387,21 +370,17 @@ func (v *VendorDB) AutoUpdate(ctx context.Context, enabled func() bool) {
 }
 
 type VendorStatus struct {
-	Source      string       `json:"source"`
-	Location    string       `json:"location"`
-	Entries     int          `json:"entries"`
-	Updated     int64        `json:"updated"`
-	LastUpdate  string       `json:"lastUpdate"`
-	Attribution *Attribution `json:"attribution,omitempty"`
+	Source     string `json:"source"`
+	Location   string `json:"location"`
+	Entries    int    `json:"entries"`
+	Updated    int64  `json:"updated"`
+	LastUpdate string `json:"lastUpdate"`
 }
 
 func (v *VendorDB) Status() VendorStatus {
 	s := VendorStatus{Source: v.source().OUISource, Entries: currentOUI().size(), Updated: v.loadedMod.Load()}
 	s.Location, _ = v.location.Load().(string)
 	s.LastUpdate, _ = v.lastUpdate.Load().(string)
-	if s.Updated == 0 {
-		s.Attribution = &Attribution{Text: "Vendor names from the Wireshark manufacturer database", URL: "https://www.wireshark.org", License: "GPL-2.0-or-later"}
-	}
 	return s
 }
 
