@@ -136,6 +136,10 @@ func TestSFlow(t *testing.T) {
 		if out[i].VLAN != recs[i].VLAN {
 			t.Errorf("vlan: got %d want %d", out[i].VLAN, recs[i].VLAN)
 		}
+		// flowgen's synthetic Ethernet header: dst 00:1c:73:00:00:01, src 00:1c:73:00:00:02.
+		if out[i].SrcMAC != 0x001c73000002 || out[i].DstMAC != 0x001c73000001 {
+			t.Errorf("sflow macs: src %x dst %x", out[i].SrcMAC, out[i].DstMAC)
+		}
 	}
 }
 
@@ -302,5 +306,25 @@ func TestSamplingKeptWhenReannounced(t *testing.T) {
 	}
 	if r, src := d.Sampling(e.Addr); r != 64 || src != decode.SamplingAnnounced {
 		t.Fatalf("got %d %s", r, src)
+	}
+}
+
+// UniFi (ipt_NETFLOW) exports IN_SRC_MAC (56) and IN_DST_MAC (80).
+func TestV9MACFields(t *testing.T) {
+	now := time.Now().Truncate(time.Second)
+	exp := netip.MustParseAddr("192.168.20.1")
+	pkt := []byte{0, 9, 0, 2, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0}
+	binary.BigEndian.PutUint32(pkt[8:], uint32(now.Unix()))
+	// template 300: src v4, dst v4, bytes, packets, IN_SRC_MAC/6, IN_DST_MAC/6
+	pkt = append(pkt, 0, 0, 0, 32, 1, 44, 0, 6, 0, 8, 0, 4, 0, 12, 0, 4, 0, 1, 0, 4, 0, 2, 0, 4, 0, 56, 0, 6, 0, 80, 0, 6)
+	rec := []byte{192, 168, 80, 45, 185, 40, 234, 113, 0, 0, 1, 0, 0, 0, 0, 1,
+		0xbc, 0x24, 0x11, 0x52, 0xd1, 0x06, 0x94, 0x2a, 0x6f, 0xf8, 0x4d, 0x6d}
+	pkt = append(append(pkt, 1, 44, 0, byte(4+len(rec))), rec...)
+	out, _, err := decode.New().Decode(exp, pkt, now, nil)
+	if err != nil || len(out) != 1 {
+		t.Fatalf("decode: %v %d", err, len(out))
+	}
+	if out[0].SrcMAC != 0xbc241152d106 || out[0].DstMAC != 0x942a6ff84d6d {
+		t.Fatalf("macs: %x %x", out[0].SrcMAC, out[0].DstMAC)
 	}
 }

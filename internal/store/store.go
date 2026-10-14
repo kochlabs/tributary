@@ -81,6 +81,9 @@ func flowsDDL(table string) string {
 		dst_as        UInt32 CODEC(T64, ZSTD(1)),
 		src_country   LowCardinality(String),
 		dst_country   LowCardinality(String),
+		src_mac       UInt64 CODEC(ZSTD(1)),
+		dst_mac       UInt64 CODEC(ZSTD(1)),
+		device_mac    UInt64 CODEC(ZSTD(1)),
 		src_mask      UInt8,
 		dst_mask      UInt8,
 		vlan          UInt16,
@@ -136,6 +139,10 @@ func (s *Store) Migrate(ctx context.Context, r Retention) error {
 		// Tables created before country enrichment lack these columns.
 		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS src_country LowCardinality(String) AFTER dst_as`,
 		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS dst_country LowCardinality(String) AFTER src_country`,
+		// MAC addresses (0 = unknown) and the local device each flow belongs to.
+		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS src_mac UInt64 CODEC(ZSTD(1)) AFTER dst_country`,
+		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS dst_mac UInt64 CODEC(ZSTD(1)) AFTER src_mac`,
+		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS device_mac UInt64 CODEC(ZSTD(1)) AFTER dst_mac`,
 		rollupDDL("traffic_1m"),
 		// v1 bucketed flows by receive time; v2 spreads them over their duration.
 		`DROP VIEW IF EXISTS netflow.traffic_1m_mv`,

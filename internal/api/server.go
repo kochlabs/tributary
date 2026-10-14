@@ -80,6 +80,7 @@ func (s *Server) Handler() http.Handler {
 	auth("GET /api/flows", s.flows)
 	auth("GET /api/flows.csv", s.flowsCSV)
 	auth("GET /api/exporters", s.exporters)
+	auth("GET /api/devices", s.devicesList)
 	auth("GET /api/exporters/{addr}/interfaces", s.interfaces)
 	auth("GET /api/system", s.system)
 	auth("GET /api/settings", s.getSettings)
@@ -87,6 +88,7 @@ func (s *Server) Handler() http.Handler {
 
 	admin("PUT /api/exporters/{addr}", s.updateExporter)
 	admin("DELETE /api/exporters/{addr}", s.deleteExporter)
+	admin("PUT /api/devices/{mac}", s.deviceRename)
 	admin("PUT /api/exporters/{addr}/interfaces/{idx}", s.updateInterface)
 	admin("PUT /api/settings", s.putSettings)
 	admin("GET /api/users", s.listUsers)

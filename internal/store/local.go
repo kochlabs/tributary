@@ -63,6 +63,10 @@ func localDimension(name string) (dimension, bool) {
 		return dimension{fmt.Sprintf("multiIf(%s, src_country, %s, dst_country, '')", inbound, outbound), false}, true
 	case "direction":
 		return dimension{fmt.Sprintf("multiIf(%s, 'download', %s, 'upload', %s AND %s, 'internal', 'transit')", inbound, outbound, ls, ld), false}, true
+	case "device":
+		// The device's MAC when the exporter reports MACs, else the local IP.
+		return dimension{fmt.Sprintf("if(device_mac != 0, lower(MACNumToString(device_mac)), multiIf(%s, %s, %s, %s, ''))",
+			ls, ipstr("src_addr"), ld, ipstr("dst_addr")), false}, true
 	case "conversation":
 		// Local endpoint first so rows read "my device ⇄ remote".
 		return dimension{fmt.Sprintf("multiIf(%s, concat(%s, ' ⇄ ', %s), %s, concat(%s, ' ⇄ ', %s), concat(%s, ' ⇄ ', %s))",

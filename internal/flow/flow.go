@@ -59,6 +59,11 @@ type Record struct {
 	Bytes, Packets uint64
 
 	SrcCountry, DstCountry string // ISO 3166 alpha-2, set by GeoIP enrichment
+
+	// MAC addresses as 48-bit numbers (0 = unknown). SrcMAC/DstMAC are as
+	// exported; DeviceMAC is the local device the flow belongs to, set by
+	// the device tracker.
+	SrcMAC, DstMAC, DeviceMAC uint64
 }
 
 const (

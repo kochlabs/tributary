@@ -117,23 +117,24 @@ func ip16(a interface{ As16() [16]byte }) net.IP {
 func (w *Writer) insert(ctx context.Context, recs []flow.Record) error {
 	batch, err := w.s.conn.PrepareBatch(ctx, `INSERT INTO netflow.flows (time_received, time_start, time_end, flow_type, exporter,
 		sampling_rate, in_if, out_if, direction, src_addr, dst_addr, next_hop, src_port, dst_port, proto, tcp_flags, tos,
-		src_as, dst_as, src_mask, dst_mask, vlan, etype, bytes, packets, src_country, dst_country)`)
+		src_as, dst_as, src_mask, dst_mask, vlan, etype, bytes, packets, src_country, dst_country, src_mac, dst_mac, device_mac)`)
 	if err != nil {
 		return err
 	}
 	n := len(recs)
 	var (
-		tr, ts, te        = make([]time.Time, n), make([]time.Time, n), make([]time.Time, n)
-		ft, dir, proto    = make([]uint8, n), make([]uint8, n), make([]uint8, n)
-		flags, tos        = make([]uint8, n), make([]uint8, n)
-		smask, dmask      = make([]uint8, n), make([]uint8, n)
-		exp, src, dst, nh = make([]net.IP, n), make([]net.IP, n), make([]net.IP, n), make([]net.IP, n)
-		samp, inIf, outIf = make([]uint32, n), make([]uint32, n), make([]uint32, n)
-		sas, das          = make([]uint32, n), make([]uint32, n)
-		sport, dport      = make([]uint16, n), make([]uint16, n)
-		vlan, etype       = make([]uint16, n), make([]uint16, n)
-		bytes, packets    = make([]uint64, n), make([]uint64, n)
-		scc, dcc          = make([]string, n), make([]string, n)
+		tr, ts, te         = make([]time.Time, n), make([]time.Time, n), make([]time.Time, n)
+		ft, dir, proto     = make([]uint8, n), make([]uint8, n), make([]uint8, n)
+		flags, tos         = make([]uint8, n), make([]uint8, n)
+		smask, dmask       = make([]uint8, n), make([]uint8, n)
+		exp, src, dst, nh  = make([]net.IP, n), make([]net.IP, n), make([]net.IP, n), make([]net.IP, n)
+		samp, inIf, outIf  = make([]uint32, n), make([]uint32, n), make([]uint32, n)
+		sas, das           = make([]uint32, n), make([]uint32, n)
+		sport, dport       = make([]uint16, n), make([]uint16, n)
+		vlan, etype        = make([]uint16, n), make([]uint16, n)
+		bytes, packets     = make([]uint64, n), make([]uint64, n)
+		scc, dcc           = make([]string, n), make([]string, n)
+		smac, dmac, devmac = make([]uint64, n), make([]uint64, n), make([]uint64, n)
 	)
 	for i := range recs {
 		r := &recs[i]
@@ -145,8 +146,9 @@ func (w *Writer) insert(ctx context.Context, recs []flow.Record) error {
 		sport[i], dport[i], vlan[i], etype[i] = r.SrcPort, r.DstPort, r.VLAN, r.EType
 		bytes[i], packets[i] = r.Bytes, r.Packets
 		scc[i], dcc[i] = r.SrcCountry, r.DstCountry
+		smac[i], dmac[i], devmac[i] = r.SrcMAC, r.DstMAC, r.DeviceMAC
 	}
-	cols := []any{tr, ts, te, ft, exp, samp, inIf, outIf, dir, src, dst, nh, sport, dport, proto, flags, tos, sas, das, smask, dmask, vlan, etype, bytes, packets, scc, dcc}
+	cols := []any{tr, ts, te, ft, exp, samp, inIf, outIf, dir, src, dst, nh, sport, dport, proto, flags, tos, sas, das, smask, dmask, vlan, etype, bytes, packets, scc, dcc, smac, dmac, devmac}
 	for i, c := range cols {
 		if err := batch.Column(i).Append(c); err != nil {
 			batch.Abort()

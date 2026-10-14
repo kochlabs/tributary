@@ -97,7 +97,8 @@ export const FLOW_TYPES = ['Unknown', 'NetFlow v5', 'NetFlow v9', 'IPFIX', 'sFlo
 
 export const DIMENSIONS: { id: string; label: string }[] = [
   { id: 'remote_as', label: 'Service (remote organization)' },
-  { id: 'local_host', label: 'Device (local host)' },
+  { id: 'device', label: 'Device' },
+  { id: 'local_host', label: 'Local host (IP)' },
   { id: 'remote_host', label: 'Remote host' },
   { id: 'remote_country', label: 'Remote country' },
   { id: 'direction', label: 'Direction' },
@@ -138,6 +139,8 @@ export function drillFilter(dim: string, key: string): Record<string, string> | 
     case 'local_host':
     case 'remote_host':
       return { host: key };
+    case 'device':
+      return key ? { device: key } : null;
     case 'remote_as':
       return key && key !== '0' ? { as: key } : null;
     case 'remote_country':
@@ -179,6 +182,7 @@ export function drillFilter(dim: string, key: string): Record<string, string> | 
 
 export const FILTER_FIELDS: { id: string; label: string; hint: string }[] = [
   { id: 'host', label: 'Host', hint: '10.0.0.5 or 10.0.0.0/8' },
+  { id: 'device', label: 'Device', hint: 'MAC address, e.g. bc:24:11:52:d1:06' },
   { id: 'direction', label: 'Direction', hint: 'download, upload, internal or transit' },
   { id: 'peer', label: 'Peer (either side)', hint: 'second host, e.g. with Host for one conversation' },
   { id: 'src', label: 'Source address', hint: 'IP or CIDR' },

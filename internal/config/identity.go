@@ -67,7 +67,7 @@ type IdentitySource struct {
 }
 
 func (c *DB) migrateIdentity() error {
-	if _, err := c.db.Exec(identitySchema + trustedSchema); err != nil {
+	if _, err := c.db.Exec(identitySchema + trustedSchema + deviceSchema); err != nil {
 		return err
 	}
 	// Users created by an identity source carry its id; 0 means local.

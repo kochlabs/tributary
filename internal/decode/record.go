@@ -11,19 +11,20 @@ import (
 // recState collects values that need post-processing once every field of a
 // record has been seen (time bases, competing byte counters, sampling).
 type recState struct {
-	bytes, pkts          uint64
-	haveBytes, havePkts  bool
-	outBytes, outPkts    uint64
-	initBytes, respBytes uint64
-	initPkts, respPkts   uint64
-	firstMs, lastMs      uint64 // sysUpTime-relative (v9 21/22, IPFIX 21/22)
-	haveFirst, haveLast  bool
-	sysInitMs            uint64 // IPFIX 160
-	startAbs, endAbs     time.Time
-	sampler              uint32
-	hasSampler           bool
-	sampling             uint32
-	srcVLAN, dstVLAN     uint16
+	bytes, pkts            uint64
+	haveBytes, havePkts    bool
+	outBytes, outPkts      uint64
+	initBytes, respBytes   uint64
+	initPkts, respPkts     uint64
+	firstMs, lastMs        uint64 // sysUpTime-relative (v9 21/22, IPFIX 21/22)
+	haveFirst, haveLast    bool
+	sysInitMs              uint64 // IPFIX 160
+	startAbs, endAbs       time.Time
+	sampler                uint32
+	hasSampler             bool
+	sampling               uint32
+	srcVLAN, dstVLAN       uint16
+	postSrcMAC, postDstMAC uint64
 }
 
 // readRecord walks one data record using template t and returns the number of
@@ -165,6 +166,25 @@ func applyField(r *flow.Record, st *recState, f field, v []byte) {
 		}
 	case 61:
 		r.Direction = uint8(uintN(v))
+	// MACs: 56/80 are as received (IN_SRC_MAC / IN_DST_MAC, IPFIX
+	// source/destinationMacAddress); 81/57 are post-forwarding variants,
+	// used only when the first pair is absent.
+	case 56:
+		if len(v) == 6 {
+			r.SrcMAC = uintN(v)
+		}
+	case 80:
+		if len(v) == 6 {
+			r.DstMAC = uintN(v)
+		}
+	case 81:
+		if len(v) == 6 {
+			st.postSrcMAC = uintN(v)
+		}
+	case 57:
+		if len(v) == 6 {
+			st.postDstMAC = uintN(v)
+		}
 	case 32: // ICMP_TYPE: type<<8 | code, conventionally reported as dst port
 		if r.DstPort == 0 {
 			r.DstPort = uint16(uintN(v))
@@ -196,6 +216,12 @@ func (d *Decoder) finishRecord(r *flow.Record, st *recState, exporter netip.Addr
 	// Exporters with broken clocks produce nonsense; fall back to export time.
 	if r.TimeEnd.IsZero() || r.TimeEnd.After(export.Add(time.Hour)) || r.TimeEnd.Before(export.Add(-24*time.Hour)) {
 		r.TimeStart, r.TimeEnd = export, export
+	}
+	if r.SrcMAC == 0 {
+		r.SrcMAC = st.postSrcMAC
+	}
+	if r.DstMAC == 0 {
+		r.DstMAC = st.postDstMAC
 	}
 	if st.srcVLAN != 0 {
 		r.VLAN = st.srcVLAN

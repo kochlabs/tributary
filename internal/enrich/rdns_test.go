@@ -47,3 +47,26 @@ func TestASNCachePersist(t *testing.T) {
 		t.Fatalf("names %v cache %d", b.names, len(b.cache))
 	}
 }
+
+func TestVendor(t *testing.T) {
+	cases := map[string]string{
+		"24:e5:0f:d8:b3:87": "Google, Inc.",
+		"bc:24:11:52:d1:06": "Proxmox Server Solutions GmbH",
+		"94:2a:6f:f8:4d:6d": "Ubiquiti Inc",
+		"00:11:32:7d:2b:3b": "Synology Incorporated",
+		"4a:d6:09:a8:9e:8a": "Private (randomized) address",
+		"00:1b:c5:00:00:01": "Converging Systems Inc.", // a /36 (MA-S) block inside an /24
+	}
+	for s, want := range cases {
+		m, ok := ParseMAC(s)
+		if !ok {
+			t.Fatalf("parse %s", s)
+		}
+		if got := Vendor(m); got != want {
+			t.Errorf("%s: got %q want %q", s, got, want)
+		}
+		if FormatMAC(m) != s {
+			t.Errorf("format round trip: %s -> %s", s, FormatMAC(m))
+		}
+	}
+}

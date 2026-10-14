@@ -345,6 +345,9 @@ type FlowRow struct {
 	Bytes        uint64 `json:"bytes"`
 	Packets      uint64 `json:"packets"`
 	ExporterName string `json:"exporterName,omitempty"`
+	SrcMAC       string `json:"srcMac,omitempty"`
+	DstMAC       string `json:"dstMac,omitempty"`
+	DeviceMAC    string `json:"deviceMac,omitempty"`
 	SrcCountry   string `json:"srcCountry"`
 	DstCountry   string `json:"dstCountry"`
 	SrcHost      string `json:"srcHost,omitempty"`
@@ -385,7 +388,9 @@ func (s *Store) Flows(ctx context.Context, q Query, sortBy string, desc bool, of
 		return nil, err
 	}
 	sql := fmt.Sprintf(`SELECT toUnixTimestamp(time_received), toUnixTimestamp(time_start), toUnixTimestamp(time_end), flow_type,
-		%s, sampling_rate, in_if, out_if, %s, %s, %s, src_port, dst_port, proto, tcp_flags, tos, src_as, dst_as, vlan, bytes, packets, src_country, dst_country
+		%s, sampling_rate, in_if, out_if, %s, %s, %s, src_port, dst_port, proto, tcp_flags, tos, src_as, dst_as, vlan, bytes, packets, src_country, dst_country,
+		if(src_mac = 0, '', lower(MACNumToString(src_mac))), if(dst_mac = 0, '', lower(MACNumToString(dst_mac))),
+		if(device_mac = 0, '', lower(MACNumToString(device_mac)))
 		FROM netflow.flows WHERE %s ORDER BY %s %s LIMIT %d OFFSET %d`,
 		ipstr("exporter"), ipstr("src_addr"), ipstr("dst_addr"), ipstr("next_hop"), where, col, dir, q.Limit, max(offset, 0))
 	rows, err := s.conn.Query(ctx, sql, args...)
@@ -398,7 +403,8 @@ func (s *Store) Flows(ctx context.Context, q Query, sortBy string, desc bool, of
 		var r FlowRow
 		var tr, ts, te uint32
 		if err := rows.Scan(&tr, &ts, &te, &r.FlowType, &r.Exporter, &r.Sampling, &r.InIf, &r.OutIf, &r.SrcAddr, &r.DstAddr, &r.NextHop,
-			&r.SrcPort, &r.DstPort, &r.Proto, &r.TCPFlags, &r.ToS, &r.SrcAS, &r.DstAS, &r.VLAN, &r.Bytes, &r.Packets, &r.SrcCountry, &r.DstCountry); err != nil {
+			&r.SrcPort, &r.DstPort, &r.Proto, &r.TCPFlags, &r.ToS, &r.SrcAS, &r.DstAS, &r.VLAN, &r.Bytes, &r.Packets, &r.SrcCountry, &r.DstCountry,
+			&r.SrcMAC, &r.DstMAC, &r.DeviceMAC); err != nil {
 			return nil, err
 		}
 		r.TimeReceived, r.TimeStart, r.TimeEnd = int64(tr)*1000, int64(ts)*1000, int64(te)*1000
@@ -635,4 +641,23 @@ func (s *Store) StorageEstimate(ctx context.Context) (*StorageEstimate, error) {
 	}
 	err := s.conn.QueryRow(ctx, "SELECT free_space, total_space FROM system.disks WHERE name = 'default'").Scan(&est.DiskFree, &est.DiskTotal)
 	return est, err
+}
+
+// DeviceTraffic returns 24-hour volume per device MAC.
+func (s *Store) DeviceTraffic(ctx context.Context) (map[uint64][2]uint64, error) {
+	rows, err := s.conn.Query(ctx, `SELECT device_mac, sum(bytes), count() FROM netflow.flows
+		WHERE time_received >= now() - INTERVAL 1 DAY AND device_mac != 0 GROUP BY device_mac`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[uint64][2]uint64{}
+	for rows.Next() {
+		var mac, b, f uint64
+		if err := rows.Scan(&mac, &b, &f); err != nil {
+			return nil, err
+		}
+		out[mac] = [2]uint64{b, f}
+	}
+	return out, rows.Err()
 }

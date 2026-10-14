@@ -14,6 +14,7 @@ export const routes: Routes = [
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard').then((m) => m.Dashboard), title: 'Dashboard' },
       { path: 'explorer', loadComponent: () => import('./pages/explorer').then((m) => m.Explorer), title: 'Traffic Explorer' },
       { path: 'flows', loadComponent: () => import('./pages/flows').then((m) => m.Flows), title: 'Flow Search' },
+      { path: 'devices', loadComponent: () => import('./pages/devices').then((m) => m.Devices), title: 'Devices' },
       { path: 'exporters', loadComponent: () => import('./pages/exporters').then((m) => m.Exporters), title: 'Exporters' },
       { path: 'exporters/:addr', loadComponent: () => import('./pages/exporter-detail').then((m) => m.ExporterDetail), title: 'Exporter' },
       { path: 'system', loadComponent: () => import('./pages/system').then((m) => m.System), title: 'System Health' },

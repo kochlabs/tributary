@@ -764,6 +764,8 @@ func (s *Server) audit(w http.ResponseWriter, r *http.Request) {
 // hostname / country / network for addresses.
 func (s *Server) details(ctx context.Context, dim string, rows []store.TopRow) {
 	switch dim {
+	case "device":
+		s.deviceDetails(ctx, rows)
 	case "src_as", "dst_as", "remote_as":
 		for i := range rows {
 			if rows[i].Key != "0" && rows[i].Label != "AS"+rows[i].Key {

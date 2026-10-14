@@ -72,6 +72,8 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
               <div><span>Destination host</span>{{ f.dstHost || '–' }}</div>
               <div><span>Source AS</span>{{ f.srcAs ? 'AS' + f.srcAs + (f.srcAsName ? ' ' + f.srcAsName : '') : '–' }}</div>
               <div><span>Destination AS</span>{{ f.dstAs ? 'AS' + f.dstAs + (f.dstAsName ? ' ' + f.dstAsName : '') : '–' }}</div>
+              <div><span>Device (MAC)</span>{{ f.deviceMac || '–' }}</div>
+              <div><span>Source / destination MAC</span>{{ f.srcMac || '–' }} → {{ f.dstMac || '–' }}</div>
               <div><span>Source country</span>{{ f.srcCountry || '–' }}</div>
               <div><span>Destination country</span>{{ f.dstCountry || '–' }}</div>
               <div><span>DSCP / ToS</span>{{ dscp(f.tos) }} / 0x{{ f.tos.toString(16) }}</div>

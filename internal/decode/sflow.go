@@ -212,6 +212,8 @@ func parseEthernet(r *flow.Record, b []byte) bool {
 	if len(b) < 14 {
 		return false
 	}
+	r.DstMAC = uint64(binary.BigEndian.Uint16(b[0:]))<<32 | uint64(binary.BigEndian.Uint32(b[2:]))
+	r.SrcMAC = uint64(binary.BigEndian.Uint16(b[6:]))<<32 | uint64(binary.BigEndian.Uint32(b[8:]))
 	etype := binary.BigEndian.Uint16(b[12:])
 	b = b[14:]
 	for (etype == 0x8100 || etype == 0x88a8) && len(b) >= 4 {

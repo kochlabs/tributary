@@ -138,6 +138,9 @@ export interface FlowRow {
   bytes: number;
   packets: number;
   exporterName?: string;
+  srcMac?: string;
+  dstMac?: string;
+  deviceMac?: string;
   srcCountry: string;
   dstCountry: string;
   srcHost?: string;
@@ -325,6 +328,22 @@ export interface TrustedCA extends CertDetails {
   id: number;
   name: string;
   createdAt: number;
+}
+
+export interface DeviceInfo {
+  mac: string;
+  name: string;
+  customName: string;
+  nameSource: 'name' | 'dns' | 'vendor' | 'mac';
+  vendor: string;
+  randomized: boolean;
+  firstSeen: number;
+  lastSeen: number;
+  ipv4: string[];
+  ipv6: string[];
+  bytes24h: number;
+  flows24h: number;
+  ips: { ip: string; seen: number }[];
 }
 
 export interface AuditEntry {
@@ -533,6 +552,12 @@ export class Api {
   }
   deleteTrustedCA(id: number) {
     return firstValueFrom(this.http.delete(`/api/certificates/trusted/${id}`));
+  }
+  devices() {
+    return this.get<DeviceInfo[]>('/api/devices');
+  }
+  renameDevice(mac: string, name: string) {
+    return firstValueFrom(this.http.put(`/api/devices/${encodeURIComponent(mac)}`, { name }));
   }
   audit() {
     return this.get<AuditEntry[]>('/api/audit');

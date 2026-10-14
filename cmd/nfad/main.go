@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/netip"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -24,6 +25,7 @@ import (
 	"nfa/internal/collector"
 	"nfa/internal/config"
 	"nfa/internal/enrich"
+	"nfa/internal/flow"
 	"nfa/internal/store"
 	"nfa/internal/system"
 	"nfa/internal/webui"
@@ -127,14 +129,52 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 	rdns := enrich.NewResolver()
 	rdns.Enabled.Store(settings.ReverseDNS)
 
+	// Device identity: learn local IP→MAC bindings and attribute flows to
+	// devices; bindings persist across restarts.
+	saved := map[netip.Addr]collector.IPBinding{}
+	if list, err := cfg.DeviceIPs(); err == nil {
+		for _, d := range list {
+			if a, err := netip.ParseAddr(d.IP); err == nil {
+				saved[a] = collector.IPBinding{MAC: d.MAC, Seen: d.Seen}
+			}
+		}
+	}
+	devices := collector.NewDeviceTracker(geo.IsLocal, saved)
+	saveDevices := func() {
+		dirty := devices.Dirty()
+		list := make([]config.DeviceIP, 0, len(dirty))
+		for ip, b := range dirty {
+			list = append(list, config.DeviceIP{IP: ip.String(), MAC: b.MAC, Seen: b.Seen})
+		}
+		if err := cfg.SaveDeviceIPs(list); err != nil {
+			log.Warn("saving device bindings failed", "err", err)
+		}
+	}
+	defer saveDevices()
+	go func() {
+		t := time.NewTicker(30 * time.Second)
+		defer t.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				saveDevices()
+			}
+		}
+	}()
+
 	col := collector.New(log, collector.Hooks{
 		Sink:             writer.Submit,
 		NewExporter:      cfg.SeenExporter,
 		SamplingOverride: cfg.SamplingOverride,
-		Enrich:           geo.Enrich,
-		InterfaceName:    cfg.LearnInterface,
-		LearnedSampling:  cfg.SetLearnedSampling,
-		SeedSampling:     cfg.LearnedSampling,
+		Enrich: func(r *flow.Record) {
+			geo.Enrich(r)
+			devices.Assign(r)
+		},
+		InterfaceName:   cfg.LearnInterface,
+		LearnedSampling: cfg.SetLearnedSampling,
+		SeedSampling:    cfg.LearnedSampling,
 	})
 	if err := col.Start(collector.Ports{NetFlow: settings.NetFlowPort, IPFIX: settings.IPFIXPort, SFlow: settings.SFlowPort}); err != nil {
 		log.Error("collector listener failed", "err", err)

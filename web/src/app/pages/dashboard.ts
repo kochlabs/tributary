@@ -26,7 +26,7 @@ interface Panel {
 // all oriented local → remote so download and upload don't split one answer.
 const PANELS: Panel[] = [
   { dim: 'conversation', title: 'Top Conversations', col: '', hint: 'Who talks to whom, your device first', wide: true },
-  { dim: 'local_host', title: 'Top Devices', col: 'Device', hint: 'Local hosts, both directions' },
+  { dim: 'device', title: 'Top Devices', col: 'Device', hint: 'By MAC address, both directions' },
   { dim: 'remote_as', title: 'Top Services', col: 'Organization', hint: 'Remote networks by owner', donut: true },
   { dim: 'app', title: 'Applications', col: 'Protocol / port', hint: 'Well-known port of the flow' },
   { dim: 'remote_host', title: 'Top Remote Hosts', col: 'Remote host', hint: 'Internet endpoints' },
@@ -35,7 +35,7 @@ const PANELS: Panel[] = [
 
 const SERIES_BY = [
   { id: 'remote_as', label: 'Service' },
-  { id: 'local_host', label: 'Device' },
+  { id: 'device', label: 'Device' },
   { id: 'direction', label: 'Direction' },
   { id: 'app', label: 'Application' },
 ];
@@ -219,7 +219,7 @@ export class Dashboard {
   drill(dim: string, row: TopRow) {
     const f = drillFilter(dim, row.key);
     if (!f) return;
-    const next = dim === 'local_host' ? 'remote_as' : dim === 'remote_as' || dim === 'app' ? 'local_host' : 'app';
+    const next = dim === 'device' || dim === 'local_host' ? 'remote_as' : dim === 'remote_as' || dim === 'app' ? 'device' : 'app';
     this.router.navigate(['/explorer'], { queryParams: { ...f, groupBy: next, metric: this.metric() } });
   }
 

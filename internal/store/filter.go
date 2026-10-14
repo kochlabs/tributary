@@ -17,6 +17,7 @@ const (
 	kEType
 	kCountry
 	kDirection
+	kDevice
 )
 
 type filterField struct {
@@ -53,6 +54,7 @@ var FilterFields = map[string]filterField{
 	"dst_country": {kind: kCountry, cols: []string{"dst_country"}},
 	"country":     {kind: kCountry, cols: []string{"src_country", "dst_country"}},
 	"direction":   {kind: kDirection},
+	"device":      {kind: kDevice},
 }
 
 var protoByName = map[string]uint8{
@@ -159,6 +161,13 @@ func (d filterField) cond(v string) (string, []any, error) {
 		default:
 			return "", nil, fmt.Errorf("invalid ip version %q", v)
 		}
+	case kDevice:
+		// A MAC selects the device's flows; an IP (devices without a
+		// reported MAC) behaves like the host filter.
+		if mac, ok := parseMAC(v); ok {
+			return "(device_mac = ?)", []any{mac}, nil
+		}
+		return FilterFields["host"].cond(v)
 	case kDirection:
 		c, err := directionCond(v)
 		if err != nil {
@@ -231,4 +240,13 @@ func addrRange(s string) (string, string, error) {
 func (f *Filter) where(timeCol string, from, to int64) (string, []any) {
 	conds := append([]string{timeCol + " >= toDateTime(?)", timeCol + " < toDateTime(?)"}, f.conds...)
 	return strings.Join(conds, " AND "), append([]any{from, to}, f.args...)
+}
+
+func parseMAC(s string) (uint64, bool) {
+	h := strings.NewReplacer(":", "", "-", "", ".", "").Replace(strings.TrimSpace(s))
+	if len(h) != 12 {
+		return 0, false
+	}
+	v, err := strconv.ParseUint(h, 16, 64)
+	return v, err == nil
 }
