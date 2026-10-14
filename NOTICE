@@ -38,11 +38,12 @@ Data sources:
   data is in use, the interface shows: "This product includes GeoLite2 data
   created by MaxMind, available from https://www.maxmind.com".
 
-* MAC address vendor names: the built-in table is the Wireshark
-  manufacturer database (https://www.wireshark.org), distributed by the
-  Wireshark project (GPL-2.0-or-later) and compiled from the public IEEE
-  Registration Authority registries, which Tributary can also download
-  directly.
+* MAC address vendor names are downloaded by default from the public IEEE
+  Registration Authority registries (https://standards.ieee.org). The
+  built-in fallback table, used offline or until the first download, is the
+  Wireshark manufacturer database (https://www.wireshark.org), distributed by
+  the Wireshark project (GPL-2.0-or-later) and compiled from the same IEEE
+  registries.
 
 * ASNs missing from the local database may be looked up through the RIPEstat
   Data API (https://stat.ripe.net) when enabled, under RIPE NCC's terms.

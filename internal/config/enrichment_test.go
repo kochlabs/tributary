@@ -12,7 +12,7 @@ func TestEnrichmentSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	if e := db.Enrichment(); e.GeoSource != GeoDBIPLite || e.OUISource != OUIBuiltin || !e.AutoUpdate {
+	if e := db.Enrichment(); e.GeoSource != GeoDBIPLite || e.OUISource != OUIIEEE || !e.AutoUpdate {
 		t.Fatalf("defaults: %+v", e)
 	}
 	e := DefaultEnrichment()

@@ -61,7 +61,7 @@ type EnrichmentView struct {
 }
 
 func DefaultEnrichment() Enrichment {
-	return Enrichment{AutoUpdate: true, GeoSource: GeoDBIPLite, MaxMindCountryEdition: "GeoLite2-Country", MaxMindASNEdition: "GeoLite2-ASN", OUISource: OUIBuiltin}
+	return Enrichment{AutoUpdate: true, GeoSource: GeoDBIPLite, MaxMindCountryEdition: "GeoLite2-Country", MaxMindASNEdition: "GeoLite2-ASN", OUISource: OUIIEEE}
 }
 
 func oneOf(v string, allowed ...string) bool {

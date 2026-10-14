@@ -32,7 +32,8 @@ with an enterprise UI built on [Clarity](https://clarity.design/).
   under Administration → Data Sources: DB-IP Lite (free, the default), a MaxMind
   account (GeoLite2 or licensed GeoIP2 editions), your own download URLs (e.g. a
   DB-IP subscription) or files maintained by `geoipupdate`. MAC vendor names from
-  the built-in table, the IEEE registry, a URL or a file. Reverse DNS at query
+  the IEEE registry (the default, refreshed weekly), the built-in table, a URL or
+  a file. Reverse DNS at query
   time with caching and a bounded wait.
 - **Analytics**: dashboard, Traffic Explorer (any dimension × any filter, stacked
   series with "Other", drag-to-zoom, URL-shareable views), Flow Search with

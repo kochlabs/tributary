@@ -12,8 +12,8 @@ const GEO_SOURCES = [
 ] as const;
 
 const OUI_SOURCES = [
-  { id: 'builtin', label: 'Built-in', help: 'The vendor table shipped with this release (Wireshark manufacturer database). Works offline.' },
-  { id: 'ieee', label: 'IEEE registry', help: 'Download the MA-L, MA-M and MA-S registries from the IEEE Registration Authority weekly. The most current source.' },
+  { id: 'builtin', label: 'Built-in', help: 'The vendor table shipped with this release (Wireshark manufacturer database). Works offline; also used until the first IEEE download completes.' },
+  { id: 'ieee', label: 'IEEE registry', help: 'The default. Downloads the MA-L, MA-M and MA-S registries from the IEEE Registration Authority weekly: the authoritative, most current source.' },
   { id: 'url', label: 'Download URL', help: 'A Wireshark manuf file or an IEEE registry CSV from your own mirror (optionally gzipped).' },
   { id: 'file', label: 'File on the appliance', help: 'A Wireshark manuf file or an IEEE registry CSV. Reloaded automatically when it changes.' },
 ] as const;
@@ -127,7 +127,7 @@ const OUI_SOURCES = [
                 }
               </p>
             }
-            <button type="button" class="btn btn-sm btn-outline" (click)="update('geo')" [clrLoading]="busyGeo()">{{ e.geoSource === 'files' ? 'Reload now' : 'Update now' }}</button>
+            <button type="button" class="btn btn-sm btn-outline" (click)="update('geo')" [clrLoading]="busyGeo()" [disabled]="dirty()" [title]="dirty() ? 'Save your changes first' : ''">{{ e.geoSource === 'files' ? 'Reload now' : 'Update now' }}</button>
           </div>
         </div>
 
@@ -169,8 +169,8 @@ const OUI_SOURCES = [
             @if (st()?.vendors?.attribution; as a) {
               <p class="attrib"><span><a [href]="a.url" target="_blank" rel="noopener">{{ a.text }}</a>{{ a.license ? ' (' + a.license + ')' : '' }}</span></p>
             }
-            @if (e.ouiSource !== 'builtin') {
-              <button type="button" class="btn btn-sm btn-outline" (click)="update('oui')" [clrLoading]="busyOui()">{{ e.ouiSource === 'file' ? 'Reload now' : 'Update now' }}</button>
+            @if (savedOui() !== 'builtin') {
+              <button type="button" class="btn btn-sm btn-outline" (click)="update('oui')" [clrLoading]="busyOui()" [disabled]="dirty()" [title]="dirty() ? 'Save your changes first' : ''">{{ e.ouiSource === 'file' ? 'Reload now' : 'Update now' }}</button>
             }
           </div>
         </div>
@@ -190,8 +190,13 @@ const OUI_SOURCES = [
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn btn-primary" [clrLoading]="busy()">Save</button>
-          <button type="button" class="btn btn-outline" (click)="load()">Revert</button>
+          <button type="submit" class="btn btn-primary" [clrLoading]="busy()" [disabled]="!dirty()">Save</button>
+          <button type="button" class="btn btn-outline" (click)="load()" [disabled]="!dirty()">Revert</button>
+          @if (error()) {
+            <span class="save-error"><cds-icon shape="error-standard"></cds-icon> {{ error() }}</span>
+          } @else if (dirty()) {
+            <span class="unsaved"><cds-icon shape="exclamation-circle"></cds-icon> Unsaved changes. Saving switches to the selected sources and downloads them right away.</span>
+          }
         </div>
       </form>
     }
@@ -206,7 +211,9 @@ const OUI_SOURCES = [
     .bad { color: var(--cds-alias-status-danger); }
     .attrib { font-size: 12px; color: var(--cds-alias-typography-color-300); margin: 16px 0 8px; }
     .attrib span + span::before { content: ' · '; }
-    .actions { margin-top: 16px; }
+    .actions { margin-top: 16px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .save-error { font-size: 13px; color: var(--cds-alias-status-danger); margin-left: 8px; }
+    .unsaved { font-size: 13px; color: var(--cds-alias-status-warning-shade, #8c5c00); margin-left: 8px; }
   `,
 })
 export class DataSources {
@@ -229,6 +236,20 @@ export class DataSources {
   clearAsnUrl = false;
   dt = dateTime;
   fmtCount = count;
+  // Snapshot of the stored record, to tell unsaved edits apart.
+  private savedJson = '';
+  readonly savedOui = signal('');
+
+  dirty() {
+    const e = this.e();
+    return !!e && (JSON.stringify(e) !== this.savedJson || !!this.licenseKey || !!this.countryUrl || !!this.asnUrl || this.clearAsnUrl);
+  }
+
+  private setSaved(e: Enrichment) {
+    this.e.set(e);
+    this.savedJson = JSON.stringify(e);
+    this.savedOui.set(e.ouiSource);
+  }
 
   constructor() {
     this.load();
@@ -249,7 +270,7 @@ export class DataSources {
     this.clearAsnUrl = false;
     try {
       const [e, st] = await Promise.all([this.api.enrichment(), this.api.geo()]);
-      this.e.set(e);
+      this.setSaved(e);
       this.st.set(st);
     } catch (err) {
       this.error.set(errorMessage(err));
@@ -264,14 +285,16 @@ export class DataSources {
     this.error.set('');
     const before = this.st();
     try {
+      // hasLicenseKey and the URL hosts are read-only; the API rejects them.
+      const { hasLicenseKey, geoCountryHost, geoAsnHost, ...stored } = e;
       const out = await this.api.saveEnrichment({
-        ...e,
+        ...stored,
         maxmindLicenseKey: this.licenseKey.trim(),
         geoCountryUrl: this.countryUrl.trim(),
         geoAsnUrl: this.clearAsnUrl ? '' : this.asnUrl.trim(),
         clearGeoAsnUrl: this.clearAsnUrl,
       });
-      this.e.set(out);
+      this.setSaved(out);
       this.licenseKey = this.countryUrl = this.asnUrl = '';
       this.clearAsnUrl = false;
       this.saved.set(true);
