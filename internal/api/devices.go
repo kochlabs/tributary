@@ -95,12 +95,19 @@ type deviceView struct {
 	LastSeen   int64             `json:"lastSeen"`
 	IPv4       []string          `json:"ipv4"`
 	IPv6       []string          `json:"ipv6"`
-	Bytes24h   uint64            `json:"bytes24h"`
-	Flows24h   uint64            `json:"flows24h"`
+	Bytes      uint64            `json:"bytes"`
+	Flows      uint64            `json:"flows"`
 	IPs        []config.DeviceIP `json:"ips"`
 }
 
+// devicesList returns every known device with its traffic in the requested
+// time window.
 func (s *Server) devicesList(w http.ResponseWriter, r *http.Request) {
+	q, err := parseQuery(r)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	ctx, cancel := queryCtx(r)
 	defer cancel()
 	list, err := s.Config.Devices()
@@ -108,7 +115,7 @@ func (s *Server) devicesList(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	traffic, err := s.Store.DeviceTraffic(ctx)
+	traffic, err := s.Store.DeviceTraffic(ctx, q.From, q.To)
 	if err != nil {
 		s.dbErr(w, err)
 		return
@@ -128,7 +135,7 @@ func (s *Server) devicesList(w http.ResponseWriter, r *http.Request) {
 		name, src := s.deviceName(ctx, d.MAC, names)
 		v := deviceView{MAC: enrich.FormatMAC(d.MAC), Name: name, CustomName: d.Name, NameSource: src, Vendor: enrich.Vendor(d.MAC),
 			Randomized: d.MAC&(0x02<<40) != 0, FirstSeen: d.FirstSeen, LastSeen: d.LastSeen, IPv4: []string{}, IPv6: []string{},
-			Bytes24h: traffic[d.MAC][0], Flows24h: traffic[d.MAC][1], IPs: d.IPs}
+			Bytes: traffic[d.MAC][0], Flows: traffic[d.MAC][1], IPs: d.IPs}
 		for _, ip := range d.IPs {
 			if strings.Contains(ip.IP, ":") {
 				v.IPv6 = append(v.IPv6, ip.IP)
@@ -138,7 +145,7 @@ func (s *Server) devicesList(w http.ResponseWriter, r *http.Request) {
 		}
 		out = append(out, v)
 	}
-	sort.SliceStable(out, func(i, j int) bool { return out[i].Bytes24h > out[j].Bytes24h })
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Bytes > out[j].Bytes })
 	writeJSON(w, http.StatusOK, out)
 }
 

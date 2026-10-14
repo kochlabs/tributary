@@ -438,15 +438,20 @@ func (s *Server) dbErr(w http.ResponseWriter, err error) {
 type exporterView struct {
 	config.Exporter
 	Live    any    `json:"live"`
-	Bytes24 uint64 `json:"bytes24h"`
-	Flows24 uint64 `json:"flows24h"`
+	Bytes   uint64 `json:"bytes"`
+	Flows   uint64 `json:"flows"`
 	Status  string `json:"status"` // active | idle | stale
 }
 
 func (s *Server) exporters(w http.ResponseWriter, r *http.Request) {
+	q, err := parseQuery(r)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	ctx, cancel := queryCtx(r)
 	defer cancel()
-	traffic, err := s.Store.ExporterTraffic(ctx)
+	traffic, err := s.Store.ExporterTraffic(ctx, q.From, q.To)
 	if err != nil {
 		s.dbErr(w, err)
 		return
@@ -460,7 +465,7 @@ func (s *Server) exporters(w http.ResponseWriter, r *http.Request) {
 	out := []exporterView{}
 	now := time.Now().UnixMilli()
 	for _, e := range s.Config.Exporters() {
-		v := exporterView{Exporter: e, Live: live[e.Addr], Bytes24: traffic[e.Addr].Bytes, Flows24: traffic[e.Addr].Flows}
+		v := exporterView{Exporter: e, Live: live[e.Addr], Bytes: traffic[e.Addr].Bytes, Flows: traffic[e.Addr].Flows}
 		last := max(lastSeen[e.Addr], traffic[e.Addr].LastSeen)
 		switch {
 		case now-last < 2*60*1000:
@@ -530,8 +535,8 @@ func (s *Server) deleteExporter(w http.ResponseWriter, r *http.Request) {
 
 type ifaceView struct {
 	config.Interface
-	InBytes  uint64 `json:"inBytes24h"`
-	OutBytes uint64 `json:"outBytes24h"`
+	InBytes  uint64 `json:"inBytes"`
+	OutBytes uint64 `json:"outBytes"`
 }
 
 func (s *Server) interfaces(w http.ResponseWriter, r *http.Request) {
@@ -539,9 +544,14 @@ func (s *Server) interfaces(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
+	q, err := parseQuery(r)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	ctx, cancel := queryCtx(r)
 	defer cancel()
-	seen, err := s.Store.Interfaces(ctx, addr)
+	seen, err := s.Store.Interfaces(ctx, addr, q.From, q.To)
 	if err != nil {
 		s.dbErr(w, err)
 		return

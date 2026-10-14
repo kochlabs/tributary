@@ -180,8 +180,8 @@ export interface Exporter {
   sampling: number;
   firstSeen: number;
   live: ExporterLive | null;
-  bytes24h: number;
-  flows24h: number;
+  bytes: number;
+  flows: number;
   status: 'active' | 'idle' | 'stale';
 }
 
@@ -191,8 +191,8 @@ export interface Interface {
   name: string;
   description: string;
   speed: number;
-  inBytes24h: number;
-  outBytes24h: number;
+  inBytes: number;
+  outBytes: number;
 }
 
 export interface Settings {
@@ -341,8 +341,8 @@ export interface DeviceInfo {
   lastSeen: number;
   ipv4: string[];
   ipv6: string[];
-  bytes24h: number;
-  flows24h: number;
+  bytes: number;
+  flows: number;
   ips: { ip: string; seen: number }[];
 }
 
@@ -429,8 +429,8 @@ export class Api {
     return '/api/flows.csv?' + this.params(t, f, { sort, desc }).toString();
   }
 
-  exporters() {
-    return this.get<Exporter[]>('/api/exporters');
+  exporters(t: TimeQuery) {
+    return this.get<Exporter[]>('/api/exporters', this.params(t));
   }
   updateExporter(e: Pick<Exporter, 'addr' | 'name' | 'description' | 'location' | 'sampling'>) {
     const { addr, name, description, location, sampling } = e;
@@ -439,8 +439,8 @@ export class Api {
   deleteExporter(addr: string) {
     return firstValueFrom(this.http.delete(`/api/exporters/${encodeURIComponent(addr)}`));
   }
-  interfaces(addr: string) {
-    return this.get<Interface[]>(`/api/exporters/${encodeURIComponent(addr)}/interfaces`);
+  interfaces(addr: string, t: TimeQuery) {
+    return this.get<Interface[]>(`/api/exporters/${encodeURIComponent(addr)}/interfaces`, this.params(t));
   }
   updateInterface(i: Pick<Interface, 'exporter' | 'index' | 'name' | 'description' | 'speed'>) {
     return firstValueFrom(
@@ -553,8 +553,8 @@ export class Api {
   deleteTrustedCA(id: number) {
     return firstValueFrom(this.http.delete(`/api/certificates/trusted/${id}`));
   }
-  devices() {
-    return this.get<DeviceInfo[]>('/api/devices');
+  devices(t: TimeQuery) {
+    return this.get<DeviceInfo[]>('/api/devices', this.params(t));
   }
   renameDevice(mac: string, name: string) {
     return firstValueFrom(this.http.put(`/api/devices/${encodeURIComponent(mac)}`, { name }));

@@ -8,11 +8,12 @@ import { ago, bits, bytes, count, dateTime, METRICS, samplingLabel } from '../co
 import { TimeRange } from '../core/time';
 import { loader, trackByKey } from '../core/util';
 import { Chart } from '../shared/chart';
+import { RangeBar } from '../shared/range-bar';
 import { timeSeriesOption } from '../shared/options';
 
 @Component({
   selector: 'nfa-exporter-detail',
-  imports: [ClarityModule, FormsModule, Chart, RouterLink],
+  imports: [ClarityModule, FormsModule, Chart, RouterLink, RangeBar],
   template: `
     <div class="breadcrumb"><a routerLink="/exporters">Exporters</a> / {{ exp()?.name || addr() }}</div>
     <div class="page-header">
@@ -25,7 +26,10 @@ import { timeSeriesOption } from '../shared/options';
         </h2>
         <p class="subtitle">{{ addr() }}{{ exp()?.location ? ' · ' + exp()?.location : '' }}{{ exp()?.description ? ' · ' + exp()?.description : '' }}</p>
       </div>
-      <a class="btn btn-sm btn-outline" [routerLink]="['/explorer']" [queryParams]="{ exporter: addr(), groupBy: 'app' }"><cds-icon shape="line-chart"></cds-icon> Analyze traffic</a>
+      <div class="header-controls">
+        <nfa-range-bar />
+        <a class="btn btn-sm btn-outline" [routerLink]="['/explorer']" [queryParams]="{ exporter: addr(), groupBy: 'app' }"><cds-icon shape="line-chart"></cds-icon> Analyze traffic</a>
+      </div>
     </div>
 
     @if (exp(); as e) {
@@ -36,7 +40,7 @@ import { timeSeriesOption } from '../shared/options';
         @let sl = sampling(e);
         <div class="kpi card"><div class="kpi-label">Sampling</div><div class="kpi-value">{{ sl.rate }}</div><div class="kpi-sub" [title]="sl.hint">{{ sl.source }}</div></div>
         <div class="kpi card"><div class="kpi-label">Lost / errors</div><div class="kpi-value">{{ fmtCount(e.live?.lost ?? 0) }} / {{ fmtCount(e.live?.errors ?? 0) }}</div><div class="kpi-sub">{{ fmtCount(e.live?.missingTemplates ?? 0) }} sets w/o template</div></div>
-        <div class="kpi card"><div class="kpi-label">Last 24h</div><div class="kpi-value">{{ fmtBytes(e.bytes24h) }}</div><div class="kpi-sub">first seen {{ dt(e.firstSeen) }} · last {{ ago(e.live?.lastSeen ?? 0) }}</div></div>
+        <div class="kpi card"><div class="kpi-label">Volume</div><div class="kpi-value">{{ fmtBytes(e.bytes) }}</div><div class="kpi-sub">first seen {{ dt(e.firstSeen) }} · last {{ ago(e.live?.lastSeen ?? 0) }}</div></div>
       </div>
     }
 
@@ -55,14 +59,14 @@ import { timeSeriesOption } from '../shared/options';
     </div>
 
     <h3 class="section-title">Interfaces</h3>
-    <p class="hint">Interfaces seen in the last 24 hours. {{ auth.isAdmin() ? 'Name them to make reports readable; set the speed to see utilization.' : '' }}</p>
+    <p class="hint">Interfaces seen in {{ time.label().toLowerCase() }}. {{ auth.isAdmin() ? 'Name them to make reports readable; set the speed to see utilization.' : '' }}</p>
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="ifaces.loading()">
       <clr-dg-column [clrDgField]="'index'" [clrDgSortOrder]="1">ifIndex</clr-dg-column>
       <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
       <clr-dg-column>Description</clr-dg-column>
       <clr-dg-column>Speed</clr-dg-column>
-      <clr-dg-column [clrDgField]="'inBytes24h'">In (24h)</clr-dg-column>
-      <clr-dg-column [clrDgField]="'outBytes24h'">Out (24h)</clr-dg-column>
+      <clr-dg-column [clrDgField]="'inBytes'">In</clr-dg-column>
+      <clr-dg-column [clrDgField]="'outBytes'">Out</clr-dg-column>
       <clr-dg-column>Avg utilization in / out</clr-dg-column>
 
       <clr-dg-row *clrDgItems="let i of ifaces.value() ?? []; trackBy: byIndex" [clrDgItem]="i">
@@ -76,20 +80,20 @@ import { timeSeriesOption } from '../shared/options';
         <clr-dg-cell>{{ i.name || '–' }}</clr-dg-cell>
         <clr-dg-cell>{{ i.description }}</clr-dg-cell>
         <clr-dg-cell>{{ i.speed ? fmtBits(i.speed) : 'unknown' }}</clr-dg-cell>
-        <clr-dg-cell class="num">{{ fmtBytes(i.inBytes24h) }}</clr-dg-cell>
-        <clr-dg-cell class="num">{{ fmtBytes(i.outBytes24h) }}</clr-dg-cell>
+        <clr-dg-cell class="num">{{ fmtBytes(i.inBytes) }}</clr-dg-cell>
+        <clr-dg-cell class="num">{{ fmtBytes(i.outBytes) }}</clr-dg-cell>
         <clr-dg-cell>
           @if (i.speed) {
             <div class="util">
-              <span class="u-lbl">in</span><span class="u-bar"><span [style.width.%]="util(i.inBytes24h, i.speed)"></span></span><span class="u-pct">{{ util(i.inBytes24h, i.speed).toFixed(1) }}%</span>
-              <span class="u-lbl">out</span><span class="u-bar"><span [style.width.%]="util(i.outBytes24h, i.speed)"></span></span><span class="u-pct">{{ util(i.outBytes24h, i.speed).toFixed(1) }}%</span>
+              <span class="u-lbl">in</span><span class="u-bar"><span [style.width.%]="util(i.inBytes, i.speed)"></span></span><span class="u-pct">{{ util(i.inBytes, i.speed).toFixed(1) }}%</span>
+              <span class="u-lbl">out</span><span class="u-bar"><span [style.width.%]="util(i.outBytes, i.speed)"></span></span><span class="u-pct">{{ util(i.outBytes, i.speed).toFixed(1) }}%</span>
             </div>
           } @else {
             <span class="hint">set speed</span>
           }
         </clr-dg-cell>
       </clr-dg-row>
-      <clr-dg-placeholder>No interfaces have carried traffic in the last 24 hours.</clr-dg-placeholder>
+      <clr-dg-placeholder>No interfaces carried traffic in this time range.</clr-dg-placeholder>
       <clr-dg-footer>
         <clr-dg-pagination #pg [clrDgPageSize]="25">
           <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
@@ -147,6 +151,8 @@ import { timeSeriesOption } from '../shared/options';
     .u-lbl { font-size: 11px; color: var(--cds-alias-typography-color-300); }
     .u-bar { width: 50px; height: 6px; border-radius: 3px; background: var(--cds-alias-object-border-color); overflow: hidden; display: inline-block; }
     .u-bar span { display: block; height: 100%; background: var(--cds-alias-status-info); }
+    .header-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .header-controls .btn { margin: 0; }
     .u-pct { width: 42px; text-align: right; margin-right: 8px; }
   `,
 })
@@ -159,9 +165,9 @@ export class ExporterDetail {
   readonly metrics = METRICS;
   readonly metric = signal<Metric>('bps');
 
-  readonly list = loader(() => ({ a: this.addr(), t: this.time.tick() }), () => this.api.exporters());
+  readonly list = loader(() => this.time.window(), (w) => this.api.exporters(w));
   readonly exp = computed(() => this.list.value()?.find((e) => e.addr === this.addr()));
-  readonly ifaces = loader(() => this.addr(), (a) => this.api.interfaces(a));
+  readonly ifaces = loader(() => ({ a: this.addr(), w: this.time.window() }), (p) => this.api.interfaces(p.a, p.w));
   readonly series = loader(
     () => ({ w: this.time.window(), a: this.addr(), m: this.metric() }),
     (p) => this.api.timeseries(p.w, { exporter: p.a }, p.m, 'in_if', 10),
@@ -186,8 +192,10 @@ export class ExporterDetail {
   fmtBytes = bytes;
   fmtCount = count;
 
+  // Average utilization over the selected window.
   util(b: number, speed: number) {
-    return Math.min(100, ((b * 8) / 86400 / speed) * 100);
+    const w = this.time.window();
+    return Math.min(100, ((b * 8) / ((w.to - w.from) / 1000) / speed) * 100);
   }
 
   editIf(i: Interface) {

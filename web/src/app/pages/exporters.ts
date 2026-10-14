@@ -5,18 +5,20 @@ import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, Exporter } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, bits, bytes, count, samplingLabel } from '../core/format';
+import { TimeRange } from '../core/time';
 import { loader, trackByKey } from '../core/util';
+import { RangeBar } from '../shared/range-bar';
 
 @Component({
   selector: 'nfa-exporters',
-  imports: [ClarityModule, FormsModule, RouterLink],
+  imports: [ClarityModule, FormsModule, RouterLink, RangeBar],
   template: `
     <div class="page-header">
       <div>
         <h2>Exporters</h2>
-        <p class="subtitle">Routers, switches and firewalls sending flow data to this appliance</p>
+        <p class="subtitle">Routers, switches and firewalls sending flow data · {{ time.label() }}</p>
       </div>
-      <button class="btn btn-sm btn-outline" (click)="list.reload()"><cds-icon shape="refresh"></cds-icon> Refresh</button>
+      <nfa-range-bar />
     </div>
 
     @if (list.error()) {
@@ -32,7 +34,7 @@ import { loader, trackByKey } from '../core/util';
       <clr-dg-column>Sampling</clr-dg-column>
       <clr-dg-column>Templates</clr-dg-column>
       <clr-dg-column [clrDgSortBy]="byLost">Lost / Errors</clr-dg-column>
-      <clr-dg-column [clrDgField]="'bytes24h'">24h volume</clr-dg-column>
+      <clr-dg-column [clrDgField]="'bytes'">Volume</clr-dg-column>
       <clr-dg-column>Last seen</clr-dg-column>
 
       <clr-dg-row *clrDgItems="let e of list.value() ?? []; trackBy: byAddr" [clrDgItem]="e">
@@ -77,7 +79,7 @@ import { loader, trackByKey } from '../core/util';
           <span [class.warn]="(e.live?.lost ?? 0) > 0">{{ fmtCount(e.live?.lost ?? 0) }}</span> /
           <span [class.warn]="(e.live?.errors ?? 0) > 0" [title]="e.live?.lastError ?? ''">{{ fmtCount(e.live?.errors ?? 0) }}</span>
         </clr-dg-cell>
-        <clr-dg-cell class="num">{{ fmtBytes(e.bytes24h) }}</clr-dg-cell>
+        <clr-dg-cell class="num">{{ fmtBytes(e.bytes) }}</clr-dg-cell>
         <clr-dg-cell>{{ ago(e.live?.lastSeen ?? 0) }}</clr-dg-cell>
       </clr-dg-row>
 
@@ -151,8 +153,10 @@ export class Exporters {
   readonly byAddr = trackByKey<{ addr: string }>((e) => e.addr);
   private api = inject(Api);
   readonly auth = inject(Auth);
+  readonly time = inject(TimeRange);
+  // Live counters refresh every 10s; volume follows the selected range.
   private tick = signal(0);
-  readonly list = loader(() => this.tick(), () => this.api.exporters());
+  readonly list = loader(() => ({ w: this.time.window(), t: this.tick() }), (p) => this.api.exporters(p.w));
 
   readonly editOpen = signal(false);
   readonly confirmDelete = signal<Exporter | null>(null);

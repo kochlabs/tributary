@@ -1,12 +1,14 @@
 import { NgFor } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, DeviceInfo, errorMessage } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, bytes, dateTime } from '../core/format';
+import { TimeRange } from '../core/time';
 import { ExpandedRows, loader, trackByKey } from '../core/util';
+import { RangeBar } from '../shared/range-bar';
 
 const SOURCE_HINT: Record<string, string> = {
   name: 'Named by an administrator',
@@ -17,14 +19,14 @@ const SOURCE_HINT: Record<string, string> = {
 
 @Component({
   selector: 'nfa-devices',
-  imports: [ClarityModule, FormsModule, NgFor],
+  imports: [ClarityModule, FormsModule, NgFor, RangeBar],
   template: `
     <div class="page-header">
       <div>
         <h2>Devices</h2>
-        <p class="subtitle">Local devices identified by MAC address, with every IPv4 and IPv6 address they used</p>
+        <p class="subtitle">Local devices by MAC address, with every address they used · {{ time.label() }}</p>
       </div>
-      <button class="btn btn-link" (click)="list.reload()"><cds-icon shape="refresh"></cds-icon> Refresh</button>
+      <nfa-range-bar />
     </div>
 
     @if (list.error() || error()) {
@@ -37,7 +39,7 @@ const SOURCE_HINT: Record<string, string> = {
       <clr-dg-column [clrDgField]="'vendor'">Vendor</clr-dg-column>
       <clr-dg-column>IPv4</clr-dg-column>
       <clr-dg-column>IPv6</clr-dg-column>
-      <clr-dg-column [clrDgField]="'bytes24h'" [clrDgSortOrder]="-1">Last 24h</clr-dg-column>
+      <clr-dg-column [clrDgField]="'bytes'" [clrDgSortOrder]="-1">Traffic</clr-dg-column>
       <clr-dg-column [clrDgField]="'lastSeen'">Last seen</clr-dg-column>
 
       <clr-dg-row *clrDgItems="let d of list.value() ?? []; trackBy: byMac" [clrDgItem]="d" [clrDgExpanded]="expanded.has(d.mac)" (clrDgExpandedChange)="expanded.set(d.mac, $event)">
@@ -62,13 +64,13 @@ const SOURCE_HINT: Record<string, string> = {
         </clr-dg-cell>
         <clr-dg-cell class="mono">{{ d.ipv4.join(', ') || '–' }}</clr-dg-cell>
         <clr-dg-cell [title]="d.ipv6.join('\\n')">{{ d.ipv6.length ? d.ipv6.length + ' address' + (d.ipv6.length === 1 ? '' : 'es') : '–' }}</clr-dg-cell>
-        <clr-dg-cell class="num">{{ d.bytes24h ? fmtBytes(d.bytes24h) : '–' }}</clr-dg-cell>
+        <clr-dg-cell class="num">{{ d.bytes ? fmtBytes(d.bytes) : '–' }}</clr-dg-cell>
         <clr-dg-cell [title]="dt(d.lastSeen)">{{ ago(d.lastSeen) }}</clr-dg-cell>
 
         <clr-dg-row-detail *clrIfExpanded>
           <div class="detail">
             <div><span>First seen</span>{{ dt(d.firstSeen) }}</div>
-            <div><span>Flows (24h)</span>{{ d.flows24h }}</div>
+            <div><span>Flows in range</span>{{ d.flows.toLocaleString() }}</div>
             <div class="ips">
               <span>Addresses</span>
               <table class="table table-compact table-noborder">
@@ -135,19 +137,14 @@ export class Devices {
   private api = inject(Api);
   private router = inject(Router);
   readonly auth = inject(Auth);
-  private tick = signal(0);
-  readonly list = loader(() => this.tick(), () => this.api.devices());
+  readonly time = inject(TimeRange);
+  readonly list = loader(() => this.time.window(), (w) => this.api.devices(w));
   readonly renaming = signal<DeviceInfo | null>(null);
   readonly error = signal('');
   newName = '';
   ago = ago;
   dt = dateTime;
   fmtBytes = bytes;
-
-  constructor() {
-    const id = setInterval(() => this.tick.update((t) => t + 1), 30_000);
-    inject(DestroyRef).onDestroy(() => clearInterval(id));
-  }
 
   hint(d: DeviceInfo) {
     return SOURCE_HINT[d.nameSource] ?? '';

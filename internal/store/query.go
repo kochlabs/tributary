@@ -476,20 +476,23 @@ type InterfaceTraffic struct {
 	OutBytes uint64 `json:"outBytes"`
 }
 
-// Interfaces lists interfaces seen in the last 24 hours with their volume.
-func (s *Store) Interfaces(ctx context.Context, exporter string) ([]InterfaceTraffic, error) {
-	cond, args := "", []any{}
+// Interfaces lists interfaces seen in [from, to) with their volume.
+func (s *Store) Interfaces(ctx context.Context, exporter string, from, to time.Time) ([]InterfaceTraffic, error) {
+	cond := " AND ts >= toDateTime(?) AND ts < toDateTime(?)"
+	part := []any{from.Unix(), to.Unix()}
 	if exporter != "" {
 		lo, _, err := addrRange(exporter)
 		if err != nil {
 			return nil, err
 		}
-		cond, args = " AND exporter = toIPv6(?)", []any{lo, lo}
+		cond += " AND exporter = toIPv6(?)"
+		part = append(part, lo)
 	}
+	args := append(append([]any{}, part...), part...)
 	sql := fmt.Sprintf(`SELECT %s AS e, i, sumIf(bytes, d = 0) AS inb, sumIf(bytes, d = 1) AS outb FROM (
-		SELECT exporter, in_if AS i, 0 AS d, bytes FROM netflow.traffic_1m WHERE ts >= now() - INTERVAL 1 DAY%s
+		SELECT exporter, in_if AS i, 0 AS d, bytes FROM netflow.traffic_1m WHERE 1%s
 		UNION ALL
-		SELECT exporter, out_if AS i, 1 AS d, bytes FROM netflow.traffic_1m WHERE ts >= now() - INTERVAL 1 DAY%s
+		SELECT exporter, out_if AS i, 1 AS d, bytes FROM netflow.traffic_1m WHERE 1%s
 	) WHERE i != 0 GROUP BY e, i ORDER BY e, i`, ipstr("exporter"), cond, cond)
 	rows, err := s.conn.Query(ctx, sql, args...)
 	if err != nil {
@@ -513,10 +516,17 @@ type ExporterTraffic struct {
 	LastSeen int64  `json:"lastSeen"`
 }
 
-// ExporterTraffic returns 24h volume per exporter address.
-func (s *Store) ExporterTraffic(ctx context.Context) (map[string]ExporterTraffic, error) {
-	rows, err := s.conn.Query(ctx, fmt.Sprintf(`SELECT %s, sum(bytes), sum(flows), toUnixTimestamp(max(ts))
-		FROM netflow.traffic_1m WHERE ts >= now() - INTERVAL 1 DAY GROUP BY exporter`, ipstr("exporter")))
+// ExporterTraffic returns volume per exporter address in [from, to). LastSeen
+// is the newest minute with flows in the past hour regardless of the window,
+// so status reflects the exporter's current health.
+func (s *Store) ExporterTraffic(ctx context.Context, from, to time.Time) (map[string]ExporterTraffic, error) {
+	rows, err := s.conn.Query(ctx, fmt.Sprintf(`SELECT %s,
+			sumIf(bytes, ts >= toDateTime(?) AND ts < toDateTime(?)),
+			sumIf(flows, ts >= toDateTime(?) AND ts < toDateTime(?)),
+			toUnixTimestamp(maxIf(ts, ts >= now() - INTERVAL 1 HOUR))
+		FROM netflow.traffic_1m WHERE (ts >= toDateTime(?) AND ts < toDateTime(?)) OR ts >= now() - INTERVAL 1 HOUR
+		GROUP BY exporter`, ipstr("exporter")),
+		from.Unix(), to.Unix(), from.Unix(), to.Unix(), from.Unix(), to.Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -529,7 +539,9 @@ func (s *Store) ExporterTraffic(ctx context.Context) (map[string]ExporterTraffic
 		if err := rows.Scan(&k, &t.Bytes, &t.Flows, &last); err != nil {
 			return nil, err
 		}
-		t.LastSeen = int64(last) * 1000
+		if last > 0 {
+			t.LastSeen = int64(last) * 1000
+		}
 		out[k] = t
 	}
 	return out, rows.Err()
@@ -643,10 +655,11 @@ func (s *Store) StorageEstimate(ctx context.Context) (*StorageEstimate, error) {
 	return est, err
 }
 
-// DeviceTraffic returns 24-hour volume per device MAC.
-func (s *Store) DeviceTraffic(ctx context.Context) (map[uint64][2]uint64, error) {
+// DeviceTraffic returns bytes and flow count per device MAC in [from, to).
+func (s *Store) DeviceTraffic(ctx context.Context, from, to time.Time) (map[uint64][2]uint64, error) {
 	rows, err := s.conn.Query(ctx, `SELECT device_mac, sum(bytes), count() FROM netflow.flows
-		WHERE time_received >= now() - INTERVAL 1 DAY AND device_mac != 0 GROUP BY device_mac`)
+		WHERE time_received >= toDateTime(?) AND time_received < toDateTime(?) AND device_mac != 0 GROUP BY device_mac`,
+		from.Unix(), to.Unix())
 	if err != nil {
 		return nil, err
 	}
