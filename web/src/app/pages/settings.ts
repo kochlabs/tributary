@@ -11,13 +11,13 @@ import { bytes, count, dateTime } from '../core/format';
   template: `
     <div class="page-header">
       <div>
-        <h2>Settings</h2>
-        <p class="subtitle">Appliance configuration. Changes apply immediately.</p>
+        <h2 i18n="@@nav.settings">Settings</h2>
+        <p class="subtitle" i18n="@@settings.subtitle">Appliance configuration. Changes apply immediately.</p>
       </div>
     </div>
 
     @if (saved()) {
-      <div class="alert alert-success" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">Settings saved and applied.</span></div></div></div>
+      <div class="alert alert-success" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text" i18n="@@settings.saved">Settings saved and applied.</span></div></div></div>
     }
     @if (error()) {
       <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ error() }}</span></div></div></div>
@@ -26,68 +26,68 @@ import { bytes, count, dateTime } from '../core/format';
     @if (s(); as s) {
       <form clrForm clrLayout="horizontal" clrLabelSize="4" (ngSubmit)="save()" class="settings-form">
         <div class="card">
-          <div class="card-header">General</div>
+          <div class="card-header" i18n="@@settings.general">General</div>
           <div class="card-block">
             <clr-input-container>
-              <label>Appliance name</label>
+              <label i18n="@@settings.applianceName">Appliance name</label>
               <input clrInput name="name" [(ngModel)]="s.applianceName" required maxlength="64" />
-              <clr-control-helper>Shown in the header and on the sign-in page.</clr-control-helper>
+              <clr-control-helper i18n="@@settings.applianceNameHelp">Shown in the header and on the sign-in page.</clr-control-helper>
             </clr-input-container>
             <clr-input-container>
-              <label>Session lifetime (hours)</label>
+              <label i18n="@@settings.sessionLifetime">Session lifetime (hours)</label>
               <input clrInput type="number" name="session" [(ngModel)]="s.sessionHours" min="1" max="720" required />
             </clr-input-container>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header">Flow collection</div>
+          <div class="card-header" i18n="@@settings.flowCollection">Flow collection</div>
           <div class="card-block">
-            <p class="hint">Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener.</p>
+            <p class="hint" i18n="@@settings.flowCollectionHint">Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener.</p>
             <clr-input-container>
-              <label>NetFlow UDP port</label>
+              <label i18n="@@settings.netflowPort">NetFlow UDP port</label>
               <input clrInput type="number" name="nf" [(ngModel)]="s.netflowPort" min="0" max="65535" />
             </clr-input-container>
             <clr-input-container>
-              <label>IPFIX UDP port</label>
+              <label i18n="@@settings.ipfixPort">IPFIX UDP port</label>
               <input clrInput type="number" name="ipfix" [(ngModel)]="s.ipfixPort" min="0" max="65535" />
             </clr-input-container>
             <clr-input-container>
-              <label>sFlow UDP port</label>
+              <label i18n="@@settings.sflowPort">sFlow UDP port</label>
               <input clrInput type="number" name="sflow" [(ngModel)]="s.sflowPort" min="0" max="65535" />
             </clr-input-container>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header">Data retention</div>
+          <div class="card-header" i18n="@@settings.dataRetention">Data retention</div>
           <div class="card-block">
-            <p class="hint">Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size.</p>
+            <p class="hint" i18n="@@settings.dataRetentionHint">Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size.</p>
             <clr-input-container>
-              <label>Raw flows (days)</label>
+              <label i18n="@@settings.rawFlowsDays">Raw flows (days)</label>
               <input clrInput type="number" name="raw" [(ngModel)]="s.rawRetentionDays" min="1" max="3650" required />
               @if (rate('flows'); as r) {
-                <clr-control-helper>≈ {{ size(r, s.rawRetentionDays) }} at the current rate ({{ count(r.rowsPerDay) }} flows/day)</clr-control-helper>
+                <clr-control-helper i18n="@@settings.rawFlowsEstimate">≈ {{ size(r, s.rawRetentionDays) }} at the current rate ({{ count(r.rowsPerDay) }} flows/day)</clr-control-helper>
               }
             </clr-input-container>
             <clr-input-container>
-              <label>1-minute rollup (days)</label>
+              <label i18n="@@settings.rollupDays">1-minute rollup (days)</label>
               <input clrInput type="number" name="rollup" [(ngModel)]="s.rollupRetentionDays" min="1" max="3650" required />
               @if (rate('traffic_1m'); as r) {
-                <clr-control-helper>≈ {{ size(r, s.rollupRetentionDays) }} at the current rate</clr-control-helper>
+                <clr-control-helper i18n="@@settings.rollupEstimate">≈ {{ size(r, s.rollupRetentionDays) }} at the current rate</clr-control-helper>
               }
             </clr-input-container>
             @if (storage(); as st) {
               @let total = totalEstimate(s.rawRetentionDays, s.rollupRetentionDays);
               @let budget = st.diskFree + current();
               <div class="estimate" [class.over]="total > budget * 0.75">
-                Estimated total <b>{{ fmtBytes(total) }}</b> of {{ fmtBytes(budget) }} available for flow data
-                ({{ fmtBytes(st.diskFree) }} free on a {{ fmtBytes(st.diskTotal) }} disk).
+                <ng-container i18n="@@settings.totalEstimate">Estimated total <b>{{ fmtBytes(total) }}</b> of {{ fmtBytes(budget) }} available for flow data
+                ({{ fmtBytes(st.diskFree) }} free on a {{ fmtBytes(st.diskTotal) }} disk).</ng-container>
                 @if (total > budget * 0.75) {
-                  <br />That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.
+                  <br /><ng-container i18n="@@settings.tooLittleSpace">That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.</ng-container>
                 }
                 @if (sampleHours() < 24) {
-                  <br /><span class="muted">Based on {{ sampleHours().toFixed(1) }} hours of data; the estimate firms up after a full day.</span>
+                  <br /><span class="muted" i18n="@@settings.estimateSample">Based on {{ sampleHours().toFixed(1) }} hours of data; the estimate firms up after a full day.</span>
                 }
               </div>
             }
@@ -95,52 +95,52 @@ import { bytes, count, dateTime } from '../core/format';
         </div>
 
         <div class="card">
-          <div class="card-header">Enrichment</div>
+          <div class="card-header" i18n="@@settings.enrichment">Enrichment</div>
           <div class="card-block">
             <clr-toggle-container>
-              <label>Reverse DNS</label>
+              <label i18n="@@settings.reverseDns">Reverse DNS</label>
               <clr-toggle-wrapper>
                 <input type="checkbox" clrToggle name="rdns" [(ngModel)]="s.reverseDns" />
-                <label>Resolve hostnames for addresses in reports</label>
+                <label i18n="@@settings.reverseDnsToggle">Resolve hostnames for addresses in reports</label>
               </clr-toggle-wrapper>
-              <clr-control-helper>Lookups use the appliance's system resolver and are cached for 6 hours. Disable on isolated networks.</clr-control-helper>
+              <clr-control-helper i18n="@@settings.reverseDnsHelp">Lookups use the appliance's system resolver and are cached for 6 hours. Disable on isolated networks.</clr-control-helper>
             </clr-toggle-container>
             <clr-textarea-container>
-              <label>Local networks</label>
+              <label i18n="@@settings.localNetworks">Local networks</label>
               <textarea clrTextarea name="localNetworks" rows="3" [ngModel]="localText()" (ngModelChange)="localText.set($event)" placeholder="2001:db8:1234::/56&#10;203.0.113.0/28"></textarea>
-              <clr-control-helper>One CIDR per line. Your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</clr-control-helper>
+              <clr-control-helper i18n="@@settings.localNetworksHelp">One CIDR per line. Your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</clr-control-helper>
             </clr-textarea-container>
             <clr-textarea-container>
-              <label>DNS resolvers</label>
-              <textarea clrTextarea name="dnsServers" rows="2" [ngModel]="dnsText()" (ngModelChange)="dnsText.set($event)" placeholder="Leave empty to use the system resolvers"></textarea>
+              <label i18n="@@settings.dnsResolvers">DNS resolvers</label>
+              <textarea clrTextarea name="dnsServers" rows="2" [ngModel]="dnsText()" (ngModelChange)="dnsText.set($event)" placeholder="Leave empty to use the system resolvers" i18n-placeholder="@@settings.dnsResolversPlaceholder"></textarea>
               <clr-control-helper>
-                One IP address per line (optionally <code>:port</code>), tried in order. Used for Tributary's own lookups: reverse DNS, GeoIP downloads and ASN lookups.
-                Tip: your router/DHCP server usually knows local device names.
+                <ng-container i18n="@@settings.dnsResolversHelp">One IP address per line (optionally <code>:port</code>), tried in order. Used for Tributary's own lookups: reverse DNS, GeoIP downloads and ASN lookups.
+                Tip: your router/DHCP server usually knows local device names.</ng-container>
                 @if (geo()?.systemDnsServers?.length) {
-                  System resolvers: {{ geo()!.systemDnsServers.join(', ') }}.
+                  <ng-container i18n="@@settings.systemResolvers">System resolvers: {{ geo()!.systemDnsServers.join(', ') }}.</ng-container>
                 }
               </clr-control-helper>
             </clr-textarea-container>
             <clr-toggle-container>
-              <label>Online ASN lookup</label>
+              <label i18n="@@settings.onlineAsn">Online ASN lookup</label>
               <clr-toggle-wrapper>
                 <input type="checkbox" clrToggle name="onlineasn" [(ngModel)]="s.onlineAsnLookup" />
-                <label>Look up ASNs missing from the local database via RIPEstat</label>
+                <label i18n="@@settings.onlineAsnToggle">Look up ASNs missing from the local database via RIPEstat</label>
               </clr-toggle-wrapper>
-              <clr-control-helper>Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</clr-control-helper>
+              <clr-control-helper i18n="@@settings.onlineAsnHelp">Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</clr-control-helper>
             </clr-toggle-container>
             <p class="hint sources">
-              GeoIP, ASN and MAC vendor databases are chosen under <a routerLink="/admin/data-sources">Data Sources</a>.
+              <ng-container i18n="@@settings.dataSourcesHint">GeoIP, ASN and MAC vendor databases are chosen under <a routerLink="/admin/data-sources">Data Sources</a>.</ng-container>
               @if (geo(); as g) {
-                Hostname cache: {{ g.rdnsCache }} entries.
+                <ng-container i18n="@@settings.hostnameCache">Hostname cache: {{ g.rdnsCache }} entries.</ng-container>
               }
             </p>
           </div>
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn btn-primary" [clrLoading]="busy()">Save settings</button>
-          <button type="button" class="btn btn-outline" (click)="load()">Revert</button>
+          <button type="submit" class="btn btn-primary" [clrLoading]="busy()" i18n="@@settings.saveSettings">Save settings</button>
+          <button type="button" class="btn btn-outline" (click)="load()" i18n="@@common.revert">Revert</button>
         </div>
       </form>
     }

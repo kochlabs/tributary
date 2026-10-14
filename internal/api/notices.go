@@ -17,11 +17,15 @@ import (
 type Notice struct {
 	// ID is stable while the condition is unchanged and changes when it does
 	// (e.g. more updates), so a dismissed notice reappears when it matters.
-	ID          string        `json:"id"`
-	Level       string        `json:"level"` // info | warning | danger
-	Message     string        `json:"message"`
-	Action      *NoticeAction `json:"action,omitempty"`
-	Dismissible bool          `json:"dismissible"`
+	ID    string `json:"id"`
+	Level string `json:"level"` // info | warning | danger
+	// Kind and Params let the UI phrase the notice in the user's language;
+	// Message is the English text, used when the UI has no translation.
+	Kind        string            `json:"kind"`
+	Params      map[string]string `json:"params,omitempty"`
+	Message     string            `json:"message"`
+	Action      *NoticeAction     `json:"action,omitempty"`
+	Dismissible bool              `json:"dismissible"`
 	adminOnly   bool
 }
 
@@ -87,7 +91,7 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 	// Database and disks.
 	db, err := s.Store.Stats(ctx)
 	if err != nil {
-		add(Notice{ID: "db-down", Level: "danger", Message: "The flow database is unavailable: flows are not being stored and reports may fail.",
+		add(Notice{ID: "db-down", Kind: "db-down", Level: "danger", Message: "The flow database is unavailable: flows are not being stored and reports may fail.",
 			Action: &NoticeAction{Label: "System health", Route: "/system"}})
 	}
 	var paths []string
@@ -110,7 +114,8 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 		default:
 			continue
 		}
-		add(Notice{ID: "disk:" + d.path + ":" + level, Level: level,
+		add(Notice{ID: "disk:" + d.path + ":" + level, Kind: "disk-low", Level: level,
+			Params: map[string]string{"free": humanBytes(d.free), "total": humanBytes(d.total), "percent": fmt.Sprintf("%.0f", free*100), "path": d.path},
 			Message: fmt.Sprintf("Disk space is low: %s free of %s (%.0f%%) on %s. Flow storage stops when the disk is full; shorten retention or add space.",
 				humanBytes(d.free), humanBytes(d.total), free*100, d.path),
 			Action: &NoticeAction{Label: "Retention settings", Route: "/admin/settings", admin: true}})
@@ -119,12 +124,12 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 	// Collector and writer.
 	cs := s.Collector.Status()
 	for _, proto := range slices.Sorted(mapKeys(cs.ListenErrors)) {
-		add(Notice{ID: "listen:" + proto, Level: "danger", Message: fmt.Sprintf("Not receiving %s: %s", proto, cs.ListenErrors[proto]),
+		add(Notice{ID: "listen:" + proto, Kind: "listen-failed", Level: "danger", Params: map[string]string{"protocol": proto, "error": cs.ListenErrors[proto]}, Message: fmt.Sprintf("Not receiving %s: %s", proto, cs.ListenErrors[proto]),
 			Action: &NoticeAction{Label: "Collector ports", Route: "/admin/settings", admin: true}})
 	}
 	dropped := s.Writer.Dropped.Load()
 	if prev := s.prevDropped.Swap(dropped); s.noticeRuns.Add(1) > 1 && dropped > prev {
-		add(Notice{ID: "drops:" + now.Format("2006010215"), Level: "warning",
+		add(Notice{ID: "drops:" + now.Format("2006010215"), Kind: "drops", Level: "warning", Params: map[string]string{"count": fmt.Sprint(dropped - prev)},
 			Message: fmt.Sprintf("%d flow records were dropped in the last minute because the database could not keep up.", dropped-prev),
 			Action:  &NoticeAction{Label: "System health", Route: "/system"}})
 	}
@@ -149,11 +154,11 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 			if sec > 0 {
 				msg, level = fmt.Sprintf("%d operating system update%s available, including %d security update%s.", k, plural(k), sec, plural(sec)), "warning"
 			}
-			add(Notice{ID: fmt.Sprintf("updates:%d:%d", k, sec), Level: level, Message: msg, adminOnly: true,
+			add(Notice{ID: fmt.Sprintf("updates:%d:%d", k, sec), Kind: "updates", Params: map[string]string{"count": fmt.Sprint(k), "security": fmt.Sprint(sec)}, Level: level, Message: msg, adminOnly: true,
 				Action: &NoticeAction{Label: "View updates", Route: "/admin/updates", admin: true}})
 		}
 		if st.RebootRequired {
-			add(Notice{ID: "reboot:" + st.Kernel, Level: "warning", Message: "A restart is required to finish installing updates.", adminOnly: true,
+			add(Notice{ID: "reboot:" + st.Kernel, Kind: "reboot-required", Level: "warning", Message: "A restart is required to finish installing updates.", adminOnly: true,
 				Action: &NoticeAction{Label: "Restart", Route: "/admin/updates", admin: true}})
 		}
 	}
@@ -161,11 +166,11 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 		c := cst.Certificate
 		switch {
 		case c.DaysLeft < 0:
-			add(Notice{ID: fmt.Sprintf("cert:%d:expired", c.NotAfter), Level: "danger", adminOnly: true,
+			add(Notice{ID: fmt.Sprintf("cert:%d:expired", c.NotAfter), Kind: "cert-expired", Level: "danger", adminOnly: true,
 				Message: "The appliance's TLS certificate has expired; browsers will refuse to connect.",
 				Action:  &NoticeAction{Label: "Certificates", Route: "/admin/certificates", admin: true}})
 		case c.DaysLeft <= 30:
-			add(Notice{ID: fmt.Sprintf("cert:%d", c.NotAfter), Level: "warning", adminOnly: true,
+			add(Notice{ID: fmt.Sprintf("cert:%d", c.NotAfter), Kind: "cert-expiring", Params: map[string]string{"days": fmt.Sprint(c.DaysLeft)}, Level: "warning", adminOnly: true,
 				Message: fmt.Sprintf("The appliance's TLS certificate expires in %d day%s.", c.DaysLeft, plural(c.DaysLeft)),
 				Action:  &NoticeAction{Label: "Certificates", Route: "/admin/certificates", admin: true}})
 		}
@@ -175,14 +180,14 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 	}
 	if settled {
 		if ts, err := s.System.TimeStatus(ctx); err == nil && ts.NTPEnabled && !ts.Synchronized {
-			add(Notice{ID: "time-unsynced", Level: "warning", adminOnly: true,
+			add(Notice{ID: "time-unsynced", Kind: "time-unsynced", Level: "warning", adminOnly: true,
 				Message: "The clock is not synchronized with a time server; flow timestamps may drift.",
 				Action:  &NoticeAction{Label: "Time settings", Route: "/admin/time", admin: true}})
 		}
 	}
-	for _, f := range []struct{ what, status string }{{"GeoIP", s.Geo.Status().LastUpdate}, {"MAC vendor", s.vendorStatus()}} {
+	for _, f := range []struct{ what, db, status string }{{"GeoIP", "geoip", s.Geo.Status().LastUpdate}, {"MAC vendor", "vendors", s.vendorStatus()}} {
 		if when, msg, ok := strings.Cut(f.status, ": failed: "); ok {
-			add(Notice{ID: "datasource:" + f.what + ":" + when, Level: "info", adminOnly: true,
+			add(Notice{ID: "datasource:" + f.what + ":" + when, Kind: "datasource-failed", Params: map[string]string{"database": f.db, "error": firstLine(msg)}, Level: "info", adminOnly: true,
 				Message: fmt.Sprintf("The %s database could not be updated: %s", f.what, firstLine(msg)),
 				Action:  &NoticeAction{Label: "Data sources", Route: "/admin/data-sources", admin: true}})
 		}
@@ -228,11 +233,12 @@ func (s *Server) silentExporters(ctx context.Context, now time.Time) *Notice {
 		return nil
 	}
 	slices.Sort(silent)
+	params := map[string]string{"count": fmt.Sprint(len(silent)), "names": strings.Join(silent, ", ")}
 	msg := silent[0] + " has stopped sending flows."
 	if len(silent) > 1 {
 		msg = fmt.Sprintf("%d exporters have stopped sending flows: %s.", len(silent), strings.Join(silent, ", "))
 	}
-	return &Notice{ID: "silent:" + strings.Join(silent, ","), Level: "warning", Message: msg,
+	return &Notice{ID: "silent:" + strings.Join(silent, ","), Kind: "exporters-silent", Params: params, Level: "warning", Message: msg,
 		Action: &NoticeAction{Label: "Exporters", Route: "/exporters"}}
 }
 
@@ -248,7 +254,7 @@ func (s *Server) initialPasswordNotice() *Notice {
 		return nil
 	}
 	if s.Config.PasswordMatches("admin", strings.TrimSpace(string(b))) {
-		return &Notice{ID: "initial-password", Level: "warning", adminOnly: true,
+		return &Notice{ID: "initial-password", Kind: "initial-password", Level: "warning", adminOnly: true,
 			Message: "The admin account still uses its generated initial password. Change it, or create your own administrator and remove this one.",
 			Action:  &NoticeAction{Label: "Users", Route: "/admin/users", admin: true}}
 	}

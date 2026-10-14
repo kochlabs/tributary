@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage } from '../core/api';
 import { Auth } from '../core/auth';
+import { languageName, setLanguageCookie } from '../core/language';
 
 @Component({
   selector: 'nfa-login',
@@ -23,29 +24,39 @@ import { Auth } from '../core/auth';
               <span class="name">{{ name() }}</span>
             }
           </div>
-          <h5 class="hint">Network flow analytics</h5>
+          <h5 class="hint" i18n="@@login.tagline">Network flow analytics</h5>
         </section>
         <div class="login-group">
           <clr-input-container>
-            <label class="clr-sr-only">Username</label>
-            <input type="text" name="username" clrInput placeholder="Username" [(ngModel)]="username" autocomplete="username" required autofocus />
+            <label class="clr-sr-only" i18n="@@login.username">Username</label>
+            <input type="text" name="username" clrInput placeholder="Username" i18n-placeholder="@@login.username" [(ngModel)]="username" autocomplete="username" required autofocus />
           </clr-input-container>
           <clr-password-container>
-            <label class="clr-sr-only">Password</label>
-            <input type="password" name="password" clrPassword placeholder="Password" [(ngModel)]="password" autocomplete="current-password" required />
+            <label class="clr-sr-only" i18n="@@login.password">Password</label>
+            <input type="password" name="password" clrPassword placeholder="Password" i18n-placeholder="@@login.password" [(ngModel)]="password" autocomplete="current-password" required />
           </clr-password-container>
           @if (error()) {
             <div class="error active">{{ error() }}</div>
           }
-          <button type="submit" class="btn btn-primary" [clrLoading]="busy()" [disabled]="!username || !password">Sign in</button>
+          <button type="submit" class="btn btn-primary" [clrLoading]="busy()" [disabled]="!username || !password" i18n="@@login.title">Sign in</button>
           @if (sso().length) {
-            <div class="divider"><span>or</span></div>
+            <div class="divider"><span i18n="Separator between password sign-in and SSO buttons@@login.or">or</span></div>
             @for (s of sso(); track s.id) {
-              <a class="btn btn-outline sso-btn" [href]="ssoHref(s.id)"><cds-icon shape="login"></cds-icon> Sign in with {{ s.name }}</a>
+              <a class="btn btn-outline sso-btn" [href]="ssoHref(s.id)"><cds-icon shape="login"></cds-icon> <ng-container i18n="@@login.signInWith">Sign in with {{ s.name }}</ng-container></a>
             }
           }
         </div>
-        <div class="version">Version {{ version() }}</div>
+        <div class="version" i18n="@@login.version">Version {{ version() }}</div>
+        @if (languages().length > 1) {
+          <div class="language">
+            <cds-icon shape="network-globe"></cds-icon>
+            <select class="clr-select" aria-label="Language" i18n-aria-label="@@shell.language" (change)="setLanguage($any($event.target).value)">
+              @for (l of languages(); track l.code) {
+                <option [value]="l.code" [selected]="l.code === language()" [attr.lang]="l.code">{{ l.name }}</option>
+              }
+            </select>
+          </div>
+        }
       </form>
     </div>
   `,
@@ -62,16 +73,24 @@ import { Auth } from '../core/auth';
     .divider { display: flex; align-items: center; gap: 12px; margin: 18px 0 6px; font-size: 12px; color: var(--cds-alias-typography-color-300); }
     .divider::before, .divider::after { content: ''; flex: 1; border-top: 1px solid var(--cds-alias-object-border-color); }
     .sso-btn { margin: 6px 0 0; width: 100%; max-width: none; }
+    .language { margin-top: 12px; display: flex; align-items: center; gap: 6px; font-size: 12px; }
     .version { margin-top: 24px; font-size: 11px; color: var(--cds-alias-typography-color-300); }
   `,
 })
 export class Login {
+  setLanguage(code: string) {
+    setLanguageCookie(code);
+    location.reload();
+  }
+
   private auth = inject(Auth);
   private api = inject(Api);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   readonly name = signal('Tributary');
   readonly version = signal('');
+  readonly languages = signal<{ code: string; name: string }[]>([]);
+  readonly language = signal('');
   readonly sso = signal<{ id: number; name: string }[]>([]);
   readonly error = signal('');
   readonly busy = signal(false);
@@ -82,6 +101,8 @@ export class Login {
     this.api.publicInfo().then((i) => {
       this.name.set(i.name);
       this.version.set(i.version);
+      this.languages.set((i.languages ?? []).map((code) => ({ code, name: languageName(code) })));
+      this.language.set(i.language ?? '');
       this.sso.set(i.sso ?? []);
     });
     const ssoError = this.route.snapshot.queryParamMap.get('sso_error');

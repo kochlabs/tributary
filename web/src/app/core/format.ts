@@ -45,9 +45,9 @@ export function rate(v: number, m: Metric): string {
 }
 
 export const METRICS: { id: Metric; label: string }[] = [
-  { id: 'bps', label: 'Bits/s' },
-  { id: 'pps', label: 'Packets/s' },
-  { id: 'fps', label: 'Flows/s' },
+  { id: 'bps', label: $localize`:@@format.bitsPerSec:Bits/s` },
+  { id: 'pps', label: $localize`:@@format.packetsPerSec:Packets/s` },
+  { id: 'fps', label: $localize`:@@format.flowsPerSec:Flows/s` },
 ];
 
 export function dateTime(ms: number): string {
@@ -63,12 +63,12 @@ export function dateTime(ms: number): string {
 }
 
 export function ago(ms: number): string {
-  if (!ms) return 'never';
+  if (!ms) return $localize`:@@format.never:never`;
   const s = Math.max(0, (Date.now() - ms) / 1000);
-  if (s < 60) return `${Math.floor(s)}s ago`;
-  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
-  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
-  return `${Math.floor(s / 86400)}d ago`;
+  if (s < 60) return $localize`:@@format.secondsAgo:${Math.floor(s)}:n:s ago`;
+  if (s < 3600) return $localize`:@@format.minutesAgo:${Math.floor(s / 60)}:n:m ago`;
+  if (s < 86400) return $localize`:@@format.hoursAgo:${Math.floor(s / 3600)}:n:h ago`;
+  return $localize`:@@format.daysAgo:${Math.floor(s / 86400)}:n:d ago`;
 }
 
 export function duration(sec: number): string {
@@ -93,35 +93,35 @@ export function tcpFlags(f: number): string {
   return ['F', 'S', 'R', 'P', 'A', 'U', 'E', 'C'].filter((_, i) => f & (1 << i)).join('');
 }
 
-export const FLOW_TYPES = ['Unknown', 'NetFlow v5', 'NetFlow v9', 'IPFIX', 'sFlow v5'];
+export const FLOW_TYPES = [$localize`:@@format.unknown:Unknown`, 'NetFlow v5', 'NetFlow v9', 'IPFIX', 'sFlow v5'];
 
 export const DIMENSIONS: { id: string; label: string }[] = [
-  { id: 'remote_as', label: 'Service (remote organization)' },
-  { id: 'device', label: 'Device' },
-  { id: 'local_host', label: 'Local host (IP)' },
-  { id: 'remote_host', label: 'Remote host' },
-  { id: 'remote_country', label: 'Remote country' },
-  { id: 'direction', label: 'Direction' },
-  { id: 'app', label: 'Application' },
-  { id: 'src_addr', label: 'Source address' },
-  { id: 'dst_addr', label: 'Destination address' },
-  { id: 'host', label: 'Host (either side)' },
-  { id: 'conversation', label: 'Conversation' },
-  { id: 'proto', label: 'Protocol' },
-  { id: 'dst_port', label: 'Destination port' },
-  { id: 'src_port', label: 'Source port' },
-  { id: 'country', label: 'Country (either side)' },
-  { id: 'src_country', label: 'Source country' },
-  { id: 'dst_country', label: 'Destination country' },
-  { id: 'src_as', label: 'Source AS' },
-  { id: 'dst_as', label: 'Destination AS' },
-  { id: 'exporter', label: 'Exporter' },
-  { id: 'in_if', label: 'Input interface' },
-  { id: 'out_if', label: 'Output interface' },
-  { id: 'dscp', label: 'DSCP' },
-  { id: 'etype', label: 'IP version' },
-  { id: 'vlan', label: 'VLAN' },
-  { id: 'flow_type', label: 'Flow protocol' },
+  { id: 'remote_as', label: $localize`:@@format.serviceRemoteOrganization:Service (remote organization)` },
+  { id: 'device', label: $localize`:@@format.device:Device` },
+  { id: 'local_host', label: $localize`:@@format.localHostIp:Local host (IP)` },
+  { id: 'remote_host', label: $localize`:@@format.remoteHost:Remote host` },
+  { id: 'remote_country', label: $localize`:@@format.remoteCountry:Remote country` },
+  { id: 'direction', label: $localize`:@@format.direction:Direction` },
+  { id: 'app', label: $localize`:@@format.application:Application` },
+  { id: 'src_addr', label: $localize`:@@format.sourceAddress:Source address` },
+  { id: 'dst_addr', label: $localize`:@@format.destinationAddress:Destination address` },
+  { id: 'host', label: $localize`:@@format.hostEitherSide:Host (either side)` },
+  { id: 'conversation', label: $localize`:@@format.conversation:Conversation` },
+  { id: 'proto', label: $localize`:@@format.protocol:Protocol` },
+  { id: 'dst_port', label: $localize`:@@format.destinationPort:Destination port` },
+  { id: 'src_port', label: $localize`:@@format.sourcePort:Source port` },
+  { id: 'country', label: $localize`:@@format.countryEitherSide:Country (either side)` },
+  { id: 'src_country', label: $localize`:@@format.sourceCountry:Source country` },
+  { id: 'dst_country', label: $localize`:@@format.destinationCountry:Destination country` },
+  { id: 'src_as', label: $localize`:@@format.sourceAs:Source AS` },
+  { id: 'dst_as', label: $localize`:@@format.destinationAs:Destination AS` },
+  { id: 'exporter', label: $localize`:@@format.exporter:Exporter` },
+  { id: 'in_if', label: $localize`:@@format.inputInterface:Input interface` },
+  { id: 'out_if', label: $localize`:@@format.outputInterface:Output interface` },
+  { id: 'dscp', label: $localize`:@@format.dscp:DSCP` },
+  { id: 'etype', label: $localize`:@@format.ipVersion:IP version` },
+  { id: 'vlan', label: $localize`:@@format.vlan:VLAN` },
+  { id: 'flow_type', label: $localize`:@@format.flowProtocol:Flow protocol` },
 ];
 
 export function dimLabel(id: string) {
@@ -181,31 +181,31 @@ export function drillFilter(dim: string, key: string): Record<string, string> | 
 }
 
 export const FILTER_FIELDS: { id: string; label: string; hint: string }[] = [
-  { id: 'host', label: 'Host', hint: '10.0.0.5 or 10.0.0.0/8' },
-  { id: 'device', label: 'Device', hint: 'MAC address, e.g. bc:24:11:52:d1:06' },
-  { id: 'direction', label: 'Direction', hint: 'download, upload, internal or transit' },
-  { id: 'peer', label: 'Peer (either side)', hint: 'second host, e.g. with Host for one conversation' },
-  { id: 'src', label: 'Source address', hint: 'IP or CIDR' },
-  { id: 'dst', label: 'Destination address', hint: 'IP or CIDR' },
-  { id: 'port', label: 'Port (either)', hint: '443 or 8000-8100' },
-  { id: 'src_port', label: 'Source port', hint: '53' },
-  { id: 'dst_port', label: 'Destination port', hint: '443' },
-  { id: 'proto', label: 'Protocol', hint: 'tcp, udp, icmp or number' },
-  { id: 'app', label: 'Application', hint: 'tcp/443' },
-  { id: 'exporter', label: 'Exporter', hint: 'exporter IP' },
-  { id: 'iface', label: 'Interface (either)', hint: 'ifIndex' },
-  { id: 'in_if', label: 'Input interface', hint: 'ifIndex' },
-  { id: 'out_if', label: 'Output interface', hint: 'ifIndex' },
-  { id: 'country', label: 'Country (either)', hint: 'US or US,DE' },
-  { id: 'src_country', label: 'Source country', hint: 'ISO code, e.g. CN' },
-  { id: 'dst_country', label: 'Destination country', hint: 'ISO code, e.g. US' },
-  { id: 'as', label: 'AS (either)', hint: '15169' },
-  { id: 'src_as', label: 'Source AS', hint: '15169' },
-  { id: 'dst_as', label: 'Destination AS', hint: '15169' },
-  { id: 'vlan', label: 'VLAN', hint: '100' },
-  { id: 'dscp', label: 'DSCP', hint: '46' },
-  { id: 'etype', label: 'IP version', hint: 'ipv4 or ipv6' },
-  { id: 'nexthop', label: 'Next hop', hint: 'IP or CIDR' },
+  { id: 'host', label: $localize`:@@format.host:Host`, hint: $localize`:@@format.hintHost:10.0.0.5 or 10.0.0.0/8` },
+  { id: 'device', label: $localize`:@@format.device:Device`, hint: $localize`:@@format.hintDevice:MAC address, e.g. bc:24:11:52:d1:06` },
+  { id: 'direction', label: $localize`:@@format.direction:Direction`, hint: $localize`:Filter hint; keep download, upload, internal and transit untranslated: they are the values users type@@format.hintDirection:download, upload, internal or transit` },
+  { id: 'peer', label: $localize`:@@format.peerEitherSide:Peer (either side)`, hint: $localize`:@@format.hintPeer:second host, e.g. with Host for one conversation` },
+  { id: 'src', label: $localize`:@@format.sourceAddress:Source address`, hint: $localize`:@@format.hintIpOrCidr:IP or CIDR` },
+  { id: 'dst', label: $localize`:@@format.destinationAddress:Destination address`, hint: $localize`:@@format.hintIpOrCidr:IP or CIDR` },
+  { id: 'port', label: $localize`:@@format.portEither:Port (either)`, hint: $localize`:@@format.hintPort:443 or 8000-8100` },
+  { id: 'src_port', label: $localize`:@@format.sourcePort:Source port`, hint: '53' },
+  { id: 'dst_port', label: $localize`:@@format.destinationPort:Destination port`, hint: '443' },
+  { id: 'proto', label: $localize`:@@format.protocol:Protocol`, hint: $localize`:Filter hint; keep tcp, udp and icmp untranslated: they are the values users type@@format.hintProto:tcp, udp, icmp or number` },
+  { id: 'app', label: $localize`:@@format.application:Application`, hint: 'tcp/443' },
+  { id: 'exporter', label: $localize`:@@format.exporter:Exporter`, hint: $localize`:@@format.hintExporter:exporter IP` },
+  { id: 'iface', label: $localize`:@@format.interfaceEither:Interface (either)`, hint: 'ifIndex' },
+  { id: 'in_if', label: $localize`:@@format.inputInterface:Input interface`, hint: 'ifIndex' },
+  { id: 'out_if', label: $localize`:@@format.outputInterface:Output interface`, hint: 'ifIndex' },
+  { id: 'country', label: $localize`:@@format.countryEither:Country (either)`, hint: $localize`:@@format.hintCountry:US or US,DE` },
+  { id: 'src_country', label: $localize`:@@format.sourceCountry:Source country`, hint: $localize`:@@format.hintSrcCountry:ISO code, e.g. CN` },
+  { id: 'dst_country', label: $localize`:@@format.destinationCountry:Destination country`, hint: $localize`:@@format.hintDstCountry:ISO code, e.g. US` },
+  { id: 'as', label: $localize`:@@format.asEither:AS (either)`, hint: '15169' },
+  { id: 'src_as', label: $localize`:@@format.sourceAs:Source AS`, hint: '15169' },
+  { id: 'dst_as', label: $localize`:@@format.destinationAs:Destination AS`, hint: '15169' },
+  { id: 'vlan', label: $localize`:@@format.vlan:VLAN`, hint: '100' },
+  { id: 'dscp', label: $localize`:@@format.dscp:DSCP`, hint: '46' },
+  { id: 'etype', label: $localize`:@@format.ipVersion:IP version`, hint: $localize`:Filter hint; keep ipv4 and ipv6 untranslated: they are the values users type@@format.hintEtype:ipv4 or ipv6` },
+  { id: 'nexthop', label: $localize`:@@format.nextHop:Next hop`, hint: $localize`:@@format.hintIpOrCidr:IP or CIDR` },
 ];
 
 export function filterLabel(id: string) {
@@ -234,16 +234,22 @@ export function serviceName(port: number): string {
   return SERVICES[port] ?? '';
 }
 
-export function samplingLabel(override: number, live?: { sampling: number; samplingSource: string } | null): { rate: string; source: string; hint: string } {
-  if (override) return { rate: `1:${override}`, source: 'override', hint: 'Manual override set on this exporter' };
-  if (!live) return { rate: '–', source: '', hint: '' };
+export function samplingLabel(override: number, live?: { sampling: number; samplingSource: string } | null): { rate: string; source: string; sourceLabel: string; hint: string } {
+  if (override) return { rate: `1:${override}`, source: 'override', sourceLabel: $localize`:Sampling rate source@@format.samplingOverride:override`, hint: $localize`:@@format.samplingOverrideHint:Manual override set on this exporter` };
+  if (!live) return { rate: '–', source: '', sourceLabel: '', hint: '' };
   const hints: Record<string, string> = {
-    announced: 'Announced by the device in its options data',
-    remembered: 'Remembered from before the last restart; waiting for the device to confirm',
-    packet: 'Carried in every datagram (sFlow / NetFlow v5)',
-    unsampled: 'Device reports no sampling: every flow is exported',
+    announced: $localize`:@@format.samplingAnnouncedHint:Announced by the device in its options data`,
+    remembered: $localize`:@@format.samplingRememberedHint:Remembered from before the last restart; waiting for the device to confirm`,
+    packet: $localize`:@@format.samplingPacketHint:Carried in every datagram (sFlow / NetFlow v5)`,
+    unsampled: $localize`:@@format.samplingUnsampledHint:Device reports no sampling: every flow is exported`,
   };
-  return { rate: live.samplingSource === 'unsampled' ? '1:1' : `1:${live.sampling}`, source: live.samplingSource, hint: hints[live.samplingSource] ?? '' };
+  const labels: Record<string, string> = {
+    announced: $localize`:Sampling rate source@@format.samplingAnnounced:announced`,
+    remembered: $localize`:Sampling rate source@@format.samplingRemembered:remembered`,
+    packet: $localize`:Sampling rate source@@format.samplingPacket:packet`,
+    unsampled: $localize`:Sampling rate source@@format.samplingUnsampled:unsampled`,
+  };
+  return { rate: live.samplingSource === 'unsampled' ? '1:1' : `1:${live.sampling}`, source: live.samplingSource, sourceLabel: labels[live.samplingSource] ?? live.samplingSource, hint: hints[live.samplingSource] ?? '' };
 }
 
 export function shortTime(ms: number): string {

@@ -11,8 +11,8 @@ import { loader } from '../core/util';
   template: `
     <div class="page-header">
       <div>
-        <h2>System Health</h2>
-        <p class="subtitle">Collector, storage and host status · refreshes every 5 seconds</p>
+        <h2 i18n="@@nav.system">System Health</h2>
+        <p class="subtitle" i18n="@@system.subtitle">Collector, storage and host status · refreshes every 5 seconds</p>
       </div>
     </div>
     @if (sys.error()) {
@@ -29,67 +29,67 @@ import { loader } from '../core/util';
         </div>
       }
       <div class="kpis">
-        <div class="kpi card"><div class="kpi-label"><cds-icon shape="network-globe"></cds-icon> Flows received</div><div class="kpi-value">{{ s.collector.flowsPerSec.toFixed(0) }}/s</div><div class="kpi-sub">{{ fmtCount(s.collector.flows) }} since start</div></div>
-        <div class="kpi card"><div class="kpi-label"><cds-icon shape="download"></cds-icon> Datagrams</div><div class="kpi-value">{{ s.collector.packetsPerSec.toFixed(0) }}/s</div><div class="kpi-sub">{{ fmtBits(s.collector.bitsPerSec) }} export traffic</div></div>
-        <div class="kpi card"><div class="kpi-label"><cds-icon shape="data-cluster"></cds-icon> Rows stored</div><div class="kpi-value">{{ fmtCount(s.writer.rowsWritten) }}</div><div class="kpi-sub">{{ fmtCount(s.writer.batches) }} batches · last {{ ago(s.writer.lastFlush) }}</div></div>
-        <div class="kpi card" [class.bad]="s.writer.dropped > 0"><div class="kpi-label"><cds-icon shape="exclamation-triangle"></cds-icon> Dropped</div><div class="kpi-value">{{ fmtCount(s.writer.dropped) }}</div><div class="kpi-sub">{{ s.collector.errors }} decode errors</div></div>
-        <div class="kpi card"><div class="kpi-label"><cds-icon shape="clock"></cds-icon> Service uptime</div><div class="kpi-value">{{ dur((now() - s.started) / 1000) }}</div><div class="kpi-sub">version {{ s.version }}</div></div>
+        <div class="kpi card"><div class="kpi-label"><cds-icon shape="network-globe"></cds-icon> <ng-container i18n="@@system.kpi.flowsReceived">Flows received</ng-container></div><div class="kpi-value">{{ s.collector.flowsPerSec.toFixed(0) }}/s</div><div class="kpi-sub" i18n="@@system.kpi.sinceStart">{{ fmtCount(s.collector.flows) }} since start</div></div>
+        <div class="kpi card"><div class="kpi-label"><cds-icon shape="download"></cds-icon> <ng-container i18n="@@system.kpi.datagrams">Datagrams</ng-container></div><div class="kpi-value">{{ s.collector.packetsPerSec.toFixed(0) }}/s</div><div class="kpi-sub" i18n="@@system.kpi.exportTraffic">{{ fmtBits(s.collector.bitsPerSec) }} export traffic</div></div>
+        <div class="kpi card"><div class="kpi-label"><cds-icon shape="data-cluster"></cds-icon> <ng-container i18n="@@system.kpi.rowsStored">Rows stored</ng-container></div><div class="kpi-value">{{ fmtCount(s.writer.rowsWritten) }}</div><div class="kpi-sub" i18n="@@system.kpi.batches">{{ fmtCount(s.writer.batches) }} batches · last {{ ago(s.writer.lastFlush) }}</div></div>
+        <div class="kpi card" [class.bad]="s.writer.dropped > 0"><div class="kpi-label"><cds-icon shape="exclamation-triangle"></cds-icon> <ng-container i18n="@@system.kpi.dropped">Dropped</ng-container></div><div class="kpi-value">{{ fmtCount(s.writer.dropped) }}</div><div class="kpi-sub" i18n="@@system.kpi.decodeErrors">{{ s.collector.errors }} decode errors</div></div>
+        <div class="kpi card"><div class="kpi-label"><cds-icon shape="clock"></cds-icon> <ng-container i18n="@@system.kpi.serviceUptime">Service uptime</ng-container></div><div class="kpi-value">{{ dur((now() - s.started) / 1000) }}</div><div class="kpi-sub" i18n="@@system.kpi.version">version {{ s.version }}</div></div>
       </div>
 
       <div class="grid">
         <div class="card">
-          <div class="card-header"><cds-icon shape="network-switch"></cds-icon> Collector</div>
+          <div class="card-header"><cds-icon shape="network-switch"></cds-icon> <ng-container i18n="@@system.collector">Collector</ng-container></div>
           <div class="card-block">
             <table class="table table-compact table-noborder kv">
               <tbody>
-                <tr><td>NetFlow v5/v9 listener</td><td>{{ port(s.collector.ports.NetFlow, 'netflow') }}</td></tr>
-                <tr><td>IPFIX listener</td><td>{{ port(s.collector.ports.IPFIX, 'ipfix') }}</td></tr>
-                <tr><td>sFlow listener</td><td>{{ port(s.collector.ports.SFlow, 'sflow') }}</td></tr>
-                <tr><td>Receive workers</td><td>{{ s.collector.workers }} (SO_REUSEPORT)</td></tr>
-                <tr><td>Datagrams received</td><td>{{ fmtCount(s.collector.packets) }} ({{ fmtBytes(s.collector.bytes) }})</td></tr>
-                <tr><td>Decode errors</td><td>{{ s.collector.errors }}</td></tr>
+                <tr><td i18n="@@system.netflowListener">NetFlow v5/v9 listener</td><td>{{ port(s.collector.ports.NetFlow, 'netflow') }}</td></tr>
+                <tr><td i18n="@@system.ipfixListener">IPFIX listener</td><td>{{ port(s.collector.ports.IPFIX, 'ipfix') }}</td></tr>
+                <tr><td i18n="@@system.sflowListener">sFlow listener</td><td>{{ port(s.collector.ports.SFlow, 'sflow') }}</td></tr>
+                <tr><td i18n="@@system.receiveWorkers">Receive workers</td><td>{{ s.collector.workers }} (SO_REUSEPORT)</td></tr>
+                <tr><td i18n="@@system.datagramsReceived">Datagrams received</td><td>{{ fmtCount(s.collector.packets) }} ({{ fmtBytes(s.collector.bytes) }})</td></tr>
+                <tr><td i18n="@@system.decodeErrors">Decode errors</td><td>{{ s.collector.errors }}</td></tr>
               </tbody>
             </table>
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><cds-icon shape="storage"></cds-icon> Writer queue</div>
+          <div class="card-header"><cds-icon shape="storage"></cds-icon> <ng-container i18n="@@system.writerQueue">Writer queue</ng-container></div>
           <div class="card-block">
-            <nfa-meter label="Queue" [value]="s.writer.queue + ' of ' + s.writer.queueCap + ' batches'" [percent]="(s.writer.queue / s.writer.queueCap) * 100" [warnAt]="50" [badAt]="80" />
+            <nfa-meter label="Queue" i18n-label="@@system.queue" [value]="queueValue(s.writer.queue, s.writer.queueCap)" [percent]="(s.writer.queue / s.writer.queueCap) * 100" [warnAt]="50" [badAt]="80" />
             <table class="table table-compact table-noborder kv">
               <tbody>
-                <tr><td>Insert errors</td><td>{{ s.writer.errors }}</td></tr>
-                <tr><td>Last error</td><td class="wrap">{{ s.writer.lastError || 'none' }}</td></tr>
+                <tr><td i18n="@@system.insertErrors">Insert errors</td><td>{{ s.writer.errors }}</td></tr>
+                <tr><td i18n="@@system.lastError">Last error</td><td class="wrap">@if (s.writer.lastError) { {{ s.writer.lastError }} } @else {<ng-container i18n="No error@@system.none">none</ng-container>}</td></tr>
               </tbody>
             </table>
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><cds-icon shape="host"></cds-icon> Host · {{ s.host.hostname }}</div>
+          <div class="card-header"><cds-icon shape="host"></cds-icon> <ng-container i18n="@@system.host">Host · {{ s.host.hostname }}</ng-container></div>
           <div class="card-block">
-            <nfa-meter label="Memory" [value]="fmtBytes(s.host.memTotal - s.host.memAvailable) + ' of ' + fmtBytes(s.host.memTotal)" [percent]="memPct()" />
+            <nfa-meter label="Memory" i18n-label="@@system.memory" [value]="ofValue(fmtBytes(s.host.memTotal - s.host.memAvailable), fmtBytes(s.host.memTotal))" [percent]="memPct()" />
             <table class="table table-compact table-noborder kv">
               <tbody>
-                <tr><td>CPUs</td><td>{{ s.host.cpus }}</td></tr>
-                <tr><td>Load average</td><td>{{ s.host.load?.join(' / ') }}</td></tr>
-                <tr><td>Host uptime</td><td>{{ dur(s.host.uptime) }}</td></tr>
-                <tr><td>Service heap</td><td>{{ fmtBytes(s.process.heapAlloc) }} · {{ s.process.goroutines }} goroutines</td></tr>
+                <tr><td i18n="@@system.cpus">CPUs</td><td>{{ s.host.cpus }}</td></tr>
+                <tr><td i18n="@@system.loadAverage">Load average</td><td>{{ s.host.load?.join(' / ') }}</td></tr>
+                <tr><td i18n="@@system.hostUptime">Host uptime</td><td>{{ dur(s.host.uptime) }}</td></tr>
+                <tr><td i18n="@@system.serviceHeap">Service heap</td><td i18n="@@system.heapGoroutines">{{ fmtBytes(s.process.heapAlloc) }} · {{ s.process.goroutines }} goroutines</td></tr>
               </tbody>
             </table>
           </div>
         </div>
         @if (s.database; as db) {
           <div class="card">
-            <div class="card-header"><cds-icon shape="hard-disk"></cds-icon> Storage · ClickHouse {{ db.version }}</div>
+            <div class="card-header"><cds-icon shape="hard-disk"></cds-icon> <ng-container i18n="@@system.storage">Storage · ClickHouse {{ db.version }}</ng-container></div>
             <div class="card-block">
               @for (d of db.disks; track d.name) {
-                <nfa-meter [label]="'Disk ' + d.path" [value]="fmtBytes(d.total - d.free) + ' of ' + fmtBytes(d.total)" [percent]="((d.total - d.free) / d.total) * 100" [warnAt]="80" />
+                <nfa-meter [label]="diskLabel(d.path)" [value]="ofValue(fmtBytes(d.total - d.free), fmtBytes(d.total))" [percent]="((d.total - d.free) / d.total) * 100" [warnAt]="80" />
               }
               <table class="table table-compact table-noborder kv">
                 <tbody>
-                  <tr><td>Database uptime</td><td>{{ dur(db.uptime) }}</td></tr>
-                <tr><td>GeoIP country</td><td>{{ s.geo?.country || 'not installed' }}</td></tr>
-                <tr><td>GeoIP ASN</td><td>{{ s.geo?.asn || 'not installed' }}</td></tr>
+                  <tr><td i18n="@@system.databaseUptime">Database uptime</td><td>{{ dur(db.uptime) }}</td></tr>
+                <tr><td i18n="@@system.geoipCountry">GeoIP country</td><td>@if (s.geo?.country) { {{ s.geo?.country }} } @else {<ng-container i18n="@@system.notInstalled">not installed</ng-container>}</td></tr>
+                <tr><td i18n="@@system.geoipAsn">GeoIP ASN</td><td>@if (s.geo?.asn) { {{ s.geo?.asn }} } @else {<ng-container i18n="@@system.notInstalled">not installed</ng-container>}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -98,13 +98,13 @@ import { loader } from '../core/util';
       </div>
 
       @if (s.database?.tables; as tables) {
-        <h3 class="section-title">Data tables</h3>
+        <h3 class="section-title" i18n="@@system.dataTables">Data tables</h3>
         <table class="table table-compact">
-          <thead><tr><th class="left">Table</th><th>Rows</th><th>On disk</th><th>Uncompressed</th><th>Ratio</th><th>Parts</th><th>Oldest</th><th>Newest</th></tr></thead>
+          <thead><tr><th class="left" i18n="@@system.col.table">Table</th><th i18n="@@system.col.rows">Rows</th><th i18n="@@system.col.onDisk">On disk</th><th i18n="@@system.col.uncompressed">Uncompressed</th><th i18n="@@system.col.ratio">Ratio</th><th i18n="@@system.col.parts">Parts</th><th i18n="@@system.col.oldest">Oldest</th><th i18n="@@system.col.newest">Newest</th></tr></thead>
           <tbody>
             @for (t of tables; track t.table) {
               <tr>
-                <td class="left">{{ t.table === 'flows' ? 'Raw flows' : t.table === 'traffic_1m' ? '1-minute rollup' : t.table }}</td>
+                <td class="left">{{ tableName(t.table) }}</td>
                 <td>{{ fmtCount(t.rows) }}</td>
                 <td>{{ fmtBytes(t.bytesOnDisk) }}</td>
                 <td>{{ fmtBytes(t.uncompressed) }}</td>
@@ -118,7 +118,7 @@ import { loader } from '../core/util';
         </table>
       }
     } @else if (!sys.error()) {
-      <div class="center"><span class="spinner">Loading…</span></div>
+      <div class="center"><span class="spinner" i18n="@@system.loading">Loading…</span></div>
     }
   `,
   styles: `
@@ -148,10 +148,10 @@ export class System {
     const s = this.s();
     if (!s) return [];
     const out: string[] = [];
-    for (const [k, v] of Object.entries(s.collector.listenErrors ?? {})) out.push(`The ${k} listener could not start: ${v}`);
-    if (s.databaseError) out.push(`Database unavailable: ${s.databaseError}`);
-    if (s.writer.dropped > 0) out.push(`${count(s.writer.dropped)} flows were dropped because the database could not keep up or was unavailable.`);
-    for (const d of s.database?.disks ?? []) if ((d.total - d.free) / d.total > 0.9) out.push(`Disk ${d.path} is over 90% full — reduce retention in Settings.`);
+    for (const [k, v] of Object.entries(s.collector.listenErrors ?? {})) out.push($localize`:@@system.alertListener:The ${k}:listener: listener could not start: ${v}:error:`);
+    if (s.databaseError) out.push($localize`:@@system.alertDatabase:Database unavailable: ${s.databaseError}:error:`);
+    if (s.writer.dropped > 0) out.push($localize`:@@system.alertDropped:${count(s.writer.dropped)}:count: flows were dropped because the database could not keep up or was unavailable.`);
+    for (const d of s.database?.disks ?? []) if ((d.total - d.free) / d.total > 0.9) out.push($localize`:@@system.alertDisk:Disk ${d.path}:path: is over 90% full — reduce retention in Settings.`);
     return out;
   });
 
@@ -172,7 +172,25 @@ export class System {
 
   port(p: number, name: string) {
     const err = this.s()?.collector.listenErrors?.[name];
-    if (!p) return 'disabled';
-    return err ? `UDP ${p} — error` : `UDP ${p} — listening`;
+    if (!p) return $localize`:Listener state@@system.portDisabled:disabled`;
+    return err ? $localize`:@@system.portError:UDP ${p}:port: — error` : $localize`:@@system.portListening:UDP ${p}:port: — listening`;
+  }
+
+  ofValue(used: string, total: string) {
+    return $localize`:Meter value, e.g. 3 GB of 8 GB@@system.ofValue:${used}:used: of ${total}:total:`;
+  }
+
+  queueValue(queue: number, cap: number) {
+    return $localize`:@@system.queueValue:${queue}:queue: of ${cap}:cap: batches`;
+  }
+
+  diskLabel(path: string) {
+    return $localize`:@@system.diskLabel:Disk ${path}:path:`;
+  }
+
+  tableName(t: string) {
+    if (t === 'flows') return $localize`:@@system.tableRawFlows:Raw flows`;
+    if (t === 'traffic_1m') return $localize`:@@system.tableRollup:1-minute rollup`;
+    return t;
   }
 }

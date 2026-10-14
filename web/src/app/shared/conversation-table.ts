@@ -11,17 +11,17 @@ import { PALETTE } from './chart';
       <table class="table table-compact table-noborder conv">
         <thead>
           <tr>
-            <th class="left">Device</th>
+            <th class="left" i18n="@@conversationTable.device">Device</th>
             <th class="arrow"></th>
-            <th class="left">Remote</th>
+            <th class="left" i18n="@@conversationTable.remote">Remote</th>
             <th class="num">{{ metricLabel() }}</th>
-            <th class="num">Volume</th>
-            <th class="share">Share</th>
+            <th class="num" i18n="@@conversationTable.volume">Volume</th>
+            <th class="share" i18n="@@conversationTable.share">Share</th>
           </tr>
         </thead>
         <tbody>
           @for (r of rows(); track r.key; let i = $index) {
-            <tr class="clickable" (click)="drill.emit(r)" title="Analyze this conversation">
+            <tr class="clickable" (click)="drill.emit(r)" title="Analyze this conversation" i18n-title="@@conversationTable.analyze">
               @for (e of ends(r); track $index; let first = $first) {
                 @if (!first) {
                   <td class="arrow">⇄</td>
@@ -49,7 +49,7 @@ import { PALETTE } from './chart';
         </tbody>
       </table>
     } @else {
-      <div class="empty">No conversations in this time range.</div>
+      <div class="empty" i18n="@@conversationTable.empty">No conversations in this time range.</div>
     }
   `,
   styles: `
@@ -76,7 +76,7 @@ export class ConversationTable {
   readonly metric = input<Metric>('bps');
   readonly drill = output<TopRow>();
   readonly maxPct = computed(() => Math.max(1, ...this.rows().map((r) => r.pct)));
-  readonly metricLabel = computed(() => ({ bps: 'Avg bps', pps: 'Avg pps', fps: 'Flows/s' })[this.metric()]);
+  readonly metricLabel = computed(() => ({ bps: $localize`:@@conversationTable.avgBps:Avg bps`, pps: $localize`:@@conversationTable.avgPps:Avg pps`, fps: $localize`:@@conversationTable.flowsPerSec:Flows/s` })[this.metric()]);
 
   ends(r: TopRow) {
     if (r.ends?.length === 2) return r.ends;
@@ -90,6 +90,6 @@ export class ConversationTable {
     return rate(v, this.metric());
   }
   fmtVol(r: TopRow) {
-    return this.metric() === 'pps' ? count(r.packets) + ' pkts' : this.metric() === 'fps' ? count(r.flows) + ' flows' : bytes(r.bytes);
+    return this.metric() === 'pps' ? $localize`:@@conversationTable.pkts:${count(r.packets)}:count: pkts` : this.metric() === 'fps' ? $localize`:@@conversationTable.flows:${count(r.flows)}:count: flows` : bytes(r.bytes);
   }
 }

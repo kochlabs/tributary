@@ -16,7 +16,7 @@ export function timeSeriesOption(ts: TimeSeries, opts: { stacked?: boolean; lege
     const isOther = s.key === '__other__';
     const color = isOther ? OTHER_COLOR : PALETTE[colorIdx++ % PALETTE.length];
     return {
-      name: s.label || s.key || 'Total',
+      name: s.label || s.key || $localize`:@@options.total:Total`,
       id: s.key,
       type: 'line',
       stack: stacked ? 'total' : undefined,
@@ -51,7 +51,7 @@ export function timeSeriesOption(ts: TimeSeries, opts: { stacked?: boolean; lege
           .map((p) => `<div style="display:flex;gap:12px;justify-content:space-between"><span>${p.marker}${esc(p.seriesName)}</span><b>${rate(p.value[1], metric)}</b></div>`)
           .join('');
         const total = params.reduce((s, p) => s + p.value[1], 0);
-        const tot = params.length > 1 && stacked ? `<div style="border-top:1px solid ${c.grid};margin-top:4px;padding-top:4px;display:flex;justify-content:space-between"><span>Total</span><b>${rate(total, metric)}</b></div>` : '';
+        const tot = params.length > 1 && stacked ? `<div style="border-top:1px solid ${c.grid};margin-top:4px;padding-top:4px;display:flex;justify-content:space-between"><span>${$localize`:@@options.total:Total`}</span><b>${rate(total, metric)}</b></div>` : '';
         return `<div style="min-width:220px"><div style="margin-bottom:4px;color:${c.muted}">${t}</div>${rows}${tot}</div>`;
       },
     },
@@ -79,7 +79,7 @@ export function donutOption(rows: TopRow[], total: TopRow, metric: Metric): Char
   const val = (r: TopRow) => (metric === 'pps' ? r.packets : metric === 'fps' ? r.flows : r.bytes);
   const data = rows.map((r, i) => ({ name: r.label, value: val(r), key: r.key, itemStyle: { color: PALETTE[i % PALETTE.length] } }));
   const rest = val(total) - data.reduce((s, d) => s + d.value, 0);
-  if (rest > val(total) * 0.001) data.push({ name: 'Other', value: rest, key: '__other__', itemStyle: { color: OTHER_COLOR } });
+  if (rest > val(total) * 0.001) data.push({ name: $localize`:@@options.other:Other`, value: rest, key: '__other__', itemStyle: { color: OTHER_COLOR } });
   return {
     animation: false,
     tooltip: {

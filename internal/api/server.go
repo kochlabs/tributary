@@ -212,9 +212,18 @@ func (s *Server) requireUser(next http.HandlerFunc, adminOnly bool) http.Handler
 }
 
 func (s *Server) spa() http.Handler {
-	files := http.FileServerFS(s.UI)
+	locales := uiLocales(s.UI)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if _, err := fs.Stat(s.UI, "index.html"); err != nil {
+		ui := s.UI
+		if loc := pickLocale(r, locales); loc != "" {
+			ui, _ = fs.Sub(s.UI, loc)
+			w.Header().Add("Vary", "Cookie, Accept-Language")
+		}
+		if ui == nil {
+			http.Error(w, "The web UI was not built into this binary. Run `make web build`.", http.StatusServiceUnavailable)
+			return
+		}
+		if _, err := fs.Stat(ui, "index.html"); err != nil {
 			http.Error(w, "The web UI was not built into this binary. Run `make web build`.", http.StatusServiceUnavailable)
 			return
 		}
@@ -222,17 +231,23 @@ func (s *Server) spa() http.Handler {
 		if p == "" {
 			p = "index.html"
 		}
-		if _, err := fs.Stat(s.UI, p); err != nil {
-			// Client-side route: serve the app shell.
-			r = r.Clone(r.Context())
-			r.URL.Path = "/"
-			p = "index.html"
+		if _, err := fs.Stat(ui, p); err != nil {
+			if _, err := fs.Stat(s.UI, p); err == nil && p != "index.html" {
+				// Shared files at the build root (3rdpartylicenses.txt).
+				ui = s.UI
+			} else {
+				// Client-side route: serve the app shell.
+				r = r.Clone(r.Context())
+				r.URL.Path = "/"
+				p = "index.html"
+			}
 		}
 		if p == "index.html" {
 			w.Header().Set("Cache-Control", "no-cache")
 		} else if strings.Contains(p, "-") && (strings.HasSuffix(p, ".js") || strings.HasSuffix(p, ".css")) {
 			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 		}
+		files := http.FileServerFS(ui)
 		if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") && compressible(p) {
 			w.Header().Set("Content-Encoding", "gzip")
 			w.Header().Add("Vary", "Accept-Encoding")

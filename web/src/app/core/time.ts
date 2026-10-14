@@ -8,12 +8,12 @@ export interface Preset {
 }
 
 export const PRESETS: Preset[] = [
-  { id: '15m', label: 'Last 15 minutes', ms: 15 * 60e3 },
-  { id: '1h', label: 'Last hour', ms: 3600e3 },
-  { id: '6h', label: 'Last 6 hours', ms: 6 * 3600e3 },
-  { id: '24h', label: 'Last 24 hours', ms: 24 * 3600e3 },
-  { id: '7d', label: 'Last 7 days', ms: 7 * 86400e3 },
-  { id: '30d', label: 'Last 30 days', ms: 30 * 86400e3 },
+  { id: '15m', label: $localize`:@@time.last15m:Last 15 minutes`, ms: 15 * 60e3 },
+  { id: '1h', label: $localize`:@@time.lastHour:Last hour`, ms: 3600e3 },
+  { id: '6h', label: $localize`:@@time.last6h:Last 6 hours`, ms: 6 * 3600e3 },
+  { id: '24h', label: $localize`:@@time.last24h:Last 24 hours`, ms: 24 * 3600e3 },
+  { id: '7d', label: $localize`:@@time.last7d:Last 7 days`, ms: 7 * 86400e3 },
+  { id: '30d', label: $localize`:@@time.last30d:Last 30 days`, ms: 30 * 86400e3 },
 ];
 
 /** Global time range shared by every analytics page. */

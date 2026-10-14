@@ -4,7 +4,13 @@ import { Api, errorMessage, ServiceUnit } from '../core/api';
 import { bytes, dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
 
-const OP_LABELS: Record<string, string> = { restart: 'Restart', start: 'Start', stop: 'Stop', enable: 'Enable on boot', disable: 'Disable on boot' };
+const OP_LABELS: Record<string, string> = {
+  restart: $localize`:@@services.op.restart:Restart`,
+  start: $localize`:@@services.op.start:Start`,
+  stop: $localize`:@@services.op.stop:Stop`,
+  enable: $localize`:@@services.op.enable:Enable on boot`,
+  disable: $localize`:@@services.op.disable:Disable on boot`,
+};
 // Operations that interrupt something and deserve a confirmation.
 const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
 
@@ -14,10 +20,10 @@ const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
   template: `
     <div class="page-header">
       <div>
-        <h2>Services</h2>
-        <p class="subtitle">System services relevant to the appliance</p>
+        <h2 i18n="@@nav.services">Services</h2>
+        <p class="subtitle" i18n="@@services.subtitle">System services relevant to the appliance</p>
       </div>
-      <button class="btn btn-link" (click)="list.reload()"><cds-icon shape="refresh"></cds-icon> Refresh</button>
+      <button class="btn btn-link" (click)="list.reload()"><cds-icon shape="refresh"></cds-icon> <ng-container i18n="@@common.refresh">Refresh</ng-container></button>
     </div>
 
     @if (list.error() || actionError()) {
@@ -28,17 +34,17 @@ const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
     }
     @if (list.value(); as v) {
       @if (!v.installed) {
-        <div class="alert alert-warning" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">The admin helper isn't installed; services are read-only.</span></div></div></div>
+        <div class="alert alert-warning" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text" i18n="@@services.readOnly">The admin helper isn't installed; services are read-only.</span></div></div></div>
       }
     }
 
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="list.loading() || !!working()">
-      <clr-dg-column [clrDgField]="'unit'" [clrDgSortOrder]="1">Unit</clr-dg-column>
-      <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
-      <clr-dg-column [clrDgField]="'active'">State</clr-dg-column>
-      <clr-dg-column>Since</clr-dg-column>
-      <clr-dg-column>Memory</clr-dg-column>
-      <clr-dg-column [clrDgField]="'onBoot'">On boot</clr-dg-column>
+      <clr-dg-column [clrDgField]="'unit'" [clrDgSortOrder]="1" i18n="@@services.col.unit">Unit</clr-dg-column>
+      <clr-dg-column [clrDgField]="'description'" i18n="@@common.description">Description</clr-dg-column>
+      <clr-dg-column [clrDgField]="'active'" i18n="@@services.col.state">State</clr-dg-column>
+      <clr-dg-column i18n="@@services.col.since">Since</clr-dg-column>
+      <clr-dg-column i18n="@@services.col.memory">Memory</clr-dg-column>
+      <clr-dg-column [clrDgField]="'onBoot'" i18n="@@services.col.onBoot">On boot</clr-dg-column>
 
       <clr-dg-row *clrDgItems="let s of list.value()?.services ?? []; trackBy: byUnit" [clrDgItem]="s">
         @if (s.ops.length && list.value()?.installed) {
@@ -59,23 +65,23 @@ const DISRUPTIVE = new Set(['stop', 'disable', 'restart']);
       </clr-dg-row>
       <clr-dg-footer>
         <clr-dg-pagination #pg [clrDgPageSize]="25">
-          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]" i18n="@@common.rowsPerPage">Rows per page</clr-dg-page-size>
           @if (pg.totalItems) {
-            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} services
+            <ng-container i18n="Datagrid footer: first–last of total@@services.footer">{{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} services</ng-container>
           } @else {
-            No services
+            <ng-container i18n="@@services.empty">No services</ng-container>
           }
         </clr-dg-pagination>
       </clr-dg-footer>
     </clr-datagrid>
 
     <clr-modal [clrModalOpen]="!!pending()" (clrModalOpenChange)="!$event && pending.set(null)" clrModalSize="md">
-      <h3 class="modal-title">{{ opLabel(pending()?.op ?? '') }} {{ pending()?.unit }}?</h3>
+      <h3 class="modal-title" i18n="Confirm title: operation and unit@@services.confirmTitle">{{ opLabel(pending()?.op ?? '') }} {{ pending()?.unit }}?</h3>
       <div class="modal-body">
         <p>{{ warning() }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="pending.set(null)">Cancel</button>
+        <button type="button" class="btn btn-outline" (click)="pending.set(null)" i18n="@@common.cancel">Cancel</button>
         <button type="button" class="btn btn-danger" (click)="run()">{{ opLabel(pending()?.op ?? '') }}</button>
       </div>
     </clr-modal>
@@ -136,10 +142,10 @@ export class Services {
   warning() {
     const p = this.pending();
     if (!p) return '';
-    if (p.unit === 'ssh.service' && (p.op === 'stop' || p.op === 'disable')) return 'You will not be able to log in to the appliance over SSH until it is started again from this page.';
-    if (p.unit === 'clickhouse-server.service') return 'Flow storage and all reports are unavailable while the database is down; flows received meanwhile are dropped.';
-    if (p.unit === 'systemd-timesyncd.service') return 'The clock stops synchronising while the service is down.';
-    return `This ${p.op === 'disable' ? 'changes whether the service starts at boot' : 'interrupts the service briefly'}.`;
+    if (p.unit === 'ssh.service' && (p.op === 'stop' || p.op === 'disable')) return $localize`:@@services.warn.ssh:You will not be able to log in to the appliance over SSH until it is started again from this page.`;
+    if (p.unit === 'clickhouse-server.service') return $localize`:@@services.warn.clickhouse:Flow storage and all reports are unavailable while the database is down; flows received meanwhile are dropped.`;
+    if (p.unit === 'systemd-timesyncd.service') return $localize`:@@services.warn.timesyncd:The clock stops synchronising while the service is down.`;
+    return p.op === 'disable' ? $localize`:@@services.warn.disable:This changes whether the service starts at boot.` : $localize`:@@services.warn.generic:This interrupts the service briefly.`;
   }
 
   ask(s: ServiceUnit, op: string) {
@@ -159,7 +165,7 @@ export class Services {
     this.working.set(p.unit);
     try {
       const r = await this.api.serviceAction(p.unit, p.op);
-      this.actionOk.set(r.message || `${p.unit}: ${p.op} done`);
+      this.actionOk.set(r.message || $localize`:@@services.done:${p.unit}:unit:: ${p.op}:op: done`);
     } catch (e) {
       this.actionError.set(errorMessage(e));
     } finally {

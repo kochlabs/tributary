@@ -6,7 +6,7 @@ import { dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
 
 const KEY_TYPES = [
-  { id: 'ecdsa-p256', label: 'ECDSA P-256 (recommended)' },
+  { id: 'ecdsa-p256', label: $localize`:@@certificates.keyRecommended:ECDSA P-256 (recommended)` },
   { id: 'ecdsa-p384', label: 'ECDSA P-384' },
   { id: 'rsa-2048', label: 'RSA 2048' },
   { id: 'rsa-3072', label: 'RSA 3072' },
@@ -40,8 +40,8 @@ function download(name: string, text: string) {
   template: `
     <div class="page-header">
       <div>
-        <h2>Certificates</h2>
-        <p class="subtitle">Management UI certificate and trusted certificate authorities</p>
+        <h2 i18n="@@nav.certificates">Certificates</h2>
+        <p class="subtitle" i18n="@@certificates.subtitle">Management UI certificate and trusted certificate authorities</p>
       </div>
     </div>
 
@@ -54,7 +54,7 @@ function download(name: string, text: string) {
 
     <clr-tabs>
       <clr-tab>
-        <button clrTabLink>Appliance certificate</button>
+        <button clrTabLink i18n="@@certificates.tab.appliance">Appliance certificate</button>
         <clr-tab-content *clrIfActive="true">
           @if (cert.value(); as cv) {
             @let c = cv.status.certificate;
@@ -62,10 +62,10 @@ function download(name: string, text: string) {
               <div class="alert alert-info pending" role="alert">
                 <div class="alert-items"><div class="alert-item static">
                   <div class="alert-icon-wrapper"><cds-icon class="alert-icon" shape="info-circle"></cds-icon></div>
-                  <span class="alert-text">A CSR for <b>{{ p.commonName }}</b> ({{ p.key }}, {{ dt(p.created) }}) is waiting for its signed certificate. Upload the certificate from your CA; its key is already on the appliance.</span>
+                  <span class="alert-text" i18n="@@certificates.pendingCsr">A CSR for <b>{{ p.commonName }}</b> ({{ p.key }}, {{ dt(p.created) }}) is waiting for its signed certificate. Upload the certificate from your CA; its key is already on the appliance.</span>
                   <div class="alert-actions">
-                    <button class="btn btn-sm btn-link" (click)="showCSR(p)">Show CSR</button>
-                    <button class="btn btn-sm btn-link" (click)="discardCSR()">Discard</button>
+                    <button class="btn btn-sm btn-link" (click)="showCSR(p)" i18n="@@certificates.showCsr">Show CSR</button>
+                    <button class="btn btn-sm btn-link" (click)="discardCSR()" i18n="@@certificates.discard">Discard</button>
                   </div>
                 </div></div>
               </div>
@@ -79,46 +79,46 @@ function download(name: string, text: string) {
                 <div class="card-block">
                   <table class="table table-noborder kv">
                     <tbody>
-                      <tr><td>Subject</td><td>{{ c.subject }}</td></tr>
-                      <tr><td>Issuer</td><td>{{ c.selfSigned ? 'Self-signed' : c.issuer }}</td></tr>
-                      <tr><td>Subject alternative names</td><td>{{ sans(c) || 'none' }}</td></tr>
-                      <tr><td>Valid from</td><td>{{ dt(c.notBefore) }}</td></tr>
-                      <tr><td>Valid until</td><td>{{ dt(c.notAfter) }}</td></tr>
-                      <tr><td>Key</td><td>{{ c.key }}</td></tr>
-                      <tr><td>Chain</td><td>{{ c.chain }} certificate{{ c.chain === 1 ? '' : 's' }}</td></tr>
-                      <tr><td>Serial</td><td class="mono">{{ c.serial }}</td></tr>
-                      <tr><td>SHA-256 fingerprint</td><td class="mono small">{{ c.sha256 }}</td></tr>
+                      <tr><td i18n="@@certificates.subject">Subject</td><td>{{ c.subject }}</td></tr>
+                      <tr><td i18n="@@certificates.issuer">Issuer</td><td>{{ c.selfSigned ? txt.selfSigned : c.issuer }}</td></tr>
+                      <tr><td i18n="@@certificates.sans">Subject alternative names</td><td>{{ sans(c) || txt.none }}</td></tr>
+                      <tr><td i18n="@@certificates.validFrom">Valid from</td><td>{{ dt(c.notBefore) }}</td></tr>
+                      <tr><td i18n="@@certificates.validUntil">Valid until</td><td>{{ dt(c.notAfter) }}</td></tr>
+                      <tr><td i18n="@@certificates.key">Key</td><td>{{ c.key }}</td></tr>
+                      <tr><td i18n="@@certificates.chain">Chain</td><td i18n="@@certificates.chainCount">{c.chain, plural, =1 {1 certificate} other {{{c.chain}} certificates}}</td></tr>
+                      <tr><td i18n="@@certificates.serial">Serial</td><td class="mono">{{ c.serial }}</td></tr>
+                      <tr><td i18n="@@certificates.sha256Fingerprint">SHA-256 fingerprint</td><td class="mono small">{{ c.sha256 }}</td></tr>
                     </tbody>
                   </table>
                 </div>
                 <div class="card-footer">
-                  <a class="btn btn-link" href="/api/certificates/appliance/download" download><cds-icon shape="download"></cds-icon> Download</a>
+                  <a class="btn btn-link" href="/api/certificates/appliance/download" download><cds-icon shape="download"></cds-icon> <ng-container i18n="@@certificates.download">Download</ng-container></a>
                 </div>
               </div>
 
               <div class="card replace">
-                <div class="card-header">Replace certificate</div>
+                <div class="card-header" i18n="@@certificates.replaceTitle">Replace certificate</div>
                 <div class="card-block">
                   <section>
-                    <h5>Upload a certificate</h5>
-                    <p>Install a certificate and private key issued by your CA, or the signed answer to a CSR.</p>
-                    <button class="btn btn-primary btn-sm" (click)="openUpload()"><cds-icon shape="upload"></cds-icon> Upload</button>
+                    <h5 i18n="@@certificates.uploadTitle">Upload a certificate</h5>
+                    <p i18n="@@certificates.uploadHelp">Install a certificate and private key issued by your CA, or the signed answer to a CSR.</p>
+                    <button class="btn btn-primary btn-sm" (click)="openUpload()"><cds-icon shape="upload"></cds-icon> <ng-container i18n="@@certificates.upload">Upload</ng-container></button>
                   </section>
                   <section>
-                    <h5>Request from your CA</h5>
-                    <p>Generate a key on the appliance and a CSR to submit to your certificate authority.</p>
-                    <button class="btn btn-outline btn-sm" (click)="openId('csr')"><cds-icon shape="file"></cds-icon> Generate CSR</button>
+                    <h5 i18n="@@certificates.requestTitle">Request from your CA</h5>
+                    <p i18n="@@certificates.requestHelp">Generate a key on the appliance and a CSR to submit to your certificate authority.</p>
+                    <button class="btn btn-outline btn-sm" (click)="openId('csr')"><cds-icon shape="file"></cds-icon> <ng-container i18n="@@certificates.generateCsr">Generate CSR</ng-container></button>
                   </section>
                   <section>
-                    <h5>Self-signed</h5>
-                    <p>Create a new self-signed certificate, e.g. after changing the hostname or address.</p>
-                    <button class="btn btn-outline btn-sm" (click)="openId('self')"><cds-icon shape="refresh"></cds-icon> Regenerate</button>
+                    <h5 i18n="@@certificates.selfSignedTitle">Self-signed</h5>
+                    <p i18n="@@certificates.selfSignedHelp">Create a new self-signed certificate, e.g. after changing the hostname or address.</p>
+                    <button class="btn btn-outline btn-sm" (click)="openId('self')"><cds-icon shape="refresh"></cds-icon> <ng-container i18n="@@certificates.regenerate">Regenerate</ng-container></button>
                   </section>
                   @if (cv.status.hasPrevious) {
                     <section>
-                      <h5>Previous certificate</h5>
-                      <p>Switch back to the certificate that was active before the last change.</p>
-                      <button class="btn btn-link btn-sm restore" (click)="restoreOpen.set(true)"><cds-icon shape="history"></cds-icon> Restore previous</button>
+                      <h5 i18n="@@certificates.previousTitle">Previous certificate</h5>
+                      <p i18n="@@certificates.previousHelp">Switch back to the certificate that was active before the last change.</p>
+                      <button class="btn btn-link btn-sm restore" (click)="restoreOpen.set(true)"><cds-icon shape="history"></cds-icon> <ng-container i18n="@@certificates.restorePrevious">Restore previous</ng-container></button>
                     </section>
                   }
                 </div>
@@ -127,40 +127,40 @@ function download(name: string, text: string) {
           } @else if (cert.error()) {
             <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ cert.error() }}</span></div></div></div>
           } @else {
-            <div class="center"><span class="spinner">Loading…</span></div>
+            <div class="center"><span class="spinner" i18n="@@certificates.loading">Loading…</span></div>
           }
         </clr-tab-content>
       </clr-tab>
 
       <clr-tab>
-        <button clrTabLink>Trusted CAs ({{ (cas.value() ?? []).length }})</button>
+        <button clrTabLink i18n="@@certificates.tab.trustedCas">Trusted CAs ({{ (cas.value() ?? []).length }})</button>
         <clr-tab-content *clrIfActive>
-          <p class="hint">Certificate authorities the appliance trusts for outbound TLS, in addition to the operating system's public CAs: identity providers (OpenID Connect) now, and LDAPS directories such as Active Directory later. Add your internal root and issuing CAs here.</p>
+          <p class="hint" i18n="@@certificates.trustedHint">Certificate authorities the appliance trusts for outbound TLS, in addition to the operating system's public CAs: identity providers (OpenID Connect) now, and LDAPS directories such as Active Directory later. Add your internal root and issuing CAs here.</p>
           <div class="toolbar">
-            <button class="btn btn-primary btn-sm" (click)="openAddCA()"><cds-icon shape="plus"></cds-icon> Add CA</button>
-            <button class="btn btn-outline btn-sm" [disabled]="!selectedCA()" (click)="confirmCA.set(selectedCA())"><cds-icon shape="trash"></cds-icon> Delete</button>
+            <button class="btn btn-primary btn-sm" (click)="openAddCA()"><cds-icon shape="plus"></cds-icon> <ng-container i18n="@@certificates.addCa">Add CA</ng-container></button>
+            <button class="btn btn-outline btn-sm" [disabled]="!selectedCA()" (click)="confirmCA.set(selectedCA())"><cds-icon shape="trash"></cds-icon> <ng-container i18n="@@common.delete">Delete</ng-container></button>
           </div>
           <clr-datagrid class="datagrid-compact" clrDgSelectionType="single" [clrDgSelected]="selectedCAList()" (clrDgSelectedChange)="selectedCA.set($event[0])" [clrDgLoading]="cas.loading()">
-            <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
-            <clr-dg-column>Type</clr-dg-column>
-            <clr-dg-column [clrDgField]="'notAfter'">Expires</clr-dg-column>
-            <clr-dg-column>Key</clr-dg-column>
+            <clr-dg-column [clrDgField]="'name'" i18n="@@common.name">Name</clr-dg-column>
+            <clr-dg-column i18n="@@certificates.col.type">Type</clr-dg-column>
+            <clr-dg-column [clrDgField]="'notAfter'" i18n="@@certificates.col.expires">Expires</clr-dg-column>
+            <clr-dg-column i18n="@@certificates.col.key">Key</clr-dg-column>
             <clr-dg-column>SHA-256</clr-dg-column>
             <clr-dg-row *clrDgItems="let ca of cas.value() ?? []; trackBy: byId" [clrDgItem]="ca">
               <clr-dg-cell>{{ ca.name }}<div class="sub">{{ ca.subject }}</div></clr-dg-cell>
-              <clr-dg-cell>{{ ca.selfSigned ? 'Root' : 'Intermediate' }}@if (!ca.selfSigned) {<div class="sub">issued by {{ ca.issuer }}</div>}</clr-dg-cell>
+              <clr-dg-cell>{{ ca.selfSigned ? txt.root : txt.intermediate }}@if (!ca.selfSigned) {<div class="sub" i18n="@@certificates.issuedBy">issued by {{ ca.issuer }}</div>}</clr-dg-cell>
               <clr-dg-cell><span class="dot" [class]="expiryClass(ca.daysLeft)"></span> {{ dt(ca.notAfter) }}<div class="sub">{{ daysText(ca.daysLeft) }}</div></clr-dg-cell>
               <clr-dg-cell>{{ ca.key }}</clr-dg-cell>
               <clr-dg-cell class="mono small" [title]="ca.sha256">{{ ca.sha256.slice(0, 23) }}…</clr-dg-cell>
             </clr-dg-row>
-            <clr-dg-placeholder>No trusted CAs added. Only the operating system's public CAs are trusted.</clr-dg-placeholder>
+            <clr-dg-placeholder i18n="@@certificates.noTrustedCas">No trusted CAs added. Only the operating system's public CAs are trusted.</clr-dg-placeholder>
             <clr-dg-footer>
             <clr-dg-pagination #caPg [clrDgPageSize]="25">
-          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]" i18n="@@common.rowsPerPage">Rows per page</clr-dg-page-size>
           @if (caPg.totalItems) {
-            {{ caPg.firstItem + 1 }}–{{ caPg.lastItem + 1 }} of {{ caPg.totalItems.toLocaleString() }} CAs
+            <ng-container i18n="Datagrid footer: first–last of total@@certificates.footer">{{ caPg.firstItem + 1 }}–{{ caPg.lastItem + 1 }} of {{ caPg.totalItems.toLocaleString() }} CAs</ng-container>
           } @else {
-            No CAs
+            <ng-container i18n="@@certificates.noCas">No CAs</ng-container>
           }
         </clr-dg-pagination>
             </clr-dg-footer>
@@ -171,51 +171,51 @@ function download(name: string, text: string) {
 
     <!-- Upload -->
     <clr-modal [clrModalOpen]="uploadOpen()" (clrModalOpenChange)="uploadOpen.set($event)" clrModalSize="lg">
-      <h3 class="modal-title">Upload a certificate</h3>
+      <h3 class="modal-title" i18n="@@certificates.uploadTitle">Upload a certificate</h3>
       <div class="modal-body">
-        <label class="field-label">Certificate (PEM), including intermediate CAs</label>
+        <label class="field-label" i18n="@@certificates.certPem">Certificate (PEM), including intermediate CAs</label>
         <textarea class="clr-textarea pem" [(ngModel)]="upCert" name="upCert" rows="7" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
         <input type="file" accept=".pem,.crt,.cer,.txt" (change)="readFile($event, 'cert')" />
-        <label class="field-label">Private key (PEM)</label>
+        <label class="field-label" i18n="@@certificates.keyPem">Private key (PEM)</label>
         <textarea class="clr-textarea pem" [(ngModel)]="upKey" name="upKey" rows="5"
-          [placeholder]="cert.value()?.status?.pendingCsr ? 'Leave empty: this answers the pending CSR, whose key is on the appliance' : '-----BEGIN PRIVATE KEY-----'"></textarea>
+          [placeholder]="cert.value()?.status?.pendingCsr ? txt.keyPlaceholderPending : '-----BEGIN PRIVATE KEY-----'"></textarea>
         <input type="file" accept=".pem,.key,.txt" (change)="readFile($event, 'key')" />
-        <p class="hint">The certificate takes effect immediately for new connections; reload the page afterwards. The previous certificate is kept and can be restored.</p>
+        <p class="hint" i18n="@@certificates.uploadHint">The certificate takes effect immediately for new connections; reload the page afterwards. The previous certificate is kept and can be restored.</p>
         @if (modalError()) {
           <div class="alert alert-danger alert-sm" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ modalError() }}</span></div></div></div>
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="uploadOpen.set(false)">Cancel</button>
-        <button type="button" class="btn btn-primary" [disabled]="!upCert.trim()" [clrLoading]="busy()" (click)="upload()">Install</button>
+        <button type="button" class="btn btn-outline" (click)="uploadOpen.set(false)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="!upCert.trim()" [clrLoading]="busy()" (click)="upload()" i18n="@@certificates.install">Install</button>
       </div>
     </clr-modal>
 
     <!-- CSR / self-signed identity form -->
     <clr-modal [clrModalOpen]="idOpen()" (clrModalOpenChange)="idOpen.set($event)" clrModalSize="lg">
-      <h3 class="modal-title">{{ idMode() === 'csr' ? 'Generate a certificate signing request' : 'Regenerate self-signed certificate' }}</h3>
+      <h3 class="modal-title">{{ idMode() === 'csr' ? txt.csrTitle : txt.selfTitle }}</h3>
       <div class="modal-body">
         <form clrForm clrLayout="horizontal" clrLabelSize="4" id="idform" (ngSubmit)="submitId()">
           <clr-input-container>
-            <label>Common name</label>
+            <label i18n="@@certificates.commonName">Common name</label>
             <input clrInput name="cn" [(ngModel)]="idf.commonName" required maxlength="64" />
           </clr-input-container>
           <clr-input-container>
-            <label>Organization</label>
+            <label i18n="@@certificates.organization">Organization</label>
             <input clrInput name="org" [(ngModel)]="idf.organization" maxlength="64" />
           </clr-input-container>
           <clr-textarea-container>
-            <label>DNS names</label>
+            <label i18n="@@certificates.dnsNames">DNS names</label>
             <textarea clrTextarea name="dns" [(ngModel)]="idf.dnsNames" rows="3"></textarea>
-            <clr-control-helper>One per line. Browsers check these, not the common name.</clr-control-helper>
+            <clr-control-helper i18n="@@certificates.dnsHelp">One per line. Browsers check these, not the common name.</clr-control-helper>
           </clr-textarea-container>
           <clr-textarea-container>
-            <label>IP addresses</label>
+            <label i18n="@@certificates.ipAddresses">IP addresses</label>
             <textarea clrTextarea name="ips" [(ngModel)]="idf.ipAddresses" rows="2"></textarea>
-            <clr-control-helper>Include the address you browse to, e.g. 192.168.20.230.</clr-control-helper>
+            <clr-control-helper i18n="@@certificates.ipHelp">Include the address you browse to, e.g. 192.168.20.230.</clr-control-helper>
           </clr-textarea-container>
           <clr-select-container>
-            <label>Key</label>
+            <label i18n="@@certificates.key">Key</label>
             <select clrSelect name="kt" [(ngModel)]="idf.keyType">
               @for (k of keyTypes; track k.id) {
                 <option [value]="k.id">{{ k.label }}</option>
@@ -224,79 +224,79 @@ function download(name: string, text: string) {
           </clr-select-container>
           @if (idMode() === 'self') {
             <clr-input-container>
-              <label>Valid for (days)</label>
+              <label i18n="@@certificates.validDays">Valid for (days)</label>
               <input clrInput type="number" name="days" [(ngModel)]="idf.days" min="1" max="825" />
-              <clr-control-helper>At most 825 days, the limit browsers accept.</clr-control-helper>
+              <clr-control-helper i18n="@@certificates.validDaysHelp">At most 825 days, the limit browsers accept.</clr-control-helper>
             </clr-input-container>
           }
         </form>
         @if (idMode() === 'self') {
-          <p class="hint">Browsers will warn about the new certificate until you accept it again, as with the current one.</p>
+          <p class="hint" i18n="@@certificates.selfHint">Browsers will warn about the new certificate until you accept it again, as with the current one.</p>
         } @else {
-          <p class="hint">The private key stays on the appliance. Submit the CSR to your CA, then upload the certificate it returns (no key needed).</p>
+          <p class="hint" i18n="@@certificates.csrHint">The private key stays on the appliance. Submit the CSR to your CA, then upload the certificate it returns (no key needed).</p>
         }
         @if (modalError()) {
           <div class="alert alert-danger alert-sm" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ modalError() }}</span></div></div></div>
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="idOpen.set(false)">Cancel</button>
-        <button type="submit" form="idform" class="btn btn-primary" [clrLoading]="busy()">{{ idMode() === 'csr' ? 'Generate CSR' : 'Regenerate' }}</button>
+        <button type="button" class="btn btn-outline" (click)="idOpen.set(false)" i18n="@@common.cancel">Cancel</button>
+        <button type="submit" form="idform" class="btn btn-primary" [clrLoading]="busy()">{{ idMode() === 'csr' ? txt.generateCsr : txt.regenerate }}</button>
       </div>
     </clr-modal>
 
     <!-- CSR result -->
     <clr-modal [clrModalOpen]="!!csr()" (clrModalOpenChange)="!$event && csr.set(null)" clrModalSize="lg">
-      <h3 class="modal-title">Certificate signing request</h3>
+      <h3 class="modal-title" i18n="@@certificates.csrResultTitle">Certificate signing request</h3>
       <div class="modal-body">
         @if (csr(); as r) {
-          <p>For <b>{{ r.commonName }}</b> ({{ r.key }}){{ r.dnsNames.length || r.ipAddresses.length ? ' · ' + r.dnsNames.concat(r.ipAddresses).join(', ') : '' }}</p>
+          <p i18n="@@certificates.csrFor">For <b>{{ r.commonName }}</b> ({{ r.key }}){{ r.dnsNames.length || r.ipAddresses.length ? ' · ' + r.dnsNames.concat(r.ipAddresses).join(', ') : '' }}</p>
           <textarea class="clr-textarea pem" readonly rows="12">{{ r.pem }}</textarea>
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="copyCSR()">{{ copied() ? 'Copied' : 'Copy' }}</button>
-        <button type="button" class="btn btn-outline" (click)="downloadCSR()"><cds-icon shape="download"></cds-icon> Download</button>
-        <button type="button" class="btn btn-primary" (click)="csr.set(null)">Done</button>
+        <button type="button" class="btn btn-outline" (click)="copyCSR()">{{ copied() ? txt.copied : txt.copy }}</button>
+        <button type="button" class="btn btn-outline" (click)="downloadCSR()"><cds-icon shape="download"></cds-icon> <ng-container i18n="@@certificates.download">Download</ng-container></button>
+        <button type="button" class="btn btn-primary" (click)="csr.set(null)" i18n="@@certificates.done">Done</button>
       </div>
     </clr-modal>
 
     <!-- Restore -->
     <clr-modal [clrModalOpen]="restoreOpen()" (clrModalOpenChange)="restoreOpen.set($event)" clrModalSize="md">
-      <h3 class="modal-title">Restore the previous certificate?</h3>
-      <div class="modal-body"><p>The certificate active before the last change is reinstated; the current one becomes the "previous" one, so this can be undone.</p></div>
+      <h3 class="modal-title" i18n="@@certificates.restoreTitle">Restore the previous certificate?</h3>
+      <div class="modal-body"><p i18n="@@certificates.restoreBody">The certificate active before the last change is reinstated; the current one becomes the "previous" one, so this can be undone.</p></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="restoreOpen.set(false)">Cancel</button>
-        <button type="button" class="btn btn-primary" [clrLoading]="busy()" (click)="restore()">Restore</button>
+        <button type="button" class="btn btn-outline" (click)="restoreOpen.set(false)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" [clrLoading]="busy()" (click)="restore()" i18n="@@certificates.restore">Restore</button>
       </div>
     </clr-modal>
 
     <!-- Trusted CAs -->
     <clr-modal [clrModalOpen]="addCAOpen()" (clrModalOpenChange)="addCAOpen.set($event)" clrModalSize="lg">
-      <h3 class="modal-title">Add trusted CA</h3>
+      <h3 class="modal-title" i18n="@@certificates.addCaTitle">Add trusted CA</h3>
       <div class="modal-body">
-        <label class="field-label">Name (optional)</label>
-        <input class="clr-input name-input" [(ngModel)]="caName" name="caName" placeholder="Defaults to the certificate's common name" />
-        <label class="field-label">CA certificate(s), PEM</label>
+        <label class="field-label" i18n="@@certificates.nameOptional">Name (optional)</label>
+        <input class="clr-input name-input" [(ngModel)]="caName" name="caName" placeholder="Defaults to the certificate's common name" i18n-placeholder="@@certificates.caNamePlaceholder" />
+        <label class="field-label" i18n="@@certificates.caPem">CA certificate(s), PEM</label>
         <textarea class="clr-textarea pem" [(ngModel)]="caPem" name="caPem" rows="10" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
         <input type="file" accept=".pem,.crt,.cer,.txt" (change)="readFile($event, 'ca')" />
-        <p class="hint">A bundle with several certificates (root and intermediates) adds each one. Only CA certificates are accepted.</p>
+        <p class="hint" i18n="@@certificates.caHint">A bundle with several certificates (root and intermediates) adds each one. Only CA certificates are accepted.</p>
         @if (modalError()) {
           <div class="alert alert-danger alert-sm" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ modalError() }}</span></div></div></div>
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="addCAOpen.set(false)">Cancel</button>
-        <button type="button" class="btn btn-primary" [disabled]="!caPem.trim()" [clrLoading]="busy()" (click)="addCA()">Add</button>
+        <button type="button" class="btn btn-outline" (click)="addCAOpen.set(false)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="!caPem.trim()" [clrLoading]="busy()" (click)="addCA()" i18n="@@common.add">Add</button>
       </div>
     </clr-modal>
 
     <clr-modal [clrModalOpen]="!!confirmCA()" (clrModalOpenChange)="!$event && confirmCA.set(undefined)" clrModalSize="md">
-      <h3 class="modal-title">Remove {{ confirmCA()?.name }}?</h3>
-      <div class="modal-body"><p>Connections to servers whose certificates chain only to this CA (for example an internal identity provider) will fail verification.</p></div>
+      <h3 class="modal-title" i18n="@@certificates.removeTitle">Remove {{ confirmCA()?.name }}?</h3>
+      <div class="modal-body"><p i18n="@@certificates.removeBody">Connections to servers whose certificates chain only to this CA (for example an internal identity provider) will fail verification.</p></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="confirmCA.set(undefined)">Cancel</button>
-        <button type="button" class="btn btn-danger" (click)="deleteCA()">Remove</button>
+        <button type="button" class="btn btn-outline" (click)="confirmCA.set(undefined)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="deleteCA()" i18n="@@common.remove">Remove</button>
       </div>
     </clr-modal>
   `,
@@ -364,6 +364,19 @@ export class Certificates {
   caPem = '';
   idf: IdForm = { commonName: '', organization: '', dnsNames: '', ipAddresses: '', keyType: 'ecdsa-p256', days: 825 };
   dt = dateTime;
+  readonly txt = {
+    selfSigned: $localize`:@@certificates.selfSignedLabel:Self-signed`,
+    none: $localize`:@@certificates.none:none`,
+    root: $localize`:@@certificates.root:Root`,
+    intermediate: $localize`:@@certificates.intermediate:Intermediate`,
+    keyPlaceholderPending: $localize`:@@certificates.keyPlaceholderPending:Leave empty: this answers the pending CSR, whose key is on the appliance`,
+    csrTitle: $localize`:@@certificates.csrTitle:Generate a certificate signing request`,
+    selfTitle: $localize`:@@certificates.selfTitle:Regenerate self-signed certificate`,
+    generateCsr: $localize`:@@certificates.generateCsr:Generate CSR`,
+    regenerate: $localize`:@@certificates.regenerate:Regenerate`,
+    copied: $localize`:@@certificates.copied:Copied`,
+    copy: $localize`:@@certificates.copy:Copy`,
+  };
 
   private refresh() {
     this.tick.update((t) => t + 1);
@@ -374,7 +387,8 @@ export class Certificates {
   }
 
   daysText(days: number) {
-    return days < 0 ? `expired ${-days} days ago` : `${days} day${days === 1 ? '' : 's'} left`;
+    if (days < 0) return $localize`:@@certificates.expiredDaysAgo:expired ${-days}:days: days ago`;
+    return days === 1 ? $localize`:@@certificates.oneDayLeft:${days}:days: day left` : $localize`:@@certificates.daysLeft:${days}:days: days left`;
   }
 
   sans(c: CertDetails) {
@@ -403,7 +417,7 @@ export class Certificates {
     try {
       const d = await this.api.uploadCertificate(this.upCert, this.upKey);
       this.uploadOpen.set(false);
-      this.done(`Installed the certificate for ${d.commonName}, valid until ${this.dt(d.notAfter)}. Reload the page to use it.`);
+      this.done($localize`:@@certificates.installed:Installed the certificate for ${d.commonName}:name:, valid until ${this.dt(d.notAfter)}:validUntil:. Reload the page to use it.`);
     } catch (e) {
       this.modalError.set(errorMessage(e));
     } finally {
@@ -444,7 +458,7 @@ export class Certificates {
       } else {
         const d = await this.api.selfSigned(this.identity(), this.idf.keyType, Number(this.idf.days) || 825);
         this.idOpen.set(false);
-        this.done(`Installed a new self-signed certificate for ${d.commonName}. Reload the page and accept it in your browser.`);
+        this.done($localize`:@@certificates.installedSelfSigned:Installed a new self-signed certificate for ${d.commonName}:name:. Reload the page and accept it in your browser.`);
       }
     } catch (e) {
       this.modalError.set(errorMessage(e));
@@ -459,7 +473,7 @@ export class Certificates {
 
   async discardCSR() {
     await this.api.discardCSR();
-    this.done('Discarded the pending CSR and its key.');
+    this.done($localize`:@@certificates.csrDiscarded:Discarded the pending CSR and its key.`);
   }
 
   async copyCSR() {
@@ -482,7 +496,7 @@ export class Certificates {
     try {
       const d = await this.api.restoreCertificate();
       this.restoreOpen.set(false);
-      this.done(`Restored the certificate for ${d.commonName}. Reload the page to use it.`);
+      this.done($localize`:@@certificates.restored:Restored the certificate for ${d.commonName}:name:. Reload the page to use it.`);
     } catch (e) {
       this.restoreOpen.set(false);
       this.pageError.set(errorMessage(e));
@@ -503,7 +517,7 @@ export class Certificates {
     try {
       const r = await this.api.addTrustedCA(this.caName, this.caPem);
       this.addCAOpen.set(false);
-      this.done(r.added.length ? `Now trusting ${r.added.join(', ')}.` : 'Those CAs were already trusted.');
+      this.done(r.added.length ? $localize`:@@certificates.nowTrusting:Now trusting ${r.added.join(', ')}:names:.` : $localize`:@@certificates.alreadyTrusted:Those CAs were already trusted.`);
     } catch (e) {
       this.modalError.set(errorMessage(e));
     } finally {
@@ -518,7 +532,7 @@ export class Certificates {
     try {
       await this.api.deleteTrustedCA(ca.id);
       this.selectedCA.set(undefined);
-      this.done(`Removed ${ca.name}.`);
+      this.done($localize`:@@certificates.removed:Removed ${ca.name}:name:.`);
     } catch (e) {
       this.pageError.set(errorMessage(e));
     }

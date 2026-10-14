@@ -36,18 +36,18 @@ function blankForm(): Form {
   template: `
     <div class="page-header">
       <div>
-        <h2>Identity Sources</h2>
-        <p class="subtitle">Single sign-on providers for console sign-in</p>
+        <h2 i18n="@@nav.identitySources">Identity Sources</h2>
+        <p class="subtitle" i18n="@@identitySources.subtitle">Single sign-on providers for console sign-in</p>
       </div>
     </div>
 
     <div class="toolbar">
       <div>
-        <button class="btn btn-primary" (click)="chooserOpen.set(true)"><cds-icon shape="plus"></cds-icon> Add source</button>
-        <button class="btn btn-outline" [disabled]="!selected()" (click)="openEdit(selected()!)"><cds-icon shape="pencil"></cds-icon> Edit</button>
-        <button class="btn btn-outline" [disabled]="!selected()" (click)="confirmDelete.set(selected())"><cds-icon shape="trash"></cds-icon> Delete</button>
+        <button class="btn btn-primary" (click)="chooserOpen.set(true)"><cds-icon shape="plus"></cds-icon> <ng-container i18n="@@identitySources.addSource">Add source</ng-container></button>
+        <button class="btn btn-outline" [disabled]="!selected()" (click)="openEdit(selected()!)"><cds-icon shape="pencil"></cds-icon> <ng-container i18n="@@common.edit">Edit</ng-container></button>
+        <button class="btn btn-outline" [disabled]="!selected()" (click)="confirmDelete.set(selected())"><cds-icon shape="trash"></cds-icon> <ng-container i18n="@@common.delete">Delete</ng-container></button>
       </div>
-      <button class="btn btn-link btn-icon" (click)="list.reload()" aria-label="Refresh"><cds-icon shape="refresh"></cds-icon></button>
+      <button class="btn btn-link btn-icon" (click)="list.reload()" aria-label="Refresh" i18n-aria-label="@@common.refresh"><cds-icon shape="refresh"></cds-icon></button>
     </div>
 
     @if (list.error() || pageError()) {
@@ -55,30 +55,30 @@ function blankForm(): Form {
     }
 
     <clr-datagrid class="datagrid-compact" clrDgSelectionType="single" [clrDgSelected]="selectedList()" (clrDgSelectedChange)="selected.set($event[0])" [clrDgLoading]="list.loading()">
-      <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
-      <clr-dg-column [clrDgField]="'type'">Type</clr-dg-column>
-      <clr-dg-column>Status</clr-dg-column>
-      <clr-dg-column>Used for</clr-dg-column>
-      <clr-dg-column [clrDgField]="'priority'" [clrDgSortOrder]="1">Priority</clr-dg-column>
-      <clr-dg-column>Role mappings</clr-dg-column>
-      <clr-dg-column>Users</clr-dg-column>
+      <clr-dg-column [clrDgField]="'name'" i18n="@@common.name">Name</clr-dg-column>
+      <clr-dg-column [clrDgField]="'type'" i18n="@@identitySources.col.type">Type</clr-dg-column>
+      <clr-dg-column i18n="@@identitySources.col.status">Status</clr-dg-column>
+      <clr-dg-column i18n="@@identitySources.col.usedFor">Used for</clr-dg-column>
+      <clr-dg-column [clrDgField]="'priority'" [clrDgSortOrder]="1" i18n="@@identitySources.col.priority">Priority</clr-dg-column>
+      <clr-dg-column i18n="@@identitySources.col.roleMappings">Role mappings</clr-dg-column>
+      <clr-dg-column i18n="@@identitySources.col.users">Users</clr-dg-column>
       <clr-dg-row *clrDgItems="let s of list.value() ?? []; trackBy: byId" [clrDgItem]="s">
         <clr-dg-cell><a href="#" (click)="$event.preventDefault(); openEdit(s)">{{ s.name }}</a></clr-dg-cell>
         <clr-dg-cell>{{ typeLabel(s.type) }}</clr-dg-cell>
-        <clr-dg-cell><span class="dot" [class.ok]="s.enabled" [class.off]="!s.enabled"></span> {{ s.enabled ? 'Enabled' : 'Disabled' }}</clr-dg-cell>
-        <clr-dg-cell><span class="label label-blue">Console</span></clr-dg-cell>
+        <clr-dg-cell><span class="dot" [class.ok]="s.enabled" [class.off]="!s.enabled"></span> @if (s.enabled) {<ng-container i18n="@@identitySources.enabled">Enabled</ng-container>} @else {<ng-container i18n="@@identitySources.disabled">Disabled</ng-container>}</clr-dg-cell>
+        <clr-dg-cell><span class="label label-blue" i18n="@@identitySources.console">Console</span></clr-dg-cell>
         <clr-dg-cell>{{ s.priority }}</clr-dg-cell>
-        <clr-dg-cell>{{ s.mappings.length }} mapping{{ s.mappings.length === 1 ? '' : 's' }}{{ s.defaultRole ? ' · others: ' + roleLabel(s.defaultRole) : '' }}</clr-dg-cell>
+        <clr-dg-cell><ng-container i18n="@@identitySources.mappingCount">{s.mappings.length, plural, =1 {1 mapping} other {{{ s.mappings.length }} mappings}}</ng-container>@if (s.defaultRole) {<ng-container i18n="@@identitySources.othersRole"> · others: {{ roleLabel(s.defaultRole) }}</ng-container>}</clr-dg-cell>
         <clr-dg-cell>{{ s.users }}</clr-dg-cell>
       </clr-dg-row>
-      <clr-dg-placeholder>No identity sources. Everyone signs in with local accounts.</clr-dg-placeholder>
+      <clr-dg-placeholder i18n="@@identitySources.placeholder">No identity sources. Everyone signs in with local accounts.</clr-dg-placeholder>
       <clr-dg-footer>
         <clr-dg-pagination #pg [clrDgPageSize]="25">
-          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]" i18n="@@common.rowsPerPage">Rows per page</clr-dg-page-size>
           @if (pg.totalItems) {
-            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} sources
+            <ng-container i18n="Datagrid footer: first–last of total@@identitySources.footer">{{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} sources</ng-container>
           } @else {
-            No sources
+            <ng-container i18n="@@identitySources.empty">No sources</ng-container>
           }
         </clr-dg-pagination>
       </clr-dg-footer>
@@ -86,153 +86,153 @@ function blankForm(): Form {
 
     <div class="card how">
       <div class="card-block">
-        <h4 class="card-title">How sign-in works</h4>
+        <h4 class="card-title" i18n="@@identitySources.howTitle">How sign-in works</h4>
         <ul>
-          <li><b>Local accounts</b> always authenticate locally with their password and are never passed to a provider.</li>
-          <li>Enabled <b>OpenID Connect</b> sources appear as buttons on the sign-in page, in priority order (lowest first).</li>
-          <li>The role comes from the highest matching group mapping, otherwise the "everyone else" role. With neither, access is denied. Roles are re-evaluated at every sign-in.</li>
-          <li>A provider can never sign in to a local account, or to an account created by another source, even with the same username.</li>
+          <li i18n="@@identitySources.howLocal"><b>Local accounts</b> always authenticate locally with their password and are never passed to a provider.</li>
+          <li i18n="@@identitySources.howOidc">Enabled <b>OpenID Connect</b> sources appear as buttons on the sign-in page, in priority order (lowest first).</li>
+          <li i18n="@@identitySources.howRole">The role comes from the highest matching group mapping, otherwise the "everyone else" role. With neither, access is denied. Roles are re-evaluated at every sign-in.</li>
+          <li i18n="@@identitySources.howIsolation">A provider can never sign in to a local account, or to an account created by another source, even with the same username.</li>
         </ul>
       </div>
     </div>
 
     <!-- Type chooser -->
     <clr-modal [clrModalOpen]="chooserOpen()" (clrModalOpenChange)="chooserOpen.set($event)" clrModalSize="lg">
-      <h3 class="modal-title">Add identity source</h3>
+      <h3 class="modal-title" i18n="@@identitySources.addTitle">Add identity source</h3>
       <div class="modal-body">
         <div class="types">
           <button class="type-card" (click)="openNew()">
             <h4>OpenID Connect</h4>
-            <p>Single sign-on with Authentik, Entra ID, Okta, Keycloak, Google and other OIDC providers.</p>
+            <p i18n="@@identitySources.oidcDescription">Single sign-on with Authentik, Entra ID, Okta, Keycloak, Google and other OIDC providers.</p>
           </button>
           @for (t of later; track t.title) {
             <div class="type-card disabled" aria-disabled="true">
-              <h4>{{ t.title }} <span class="label">Coming soon</span></h4>
+              <h4>{{ t.title }} <span class="label" i18n="@@identitySources.comingSoon">Coming soon</span></h4>
               <p>{{ t.text }}</p>
             </div>
           }
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="chooserOpen.set(false)">Cancel</button>
+        <button type="button" class="btn btn-outline" (click)="chooserOpen.set(false)" i18n="@@common.cancel">Cancel</button>
       </div>
     </clr-modal>
 
     <!-- OpenID Connect editor -->
     <clr-modal [clrModalOpen]="editOpen()" (clrModalOpenChange)="editOpen.set($event)" clrModalSize="xl" [clrModalStaticBackdrop]="true">
-      <h3 class="modal-title">{{ form.id ? 'Edit' : 'Add' }} OpenID Connect source</h3>
+      <h3 class="modal-title">@if (form.id) {<ng-container i18n="@@identitySources.editOidcTitle">Edit OpenID Connect source</ng-container>} @else {<ng-container i18n="@@identitySources.addOidcTitle">Add OpenID Connect source</ng-container>}</h3>
       <div class="modal-body">
         <div class="editor">
           <form clrForm clrLayout="horizontal" clrLabelSize="4" class="editor-form" id="srcform" (ngSubmit)="save()">
-            <h5 class="section">General</h5>
+            <h5 class="section" i18n="@@identitySources.general">General</h5>
             <clr-input-container>
-              <label>Name</label>
+              <label i18n="@@common.name">Name</label>
               <input clrInput name="name" [(ngModel)]="form.name" required maxlength="64" placeholder="Authentik" />
-              <clr-control-helper>Shown on the sign-in button</clr-control-helper>
+              <clr-control-helper i18n="@@identitySources.nameHelp">Shown on the sign-in button</clr-control-helper>
             </clr-input-container>
             <clr-toggle-container>
-              <label>Enabled</label>
+              <label i18n="@@identitySources.enabled">Enabled</label>
               <clr-toggle-wrapper>
                 <input type="checkbox" clrToggle name="enabled" [(ngModel)]="form.enabled" />
-                <label>Accept sign-ins from this source</label>
+                <label i18n="@@identitySources.enabledToggle">Accept sign-ins from this source</label>
               </clr-toggle-wrapper>
             </clr-toggle-container>
             <clr-input-container>
-              <label>Priority</label>
+              <label i18n="@@identitySources.priority">Priority</label>
               <input clrInput type="number" name="priority" [(ngModel)]="form.priority" min="0" max="1000" />
-              <clr-control-helper>Order of sign-in buttons (lowest first)</clr-control-helper>
+              <clr-control-helper i18n="@@identitySources.priorityHelp">Order of sign-in buttons (lowest first)</clr-control-helper>
             </clr-input-container>
 
-            <h5 class="section">Provider</h5>
+            <h5 class="section" i18n="@@identitySources.provider">Provider</h5>
             <clr-input-container>
-              <label>Issuer URL</label>
+              <label i18n="@@identitySources.issuerUrl">Issuer URL</label>
               <input clrInput name="issuer" [(ngModel)]="form.issuer" required placeholder="https://auth.example.com/application/o/tributary/" class="wide" />
             </clr-input-container>
             <clr-input-container>
-              <label>Client ID</label>
+              <label i18n="@@identitySources.clientId">Client ID</label>
               <input clrInput name="clientId" [(ngModel)]="form.clientId" required class="wide" />
             </clr-input-container>
             <clr-password-container>
-              <label>Client secret</label>
+              <label i18n="@@identitySources.clientSecret">Client secret</label>
               <input clrPassword name="clientSecret" [(ngModel)]="form.clientSecret" autocomplete="new-password"
-                [placeholder]="form.hasSecret ? 'Unchanged (stored securely)' : 'Required for confidential clients'" />
+                [placeholder]="form.hasSecret ? secretUnchanged : secretRequired" />
             </clr-password-container>
             <div class="clr-form-control clr-row list-row">
-              <label class="clr-control-label clr-col-12 clr-col-md-4">Scopes</label>
+              <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@identitySources.scopes">Scopes</label>
               <div class="clr-col-12 clr-col-md-8">
                 @for (sc of form.scopes; track $index; let i = $index) {
                   <div class="list-item">
                     <input class="clr-input" [name]="'scope' + i" [(ngModel)]="form.scopes[i]" [disabled]="sc === 'openid' && i === 0" />
                     @if (!(sc === 'openid' && i === 0)) {
-                      <button type="button" class="btn btn-link btn-icon btn-sm" (click)="form.scopes.splice(i, 1)" aria-label="Remove scope"><cds-icon shape="times"></cds-icon></button>
+                      <button type="button" class="btn btn-link btn-icon btn-sm" (click)="form.scopes.splice(i, 1)" aria-label="Remove scope" i18n-aria-label="@@identitySources.removeScope"><cds-icon shape="times"></cds-icon></button>
                     }
                   </div>
                 }
-                <button type="button" class="btn btn-link btn-sm add" (click)="form.scopes.push('')"><cds-icon shape="plus"></cds-icon> Add scope</button>
+                <button type="button" class="btn btn-link btn-sm add" (click)="form.scopes.push('')"><cds-icon shape="plus"></cds-icon> <ng-container i18n="@@identitySources.addScope">Add scope</ng-container></button>
               </div>
             </div>
             <clr-input-container>
-              <label>Username claim</label>
+              <label i18n="@@identitySources.usernameClaim">Username claim</label>
               <input clrInput name="usernameClaim" [(ngModel)]="form.usernameClaim" />
             </clr-input-container>
             <clr-input-container>
-              <label>Groups claim</label>
+              <label i18n="@@identitySources.groupsClaim">Groups claim</label>
               <input clrInput name="groupsClaim" [(ngModel)]="form.groupsClaim" />
-              <clr-control-helper>Read from the ID token, or from userinfo if absent</clr-control-helper>
+              <clr-control-helper i18n="@@identitySources.groupsClaimHelp">Read from the ID token, or from userinfo if absent</clr-control-helper>
             </clr-input-container>
 
             <div class="redirect">
-              <h5>Redirect URI</h5>
+              <h5 i18n="@@identitySources.redirectUri">Redirect URI</h5>
               @if (redirectUri()) {
-                <p>Register this redirect URI in the provider's application settings:</p>
-                <div class="uri"><code>{{ redirectUri() }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy()">{{ copied() ? 'Copied' : 'Copy' }}</button></div>
+                <p i18n="@@identitySources.redirectUriRegister">Register this redirect URI in the provider's application settings:</p>
+                <div class="uri"><code>{{ redirectUri() }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy()">@if (copied()) {<ng-container i18n="@@identitySources.copied">Copied</ng-container>} @else {<ng-container i18n="@@identitySources.copy">Copy</ng-container>}</button></div>
               } @else {
-                <p>Save the source first; its redirect URI appears here, ready to copy into the provider.</p>
+                <p i18n="@@identitySources.redirectUriSaveFirst">Save the source first; its redirect URI appears here, ready to copy into the provider.</p>
               }
             </div>
 
-            <h5 class="section">Role mapping</h5>
+            <h5 class="section" i18n="@@identitySources.roleMapping">Role mapping</h5>
             <div class="mappings">
-              <div class="map-head"><span>Group</span><span>Role</span><span></span></div>
+              <div class="map-head"><span i18n="@@identitySources.group">Group</span><span i18n="@@identitySources.role">Role</span><span></span></div>
               @for (m of form.mappings; track $index; let i = $index) {
                 <div class="map-row">
                   <input class="clr-input" [name]="'group' + i" [(ngModel)]="m.group" placeholder="tributary-admins" />
                   <div class="clr-select-wrapper">
                     <select class="clr-select" [name]="'role' + i" [(ngModel)]="m.role">
-                      <option value="admin">Administrator</option>
-                      <option value="viewer">Viewer</option>
+                      <option value="admin" i18n="@@identitySources.roleAdministrator">Administrator</option>
+                      <option value="viewer" i18n="@@identitySources.roleViewer">Viewer</option>
                     </select>
                   </div>
-                  <button type="button" class="btn btn-link btn-icon btn-sm" (click)="form.mappings.splice(i, 1)" aria-label="Remove mapping"><cds-icon shape="times"></cds-icon></button>
+                  <button type="button" class="btn btn-link btn-icon btn-sm" (click)="form.mappings.splice(i, 1)" aria-label="Remove mapping" i18n-aria-label="@@identitySources.removeMapping"><cds-icon shape="times"></cds-icon></button>
                 </div>
               }
-              <button type="button" class="btn btn-link btn-sm add" (click)="form.mappings.push({ group: '', role: 'viewer' })"><cds-icon shape="plus"></cds-icon> Add mapping</button>
+              <button type="button" class="btn btn-link btn-sm add" (click)="form.mappings.push({ group: '', role: 'viewer' })"><cds-icon shape="plus"></cds-icon> <ng-container i18n="@@identitySources.addMapping">Add mapping</ng-container></button>
             </div>
             <clr-select-container>
-              <label>Everyone else</label>
+              <label i18n="@@identitySources.everyoneElse">Everyone else</label>
               <select clrSelect name="defaultRole" [(ngModel)]="form.defaultRole">
-                <option value="">Deny console access</option>
-                <option value="viewer">Viewer</option>
-                <option value="admin">Administrator</option>
+                <option value="" i18n="@@identitySources.denyAccess">Deny console access</option>
+                <option value="viewer" i18n="@@identitySources.roleViewer">Viewer</option>
+                <option value="admin" i18n="@@identitySources.roleAdministrator">Administrator</option>
               </select>
-              <clr-control-helper>Role for authenticated users matching no mapping</clr-control-helper>
+              <clr-control-helper i18n="@@identitySources.everyoneElseHelp">Role for authenticated users matching no mapping</clr-control-helper>
             </clr-select-container>
           </form>
 
           <aside class="test">
-            <h5>Test connection</h5>
-            <p>Checks that the provider's metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</p>
-            <button type="button" class="btn btn-outline btn-sm" (click)="runTest()" [clrLoading]="testing()" [disabled]="!form.issuer"><cds-icon shape="play"></cds-icon> Run test</button>
+            <h5 i18n="@@identitySources.testConnection">Test connection</h5>
+            <p i18n="@@identitySources.testHelp">Checks that the provider's metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</p>
+            <button type="button" class="btn btn-outline btn-sm" (click)="runTest()" [clrLoading]="testing()" [disabled]="!form.issuer"><cds-icon shape="play"></cds-icon> <ng-container i18n="@@identitySources.runTest">Run test</ng-container></button>
             @if (test(); as t) {
               <div class="result" [class.bad]="!t.ok">
                 <div><span class="dot" [class.ok]="t.ok" [class.bad]="!t.ok"></span> {{ t.message }}</div>
                 @if (t.ok) {
                   <dl>
-                    <dt>Authorization</dt><dd>{{ t.authorizationEndpoint }}</dd>
-                    <dt>Token</dt><dd>{{ t.tokenEndpoint }}</dd>
+                    <dt i18n="OIDC authorization endpoint@@identitySources.authorization">Authorization</dt><dd>{{ t.authorizationEndpoint }}</dd>
+                    <dt i18n="OIDC token endpoint@@identitySources.token">Token</dt><dd>{{ t.tokenEndpoint }}</dd>
                     @if (t.userinfoEndpoint) {<dt>Userinfo</dt><dd>{{ t.userinfoEndpoint }}</dd>}
-                    <dt>PKCE</dt><dd>{{ t.pkce?.includes('S256') ? 'S256 supported' : 'not advertised (sign-in still sends S256)' }}</dd>
-                    @if (t.claims?.length) {<dt>Claims</dt><dd>{{ claimHint(t) }}</dd>}
+                    <dt>PKCE</dt><dd>@if (t.pkce?.includes('S256')) {<ng-container i18n="@@identitySources.pkceSupported">S256 supported</ng-container>} @else {<ng-container i18n="@@identitySources.pkceNotAdvertised">not advertised (sign-in still sends S256)</ng-container>}</dd>
+                    @if (t.claims?.length) {<dt i18n="@@identitySources.claims">Claims</dt><dd>{{ claimHint(t) }}</dd>}
                   </dl>
                 }
               </div>
@@ -247,19 +247,19 @@ function blankForm(): Form {
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="editOpen.set(false)">{{ savedNote() ? 'Close' : 'Cancel' }}</button>
-        <button type="submit" form="srcform" class="btn btn-primary" [clrLoading]="saving()">Save</button>
+        <button type="button" class="btn btn-outline" (click)="editOpen.set(false)">@if (savedNote()) {<ng-container i18n="@@common.close">Close</ng-container>} @else {<ng-container i18n="@@common.cancel">Cancel</ng-container>}</button>
+        <button type="submit" form="srcform" class="btn btn-primary" [clrLoading]="saving()" i18n="@@common.save">Save</button>
       </div>
     </clr-modal>
 
     <clr-modal [clrModalOpen]="!!confirmDelete()" (clrModalOpenChange)="!$event && confirmDelete.set(null)" clrModalSize="md">
-      <h3 class="modal-title">Delete {{ confirmDelete()?.name }}?</h3>
+      <h3 class="modal-title" i18n="@@identitySources.deleteTitle">Delete {{ confirmDelete()?.name }}?</h3>
       <div class="modal-body">
-        <p>The sign-in button disappears and the {{ confirmDelete()?.users }} account(s) created by this source are deleted and signed out. Local accounts are not affected.</p>
+        <p i18n="@@identitySources.deleteConfirm">The sign-in button disappears and the {{ confirmDelete()?.users }} account(s) created by this source are deleted and signed out. Local accounts are not affected.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="confirmDelete.set(null)">Cancel</button>
-        <button type="button" class="btn btn-danger" (click)="remove()">Delete</button>
+        <button type="button" class="btn btn-outline" (click)="confirmDelete.set(null)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="remove()" i18n="@@common.delete">Delete</button>
       </div>
     </clr-modal>
   `,
@@ -331,11 +331,13 @@ export class IdentitySources {
   readonly savedNote = signal('');
   readonly pageError = signal('');
   form: Form = blankForm();
+  readonly secretUnchanged = $localize`:@@identitySources.secretUnchanged:Unchanged (stored securely)`;
+  readonly secretRequired = $localize`:@@identitySources.secretRequired:Required for confidential clients`;
 
   readonly later = [
-    { title: 'LDAP / Active Directory', text: 'Bind to a directory and map groups to roles.' },
-    { title: 'RADIUS', text: 'PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).' },
-    { title: 'SAML 2.0', text: 'Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.' },
+    { title: 'LDAP / Active Directory', text: $localize`:@@identitySources.ldapDescription:Bind to a directory and map groups to roles.` },
+    { title: 'RADIUS', text: $localize`:@@identitySources.radiusDescription:PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).` },
+    { title: 'SAML 2.0', text: $localize`:@@identitySources.samlDescription:Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.` },
   ];
 
   typeLabel(t: string) {
@@ -343,7 +345,7 @@ export class IdentitySources {
   }
 
   roleLabel(r: string) {
-    return r === 'admin' ? 'Administrator' : r === 'viewer' ? 'Viewer' : 'denied';
+    return r === 'admin' ? $localize`:@@identitySources.roleAdministrator:Administrator` : r === 'viewer' ? $localize`:@@identitySources.roleViewer:Viewer` : $localize`:@@identitySources.roleDenied:denied`;
   }
 
   private reset() {
@@ -398,7 +400,7 @@ export class IdentitySources {
       this.list.reload();
       if (created) {
         // Keep the dialog open so the redirect URI can be copied into the provider.
-        this.savedNote.set('Saved. Register the redirect URI above in your provider, then sign in with the new button on the sign-in page.');
+        this.savedNote.set($localize`:@@identitySources.savedNote:Saved. Register the redirect URI above in your provider, then sign in with the new button on the sign-in page.`);
       } else {
         this.editOpen.set(false);
       }
@@ -424,7 +426,9 @@ export class IdentitySources {
     const c = t.claims ?? [];
     const want = [this.form.usernameClaim, this.form.groupsClaim].filter(Boolean);
     const missing = want.filter((w) => !c.includes(w));
-    return missing.length ? `${missing.join(', ')} not advertised (may still be sent)` : `${want.join(', ')} advertised`;
+    return missing.length
+      ? $localize`:@@identitySources.claimsMissing:${missing.join(', ')}:claims: not advertised (may still be sent)`
+      : $localize`:@@identitySources.claimsAdvertised:${want.join(', ')}:claims: advertised`;
   }
 
   async copy() {

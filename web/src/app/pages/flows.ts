@@ -17,12 +17,12 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
   template: `
     <div class="page-header">
       <div>
-        <h2>Flow Search</h2>
-        <p class="subtitle">Individual flow records · {{ time.label() }}</p>
+        <h2 i18n="@@nav.flows">Flow Search</h2>
+        <p class="subtitle" i18n="@@flows.subtitle">Individual flow records · {{ time.label() }}</p>
       </div>
       <div class="header-controls">
         <nfa-range-bar />
-        <a class="btn btn-sm btn-outline" [href]="csvUrl()" download><cds-icon shape="download"></cds-icon> Export CSV</a>
+        <a class="btn btn-sm btn-outline" [href]="csvUrl()" download><cds-icon shape="download"></cds-icon> <ng-container i18n="@@flows.exportCsv">Export CSV</ng-container></a>
       </div>
     </div>
 
@@ -33,14 +33,14 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
     }
 
     <clr-datagrid class="datagrid-compact flows-grid" (clrDgRefresh)="refresh($event)" [clrDgLoading]="page.loading()">
-      <clr-dg-column [clrDgField]="'time'" [clrDgSortOrder]="-1">Received</clr-dg-column>
-      <clr-dg-column>Exporter</clr-dg-column>
-      <clr-dg-column [clrDgField]="'src'">Source</clr-dg-column>
-      <clr-dg-column [clrDgField]="'dst'">Destination</clr-dg-column>
-      <clr-dg-column [clrDgField]="'dport'">Service</clr-dg-column>
-      <clr-dg-column [clrDgField]="'bytes'">Bytes</clr-dg-column>
-      <clr-dg-column [clrDgField]="'packets'">Packets</clr-dg-column>
-      <clr-dg-column>Duration</clr-dg-column>
+      <clr-dg-column [clrDgField]="'time'" [clrDgSortOrder]="-1" i18n="@@flows.col.received">Received</clr-dg-column>
+      <clr-dg-column i18n="@@flows.col.exporter">Exporter</clr-dg-column>
+      <clr-dg-column [clrDgField]="'src'" i18n="@@flows.col.source">Source</clr-dg-column>
+      <clr-dg-column [clrDgField]="'dst'" i18n="@@flows.col.destination">Destination</clr-dg-column>
+      <clr-dg-column [clrDgField]="'dport'" i18n="@@flows.col.service">Service</clr-dg-column>
+      <clr-dg-column [clrDgField]="'bytes'" i18n="@@flows.col.bytes">Bytes</clr-dg-column>
+      <clr-dg-column [clrDgField]="'packets'" i18n="@@flows.col.packets">Packets</clr-dg-column>
+      <clr-dg-column i18n="@@flows.col.duration">Duration</clr-dg-column>
 
       <clr-dg-row *ngFor="let f of rows(); trackBy: flowKey" [clrDgItem]="f" [clrDgExpanded]="expanded.has(key(f))" (clrDgExpandedChange)="expanded.set(key(f), $event)">
         <clr-dg-cell class="nowrap" [title]="dt(f.timeReceived)">{{ st(f.timeReceived) }}</clr-dg-cell>
@@ -62,36 +62,36 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
 
           <clr-dg-row-detail *clrIfExpanded>
             <div class="detail-grid">
-              <div><span>Flow start</span>{{ dt(f.timeStart) }}</div>
-              <div><span>Flow end</span>{{ dt(f.timeEnd) }}</div>
-              <div><span>Interfaces (in → out)</span>ifIndex {{ f.inIf }} → {{ f.outIf }}</div>
-              <div><span>Flow protocol</span>{{ flowType(f.flowType) }}</div>
-              <div><span>Sampling</span>1:{{ f.sampling }}</div>
-              <div><span>Next hop</span>{{ f.nextHop }}</div>
-              <div><span>Source host</span>{{ f.srcHost || '–' }}</div>
-              <div><span>Destination host</span>{{ f.dstHost || '–' }}</div>
-              <div><span>Source AS</span>{{ f.srcAs ? 'AS' + f.srcAs + (f.srcAsName ? ' ' + f.srcAsName : '') : '–' }}</div>
-              <div><span>Destination AS</span>{{ f.dstAs ? 'AS' + f.dstAs + (f.dstAsName ? ' ' + f.dstAsName : '') : '–' }}</div>
-              <div><span>Device (MAC)</span>{{ f.deviceMac || '–' }}</div>
-              <div><span>Source / destination MAC</span>{{ f.srcMac || '–' }} → {{ f.dstMac || '–' }}</div>
-              <div><span>Source country</span>{{ f.srcCountry || '–' }}</div>
-              <div><span>Destination country</span>{{ f.dstCountry || '–' }}</div>
-              <div><span>DSCP / ToS</span>{{ dscp(f.tos) }} / 0x{{ f.tos.toString(16) }}</div>
-              <div><span>VLAN</span>{{ f.vlan || 'untagged' }}</div>
-              <div><span>TCP flags</span>{{ f.tcpFlags ? '0x' + f.tcpFlags.toString(16) + ' (' + flags(f.tcpFlags) + ')' : '–' }}</div>
-              <div><span>Avg packet size</span>{{ f.packets ? (f.bytes / f.packets).toFixed(0) + ' B' : '–' }}</div>
+              <div><span i18n="@@flows.detail.flowStart">Flow start</span>{{ dt(f.timeStart) }}</div>
+              <div><span i18n="@@flows.detail.flowEnd">Flow end</span>{{ dt(f.timeEnd) }}</div>
+              <div><span i18n="@@flows.interfaces">Interfaces (in → out)</span>ifIndex {{ f.inIf }} → {{ f.outIf }}</div>
+              <div><span i18n="@@flows.detail.flowProtocol">Flow protocol</span>{{ flowType(f.flowType) }}</div>
+              <div><span i18n="@@flows.detail.sampling">Sampling</span>1:{{ f.sampling }}</div>
+              <div><span i18n="@@flows.detail.nextHop">Next hop</span>{{ f.nextHop }}</div>
+              <div><span i18n="@@flows.detail.sourceHost">Source host</span>{{ f.srcHost || '–' }}</div>
+              <div><span i18n="@@flows.detail.destinationHost">Destination host</span>{{ f.dstHost || '–' }}</div>
+              <div><span i18n="@@flows.detail.sourceAs">Source AS</span>{{ f.srcAs ? 'AS' + f.srcAs + (f.srcAsName ? ' ' + f.srcAsName : '') : '–' }}</div>
+              <div><span i18n="@@flows.detail.destinationAs">Destination AS</span>{{ f.dstAs ? 'AS' + f.dstAs + (f.dstAsName ? ' ' + f.dstAsName : '') : '–' }}</div>
+              <div><span i18n="@@flows.detail.deviceMac">Device (MAC)</span>{{ f.deviceMac || '–' }}</div>
+              <div><span i18n="@@flows.detail.srcDstMac">Source / destination MAC</span>{{ f.srcMac || '–' }} → {{ f.dstMac || '–' }}</div>
+              <div><span i18n="@@flows.detail.sourceCountry">Source country</span>{{ f.srcCountry || '–' }}</div>
+              <div><span i18n="@@flows.detail.destinationCountry">Destination country</span>{{ f.dstCountry || '–' }}</div>
+              <div><span i18n="@@flows.detail.dscpTos">DSCP / ToS</span>{{ dscp(f.tos) }} / 0x{{ f.tos.toString(16) }}</div>
+              <div><span i18n="@@flows.detail.vlan">VLAN</span>@if (f.vlan) { {{ f.vlan }} } @else {<ng-container i18n="@@flows.untagged">untagged</ng-container>}</div>
+              <div><span i18n="@@flows.detail.tcpFlags">TCP flags</span>{{ f.tcpFlags ? '0x' + f.tcpFlags.toString(16) + ' (' + flags(f.tcpFlags) + ')' : '–' }}</div>
+              <div><span i18n="@@flows.detail.avgPacketSize">Avg packet size</span>{{ f.packets ? (f.bytes / f.packets).toFixed(0) + ' B' : '–' }}</div>
             </div>
           </clr-dg-row-detail>
       </clr-dg-row>
 
-      <clr-dg-placeholder>No flows match the current filters and time range.</clr-dg-placeholder>
+      <clr-dg-placeholder i18n="@@flows.placeholder">No flows match the current filters and time range.</clr-dg-placeholder>
       <clr-dg-footer>
         <clr-dg-pagination #pagination [clrDgPageSize]="50" [clrDgTotalItems]="total()">
-          <clr-dg-page-size [clrPageSizeOptions]="[25, 50, 100, 250, 500]">Flows per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[25, 50, 100, 250, 500]" i18n="@@flows.perPage">Flows per page</clr-dg-page-size>
           @if (total()) {
-            {{ pagination.firstItem + 1 }}–{{ pagination.lastItem + 1 }} of {{ total().toLocaleString() }} flows
+            <ng-container i18n="Datagrid footer: first–last of total@@flows.footer">{{ pagination.firstItem + 1 }}–{{ pagination.lastItem + 1 }} of {{ total().toLocaleString() }} flows</ng-container>
           } @else {
-            No flows
+            <ng-container i18n="@@flows.empty">No flows</ng-container>
           }
         </clr-dg-pagination>
       </clr-dg-footer>
@@ -182,7 +182,7 @@ export class Flows {
   }
 
   flowType(t: number) {
-    return FLOW_TYPES[t] ?? 'Unknown';
+    return FLOW_TYPES[t] ?? $localize`:@@flows.unknown:Unknown`;
   }
 
   dur(f: FlowRow) {

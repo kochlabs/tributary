@@ -19,12 +19,12 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
   template: `
     <div class="page-header">
       <div>
-        <h2>Traffic Explorer</h2>
-        <p class="subtitle">Break traffic down by any dimension · {{ time.label() }}</p>
+        <h2 i18n="@@nav.explorer">Traffic Explorer</h2>
+        <p class="subtitle" i18n="@@explorer.subtitle">Break traffic down by any dimension · {{ time.label() }}</p>
       </div>
       <div class="header-controls">
         <nfa-range-bar />
-        <button class="btn btn-sm btn-outline" (click)="showFlows({})"><cds-icon shape="table"></cds-icon> Show matching flows</button>
+        <button class="btn btn-sm btn-outline" (click)="showFlows({})"><cds-icon shape="table"></cds-icon> <ng-container i18n="@@explorer.showMatchingFlows">Show matching flows</ng-container></button>
       </div>
     </div>
 
@@ -33,30 +33,30 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
         <nfa-filter-bar [(filters)]="filters" />
         <div class="controls">
           <label class="ctl">
-            <span>Group by</span>
+            <span i18n="@@explorer.groupBy">Group by</span>
             <select class="clr-select" [ngModel]="groupBy()" (ngModelChange)="groupBy.set($event)" name="groupBy">
-              <option value="">— none (total) —</option>
+              <option value="" i18n="@@explorer.groupByNone">— none (total) —</option>
               @for (d of dims; track d.id) {
                 <option [value]="d.id">{{ d.label }}</option>
               }
             </select>
           </label>
           <label class="ctl">
-            <span>Series</span>
+            <span i18n="@@explorer.series">Series</span>
             <select class="clr-select" [ngModel]="limit()" (ngModelChange)="limit.set(+$event)" name="limit">
               @for (n of [5, 8, 10, 15, 20]; track n) {
-                <option [value]="n">Top {{ n }}</option>
+                <option [value]="n" i18n="@@explorer.topN">Top {{ n }}</option>
               }
             </select>
           </label>
-          <div class="btn-group btn-sm" role="group" aria-label="Metric">
+          <div class="btn-group btn-sm" role="group" aria-label="Metric" i18n-aria-label="@@explorer.metric">
             @for (m of metrics; track m.id) {
               <button class="btn" [class.btn-primary]="metric() === m.id" [class.btn-outline]="metric() !== m.id" (click)="metric.set(m.id)">{{ m.label }}</button>
             }
           </div>
-          <div class="btn-group btn-sm" role="group" aria-label="Chart style">
-            <button class="btn" [class.btn-primary]="stacked()" [class.btn-outline]="!stacked()" (click)="stacked.set(true)">Stacked</button>
-            <button class="btn" [class.btn-primary]="!stacked()" [class.btn-outline]="stacked()" (click)="stacked.set(false)">Lines</button>
+          <div class="btn-group btn-sm" role="group" aria-label="Chart style" i18n-aria-label="@@explorer.chartStyle">
+            <button class="btn" [class.btn-primary]="stacked()" [class.btn-outline]="!stacked()" (click)="stacked.set(true)" i18n="@@explorer.stacked">Stacked</button>
+            <button class="btn" [class.btn-primary]="!stacked()" [class.btn-outline]="stacked()" (click)="stacked.set(false)" i18n="@@explorer.lines">Lines</button>
           </div>
         </div>
       </div>
@@ -68,9 +68,13 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
 
     <div class="card">
       <div class="card-header">
-        {{ groupBy() ? dimLabel(groupBy()) : 'Total traffic' }}
+        @if (groupBy()) {
+          {{ dimLabel(groupBy()) }}
+        } @else {
+          <ng-container i18n="@@explorer.totalTraffic">Total traffic</ng-container>
+        }
         @if (series.value(); as s) {
-          <span class="card-hint">{{ s.step }}s resolution · {{ s.source === 'netflow.traffic_1m' ? '1-minute rollup' : 'raw flows' }} · drag to zoom</span>
+          <span class="card-hint" i18n="@@explorer.resolution">{{ s.step }}s resolution · {{ sourceLabel(s.source) }} · drag to zoom</span>
         }
       </div>
       <div class="card-block">
@@ -82,17 +86,17 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
       <clr-datagrid class="datagrid-compact" [clrDgLoading]="top.loading()">
         <clr-dg-column class="rank-col">#</clr-dg-column>
         <clr-dg-column [clrDgField]="'label'">{{ dimLabel(groupBy()) }}</clr-dg-column>
-        <clr-dg-column [clrDgField]="'rate'" [clrDgSortOrder]="-1">Avg {{ metricName() }}</clr-dg-column>
-        <clr-dg-column [clrDgField]="'bytes'">Bytes</clr-dg-column>
-        <clr-dg-column [clrDgField]="'packets'">Packets</clr-dg-column>
-        <clr-dg-column [clrDgField]="'flows'">Flows</clr-dg-column>
-        <clr-dg-column [clrDgField]="'pct'">Share</clr-dg-column>
+        <clr-dg-column [clrDgField]="'rate'" [clrDgSortOrder]="-1" i18n="@@explorer.col.avg">Avg {{ metricName() }}</clr-dg-column>
+        <clr-dg-column [clrDgField]="'bytes'" i18n="@@explorer.col.bytes">Bytes</clr-dg-column>
+        <clr-dg-column [clrDgField]="'packets'" i18n="@@explorer.col.packets">Packets</clr-dg-column>
+        <clr-dg-column [clrDgField]="'flows'" i18n="@@explorer.col.flows">Flows</clr-dg-column>
+        <clr-dg-column [clrDgField]="'pct'" i18n="@@explorer.col.share">Share</clr-dg-column>
 
         <clr-dg-row *clrDgItems="let r of rows(); let i = index; trackBy: byKey" [clrDgItem]="r">
           <clr-dg-action-overflow>
-            <button class="action-item" (click)="addFilter(r, false)"><cds-icon shape="filter"></cds-icon> Filter on this</button>
-            <button class="action-item" (click)="addFilter(r, true)"><cds-icon shape="times"></cds-icon> Exclude this</button>
-            <button class="action-item" (click)="showFlowsFor(r)"><cds-icon shape="table"></cds-icon> Show flows</button>
+            <button class="action-item" (click)="addFilter(r, false)"><cds-icon shape="filter"></cds-icon> <ng-container i18n="@@explorer.filterOn">Filter on this</ng-container></button>
+            <button class="action-item" (click)="addFilter(r, true)"><cds-icon shape="times"></cds-icon> <ng-container i18n="@@explorer.exclude">Exclude this</ng-container></button>
+            <button class="action-item" (click)="showFlowsFor(r)"><cds-icon shape="table"></cds-icon> <ng-container i18n="@@explorer.showFlows">Show flows</ng-container></button>
           </clr-dg-action-overflow>
           <clr-dg-cell class="rank-col">{{ r.rank }}</clr-dg-cell>
           <clr-dg-cell><span class="swatch" [style.background]="r.color"></span><a href="#" (click)="$event.preventDefault(); addFilter(r, false)">{{ r.label.split(' ⇄ ')[0] }}</a>
@@ -111,17 +115,17 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
             <div class="share"><div class="bar"><div class="fill" [style.width.%]="r.pct" [style.background]="r.color"></div></div>{{ r.pct.toFixed(1) }}%</div>
           </clr-dg-cell>
         </clr-dg-row>
-        <clr-dg-placeholder>No traffic matches the current filters.</clr-dg-placeholder>
+        <clr-dg-placeholder i18n="@@explorer.noMatch">No traffic matches the current filters.</clr-dg-placeholder>
         <clr-dg-footer>
           @if (top.value(); as t) {
-            <span class="footer-summary">{{ fmtBytes(t.total.bytes) }} total · {{ fmtCount(t.total.flows) }} flows</span>
+            <span class="footer-summary" i18n="@@explorer.totals">{{ fmtBytes(t.total.bytes) }} total · {{ fmtCount(t.total.flows) }} flows</span>
           }
           <clr-dg-pagination #pg [clrDgPageSize]="25">
-          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]" i18n="@@common.rowsPerPage">Rows per page</clr-dg-page-size>
           @if (pg.totalItems) {
-            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} rows
+            <ng-container i18n="Datagrid footer: first–last of total@@explorer.footer">{{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} rows</ng-container>
           } @else {
-            No rows
+            <ng-container i18n="@@explorer.empty">No rows</ng-container>
           }
         </clr-dg-pagination>
         </clr-dg-footer>
@@ -188,7 +192,11 @@ export class Explorer {
     return t.rows.map((r, i) => ({ ...r, rank: i + 1, color: colorByKey.get(r.key) ?? OTHER_COLOR }));
   });
 
-  readonly metricName = computed(() => ({ bps: 'bits/s', pps: 'packets/s', fps: 'flows/s' })[this.metric()]);
+  readonly metricName = computed(() => ({ bps: $localize`:@@explorer.unit.bps:bits/s`, pps: $localize`:@@explorer.unit.pps:packets/s`, fps: $localize`:@@explorer.unit.fps:flows/s` })[this.metric()]);
+
+  sourceLabel(source: string) {
+    return source === 'netflow.traffic_1m' ? $localize`:@@explorer.source.rollup:1-minute rollup` : $localize`:@@explorer.source.raw:raw flows`;
+  }
 
   constructor() {
     // Keep the URL in sync so views can be bookmarked and shared.

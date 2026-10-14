@@ -213,6 +213,9 @@ export interface Settings {
 export interface Notice {
   id: string;
   level: 'info' | 'warning' | 'danger';
+  /** Lets the UI phrase the notice in its language; message is the English fallback. */
+  kind: string;
+  params?: Record<string, string>;
   message: string;
   action?: { label: string; route: string };
   dismissible: boolean;
@@ -423,7 +426,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 export function errorMessage(err: unknown): string {
   if (err instanceof HttpErrorResponse) {
     if (err.error && typeof err.error === 'object' && 'error' in err.error) return String(err.error.error);
-    if (err.status === 0) return 'Cannot reach the appliance.';
+    if (err.status === 0) return $localize`:@@api.unreachable:Cannot reach the appliance.`;
     return `${err.status} ${err.statusText}`;
   }
   return String(err);
@@ -445,7 +448,7 @@ export class Api {
   }
 
   publicInfo() {
-    return this.get<{ name: string; version: string; source: string; sso: { id: number; name: string }[] }>('/api/public/info');
+    return this.get<{ name: string; version: string; source: string; sso: { id: number; name: string }[]; languages?: string[]; language?: string }>('/api/public/info');
   }
   me() {
     return this.get<User>('/api/auth/me');

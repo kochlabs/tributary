@@ -5,16 +5,16 @@ import { Api, Enrichment, errorMessage, GeoStatus } from '../core/api';
 import { count, dateTime } from '../core/format';
 
 const GEO_SOURCES = [
-  { id: 'dbip-lite', label: 'DB-IP Lite (free)', help: 'Country and ASN databases from db-ip.com, downloaded monthly. Free under CC BY 4.0, which requires the attribution shown below.' },
-  { id: 'maxmind', label: 'MaxMind account', help: 'GeoLite2 (free with an account) or GeoIP2 (commercial) editions, downloaded with your account ID and license key. Switching to another source deletes the stored key.' },
-  { id: 'urls', label: 'Download URLs', help: 'Any MaxMind-format (.mmdb) databases you are licensed for, such as a DB-IP subscription. Plain, .gz and .tar.gz downloads are accepted. Switching to another source deletes the stored URLs.' },
-  { id: 'files', label: 'Files on the appliance', help: 'Databases kept up to date by another tool, such as MaxMind geoipupdate. Reloaded automatically when the files change.' },
+  { id: 'dbip-lite', label: $localize`:@@dataSources.geo.dbipLabel:DB-IP Lite (free)`, help: $localize`:@@dataSources.geo.dbipHelp:Country and ASN databases from db-ip.com, downloaded monthly. Free under CC BY 4.0, which requires the attribution shown below.` },
+  { id: 'maxmind', label: $localize`:@@dataSources.geo.maxmindLabel:MaxMind account`, help: $localize`:@@dataSources.geo.maxmindHelp:GeoLite2 (free with an account) or GeoIP2 (commercial) editions, downloaded with your account ID and license key. Switching to another source deletes the stored key.` },
+  { id: 'urls', label: $localize`:@@dataSources.geo.urlsLabel:Download URLs`, help: $localize`:@@dataSources.geo.urlsHelp:Any MaxMind-format (.mmdb) databases you are licensed for, such as a DB-IP subscription. Plain, .gz and .tar.gz downloads are accepted. Switching to another source deletes the stored URLs.` },
+  { id: 'files', label: $localize`:@@dataSources.geo.filesLabel:Files on the appliance`, help: $localize`:@@dataSources.geo.filesHelp:Databases kept up to date by another tool, such as MaxMind geoipupdate. Reloaded automatically when the files change.` },
 ] as const;
 
 const OUI_SOURCES = [
-  { id: 'ieee', label: 'IEEE registry', help: 'The default. Downloads the MA-L, MA-M and MA-S registries from the IEEE Registration Authority weekly: the authoritative, most current source.' },
-  { id: 'url', label: 'Download URL', help: 'An IEEE registry CSV (or a Wireshark-format manuf file) from your own mirror, optionally gzipped. Useful when the appliance cannot reach the IEEE.' },
-  { id: 'file', label: 'File on the appliance', help: 'An IEEE registry CSV (or a Wireshark-format manuf file), optionally gzipped. Reloaded automatically when it changes.' },
+  { id: 'ieee', label: $localize`:@@dataSources.oui.ieeeLabel:IEEE registry`, help: $localize`:@@dataSources.oui.ieeeHelp:The default. Downloads the MA-L, MA-M and MA-S registries from the IEEE Registration Authority weekly: the authoritative, most current source.` },
+  { id: 'url', label: $localize`:@@dataSources.downloadUrl:Download URL`, help: $localize`:@@dataSources.oui.urlHelp:An IEEE registry CSV (or a Wireshark-format manuf file) from your own mirror, optionally gzipped. Useful when the appliance cannot reach the IEEE.` },
+  { id: 'file', label: $localize`:@@dataSources.oui.fileLabel:File on the appliance`, help: $localize`:@@dataSources.oui.fileHelp:An IEEE registry CSV (or a Wireshark-format manuf file), optionally gzipped. Reloaded automatically when it changes.` },
 ] as const;
 
 @Component({
@@ -23,13 +23,13 @@ const OUI_SOURCES = [
   template: `
     <div class="page-header">
       <div>
-        <h2>Data Sources</h2>
-        <p class="subtitle">Where IP geolocation, AS and MAC vendor data comes from</p>
+        <h2 i18n="@@nav.dataSources">Data Sources</h2>
+        <p class="subtitle" i18n="@@dataSources.subtitle">Where IP geolocation, AS and MAC vendor data comes from</p>
       </div>
     </div>
 
     @if (saved()) {
-      <div class="alert alert-success" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">Saved. New sources are loaded in the background.</span></div></div></div>
+      <div class="alert alert-success" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text" i18n="@@dataSources.saved">Saved. New sources are loaded in the background.</span></div></div></div>
     }
     @if (error()) {
       <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ error() }}</span></div></div></div>
@@ -38,14 +38,14 @@ const OUI_SOURCES = [
     @if (e(); as e) {
       <form clrForm clrLayout="horizontal" clrLabelSize="3" (ngSubmit)="save()" class="ds-form">
         <div class="card">
-          <div class="card-header">IP geolocation and AS numbers</div>
+          <div class="card-header" i18n="@@dataSources.geoTitle">IP geolocation and AS numbers</div>
           <div class="card-block">
             @if (st(); as g) {
               <table class="table table-compact table-noborder status">
                 <tbody>
-                  <tr><td>Country database</td><td>{{ g.geo.country || 'not installed' }}@if (g.geo.countryType) { <span class="muted">&nbsp;· {{ g.geo.countryType }}</span> }{{ g.geo.countryBuilt ? ' · built ' + dt(g.geo.countryBuilt) : '' }}@if (g.geo.countryKept) { <span class="label label-warning">previous source, until the new database loads</span> }</td></tr>
-                  <tr><td>ASN database</td><td>{{ g.geo.asn || 'not installed' }}@if (g.geo.asnType) { <span class="muted">&nbsp;· {{ g.geo.asnType }}</span> }{{ g.geo.asnBuilt ? ' · built ' + dt(g.geo.asnBuilt) : '' }}@if (g.geo.asnKept) { <span class="label label-warning">previous source, until the new database loads</span> }</td></tr>
-                  <tr><td>Last update</td><td [class.bad]="g.geo.lastUpdate.includes('failed')">{{ g.geo.lastUpdate || '–' }}</td></tr>
+                  <tr><td i18n="@@dataSources.countryDatabase">Country database</td><td>@if (g.geo.country) {<ng-container>{{ g.geo.country }}</ng-container>} @else {<ng-container i18n="@@dataSources.notInstalled">not installed</ng-container>}@if (g.geo.countryType) { <span class="muted">&nbsp;· {{ g.geo.countryType }}</span> }@if (g.geo.countryBuilt) {<ng-container i18n="@@dataSources.built"> · built {{ dt(g.geo.countryBuilt) }}</ng-container>}@if (g.geo.countryKept) { <span class="label label-warning" i18n="@@dataSources.previousSource">previous source, until the new database loads</span> }</td></tr>
+                  <tr><td i18n="@@dataSources.asnDatabase">ASN database</td><td>@if (g.geo.asn) {<ng-container>{{ g.geo.asn }}</ng-container>} @else {<ng-container i18n="@@dataSources.notInstalled">not installed</ng-container>}@if (g.geo.asnType) { <span class="muted">&nbsp;· {{ g.geo.asnType }}</span> }@if (g.geo.asnBuilt) {<ng-container i18n="@@dataSources.built"> · built {{ dt(g.geo.asnBuilt) }}</ng-container>}@if (g.geo.asnKept) { <span class="label label-warning" i18n="@@dataSources.previousSource">previous source, until the new database loads</span> }</td></tr>
+                  <tr><td i18n="@@dataSources.lastUpdate">Last update</td><td [class.bad]="g.geo.lastUpdate.includes('failed')">{{ g.geo.lastUpdate || '–' }}</td></tr>
                 </tbody>
               </table>
             }
@@ -64,23 +64,23 @@ const OUI_SOURCES = [
             @switch (e.geoSource) {
               @case ('maxmind') {
                 <clr-input-container>
-                  <label>Account ID</label>
+                  <label i18n="@@dataSources.accountId">Account ID</label>
                   <input clrInput name="mmAccount" [(ngModel)]="e.maxmindAccountId" autocomplete="off" />
                 </clr-input-container>
                 <clr-password-container>
-                  <label>License key</label>
-                  <input clrPassword name="mmKey" [(ngModel)]="licenseKey" autocomplete="new-password" [placeholder]="e.hasLicenseKey ? 'Stored · leave empty to keep' : ''" />
-                  <clr-control-helper>Create one under <i>Manage license keys</i> in your MaxMind account. Stored encrypted.</clr-control-helper>
+                  <label i18n="@@dataSources.licenseKey">License key</label>
+                  <input clrPassword name="mmKey" [(ngModel)]="licenseKey" autocomplete="new-password" [placeholder]="e.hasLicenseKey ? storedKeep : ''" />
+                  <clr-control-helper i18n="@@dataSources.licenseKeyHelp">Create one under <i>Manage license keys</i> in your MaxMind account. Stored encrypted.</clr-control-helper>
                 </clr-password-container>
                 <clr-select-container>
-                  <label>Country edition</label>
+                  <label i18n="@@dataSources.countryEdition">Country edition</label>
                   <select clrSelect name="mmCountry" [(ngModel)]="e.maxmindCountryEdition">
                     @for (ed of countryEditions; track ed) { <option [value]="ed">{{ ed }}</option> }
                   </select>
-                  <clr-control-helper>GeoLite2 editions are free; GeoIP2 editions need a subscription.</clr-control-helper>
+                  <clr-control-helper i18n="@@dataSources.editionHelp">GeoLite2 editions are free; GeoIP2 editions need a subscription.</clr-control-helper>
                 </clr-select-container>
                 <clr-select-container>
-                  <label>ASN edition</label>
+                  <label i18n="@@dataSources.asnEdition">ASN edition</label>
                   <select clrSelect name="mmAsn" [(ngModel)]="e.maxmindAsnEdition">
                     @for (ed of asnEditions; track ed) { <option [value]="ed">{{ ed }}</option> }
                   </select>
@@ -88,33 +88,33 @@ const OUI_SOURCES = [
               }
               @case ('urls') {
                 <clr-input-container>
-                  <label>Country database URL</label>
-                  <input clrInput name="cUrl" [(ngModel)]="countryUrl" autocomplete="off" [placeholder]="e.geoCountryHost ? 'Stored (' + e.geoCountryHost + ') · leave empty to keep' : 'https://…'" />
-                  <clr-control-helper>Download links often contain a license key, so they are stored encrypted and not shown again.</clr-control-helper>
+                  <label i18n="@@dataSources.countryUrl">Country database URL</label>
+                  <input clrInput name="cUrl" [(ngModel)]="countryUrl" autocomplete="off" [placeholder]="e.geoCountryHost ? storedHost(e.geoCountryHost) : 'https://…'" />
+                  <clr-control-helper i18n="@@dataSources.urlHelp">Download links often contain a license key, so they are stored encrypted and not shown again.</clr-control-helper>
                 </clr-input-container>
                 <clr-input-container>
-                  <label>ASN database URL</label>
-                  <input clrInput name="aUrl" [(ngModel)]="asnUrl" autocomplete="off" [disabled]="clearAsnUrl" [placeholder]="e.geoAsnHost ? 'Stored (' + e.geoAsnHost + ') · leave empty to keep' : 'Optional'" />
+                  <label i18n="@@dataSources.asnUrl">ASN database URL</label>
+                  <input clrInput name="aUrl" [(ngModel)]="asnUrl" autocomplete="off" [disabled]="clearAsnUrl" [placeholder]="e.geoAsnHost ? storedHost(e.geoAsnHost) : optional" />
                 </clr-input-container>
                 @if (e.geoAsnHost) {
                   <clr-checkbox-container>
                     <label></label>
                     <clr-checkbox-wrapper>
                       <input type="checkbox" clrCheckbox name="clearAsn" [(ngModel)]="clearAsnUrl" />
-                      <label>Remove the stored ASN URL</label>
+                      <label i18n="@@dataSources.removeAsnUrl">Remove the stored ASN URL</label>
                     </clr-checkbox-wrapper>
                   </clr-checkbox-container>
                 }
               }
               @case ('files') {
                 <clr-input-container>
-                  <label>Country database file</label>
+                  <label i18n="@@dataSources.countryFile">Country database file</label>
                   <input clrInput name="cFile" [(ngModel)]="e.geoCountryFile" placeholder="/var/lib/GeoIP/GeoIP2-Country.mmdb" />
                 </clr-input-container>
                 <clr-input-container>
-                  <label>ASN database file</label>
-                  <input clrInput name="aFile" [(ngModel)]="e.geoAsnFile" placeholder="/var/lib/GeoIP/GeoLite2-ASN.mmdb (optional)" />
-                  <clr-control-helper>Absolute paths readable by the <code>nfa</code> user. Paths under /home are not accessible to the service.</clr-control-helper>
+                  <label i18n="@@dataSources.asnFile">ASN database file</label>
+                  <input clrInput name="aFile" [(ngModel)]="e.geoAsnFile" placeholder="/var/lib/GeoIP/GeoLite2-ASN.mmdb (optional)" i18n-placeholder="@@dataSources.asnFilePlaceholder" />
+                  <clr-control-helper i18n="@@dataSources.filesHelp">Absolute paths readable by the <code>nfa</code> user. Paths under /home are not accessible to the service.</clr-control-helper>
                 </clr-input-container>
               }
             }
@@ -126,19 +126,19 @@ const OUI_SOURCES = [
                 }
               </p>
             }
-            <button type="button" class="btn btn-sm btn-outline" (click)="update('geo')" [clrLoading]="busyGeo()" [disabled]="dirty()" [title]="dirty() ? 'Save your changes first' : ''">{{ e.geoSource === 'files' ? 'Reload now' : 'Update now' }}</button>
+            <button type="button" class="btn btn-sm btn-outline" (click)="update('geo')" [clrLoading]="busyGeo()" [disabled]="dirty()" [title]="dirty() ? saveFirst : ''">@if (e.geoSource === 'files') {<ng-container i18n="@@dataSources.reloadNow">Reload now</ng-container>} @else {<ng-container i18n="@@dataSources.updateNow">Update now</ng-container>}</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header">MAC address vendors</div>
+          <div class="card-header" i18n="@@dataSources.vendorsTitle">MAC address vendors</div>
           <div class="card-block">
             @if (st(); as g) {
               <table class="table table-compact table-noborder status">
                 <tbody>
-                  <tr><td>Loaded from</td><td>{{ g.vendors.location }}</td></tr>
-                  <tr><td>Entries</td><td>{{ fmtCount(g.vendors.entries) }}{{ g.vendors.updated ? ' · updated ' + dt(g.vendors.updated) : '' }}</td></tr>
-                  <tr><td>Last update</td><td [class.bad]="g.vendors.lastUpdate.includes('failed')">{{ g.vendors.lastUpdate || '–' }}</td></tr>
+                  <tr><td i18n="@@dataSources.loadedFrom">Loaded from</td><td>{{ g.vendors.location }}</td></tr>
+                  <tr><td i18n="@@dataSources.entries">Entries</td><td>{{ fmtCount(g.vendors.entries) }}@if (g.vendors.updated) {<ng-container i18n="@@dataSources.updated"> · updated {{ dt(g.vendors.updated) }}</ng-container>}</td></tr>
+                  <tr><td i18n="@@dataSources.lastUpdate">Last update</td><td [class.bad]="g.vendors.lastUpdate.includes('failed')">{{ g.vendors.lastUpdate || '–' }}</td></tr>
                 </tbody>
               </table>
             }
@@ -154,44 +154,44 @@ const OUI_SOURCES = [
             </clr-radio-container>
             @if (e.ouiSource === 'url') {
               <clr-input-container>
-                <label>Download URL</label>
+                <label i18n="@@dataSources.downloadUrl">Download URL</label>
                 <input clrInput name="ouiUrl" [(ngModel)]="e.ouiUrl" placeholder="https://mirror.example.com/oui.csv" />
               </clr-input-container>
             }
             @if (e.ouiSource === 'file') {
               <clr-input-container>
-                <label>File</label>
+                <label i18n="@@dataSources.file">File</label>
                 <input clrInput name="ouiFile" [(ngModel)]="e.ouiFile" placeholder="/srv/oui/oui.csv" />
-                <clr-control-helper>An absolute path readable by the <code>nfa</code> user.</clr-control-helper>
+                <clr-control-helper i18n="@@dataSources.fileHelp">An absolute path readable by the <code>nfa</code> user.</clr-control-helper>
               </clr-input-container>
             }
             @if (savedOui()) {
-              <button type="button" class="btn btn-sm btn-outline" (click)="update('oui')" [clrLoading]="busyOui()" [disabled]="dirty()" [title]="dirty() ? 'Save your changes first' : ''">{{ e.ouiSource === 'file' ? 'Reload now' : 'Update now' }}</button>
+              <button type="button" class="btn btn-sm btn-outline" (click)="update('oui')" [clrLoading]="busyOui()" [disabled]="dirty()" [title]="dirty() ? saveFirst : ''">@if (e.ouiSource === 'file') {<ng-container i18n="@@dataSources.reloadNow">Reload now</ng-container>} @else {<ng-container i18n="@@dataSources.updateNow">Update now</ng-container>}</button>
             }
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header">Updates</div>
+          <div class="card-header" i18n="@@dataSources.updates">Updates</div>
           <div class="card-block">
             <clr-toggle-container>
-              <label>Automatic updates</label>
+              <label i18n="@@dataSources.autoUpdate">Automatic updates</label>
               <clr-toggle-wrapper>
                 <input type="checkbox" clrToggle name="auto" [(ngModel)]="e.autoUpdate" />
-                <label>Keep downloaded databases current</label>
+                <label i18n="@@dataSources.autoUpdateToggle">Keep downloaded databases current</label>
               </clr-toggle-wrapper>
-              <clr-control-helper>DB-IP Lite is refreshed monthly; MaxMind, URL and IEEE downloads weekly. Files on the appliance are always reloaded when they change.</clr-control-helper>
+              <clr-control-helper i18n="@@dataSources.autoUpdateHelp">DB-IP Lite is refreshed monthly; MaxMind, URL and IEEE downloads weekly. Files on the appliance are always reloaded when they change.</clr-control-helper>
             </clr-toggle-container>
           </div>
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn btn-primary" [clrLoading]="busy()" [disabled]="!dirty()">Save</button>
-          <button type="button" class="btn btn-outline" (click)="load()" [disabled]="!dirty()">Revert</button>
+          <button type="submit" class="btn btn-primary" [clrLoading]="busy()" [disabled]="!dirty()" i18n="@@common.save">Save</button>
+          <button type="button" class="btn btn-outline" (click)="load()" [disabled]="!dirty()" i18n="@@common.revert">Revert</button>
           @if (error()) {
             <span class="save-error"><cds-icon shape="error-standard"></cds-icon> {{ error() }}</span>
           } @else if (dirty()) {
-            <span class="unsaved"><cds-icon shape="exclamation-circle"></cds-icon> Unsaved changes. Saving switches to the selected sources and downloads them right away.</span>
+            <span class="unsaved"><cds-icon shape="exclamation-triangle"></cds-icon> <ng-container i18n="@@dataSources.unsaved">Unsaved changes. Saving switches to the selected sources and downloads them right away.</ng-container></span>
           }
         </div>
       </form>
@@ -232,6 +232,12 @@ export class DataSources {
   clearAsnUrl = false;
   dt = dateTime;
   fmtCount = count;
+  readonly storedKeep = $localize`:@@dataSources.storedKeep:Stored · leave empty to keep`;
+  readonly optional = $localize`:@@dataSources.optional:Optional`;
+  readonly saveFirst = $localize`:@@dataSources.saveFirst:Save your changes first`;
+  storedHost(host: string) {
+    return $localize`:@@dataSources.storedHost:Stored (${host}:host:) · leave empty to keep`;
+  }
   // Snapshot of the stored record, to tell unsaved edits apart.
   private savedJson = '';
   readonly savedOui = signal('');

@@ -15,13 +15,13 @@ import { PALETTE } from './chart';
           <tr>
             <th class="left">{{ title() }}</th>
             <th class="num">{{ metricLabel() }}</th>
-            <th class="num hide-sm">Volume</th>
-            <th class="share">Share</th>
+            <th class="num hide-sm" i18n="@@topTable.volume">Volume</th>
+            <th class="share" i18n="@@topTable.share">Share</th>
           </tr>
         </thead>
         <tbody>
           @for (r of rows(); track r.key; let i = $index) {
-            <tr (click)="drill.emit(r)" class="clickable" [title]="'Filter on ' + r.label">
+            <tr (click)="drill.emit(r)" class="clickable" [title]="filterTitle(r)">
               <td class="left label-cell">
                 <span class="swatch" [style.background]="color(i)"></span>
                 <span class="label-text">
@@ -47,7 +47,7 @@ import { PALETTE } from './chart';
         </tbody>
       </table>
     } @else {
-      <div class="empty">No traffic in this time range.</div>
+      <div class="empty" i18n="@@topTable.empty">No traffic in this time range.</div>
     }
   `,
   styles: `
@@ -74,11 +74,14 @@ import { PALETTE } from './chart';
 export class TopTable {
   readonly rows = input<TopRow[]>([]);
   readonly metric = input<Metric>('bps');
-  readonly title = input('Name');
+  readonly title = input($localize`:@@common.name:Name`);
   readonly drill = output<TopRow>();
   readonly maxPct = computed(() => Math.max(1, ...this.rows().map((r) => r.pct)));
-  readonly metricLabel = computed(() => ({ bps: 'Avg bps', pps: 'Avg pps', fps: 'Flows/s' })[this.metric()]);
+  readonly metricLabel = computed(() => ({ bps: $localize`:@@topTable.avgBps:Avg bps`, pps: $localize`:@@topTable.avgPps:Avg pps`, fps: $localize`:@@topTable.flowsPerSec:Flows/s` })[this.metric()]);
 
+  filterTitle(r: TopRow) {
+    return $localize`:@@topTable.filterOn:Filter on ${r.label}:label:`;
+  }
   color(i: number) {
     return PALETTE[i % PALETTE.length];
   }
@@ -86,6 +89,6 @@ export class TopTable {
     return rate(v, this.metric());
   }
   fmtVol(r: TopRow) {
-    return this.metric() === 'pps' ? count(r.packets) + ' pkts' : this.metric() === 'fps' ? count(r.flows) + ' flows' : bytes(r.bytes);
+    return this.metric() === 'pps' ? $localize`:@@topTable.pkts:${count(r.packets)}:count: pkts` : this.metric() === 'fps' ? $localize`:@@topTable.flows:${count(r.flows)}:count: flows` : bytes(r.bytes);
   }
 }

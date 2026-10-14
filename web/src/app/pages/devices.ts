@@ -11,10 +11,10 @@ import { ExpandedRows, loader, trackByKey } from '../core/util';
 import { RangeBar } from '../shared/range-bar';
 
 const SOURCE_HINT: Record<string, string> = {
-  name: 'Named by an administrator',
-  dns: 'Reverse DNS of its IPv4 address',
-  vendor: 'Manufacturer from the MAC address',
-  mac: 'No name known: rename it',
+  name: $localize`:@@devices.sourceName:Named by an administrator`,
+  dns: $localize`:@@devices.sourceDns:Reverse DNS of its IPv4 address`,
+  vendor: $localize`:@@devices.sourceVendor:Manufacturer from the MAC address`,
+  mac: $localize`:@@devices.sourceMac:No name known: rename it`,
 };
 
 @Component({
@@ -23,8 +23,8 @@ const SOURCE_HINT: Record<string, string> = {
   template: `
     <div class="page-header">
       <div>
-        <h2>Devices</h2>
-        <p class="subtitle">Local devices by MAC address, with every address they used · {{ time.label() }}</p>
+        <h2 i18n="@@nav.devices">Devices</h2>
+        <p class="subtitle" i18n="@@devices.subtitle">Local devices by MAC address, with every address they used · {{ time.label() }}</p>
       </div>
       <nfa-range-bar />
     </div>
@@ -34,21 +34,21 @@ const SOURCE_HINT: Record<string, string> = {
     }
 
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="list.loading() && !list.value()">
-      <clr-dg-column [clrDgField]="'name'">Device</clr-dg-column>
-      <clr-dg-column [clrDgField]="'mac'">MAC</clr-dg-column>
-      <clr-dg-column [clrDgField]="'vendor'">Vendor</clr-dg-column>
-      <clr-dg-column>IPv4</clr-dg-column>
-      <clr-dg-column>IPv6</clr-dg-column>
-      <clr-dg-column [clrDgField]="'bytes'" [clrDgSortOrder]="-1">Traffic</clr-dg-column>
-      <clr-dg-column [clrDgField]="'lastSeen'">Last seen</clr-dg-column>
+      <clr-dg-column [clrDgField]="'name'" i18n="@@devices.col.device">Device</clr-dg-column>
+      <clr-dg-column [clrDgField]="'mac'" i18n="@@devices.col.mac">MAC</clr-dg-column>
+      <clr-dg-column [clrDgField]="'vendor'" i18n="@@devices.col.vendor">Vendor</clr-dg-column>
+      <clr-dg-column i18n="@@devices.col.ipv4">IPv4</clr-dg-column>
+      <clr-dg-column i18n="@@devices.col.ipv6">IPv6</clr-dg-column>
+      <clr-dg-column [clrDgField]="'bytes'" [clrDgSortOrder]="-1" i18n="@@devices.col.traffic">Traffic</clr-dg-column>
+      <clr-dg-column [clrDgField]="'lastSeen'" i18n="@@devices.col.lastSeen">Last seen</clr-dg-column>
 
       <clr-dg-row *clrDgItems="let d of list.value() ?? []; trackBy: byMac" [clrDgItem]="d" [clrDgExpanded]="expanded.has(d.mac)" (clrDgExpandedChange)="expanded.set(d.mac, $event)">
         <clr-dg-action-overflow>
           @if (auth.isAdmin()) {
-            <button class="action-item" (click)="openRename(d)"><cds-icon shape="pencil"></cds-icon> Rename</button>
+            <button class="action-item" (click)="openRename(d)"><cds-icon shape="pencil"></cds-icon> <ng-container i18n="@@devices.rename">Rename</ng-container></button>
           }
-          <button class="action-item" (click)="analyze(d)"><cds-icon shape="line-chart"></cds-icon> Analyze traffic</button>
-          <button class="action-item" (click)="flows(d)"><cds-icon shape="table"></cds-icon> Show flows</button>
+          <button class="action-item" (click)="analyze(d)"><cds-icon shape="line-chart"></cds-icon> <ng-container i18n="@@devices.analyze">Analyze traffic</ng-container></button>
+          <button class="action-item" (click)="flows(d)"><cds-icon shape="table"></cds-icon> <ng-container i18n="@@devices.showFlows">Show flows</ng-container></button>
         </clr-dg-action-overflow>
         <clr-dg-cell>
           <a href="#" (click)="$event.preventDefault(); analyze(d)" class="name">{{ d.name }}</a>
@@ -57,22 +57,22 @@ const SOURCE_HINT: Record<string, string> = {
         <clr-dg-cell class="mono">{{ d.mac }}</clr-dg-cell>
         <clr-dg-cell>
           @if (d.randomized) {
-            <span class="label">Private MAC</span>
+            <span class="label" i18n="@@devices.privateMac">Private MAC</span>
           } @else {
             {{ d.vendor || '–' }}
           }
         </clr-dg-cell>
         <clr-dg-cell class="mono">{{ d.ipv4.join(', ') || '–' }}</clr-dg-cell>
-        <clr-dg-cell [title]="d.ipv6.join('\\n')">{{ d.ipv6.length ? d.ipv6.length + ' address' + (d.ipv6.length === 1 ? '' : 'es') : '–' }}</clr-dg-cell>
+        <clr-dg-cell [title]="d.ipv6.join('\\n')">@if (d.ipv6.length) {<ng-container i18n="@@devices.ipv6Count">{d.ipv6.length, plural, =1 {1 address} other {{{ d.ipv6.length }} addresses}}</ng-container>} @else {–}</clr-dg-cell>
         <clr-dg-cell class="num">{{ d.bytes ? fmtBytes(d.bytes) : '–' }}</clr-dg-cell>
         <clr-dg-cell [title]="dt(d.lastSeen)">{{ ago(d.lastSeen) }}</clr-dg-cell>
 
         <clr-dg-row-detail *clrIfExpanded>
           <div class="detail">
-            <div><span>First seen</span>{{ dt(d.firstSeen) }}</div>
-            <div><span>Flows in range</span>{{ d.flows.toLocaleString() }}</div>
+            <div><span i18n="@@devices.firstSeen">First seen</span>{{ dt(d.firstSeen) }}</div>
+            <div><span i18n="@@devices.flowsInRange">Flows in range</span>{{ d.flows.toLocaleString() }}</div>
             <div class="ips">
-              <span>Addresses</span>
+              <span i18n="@@devices.addresses">Addresses</span>
               <table class="table table-compact table-noborder">
                 <tbody>
                   <tr *ngFor="let ip of d.ips"><td class="mono">{{ ip.ip }}</td><td>{{ ago(ip.seen) }}</td></tr>
@@ -82,40 +82,40 @@ const SOURCE_HINT: Record<string, string> = {
           </div>
         </clr-dg-row-detail>
       </clr-dg-row>
-      <clr-dg-placeholder>
+      <clr-dg-placeholder i18n="@@devices.placeholder">
         No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are configured under Settings.
       </clr-dg-placeholder>
       <clr-dg-footer>
         <clr-dg-pagination #pg [clrDgPageSize]="25">
-          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]">Rows per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[10, 25, 50, 100]" i18n="@@common.rowsPerPage">Rows per page</clr-dg-page-size>
           @if (pg.totalItems) {
-            {{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} devices
+            <ng-container i18n="Datagrid footer: first–last of total@@devices.footer">{{ pg.firstItem + 1 }}–{{ pg.lastItem + 1 }} of {{ pg.totalItems.toLocaleString() }} devices</ng-container>
           } @else {
-            No devices
+            <ng-container i18n="@@devices.empty">No devices</ng-container>
           }
         </clr-dg-pagination>
       </clr-dg-footer>
     </clr-datagrid>
 
-    <p class="hint">
+    <p class="hint" i18n="@@devices.hint">
       A device is identified by the MAC address its traffic arrives from. Downloads are matched to devices through the addresses they used for uploads, which also groups rotating IPv6 privacy addresses. Phones and laptops often use a <b>private (randomized) MAC</b> per network, so they have no vendor: give them a name.
     </p>
 
     <clr-modal [clrModalOpen]="!!renaming()" (clrModalOpenChange)="!$event && renaming.set(null)" clrModalSize="md">
-      <h3 class="modal-title">Rename device</h3>
+      <h3 class="modal-title" i18n="@@devices.renameTitle">Rename device</h3>
       <div class="modal-body">
-        <p class="mono">{{ renaming()?.mac }} · {{ renaming()?.vendor || 'unknown vendor' }}</p>
+        <p class="mono">{{ renaming()?.mac }} · @if (renaming()?.vendor) { {{ renaming()?.vendor }} } @else {<ng-container i18n="@@devices.unknownVendor">unknown vendor</ng-container>}</p>
         <form clrForm clrLayout="vertical" id="renameform" (ngSubmit)="saveName()">
           <clr-input-container>
-            <label>Name</label>
-            <input clrInput name="name" [(ngModel)]="newName" maxlength="64" placeholder="e.g. Living room TV" />
-            <clr-control-helper>Leave empty to use the DNS or vendor name again.</clr-control-helper>
+            <label i18n="@@common.name">Name</label>
+            <input clrInput name="name" [(ngModel)]="newName" maxlength="64" placeholder="e.g. Living room TV" i18n-placeholder="@@devices.namePlaceholder" />
+            <clr-control-helper i18n="@@devices.nameHelper">Leave empty to use the DNS or vendor name again.</clr-control-helper>
           </clr-input-container>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="renaming.set(null)">Cancel</button>
-        <button type="submit" form="renameform" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-outline" (click)="renaming.set(null)" i18n="@@common.cancel">Cancel</button>
+        <button type="submit" form="renameform" class="btn btn-primary" i18n="@@common.save">Save</button>
       </div>
     </clr-modal>
   `,

@@ -58,7 +58,11 @@
             "outputPath": {
               "base": "../internal/webui/dist",
               "browser": ""
-            }
+            },
+            "polyfills": [
+              "@angular/localize/init"
+            ],
+            "localize": true
           },
           "configurations": {
             "production": {
@@ -87,7 +91,8 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "localize": false
             }
           },
           "defaultConfiguration": "production"
@@ -106,7 +111,22 @@
           "options": {
             "proxyConfig": "proxy.conf.json"
           }
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n",
+          "options": {
+            "buildTarget": "web:build",
+            "format": "xlf2",
+            "outputPath": "src/locale"
+          }
         }
+      },
+      "i18n": {
+        "sourceLocale": {
+          "code": "en-US",
+          "baseHref": "/"
+        },
+        "locales": {}
       }
     }
   }

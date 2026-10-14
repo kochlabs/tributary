@@ -13,37 +13,37 @@ function toLocalInput(ms: number) {
   imports: [ClarityModule, FormsModule],
   template: `
     <clr-dropdown class="time-dropdown">
-      <button class="time-btn" clrDropdownTrigger aria-label="Select time range">
+      <button class="time-btn" clrDropdownTrigger aria-label="Select time range" i18n-aria-label="@@timeRange.select">
         <cds-icon shape="clock"></cds-icon>
         <span class="time-label">{{ time.label() }}</span>
         <cds-icon shape="angle" direction="down"></cds-icon>
       </button>
       <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-        <h4 class="dropdown-header">Time range</h4>
+        <h4 class="dropdown-header" i18n="@@timeRange.title">Time range</h4>
         @for (p of presets; track p.id) {
           <button clrDropdownItem [class.active]="!time.custom() && time.preset() === p.id" (click)="time.setPreset(p.id)">{{ p.label }}</button>
         }
         <div class="dropdown-divider" role="separator"></div>
-        <button clrDropdownItem (click)="openCustom()">Custom range…</button>
+        <button clrDropdownItem (click)="openCustom()" i18n="@@timeRange.customRange">Custom range…</button>
         <button clrDropdownItem (click)="time.autoRefresh.set(!time.autoRefresh())">
-          <cds-icon [shape]="time.autoRefresh() ? 'check' : 'times'"></cds-icon> Auto-refresh (60s)
+          <cds-icon [shape]="time.autoRefresh() ? 'check' : 'times'"></cds-icon> <ng-container i18n="@@timeRange.autoRefresh">Auto-refresh (60s)</ng-container>
         </button>
       </clr-dropdown-menu>
     </clr-dropdown>
-    <button class="nav-icon refresh-btn" (click)="time.refresh()" aria-label="Refresh" title="Refresh now">
+    <button class="nav-icon refresh-btn" (click)="time.refresh()" aria-label="Refresh" i18n-aria-label="@@common.refresh" title="Refresh now" i18n-title="@@timeRange.refreshNow">
       <cds-icon shape="refresh"></cds-icon>
     </button>
 
     <clr-modal [(clrModalOpen)]="customOpen" clrModalSize="md">
-      <h3 class="modal-title">Custom time range</h3>
+      <h3 class="modal-title" i18n="@@timeRange.customTitle">Custom time range</h3>
       <div class="modal-body">
         <form clrForm clrLayout="horizontal">
           <clr-input-container>
-            <label>From</label>
+            <label i18n="@@timeRange.from">From</label>
             <input clrInput type="datetime-local" name="from" [(ngModel)]="from" />
           </clr-input-container>
           <clr-input-container>
-            <label>To</label>
+            <label i18n="@@timeRange.to">To</label>
             <input clrInput type="datetime-local" name="to" [(ngModel)]="to" />
           </clr-input-container>
         </form>
@@ -52,8 +52,8 @@ function toLocalInput(ms: number) {
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="customOpen.set(false)">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="applyCustom()">Apply</button>
+        <button type="button" class="btn btn-outline" (click)="customOpen.set(false)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="applyCustom()" i18n="@@timeRange.apply">Apply</button>
       </div>
     </clr-modal>
   `,
@@ -98,7 +98,7 @@ export class TimeRangePicker {
     const f = new Date(this.from).getTime();
     const t = new Date(this.to).getTime();
     if (!isFinite(f) || !isFinite(t) || t <= f) {
-      this.err.set('"To" must be after "From".');
+      this.err.set($localize`:@@timeRange.toAfterFrom:"To" must be after "From".`);
       return;
     }
     this.time.setCustom(f, t);

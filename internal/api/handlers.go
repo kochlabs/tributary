@@ -34,7 +34,9 @@ func (s *Server) healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) publicInfo(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]any{"name": s.Config.Settings().ApplianceName, "version": s.Version, "source": s.SourceURL, "sso": s.ssoOptions()})
+	locales := uiLocales(s.UI)
+	writeJSON(w, http.StatusOK, map[string]any{"name": s.Config.Settings().ApplianceName, "version": s.Version, "source": s.SourceURL, "sso": s.ssoOptions(),
+		"languages": append([]string{}, locales...), "language": pickLocale(r, locales)})
 }
 
 func (s *Server) login(w http.ResponseWriter, r *http.Request) {

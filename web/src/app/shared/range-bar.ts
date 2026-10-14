@@ -11,16 +11,16 @@ import { PRESETS, TimeRange } from '../core/time';
   imports: [ClarityModule],
   template: `
     <div class="range-bar">
-      <div class="btn-group btn-sm" role="group" aria-label="Time range">
+      <div class="btn-group btn-sm" role="group" aria-label="Time range" i18n-aria-label="@@rangeBar.timeRange">
         @for (p of presets; track p.id) {
           <button class="btn" [class.btn-primary]="!time.custom() && time.preset() === p.id" [class.btn-outline]="time.custom() || time.preset() !== p.id" (click)="time.setPreset(p.id)" [title]="p.label">{{ p.id }}</button>
         }
-        <button class="btn" [class.btn-primary]="!!time.custom()" [class.btn-outline]="!time.custom()" (click)="time.customRequest.update((n) => n + 1)" title="Choose start and end">Custom…</button>
+        <button class="btn" [class.btn-primary]="!!time.custom()" [class.btn-outline]="!time.custom()" (click)="time.customRequest.update((n) => n + 1)" title="Choose start and end" i18n-title="@@rangeBar.customHint" i18n="@@rangeBar.custom">Custom…</button>
       </div>
       @if (time.custom()) {
         <span class="custom">
           <cds-icon shape="zoom-in"></cds-icon> {{ time.label() }}
-          <button class="btn btn-sm btn-link" (click)="time.setPreset(time.preset())">Reset zoom</button>
+          <button class="btn btn-sm btn-link" (click)="time.setPreset(time.preset())" i18n="@@rangeBar.resetZoom">Reset zoom</button>
         </span>
       }
     </div>

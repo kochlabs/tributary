@@ -55,6 +55,12 @@ Screenshots show simulated traffic from `cmd/flowgen`.
   utilization.
 - **Filters**: IP/CIDR (v4 and v6), ports and ranges, protocol names, AS, country,
   interface, VLAN, DSCP, app (`tcp/443`); comma = OR, `!` prefix = NOT.
+- **Languages**: the interface is ready for translation (Angular i18n, XLIFF);
+  see [docs/TRANSLATING.md](docs/TRANSLATING.md) to add one. Users pick a language
+  from the user menu or get the best match for their browser.
+- **Notices**: banners above the header for conditions that need attention, such
+  as low disk space, OS updates, an expiring certificate, exporters that stopped
+  sending, or a database outage.
 - **Appliance**: HTTPS by default (self-signed on first boot), bcrypt + hashed
   session tokens, admin/viewer roles, login rate limiting, audit log, strict CSP,
   retention controls, health page.
