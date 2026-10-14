@@ -95,6 +95,7 @@ type model struct {
 	r        *rand.Rand
 	clients  []netip.Addr
 	clients6 []netip.Addr
+	macs     map[netip.Addr]uint64 // client address -> device MAC (v4 and v6 share one)
 	servers  map[string][]netip.Addr
 	zipf     *rand.Zipf
 	extHosts [][]netip.Addr // per ASN, a fixed pool so top talkers are stable
@@ -102,12 +103,16 @@ type model struct {
 
 func newModel(seed uint64) *model {
 	r := rand.New(rand.NewPCG(seed, seed^0x9e3779b97f4a7c15))
-	m := &model{r: r, servers: map[string][]netip.Addr{}}
+	m := &model{r: r, servers: map[string][]netip.Addr{}, macs: map[netip.Addr]uint64{}}
 	for i := 0; i < 400; i++ {
-		m.clients = append(m.clients, netip.AddrFrom4([4]byte{10, 10, byte(i / 250), byte(10 + i%250)}))
+		a := netip.AddrFrom4([4]byte{10, 10, byte(i / 250), byte(10 + i%250)})
+		m.clients = append(m.clients, a)
+		m.macs[a] = clientMAC(i)
 	}
 	for i := 0; i < 80; i++ {
-		m.clients6 = append(m.clients6, netip.MustParseAddr(fmt.Sprintf("2001:db8:10::%x", 0x100+i)))
+		a := netip.MustParseAddr(fmt.Sprintf("2001:db8:10::%x", 0x100+i))
+		m.clients6 = append(m.clients6, a)
+		m.macs[a] = clientMAC(i) // dual-stack: the same devices as the first IPv4 clients
 	}
 	m.zipf = rand.NewZipf(r, 1.15, 4, uint64(len(m.clients)-1))
 	srv := func(name string, ips ...string) {
@@ -139,6 +144,36 @@ func newModel(seed uint64) *model {
 		m.extHosts = append(m.extHosts, pool)
 	}
 	return m
+}
+
+// Organisationally unique identifiers of common client and server vendors,
+// so simulated devices get realistic vendor names. MACs are derived from the
+// client index, so they are stable across runs.
+var clientOUIs = []uint64{
+	0x3C22FB, // Apple
+	0xF4D488, // Apple
+	0x001E4F, // Dell
+	0x18DBF2, // Dell
+	0x3417EB, // Dell
+	0x9C7BEF, // Hewlett Packard
+	0x54EE75, // Wistron InfoComm (Lenovo)
+	0x8C1645, // LCFC (Lenovo)
+	0x00155D, // Microsoft (Hyper-V)
+	0x005056, // VMware
+	0xB827EB, // Raspberry Pi Foundation
+	0x001132, // Synology
+	0x00248C, // ASUSTek
+	0x7085C2, // ASRock
+	0xD8BBC1, // Micro-Star (MSI)
+	0x28CFE9, // Apple
+}
+
+func clientMAC(i int) uint64 {
+	if i%9 == 4 {
+		// Phones and laptops on Wi-Fi often use a private (randomized) MAC.
+		return 0x0A0000000000 | uint64(0xC0FFEE00+i)<<4&0xFFFFFFFFFF
+	}
+	return clientOUIs[i%len(clientOUIs)]<<24 | uint64(0x100000+i*7919)&0xFFFFFF
 }
 
 func (m *model) pickWeighted(n int, w func(int) float64) int {
@@ -233,6 +268,8 @@ func (m *model) session(now time.Time, d *device) []flow.Record {
 		if lan := in; lan >= 10 {
 			r.VLAN = uint16(lan * 10)
 		}
+		// Gateways like UniFi report the MAC of the local sender.
+		r.SrcMAC = m.macs[src]
 		return r
 	}
 	recs := []flow.Record{mk(client, server, sport, svc.port, reqB, inIf, outIf, srcAS, dstAS)}
@@ -274,10 +311,14 @@ func main() {
 	chAddr := flag.String("ch-addr", "127.0.0.1:9000", "ClickHouse address (backfill)")
 	chUser := flag.String("ch-user", "netflow", "ClickHouse user (backfill)")
 	chPassFile := flag.String("ch-password-file", "/etc/netflow/clickhouse.pw", "ClickHouse password file (backfill)")
+	portOffset := flag.Int("port-offset", 0, "add this to the standard collector ports (live mode), e.g. to feed a demo instance")
 	geoDir := flag.String("geoip-dir", "", "GeoIP database directory used to enrich backfilled flows (e.g. /var/lib/nfa/geoip)")
 	flag.Parse()
 
 	devs := devices(10)
+	for _, d := range devs {
+		d.port += *portOffset
+	}
 	m := newModel(uint64(time.Now().UnixNano()))
 	if *backfill > 0 {
 		pw, _ := os.ReadFile(*chPassFile)
@@ -409,6 +450,12 @@ func runBackfill(m *model, devs []*device, span time.Duration, rate float64, add
 				}
 				if geo != nil {
 					geo.Enrich(&r)
+				}
+				// Attribute the flow to its local device, as the collector does.
+				if mac := m.macs[r.SrcAddr]; mac != 0 {
+					r.DeviceMAC = mac
+				} else {
+					r.DeviceMAC = m.macs[r.DstAddr]
 				}
 				batch = append(batch, r)
 			}

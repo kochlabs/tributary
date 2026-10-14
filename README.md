@@ -6,6 +6,21 @@ A self-contained flow collector and traffic analytics appliance: NetFlow v5/v9,
 IPFIX and sFlow v5 in; dashboards, drill-down analysis and flow search out,
 with an enterprise UI built on [Clarity](https://clarity.design/).
 
+![Dashboard](docs/screenshots/dashboard.png)
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Traffic Explorer](docs/screenshots/explorer.png) **Traffic Explorer**: break traffic down by any dimension and filter, drag to zoom | ![Flow Search](docs/screenshots/flow-search.png) **Flow Search**: individual flow records with full detail, paging and CSV export |
+| ![Devices](docs/screenshots/devices.png) **Devices**: local devices identified by MAC address, with vendor and every address they used | ![Exporter detail](docs/screenshots/exporter-detail.png) **Exporter detail**: live counters, sampling, and per-interface traffic and utilization |
+| ![Exporters](docs/screenshots/exporters.png) **Exporters**: every router, switch and firewall sending flows, with health at a glance | ![Data Sources](docs/screenshots/data-sources.png) **Data Sources**: choose where GeoIP, ASN and MAC vendor data comes from |
+| ![Dark theme](docs/screenshots/dashboard-dark.png) **Dark theme** | ![Sign in](docs/screenshots/login.png) **Sign in**: local accounts or single sign-on (OpenID Connect) |
+
+Screenshots show simulated traffic from `cmd/flowgen`.
+
+## Architecture
+
 ```
  routers / switches / firewalls
         │  UDP 2055 (NetFlow) · 4739 (IPFIX) · 6343 (sFlow)

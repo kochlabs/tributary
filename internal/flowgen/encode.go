@@ -24,6 +24,14 @@ func (w *buf) ip16(a netip.Addr) {
 	b := a.As16()
 	w.b = append(w.b, b[:]...)
 }
+
+// mac appends a 48-bit MAC address (IE 56, sourceMacAddress).
+func (w *buf) mac(v uint64) {
+	for i := 5; i >= 0; i-- {
+		w.b = append(w.b, byte(v>>(8*i)))
+	}
+}
+
 func (w *buf) pad4(start int) {
 	for (len(w.b)-start)%4 != 0 {
 		w.b = append(w.b, 0)
@@ -96,8 +104,8 @@ func nh4(a netip.Addr) netip.Addr {
 	return netip.IPv4Unspecified()
 }
 
-var v9Tmpl4 = [][2]uint16{{8, 4}, {12, 4}, {15, 4}, {10, 4}, {14, 4}, {2, 4}, {1, 8}, {22, 4}, {21, 4}, {7, 2}, {11, 2}, {6, 1}, {4, 1}, {5, 1}, {16, 4}, {17, 4}, {9, 1}, {13, 1}, {61, 1}, {58, 2}, {48, 1}}
-var v9Tmpl6 = [][2]uint16{{27, 16}, {28, 16}, {62, 16}, {10, 4}, {14, 4}, {2, 4}, {1, 8}, {22, 4}, {21, 4}, {7, 2}, {11, 2}, {6, 1}, {4, 1}, {5, 1}, {16, 4}, {17, 4}, {29, 1}, {30, 1}, {61, 1}, {58, 2}, {48, 1}}
+var v9Tmpl4 = [][2]uint16{{8, 4}, {12, 4}, {15, 4}, {10, 4}, {14, 4}, {2, 4}, {1, 8}, {22, 4}, {21, 4}, {7, 2}, {11, 2}, {6, 1}, {4, 1}, {5, 1}, {16, 4}, {17, 4}, {9, 1}, {13, 1}, {61, 1}, {58, 2}, {48, 1}, {56, 6}}
+var v9Tmpl6 = [][2]uint16{{27, 16}, {28, 16}, {62, 16}, {10, 4}, {14, 4}, {2, 4}, {1, 8}, {22, 4}, {21, 4}, {7, 2}, {11, 2}, {6, 1}, {4, 1}, {5, 1}, {16, 4}, {17, 4}, {29, 1}, {30, 1}, {61, 1}, {58, 2}, {48, 1}, {56, 6}}
 
 // V9 encodes records as NetFlow v9. Templates and the sampling options record
 // are included every 20th packet (and in the first one).
@@ -193,6 +201,7 @@ func (e *Exporter) V9(now time.Time, recs []flow.Record) []byte {
 			w.u8(r.Direction)
 			w.u16(r.VLAN)
 			w.u8(1)
+			w.mac(r.SrcMAC)
 		}
 		if n > 0 {
 			w.pad4(start)
@@ -220,8 +229,8 @@ func b2u(b bool) uint16 {
 	return 0
 }
 
-var ipfixTmpl4 = [][2]uint16{{8, 4}, {12, 4}, {7, 2}, {11, 2}, {4, 1}, {6, 2}, {5, 1}, {10, 4}, {14, 4}, {1, 8}, {2, 8}, {152, 8}, {153, 8}, {16, 4}, {17, 4}, {9, 1}, {13, 1}, {15, 4}, {58, 2}, {61, 1}}
-var ipfixTmpl6 = [][2]uint16{{27, 16}, {28, 16}, {7, 2}, {11, 2}, {4, 1}, {6, 2}, {5, 1}, {10, 4}, {14, 4}, {1, 8}, {2, 8}, {152, 8}, {153, 8}, {16, 4}, {17, 4}, {29, 1}, {30, 1}, {62, 16}, {58, 2}, {61, 1}}
+var ipfixTmpl4 = [][2]uint16{{8, 4}, {12, 4}, {7, 2}, {11, 2}, {4, 1}, {6, 2}, {5, 1}, {10, 4}, {14, 4}, {1, 8}, {2, 8}, {152, 8}, {153, 8}, {16, 4}, {17, 4}, {9, 1}, {13, 1}, {15, 4}, {58, 2}, {61, 1}, {56, 6}}
+var ipfixTmpl6 = [][2]uint16{{27, 16}, {28, 16}, {7, 2}, {11, 2}, {4, 1}, {6, 2}, {5, 1}, {10, 4}, {14, 4}, {1, 8}, {2, 8}, {152, 8}, {153, 8}, {16, 4}, {17, 4}, {29, 1}, {30, 1}, {62, 16}, {58, 2}, {61, 1}, {56, 6}}
 
 // IPFIX encodes records as IPFIX with absolute millisecond timestamps.
 func (e *Exporter) IPFIX(now time.Time, recs []flow.Record) []byte {
@@ -307,6 +316,7 @@ func (e *Exporter) IPFIX(now time.Time, recs []flow.Record) []byte {
 			}
 			w.u16(r.VLAN)
 			w.u8(r.Direction)
+			w.mac(r.SrcMAC)
 		}
 		if c > 0 {
 			binary.BigEndian.PutUint16(w.b[start+2:], uint16(len(w.b)-start))
