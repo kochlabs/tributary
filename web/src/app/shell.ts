@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, Attribution, errorMessage } from './core/api';
+import { Api, Attribution, errorMessage, Notice } from './core/api';
 import { Auth } from './core/auth';
+import { readPref, writePref } from './core/time';
 import { Theme } from './core/util';
 import { TimeRangePicker } from './shared/time-range';
 
@@ -12,6 +13,22 @@ import { TimeRangePicker } from './shared/time-range';
   imports: [ClarityModule, RouterOutlet, RouterLink, RouterLinkActive, TimeRangePicker, FormsModule],
   template: `
     <div class="main-container">
+      @if (visibleNotices().length) {
+        <clr-alerts>
+          @for (n of visibleNotices(); track n.id) {
+            <clr-alert [clrAlertType]="n.level" [clrAlertAppLevel]="true" [clrAlertClosable]="n.dismissible" (clrAlertClosedChange)="$event && dismiss(n)">
+              <clr-alert-item>
+                <span class="alert-text">{{ n.message }}</span>
+                @if (n.action) {
+                  <div class="alert-actions">
+                    <button class="btn alert-action" (click)="router.navigateByUrl(n.action.route)">{{ n.action.label }}</button>
+                  </div>
+                }
+              </clr-alert-item>
+            </clr-alert>
+          }
+        </clr-alerts>
+      }
       <header class="header header-6">
         <div class="branding">
           <a routerLink="/dashboard" class="nav-link">
@@ -153,7 +170,7 @@ export class Shell {
   readonly auth = inject(Auth);
   readonly theme = inject(Theme);
   private api = inject(Api);
-  private router = inject(Router);
+  readonly router = inject(Router);
   readonly name = signal('Tributary');
   navCollapsed = false;
 
@@ -164,18 +181,55 @@ export class Shell {
   readonly pwError = signal('');
   readonly pwBusy = signal(false);
 
+  readonly notices = signal<Notice[]>([]);
+  private readonly dismissed = signal<string[]>(this.loadDismissed());
+  readonly visibleNotices = computed(() => this.notices().filter((n) => !n.dismissible || !this.dismissed().includes(n.id)));
+
   readonly aboutOpen = signal(false);
   readonly version = signal('');
   readonly source = signal('');
   readonly attributions = signal<Attribution[]>([]);
 
   constructor() {
+    this.loadNotices();
+    const id = setInterval(() => this.loadNotices(), 60_000);
+    inject(DestroyRef).onDestroy(() => clearInterval(id));
     this.api.publicInfo().then((i) => {
       this.name.set(i.name);
       this.version.set(i.version);
       this.source.set(i.source);
       document.title = i.name;
     });
+  }
+
+  private loadDismissed(): string[] {
+    try {
+      return JSON.parse(readPref('nfa.dismissedNotices', '[]'));
+    } catch {
+      return [];
+    }
+  }
+
+  async loadNotices() {
+    try {
+      const list = await this.api.notices();
+      this.notices.set(list);
+      // Forget dismissals of conditions that have cleared.
+      const ids = new Set(list.map((n) => n.id));
+      const kept = this.dismissed().filter((d) => ids.has(d));
+      if (kept.length !== this.dismissed().length) {
+        this.dismissed.set(kept);
+        writePref('nfa.dismissedNotices', JSON.stringify(kept));
+      }
+    } catch {
+      // Keep the last known notices; the session may have expired.
+    }
+  }
+
+  dismiss(n: Notice) {
+    const d = [...this.dismissed(), n.id];
+    this.dismissed.set(d);
+    writePref('nfa.dismissedNotices', JSON.stringify(d));
   }
 
   async logout() {

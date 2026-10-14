@@ -209,6 +209,15 @@ export interface Settings {
   dnsServers: string[];
 }
 
+/** An appliance-wide condition shown as a banner above the header. */
+export interface Notice {
+  id: string;
+  level: 'info' | 'warning' | 'danger';
+  message: string;
+  action?: { label: string; route: string };
+  dismissible: boolean;
+}
+
 export interface Attribution {
   text: string;
   url: string;
@@ -520,6 +529,9 @@ export class Api {
   }
   updateGeo() {
     return firstValueFrom(this.http.post('/api/geo/update', {}));
+  }
+  notices() {
+    return this.get<Notice[]>('/api/notices');
   }
   updateVendors() {
     return firstValueFrom(this.http.post('/api/oui/update', {}));

@@ -14,6 +14,7 @@ import (
 	"path"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"nfa/internal/certs"
@@ -44,8 +45,14 @@ type Server struct {
 	ApplySettings func(ctx context.Context, old, new config.Settings) error
 
 	started time.Time
-	limiter loginLimiter
-	sso     ssoState
+
+	// DataDir is the appliance's data directory (disk checks, initial password).
+	DataDir     string
+	notices     atomic.Pointer[[]Notice]
+	prevDropped atomic.Uint64
+	noticeRuns  atomic.Int64
+	limiter     loginLimiter
+	sso         ssoState
 }
 
 const cookieName = "nfa_session"
@@ -115,6 +122,7 @@ func (s *Server) Handler() http.Handler {
 	admin("DELETE /api/identity-sources/{id}", s.identitySourceDelete)
 	admin("POST /api/identity-sources/test", s.identitySourceTest)
 	auth("GET /api/geo", s.geoStatus)
+	auth("GET /api/notices", s.noticesList)
 	auth("GET /api/local-suggestions", s.localSuggestions)
 	admin("POST /api/geo/update", s.geoUpdate)
 	admin("POST /api/oui/update", s.ouiUpdate)

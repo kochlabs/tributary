@@ -346,6 +346,16 @@ func (c *DB) Authenticate(username, password string) (*User, error) {
 	return &u, nil
 }
 
+// PasswordMatches reports whether a local account's password is password,
+// without counting as a sign-in.
+func (c *DB) PasswordMatches(username, password string) bool {
+	var hash string
+	if c.db.QueryRow("SELECT password FROM users WHERE username = ? AND source_id = 0", username).Scan(&hash) != nil {
+		return false
+	}
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
+}
+
 // ---- sessions ----
 
 func hashToken(t string) string {

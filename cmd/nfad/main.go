@@ -195,7 +195,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 	}
 
 	srv := &api.Server{
-		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)
@@ -224,6 +224,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 		IdleTimeout:       120 * time.Second,
 		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12, GetCertificate: certMgr.GetCertificate},
 	}
+	go srv.RunNotices(ctx)
 
 	go func() {
 		t := time.NewTicker(time.Hour)
