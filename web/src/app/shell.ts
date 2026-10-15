@@ -78,7 +78,7 @@ import { TimeRangePicker } from './shared/time-range';
         </div>
       </header>
       <div class="content-container">
-        <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="navCollapsed">
+        <clr-vertical-nav [clrVerticalNavCollapsible]="true" [clrVerticalNavCollapsed]="navCollapsed()" (clrVerticalNavCollapsedChange)="setNavCollapsed($event)">
           <a clrVerticalNavLink routerLink="/dashboard" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="dashboard"></cds-icon><ng-container i18n="@@nav.dashboard">Dashboard</ng-container></a>
           <a clrVerticalNavLink routerLink="/explorer" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="line-chart"></cds-icon><ng-container i18n="@@nav.explorer">Traffic Explorer</ng-container></a>
           <a clrVerticalNavLink routerLink="/flows" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="table"></cds-icon><ng-container i18n="@@nav.flows">Flow Search</ng-container></a>
@@ -86,7 +86,7 @@ import { TimeRangePicker } from './shared/time-range';
           <a clrVerticalNavLink routerLink="/exporters" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="router"></cds-icon><ng-container i18n="@@nav.exporters">Exporters</ng-container></a>
           <a clrVerticalNavLink routerLink="/system" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="host"></cds-icon><ng-container i18n="@@nav.system">System Health</ng-container></a>
           @if (auth.isAdmin()) {
-            <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="true">
+            <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('admin')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('admin', $event)">
               <cds-icon clrVerticalNavIcon shape="cog"></cds-icon>
               <ng-container i18n="@@shell.administration">Administration</ng-container>
               <clr-vertical-nav-group-children>
@@ -187,7 +187,32 @@ export class Shell {
   private api = inject(Api);
   readonly router = inject(Router);
   readonly name = signal('Tributary');
-  navCollapsed = false;
+  // Sidebar state is remembered per browser. Groups start collapsed.
+  readonly navCollapsed = signal(readPref('nfa.navCollapsed', 'false') === 'true');
+  private readonly navGroups = signal<Record<string, boolean>>(this.loadNavGroups());
+
+  private loadNavGroups(): Record<string, boolean> {
+    try {
+      return JSON.parse(readPref('nfa.navGroups', '{}'));
+    } catch {
+      return {};
+    }
+  }
+
+  groupOpen(name: string) {
+    return this.navGroups()[name] ?? false;
+  }
+
+  setGroupOpen(name: string, open: boolean) {
+    if (this.groupOpen(name) === open) return;
+    this.navGroups.update((g) => ({ ...g, [name]: open }));
+    writePref('nfa.navGroups', JSON.stringify(this.navGroups()));
+  }
+
+  setNavCollapsed(collapsed: boolean) {
+    this.navCollapsed.set(collapsed);
+    writePref('nfa.navCollapsed', String(collapsed));
+  }
 
   readonly pwOpen = signal(false);
   pwCurrent = '';
