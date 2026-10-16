@@ -206,13 +206,13 @@ function download(name: string, text: string) {
           </clr-input-container>
           <clr-textarea-container>
             <label i18n="@@certificates.dnsNames">DNS names</label>
-            <textarea clrTextarea name="dns" [(ngModel)]="idf.dnsNames" rows="3"></textarea>
-            <clr-control-helper i18n="@@certificates.dnsHelp">One per line. Browsers check these, not the common name.</clr-control-helper>
+            <textarea clrTextarea class="names" name="dns" [(ngModel)]="idf.dnsNames" rows="5" wrap="off" spellcheck="false"></textarea>
+            <clr-control-helper i18n="@@certificates.dnsHelp2">One per line. Pre-filled with the current certificate's names and those detected on this appliance (host name, FQDN, Tailscale MagicDNS name). Add any other name clients use, such as a DNS alias. Browsers check these, not the common name.</clr-control-helper>
           </clr-textarea-container>
           <clr-textarea-container>
             <label i18n="@@certificates.ipAddresses">IP addresses</label>
-            <textarea clrTextarea name="ips" [(ngModel)]="idf.ipAddresses" rows="2"></textarea>
-            <clr-control-helper i18n="@@certificates.ipHelp">Include the address you browse to, e.g. 192.168.20.230.</clr-control-helper>
+            <textarea clrTextarea class="names" name="ips" [(ngModel)]="idf.ipAddresses" rows="5" wrap="off" spellcheck="false"></textarea>
+            <clr-control-helper i18n="@@certificates.ipHelp2">One per line. Pre-filled with this appliance's addresses, including Tailscale. Add any other address clients browse to, such as a NAT or VPN address.</clr-control-helper>
           </clr-textarea-container>
           <clr-select-container>
             <label i18n="@@certificates.key">Key</label>
@@ -301,6 +301,8 @@ function download(name: string, text: string) {
     </clr-modal>
   `,
   styles: `
+    /* One name per line: wide enough for FQDNs, never wrapped mid-name. */
+    textarea.names { width: 100%; min-width: 340px; white-space: pre; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
     .cert-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: 16px; align-items: start; margin-top: 12px; }
     .cert-layout .card { margin: 0; }
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -428,12 +430,15 @@ export class Certificates {
   openId(mode: 'csr' | 'self') {
     const d = this.cert.value()?.defaults;
     const cur = this.cert.value()?.status.certificate;
-    // Start from the current certificate's names; fall back to the host's.
+    // Keep the current certificate's names and add what the appliance is
+    // reachable as now (e.g. a Tailscale name or address added since).
     this.idf = {
       commonName: cur?.commonName || d?.commonName || '',
       organization: d?.organization || '',
-      dnsNames: (cur?.dnsNames.length ? cur.dnsNames : d?.dnsNames ?? []).join('\n'),
-      ipAddresses: (cur?.ipAddresses.length ? cur.ipAddresses : d?.ipAddresses ?? []).join('\n'),
+      dnsNames: mergeNames(cur?.dnsNames, d?.dnsNames).join('\n'),
+      ipAddresses: mergeNames(cur?.ipAddresses, d?.ipAddresses)
+        .filter((ip) => !/^fe[89ab][0-9a-f]:/i.test(ip)) // link-local: unusable in URLs
+        .join('\n'),
       keyType: 'ecdsa-p256',
       days: 825,
     };
@@ -543,4 +548,20 @@ export class Certificates {
     this.notice.set(msg);
     this.refresh();
   }
+}
+
+/** Union of name lists, first list's order first, ignoring case and blanks. */
+function mergeNames(...lists: (string[] | undefined)[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const l of lists) {
+    for (const n of l ?? []) {
+      const k = n.trim().toLowerCase();
+      if (k && !seen.has(k)) {
+        seen.add(k);
+        out.push(n.trim());
+      }
+    }
+  }
+  return out;
 }

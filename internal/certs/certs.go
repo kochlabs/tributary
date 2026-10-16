@@ -5,6 +5,7 @@ package certs
 
 import (
 	"bytes"
+	"context"
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/ed25519"
@@ -15,11 +16,14 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"io"
 	"math/big"
 	"net"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -353,18 +357,108 @@ type Identity struct {
 	IPAddresses  []string `json:"ipAddresses"`
 }
 
-// DefaultIdentity uses the host name and every local address.
+// DefaultIdentity names this appliance the way clients reach it: the host
+// name and its fully qualified name, the Tailscale MagicDNS name when the
+// host is on a tailnet, and every address except link-local ones (which
+// can't be used in URLs without a zone and don't belong in certificates).
 func DefaultIdentity() Identity {
 	host, _ := os.Hostname()
-	id := Identity{CommonName: host, Organization: "Tributary", DNSNames: []string{host, "localhost"}}
+	id := Identity{CommonName: host, Organization: "Tributary"}
+	seenDNS := map[string]bool{}
+	addDNS := func(n string) {
+		n = strings.ToLower(strings.TrimSuffix(strings.TrimSpace(n), "."))
+		if n != "" && !seenDNS[n] {
+			seenDNS[n] = true
+			id.DNSNames = append(id.DNSNames, n)
+		}
+	}
+	seenIP := map[string]bool{}
+	addIP := func(ip net.IP) {
+		if ip == nil || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || seenIP[ip.String()] {
+			return
+		}
+		seenIP[ip.String()] = true
+		id.IPAddresses = append(id.IPAddresses, ip.String())
+	}
+
+	addDNS(host)
+	if fqdn := lookupFQDN(host); fqdn != "" {
+		addDNS(fqdn)
+		id.CommonName = fqdn
+	}
+	ts := tailscaleSelf()
+	if ts.DNSName != "" {
+		addDNS(ts.DNSName)
+	}
+	addDNS("localhost")
 	if addrs, err := net.InterfaceAddrs(); err == nil {
 		for _, a := range addrs {
-			if ipn, ok := a.(*net.IPNet); ok && !ipn.IP.IsLinkLocalUnicast() {
-				id.IPAddresses = append(id.IPAddresses, ipn.IP.String())
+			if ipn, ok := a.(*net.IPNet); ok {
+				addIP(ipn.IP)
 			}
 		}
 	}
+	for _, s := range ts.IPs {
+		addIP(net.ParseIP(s))
+	}
 	return id
+}
+
+// lookupFQDN returns the fully qualified name of host using the resolver's
+// search domains, like `hostname -f`, or "" if it has none.
+func lookupFQDN(host string) string {
+	if host == "" || strings.Contains(host, ".") {
+		return ""
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	cname, err := net.DefaultResolver.LookupCNAME(ctx, host)
+	cname = strings.TrimSuffix(cname, ".")
+	if err != nil || !strings.Contains(cname, ".") || !strings.HasPrefix(strings.ToLower(cname), strings.ToLower(host)+".") {
+		return ""
+	}
+	return cname
+}
+
+type tailscaleInfo struct {
+	DNSName string
+	IPs     []string
+}
+
+// tailscaleSocket is tailscaled's local API, readable by unprivileged users.
+var tailscaleSocket = "/var/run/tailscale/tailscaled.sock"
+
+// tailscaleSelf asks the local tailscaled for this node's MagicDNS name and
+// tailnet addresses. It returns nothing when Tailscale isn't running.
+func tailscaleSelf() tailscaleInfo {
+	if _, err := os.Stat(tailscaleSocket); err != nil {
+		return tailscaleInfo{}
+	}
+	client := &http.Client{
+		Timeout: time.Second,
+		Transport: &http.Transport{DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+			return (&net.Dialer{}).DialContext(ctx, "unix", tailscaleSocket)
+		}},
+	}
+	req, _ := http.NewRequest(http.MethodGet, "http://local-tailscaled.sock/localapi/v0/status?peers=false", nil)
+	resp, err := client.Do(req)
+	if err != nil {
+		return tailscaleInfo{}
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return tailscaleInfo{}
+	}
+	var st struct {
+		Self struct {
+			DNSName      string
+			TailscaleIPs []string
+		}
+	}
+	if json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&st) != nil {
+		return tailscaleInfo{}
+	}
+	return tailscaleInfo{DNSName: st.Self.DNSName, IPs: st.Self.TailscaleIPs}
 }
 
 func (id *Identity) validate() error {
