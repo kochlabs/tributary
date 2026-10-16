@@ -2150,7 +2150,7 @@
     <unit id="certificates.generateCsr">
       <notes>
         <note category="location">src/app/pages/certificates.ts:110,111</note>
-        <note category="location">src/app/pages/certificates.ts:375</note>
+        <note category="location">src/app/pages/certificates.ts:377</note>
       </notes>
       <segment>
         <source>Generate CSR</source>
@@ -2175,7 +2175,7 @@
     <unit id="certificates.regenerate">
       <notes>
         <note category="location">src/app/pages/certificates.ts:115,116</note>
-        <note category="location">src/app/pages/certificates.ts:376</note>
+        <note category="location">src/app/pages/certificates.ts:378</note>
       </notes>
       <segment>
         <source>Regenerate</source>
@@ -2584,7 +2584,7 @@
     </unit>
     <unit id="certificates.selfSignedLabel">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:368</note>
+        <note category="location">src/app/pages/certificates.ts:370</note>
       </notes>
       <segment>
         <source>Self-signed</source>
@@ -2592,7 +2592,7 @@
     </unit>
     <unit id="certificates.none">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:369</note>
+        <note category="location">src/app/pages/certificates.ts:371</note>
       </notes>
       <segment>
         <source>none</source>
@@ -2600,7 +2600,7 @@
     </unit>
     <unit id="certificates.root">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:370</note>
+        <note category="location">src/app/pages/certificates.ts:372</note>
       </notes>
       <segment>
         <source>Root</source>
@@ -2608,7 +2608,7 @@
     </unit>
     <unit id="certificates.intermediate">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:371</note>
+        <note category="location">src/app/pages/certificates.ts:373</note>
       </notes>
       <segment>
         <source>Intermediate</source>
@@ -2616,7 +2616,7 @@
     </unit>
     <unit id="certificates.keyPlaceholderPending">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:372</note>
+        <note category="location">src/app/pages/certificates.ts:374</note>
       </notes>
       <segment>
         <source>Leave empty: this answers the pending CSR, whose key is on the appliance</source>
@@ -2624,7 +2624,7 @@
     </unit>
     <unit id="certificates.csrTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:373</note>
+        <note category="location">src/app/pages/certificates.ts:375</note>
       </notes>
       <segment>
         <source>Generate a certificate signing request</source>
@@ -2632,7 +2632,7 @@
     </unit>
     <unit id="certificates.selfTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:374</note>
+        <note category="location">src/app/pages/certificates.ts:376</note>
       </notes>
       <segment>
         <source>Regenerate self-signed certificate</source>
@@ -2640,7 +2640,7 @@
     </unit>
     <unit id="certificates.copied">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:377</note>
+        <note category="location">src/app/pages/certificates.ts:379</note>
       </notes>
       <segment>
         <source>Copied</source>
@@ -2648,7 +2648,7 @@
     </unit>
     <unit id="certificates.copy">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:378</note>
+        <note category="location">src/app/pages/certificates.ts:380</note>
       </notes>
       <segment>
         <source>Copy</source>
@@ -2656,7 +2656,7 @@
     </unit>
     <unit id="certificates.expiredDaysAgo">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:390</note>
+        <note category="location">src/app/pages/certificates.ts:392</note>
       </notes>
       <segment>
         <source>expired <ph id="0" equiv="days" disp="-days"/> days ago</source>
@@ -2664,7 +2664,7 @@
     </unit>
     <unit id="certificates.oneDayLeft">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:391</note>
+        <note category="location">src/app/pages/certificates.ts:393</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="days" disp="days"/> day left</source>
@@ -2672,7 +2672,7 @@
     </unit>
     <unit id="certificates.daysLeft">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:391</note>
+        <note category="location">src/app/pages/certificates.ts:393</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="days" disp="days"/> days left</source>
@@ -2680,7 +2680,7 @@
     </unit>
     <unit id="certificates.installed">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:420</note>
+        <note category="location">src/app/pages/certificates.ts:422</note>
       </notes>
       <segment>
         <source>Installed the certificate for <ph id="0" equiv="name" disp="d.commonName"/>, valid until <ph id="1" equiv="validUntil" disp="this.dt(d.notAfter)"/>. Reload the page to use it.</source>
@@ -2688,7 +2688,7 @@
     </unit>
     <unit id="certificates.installedSelfSigned">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:464</note>
+        <note category="location">src/app/pages/certificates.ts:466</note>
       </notes>
       <segment>
         <source>Installed a new self-signed certificate for <ph id="0" equiv="name" disp="d.commonName"/>. Reload the page and accept it in your browser.</source>
@@ -2696,7 +2696,7 @@
     </unit>
     <unit id="certificates.csrDiscarded">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:479</note>
+        <note category="location">src/app/pages/certificates.ts:481</note>
       </notes>
       <segment>
         <source>Discarded the pending CSR and its key.</source>
@@ -2704,7 +2704,7 @@
     </unit>
     <unit id="certificates.restored">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:502</note>
+        <note category="location">src/app/pages/certificates.ts:504</note>
       </notes>
       <segment>
         <source>Restored the certificate for <ph id="0" equiv="name" disp="d.commonName"/>. Reload the page to use it.</source>
@@ -2712,7 +2712,7 @@
     </unit>
     <unit id="certificates.nowTrusting">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:523</note>
+        <note category="location">src/app/pages/certificates.ts:525</note>
       </notes>
       <segment>
         <source>Now trusting <ph id="0" equiv="names" disp="r.added.join(&apos;, &apos;)"/>.</source>
@@ -2720,7 +2720,7 @@
     </unit>
     <unit id="certificates.alreadyTrusted">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:523</note>
+        <note category="location">src/app/pages/certificates.ts:525</note>
       </notes>
       <segment>
         <source>Those CAs were already trusted.</source>
@@ -2728,7 +2728,7 @@
     </unit>
     <unit id="certificates.removed">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:538</note>
+        <note category="location">src/app/pages/certificates.ts:540</note>
       </notes>
       <segment>
         <source>Removed <ph id="0" equiv="name" disp="ca.name"/>.</source>
@@ -5561,7 +5561,7 @@
         <note category="location">src/app/pages/login.ts:27,29</note>
       </notes>
       <segment>
-        <source>Network flow analytics</source>
+        <source>Network Flow Analytics</source>
       </segment>
     </unit>
     <unit id="login.username">

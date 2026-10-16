@@ -24,7 +24,7 @@ import { languageName, setLanguageCookie } from '../core/language';
               <span class="name">{{ name() }}</span>
             }
           </div>
-          <h5 class="hint" i18n="@@login.tagline">Network flow analytics</h5>
+          <h5 class="hint" i18n="@@login.tagline">Network Flow Analytics</h5>
         </section>
         <div class="login-group">
           <clr-input-container>
