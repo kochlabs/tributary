@@ -23,7 +23,7 @@
     <unit id="nav.explorer">
       <notes>
         <note category="location">src/app/app.routes.ts:15</note>
-        <note category="location">src/app/pages/explorer.ts:22,23</note>
+        <note category="location">src/app/pages/explorer.ts:31,32</note>
         <note category="location">src/app/shell.ts:83,84</note>
       </notes>
       <segment>
@@ -174,7 +174,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:429</note>
+        <note category="location">src/app/core/api.ts:458</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1931,8 +1931,8 @@
         <note category="location">src/app/pages/audit.ts:31,32</note>
         <note category="location">src/app/pages/certificates.ts:159,160</note>
         <note category="location">src/app/pages/devices.ts:90,91</note>
-        <note category="location">src/app/pages/explorer.ts:124,125</note>
-        <note category="location">src/app/pages/exporter-detail.ts:99,100</note>
+        <note category="location">src/app/pages/explorer.ts:188,189</note>
+        <note category="location">src/app/pages/exporter-detail.ts:100,101</note>
         <note category="location">src/app/pages/exporters.ts:91,92</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
         <note category="location">src/app/pages/services.ts:68,69</note>
@@ -2253,8 +2253,8 @@
       <notes>
         <note category="location">src/app/pages/certificates.ts:144,145</note>
         <note category="location">src/app/pages/devices.ts:110,111</note>
-        <note category="location">src/app/pages/exporter-detail.ts:65,66</note>
-        <note category="location">src/app/pages/exporter-detail.ts:114,115</note>
+        <note category="location">src/app/pages/exporter-detail.ts:66,67</note>
+        <note category="location">src/app/pages/exporter-detail.ts:115,116</note>
         <note category="location">src/app/pages/identity-sources.ts:58,59</note>
         <note category="location">src/app/pages/identity-sources.ts:129,130</note>
         <note category="location">src/app/shared/top-table.ts:77</note>
@@ -2352,7 +2352,7 @@
         <note category="location">src/app/pages/certificates.ts:289,290</note>
         <note category="location">src/app/pages/certificates.ts:298,299</note>
         <note category="location">src/app/pages/devices.ts:117,118</note>
-        <note category="location">src/app/pages/exporter-detail.ts:136,137</note>
+        <note category="location">src/app/pages/exporter-detail.ts:137,138</note>
         <note category="location">src/app/pages/exporters.ts:128,129</note>
         <note category="location">src/app/pages/exporters.ts:139,140</note>
         <note category="location">src/app/pages/identity-sources.ts:117,119</note>
@@ -3515,7 +3515,7 @@
       <notes>
         <note category="location">src/app/pages/data-sources.ts:189,190</note>
         <note category="location">src/app/pages/devices.ts:118,120</note>
-        <note category="location">src/app/pages/exporter-detail.ts:137,139</note>
+        <note category="location">src/app/pages/exporter-detail.ts:138,140</note>
         <note category="location">src/app/pages/exporters.ts:129,131</note>
         <note category="location">src/app/pages/identity-sources.ts:251,253</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
@@ -3801,7 +3801,7 @@
     </unit>
     <unit id="explorer.subtitle">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:23,24</note>
+        <note category="location">src/app/pages/explorer.ts:32,33</note>
       </notes>
       <segment>
         <source>Break traffic down by any dimension · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
@@ -3809,39 +3809,56 @@
     </unit>
     <unit id="explorer.showMatchingFlows">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:27,29</note>
+        <note category="location">src/app/pages/explorer.ts:36,38</note>
       </notes>
       <segment>
         <source>Show matching flows</source>
       </segment>
     </unit>
-    <unit id="explorer.groupBy">
+    <unit id="explorer.view">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:36,37</note>
+        <note category="location">src/app/pages/explorer.ts:44</note>
       </notes>
       <segment>
-        <source>Group by</source>
+        <source>View</source>
       </segment>
     </unit>
-    <unit id="explorer.groupByNone">
-      <notes>
-        <note category="location">src/app/pages/explorer.ts:38,39</note>
-      </notes>
-      <segment>
-        <source>— none (total) —</source>
-      </segment>
-    </unit>
-    <unit id="explorer.series">
+    <unit id="explorer.viewChart">
       <notes>
         <note category="location">src/app/pages/explorer.ts:45,46</note>
       </notes>
       <segment>
-        <source>Series</source>
+        <source>Chart</source>
+      </segment>
+    </unit>
+    <unit id="explorer.viewPaths">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:46,47</note>
+      </notes>
+      <segment>
+        <source>Paths</source>
+      </segment>
+    </unit>
+    <unit id="explorer.pathNone">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:55,57</note>
+      </notes>
+      <segment>
+        <source>— none —</source>
+      </segment>
+    </unit>
+    <unit id="explorer.perColumn">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:63,64</note>
+      </notes>
+      <segment>
+        <source>Per column</source>
       </segment>
     </unit>
     <unit id="explorer.topN">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:48,49</note>
+        <note category="location">src/app/pages/explorer.ts:66,67</note>
+        <note category="location">src/app/pages/explorer.ts:94,95</note>
       </notes>
       <segment>
         <source>Top <ph id="0" equiv="INTERPOLATION" disp="{{ n }}"/></source>
@@ -3849,15 +3866,72 @@
     </unit>
     <unit id="explorer.metric">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:52</note>
+        <note category="location">src/app/pages/explorer.ts:70</note>
+        <note category="location">src/app/pages/explorer.ts:98</note>
       </notes>
       <segment>
         <source>Metric</source>
       </segment>
     </unit>
+    <unit id="explorer.directionGroup">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:75</note>
+      </notes>
+      <segment>
+        <source>Direction</source>
+      </segment>
+    </unit>
+    <unit id="explorer.dirBoth">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:76,77</note>
+      </notes>
+      <segment>
+        <source>Both</source>
+      </segment>
+    </unit>
+    <unit id="explorer.dirDownload">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:77,78</note>
+      </notes>
+      <segment>
+        <source>Download</source>
+      </segment>
+    </unit>
+    <unit id="explorer.dirUpload">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:78,80</note>
+      </notes>
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="explorer.groupBy">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:82,83</note>
+      </notes>
+      <segment>
+        <source>Group by</source>
+      </segment>
+    </unit>
+    <unit id="explorer.groupByNone">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:84,85</note>
+      </notes>
+      <segment>
+        <source>— none (total) —</source>
+      </segment>
+    </unit>
+    <unit id="explorer.series">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:91,92</note>
+      </notes>
+      <segment>
+        <source>Series</source>
+      </segment>
+    </unit>
     <unit id="explorer.chartStyle">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:57</note>
+        <note category="location">src/app/pages/explorer.ts:103</note>
       </notes>
       <segment>
         <source>Chart style</source>
@@ -3865,7 +3939,7 @@
     </unit>
     <unit id="explorer.stacked">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:58,59</note>
+        <note category="location">src/app/pages/explorer.ts:104,105</note>
       </notes>
       <segment>
         <source>Stacked</source>
@@ -3873,15 +3947,40 @@
     </unit>
     <unit id="explorer.lines">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:59,61</note>
+        <note category="location">src/app/pages/explorer.ts:105,107</note>
       </notes>
       <segment>
         <source>Lines</source>
       </segment>
     </unit>
+    <unit id="explorer.pathsTitle">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:119,120</note>
+      </notes>
+      <segment>
+        <source>Traffic paths</source>
+      </segment>
+    </unit>
+    <unit id="explorer.pathsHint">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:121,122</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ sourceLabel(p.source) }}"/> · click a node or path to filter on it</source>
+      </segment>
+    </unit>
+    <unit id="explorer.noMatch">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:126,128</note>
+        <note category="location">src/app/pages/explorer.ts:182,183</note>
+      </notes>
+      <segment>
+        <source>No traffic matches the current filters.</source>
+      </segment>
+    </unit>
     <unit id="explorer.totalTraffic">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:74,76</note>
+        <note category="location">src/app/pages/explorer.ts:138,140</note>
       </notes>
       <segment>
         <source>Total traffic</source>
@@ -3889,7 +3988,7 @@
     </unit>
     <unit id="explorer.resolution">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:77,79</note>
+        <note category="location">src/app/pages/explorer.ts:141,143</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ s.step }}"/>s resolution · <ph id="1" equiv="INTERPOLATION_1" disp="{{ sourceLabel(s.source) }}"/> · drag to zoom</source>
@@ -3897,7 +3996,7 @@
     </unit>
     <unit id="explorer.col.avg">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:89,90</note>
+        <note category="location">src/app/pages/explorer.ts:153,154</note>
       </notes>
       <segment>
         <source>Avg <ph id="0" equiv="INTERPOLATION" disp="{{ metricName() }}"/></source>
@@ -3905,7 +4004,7 @@
     </unit>
     <unit id="explorer.col.bytes">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:90,91</note>
+        <note category="location">src/app/pages/explorer.ts:154,155</note>
       </notes>
       <segment>
         <source>Bytes</source>
@@ -3913,7 +4012,7 @@
     </unit>
     <unit id="explorer.col.packets">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:91,92</note>
+        <note category="location">src/app/pages/explorer.ts:155,156</note>
       </notes>
       <segment>
         <source>Packets</source>
@@ -3921,7 +4020,7 @@
     </unit>
     <unit id="explorer.col.flows">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:92,93</note>
+        <note category="location">src/app/pages/explorer.ts:156,157</note>
       </notes>
       <segment>
         <source>Flows</source>
@@ -3929,7 +4028,7 @@
     </unit>
     <unit id="explorer.col.share">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:93,95</note>
+        <note category="location">src/app/pages/explorer.ts:157,159</note>
       </notes>
       <segment>
         <source>Share</source>
@@ -3937,7 +4036,7 @@
     </unit>
     <unit id="explorer.filterOn">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:97,98</note>
+        <note category="location">src/app/pages/explorer.ts:161,162</note>
       </notes>
       <segment>
         <source>Filter on this</source>
@@ -3945,7 +4044,7 @@
     </unit>
     <unit id="explorer.exclude">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:98,99</note>
+        <note category="location">src/app/pages/explorer.ts:162,163</note>
       </notes>
       <segment>
         <source>Exclude this</source>
@@ -3953,23 +4052,15 @@
     </unit>
     <unit id="explorer.showFlows">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:99,100</note>
+        <note category="location">src/app/pages/explorer.ts:163,164</note>
       </notes>
       <segment>
         <source>Show flows</source>
       </segment>
     </unit>
-    <unit id="explorer.noMatch">
-      <notes>
-        <note category="location">src/app/pages/explorer.ts:118,119</note>
-      </notes>
-      <segment>
-        <source>No traffic matches the current filters.</source>
-      </segment>
-    </unit>
     <unit id="explorer.totals">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:121,122</note>
+        <note category="location">src/app/pages/explorer.ts:185,186</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtBytes(t.total.bytes) }}"/> total · <ph id="1" equiv="INTERPOLATION_1" disp="{{ fmtCount(t.total.flows) }}"/> flows</source>
@@ -3977,7 +4068,7 @@
     </unit>
     <unit id="explorer.footer">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:126,127</note>
+        <note category="location">src/app/pages/explorer.ts:190,191</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -3986,7 +4077,7 @@
     </unit>
     <unit id="explorer.empty">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:128,130</note>
+        <note category="location">src/app/pages/explorer.ts:192,194</note>
       </notes>
       <segment>
         <source>No rows</source>
@@ -3994,7 +4085,7 @@
     </unit>
     <unit id="explorer.unit.bps">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:195</note>
+        <note category="location">src/app/pages/explorer.ts:282</note>
       </notes>
       <segment>
         <source>bits/s</source>
@@ -4002,7 +4093,7 @@
     </unit>
     <unit id="explorer.unit.pps">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:195</note>
+        <note category="location">src/app/pages/explorer.ts:282</note>
       </notes>
       <segment>
         <source>packets/s</source>
@@ -4010,7 +4101,7 @@
     </unit>
     <unit id="explorer.unit.fps">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:195</note>
+        <note category="location">src/app/pages/explorer.ts:282</note>
       </notes>
       <segment>
         <source>flows/s</source>
@@ -4018,7 +4109,7 @@
     </unit>
     <unit id="explorer.source.rollup">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:198</note>
+        <note category="location">src/app/pages/explorer.ts:285</note>
       </notes>
       <segment>
         <source>1-minute rollup</source>
@@ -4026,10 +4117,34 @@
     </unit>
     <unit id="explorer.source.raw">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:198</note>
+        <note category="location">src/app/pages/explorer.ts:285</note>
       </notes>
       <segment>
         <source>raw flows</source>
+      </segment>
+    </unit>
+    <unit id="explorer.pathFrom">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:322</note>
+      </notes>
+      <segment>
+        <source>From</source>
+      </segment>
+    </unit>
+    <unit id="explorer.pathThrough">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:322</note>
+      </notes>
+      <segment>
+        <source>Through</source>
+      </segment>
+    </unit>
+    <unit id="explorer.pathTo">
+      <notes>
+        <note category="location">src/app/pages/explorer.ts:322</note>
+      </notes>
+      <segment>
+        <source>To</source>
       </segment>
     </unit>
     <unit id="exporterDetail.status">
@@ -4043,16 +4158,24 @@
     </unit>
     <unit id="exporterDetail.analyze">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:31,33</note>
-        <note category="location">src/app/pages/exporter-detail.ts:74,75</note>
+        <note category="location">src/app/pages/exporter-detail.ts:31,32</note>
+        <note category="location">src/app/pages/exporter-detail.ts:75,76</note>
       </notes>
       <segment>
         <source>Analyze traffic</source>
       </segment>
     </unit>
+    <unit id="exporterDetail.interfacePaths">
+      <notes>
+        <note category="location">src/app/pages/exporter-detail.ts:32,35</note>
+      </notes>
+      <segment>
+        <source>Interface paths</source>
+      </segment>
+    </unit>
     <unit id="exporterDetail.kpi.flowsPerSec">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:37</note>
+        <note category="location">src/app/pages/exporter-detail.ts:38</note>
       </notes>
       <segment>
         <source>Flows/s</source>
@@ -4060,7 +4183,7 @@
     </unit>
     <unit id="exporterDetail.kpi.live">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:37,38</note>
+        <note category="location">src/app/pages/exporter-detail.ts:38,39</note>
       </notes>
       <segment>
         <source>live</source>
@@ -4068,7 +4191,7 @@
     </unit>
     <unit id="exporterDetail.kpi.throughput">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:38</note>
+        <note category="location">src/app/pages/exporter-detail.ts:39</note>
       </notes>
       <segment>
         <source>Throughput</source>
@@ -4076,7 +4199,7 @@
     </unit>
     <unit id="exporterDetail.kpi.liveCorrected">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:38,39</note>
+        <note category="location">src/app/pages/exporter-detail.ts:39,40</note>
       </notes>
       <segment>
         <source>live, sampling-corrected</source>
@@ -4084,7 +4207,7 @@
     </unit>
     <unit id="exporterDetail.kpi.protocol">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:39</note>
+        <note category="location">src/app/pages/exporter-detail.ts:40</note>
       </notes>
       <segment>
         <source>Protocol</source>
@@ -4092,7 +4215,7 @@
     </unit>
     <unit id="exporterDetail.kpi.templatesCached">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:39,40</note>
+        <note category="location">src/app/pages/exporter-detail.ts:40,41</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ e.live?.templates ?? 0 }}"/> templates cached</source>
@@ -4100,7 +4223,7 @@
     </unit>
     <unit id="exporterDetail.kpi.sampling">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:41</note>
+        <note category="location">src/app/pages/exporter-detail.ts:42</note>
       </notes>
       <segment>
         <source>Sampling</source>
@@ -4108,7 +4231,7 @@
     </unit>
     <unit id="exporterDetail.kpi.lostErrors">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:42</note>
+        <note category="location">src/app/pages/exporter-detail.ts:43</note>
       </notes>
       <segment>
         <source>Lost / errors</source>
@@ -4116,7 +4239,7 @@
     </unit>
     <unit id="exporterDetail.kpi.setsWithoutTemplate">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:42,43</note>
+        <note category="location">src/app/pages/exporter-detail.ts:43,44</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtCount(e.live?.missingTemplates ?? 0) }}"/> sets w/o template</source>
@@ -4124,7 +4247,7 @@
     </unit>
     <unit id="exporterDetail.kpi.volume">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:43</note>
+        <note category="location">src/app/pages/exporter-detail.ts:44</note>
       </notes>
       <segment>
         <source>Volume</source>
@@ -4132,7 +4255,7 @@
     </unit>
     <unit id="exporterDetail.kpi.firstLastSeen">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:43,44</note>
+        <note category="location">src/app/pages/exporter-detail.ts:44,45</note>
       </notes>
       <segment>
         <source>first seen <ph id="0" equiv="INTERPOLATION" disp="{{ dt(e.firstSeen) }}"/> · last <ph id="1" equiv="INTERPOLATION_1" disp="{{ ago(e.live?.lastSeen ?? 0) }}"/></source>
@@ -4140,7 +4263,7 @@
     </unit>
     <unit id="exporterDetail.chartTitle">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:49,50</note>
+        <note category="location">src/app/pages/exporter-detail.ts:50,51</note>
       </notes>
       <segment>
         <source>Traffic by input interface · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
@@ -4148,7 +4271,7 @@
     </unit>
     <unit id="exporterDetail.interfaces">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:61,62</note>
+        <note category="location">src/app/pages/exporter-detail.ts:62,63</note>
       </notes>
       <segment>
         <source>Interfaces</source>
@@ -4156,7 +4279,7 @@
     </unit>
     <unit id="exporterDetail.interfacesSeen">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:62</note>
+        <note category="location">src/app/pages/exporter-detail.ts:63</note>
       </notes>
       <segment>
         <source>Interfaces seen in <ph id="0" equiv="INTERPOLATION" disp="{{ time.label().toLowerCase() }}"/>.</source>
@@ -4164,7 +4287,7 @@
     </unit>
     <unit id="exporterDetail.interfacesAdminHint">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:62,63</note>
+        <note category="location">src/app/pages/exporter-detail.ts:63,64</note>
       </notes>
       <segment>
         <source>Name them to make reports readable; set the speed to see utilization.</source>
@@ -4172,7 +4295,7 @@
     </unit>
     <unit id="exporterDetail.col.ifIndex">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:64,65</note>
+        <note category="location">src/app/pages/exporter-detail.ts:65,66</note>
       </notes>
       <segment>
         <source>ifIndex</source>
@@ -4180,8 +4303,8 @@
     </unit>
     <unit id="common.description">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:66,67</note>
-        <note category="location">src/app/pages/exporter-detail.ts:118,119</note>
+        <note category="location">src/app/pages/exporter-detail.ts:67,68</note>
+        <note category="location">src/app/pages/exporter-detail.ts:119,120</note>
         <note category="location">src/app/pages/exporters.ts:114,115</note>
         <note category="location">src/app/pages/services.ts:43,44</note>
       </notes>
@@ -4191,7 +4314,7 @@
     </unit>
     <unit id="exporterDetail.col.speed">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:67,68</note>
+        <note category="location">src/app/pages/exporter-detail.ts:68,69</note>
       </notes>
       <segment>
         <source>Speed</source>
@@ -4199,7 +4322,7 @@
     </unit>
     <unit id="exporterDetail.col.in">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:68,69</note>
+        <note category="location">src/app/pages/exporter-detail.ts:69,70</note>
         <note category="description">Inbound traffic</note>
       </notes>
       <segment>
@@ -4208,7 +4331,7 @@
     </unit>
     <unit id="exporterDetail.col.out">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:69,70</note>
+        <note category="location">src/app/pages/exporter-detail.ts:70,71</note>
         <note category="description">Outbound traffic</note>
       </notes>
       <segment>
@@ -4217,7 +4340,7 @@
     </unit>
     <unit id="exporterDetail.col.utilization">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:70,72</note>
+        <note category="location">src/app/pages/exporter-detail.ts:71,73</note>
       </notes>
       <segment>
         <source>Avg utilization in / out</source>
@@ -4225,7 +4348,7 @@
     </unit>
     <unit id="common.edit">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:76,78</note>
+        <note category="location">src/app/pages/exporter-detail.ts:77,79</note>
         <note category="location">src/app/pages/exporters.ts:45,46</note>
         <note category="location">src/app/pages/identity-sources.ts:47,48</note>
         <note category="location">src/app/pages/users.ts:33,34</note>
@@ -4236,7 +4359,7 @@
     </unit>
     <unit id="exporterDetail.speedUnknown">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:82,83</note>
+        <note category="location">src/app/pages/exporter-detail.ts:83,84</note>
       </notes>
       <segment>
         <source>unknown</source>
@@ -4244,7 +4367,7 @@
     </unit>
     <unit id="exporterDetail.utilIn">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:88</note>
+        <note category="location">src/app/pages/exporter-detail.ts:89</note>
         <note category="description">Inbound</note>
       </notes>
       <segment>
@@ -4253,7 +4376,7 @@
     </unit>
     <unit id="exporterDetail.utilOut">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:89</note>
+        <note category="location">src/app/pages/exporter-detail.ts:90</note>
         <note category="description">Outbound</note>
       </notes>
       <segment>
@@ -4262,7 +4385,7 @@
     </unit>
     <unit id="exporterDetail.setSpeed">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:92,94</note>
+        <note category="location">src/app/pages/exporter-detail.ts:93,95</note>
       </notes>
       <segment>
         <source>set speed</source>
@@ -4270,7 +4393,7 @@
     </unit>
     <unit id="exporterDetail.placeholder">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:96,97</note>
+        <note category="location">src/app/pages/exporter-detail.ts:97,98</note>
       </notes>
       <segment>
         <source>No interfaces carried traffic in this time range.</source>
@@ -4278,7 +4401,7 @@
     </unit>
     <unit id="exporterDetail.footer">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:101,102</note>
+        <note category="location">src/app/pages/exporter-detail.ts:102,103</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -4287,7 +4410,7 @@
     </unit>
     <unit id="exporterDetail.empty">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:103,105</note>
+        <note category="location">src/app/pages/exporter-detail.ts:104,106</note>
       </notes>
       <segment>
         <source>No interfaces</source>
@@ -4295,7 +4418,7 @@
     </unit>
     <unit id="exporterDetail.ifTitle">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:110,111</note>
+        <note category="location">src/app/pages/exporter-detail.ts:111,112</note>
       </notes>
       <segment>
         <source>Interface <ph id="0" equiv="INTERPOLATION" disp="{{ ifForm.index }}"/></source>
@@ -4303,7 +4426,7 @@
     </unit>
     <unit id="exporterDetail.ifNamePlaceholder">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:115</note>
+        <note category="location">src/app/pages/exporter-detail.ts:116</note>
       </notes>
       <segment>
         <source>e.g. Gi0/0/1</source>
@@ -4311,7 +4434,7 @@
     </unit>
     <unit id="exporterDetail.ifDescPlaceholder">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:119</note>
+        <note category="location">src/app/pages/exporter-detail.ts:120</note>
       </notes>
       <segment>
         <source>e.g. Uplink to ISP-A</source>
@@ -4319,7 +4442,7 @@
     </unit>
     <unit id="exporterDetail.speed">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:122,123</note>
+        <note category="location">src/app/pages/exporter-detail.ts:123,124</note>
       </notes>
       <segment>
         <source>Speed</source>
@@ -4327,7 +4450,7 @@
     </unit>
     <unit id="exporterDetail.speedUnknownOption">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:124,125</note>
+        <note category="location">src/app/pages/exporter-detail.ts:125,126</note>
       </notes>
       <segment>
         <source>Unknown</source>
@@ -7518,9 +7641,18 @@
     <unit id="options.other">
       <notes>
         <note category="location">src/app/shared/options.ts:82</note>
+        <note category="location">src/app/shared/options.ts:124</note>
       </notes>
       <segment>
         <source>Other</source>
+      </segment>
+    </unit>
+    <unit id="options.pathUnknown">
+      <notes>
+        <note category="location">src/app/shared/options.ts:125</note>
+      </notes>
+      <segment>
+        <source>Unknown / internal</source>
       </segment>
     </unit>
     <unit id="rangeBar.timeRange">
@@ -7855,7 +7987,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:286</note>
+        <note category="location">src/app/shell.ts:312</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

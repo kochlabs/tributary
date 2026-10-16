@@ -9,9 +9,18 @@ import { filtersFromParams, loader, trackByKey } from '../core/util';
 import { Chart, OTHER_COLOR, PALETTE } from '../shared/chart';
 import { FilterBar } from '../shared/filter-bar';
 import { RangeBar } from '../shared/range-bar';
-import { timeSeriesOption } from '../shared/options';
+import { sankeyOption, timeSeriesOption } from '../shared/options';
 
 const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
+
+// Dimensions that count a flow on both sides can't be path columns.
+const PATH_EXCLUDED = new Set(['host', 'country', 'local_host', 'remote_host']);
+
+function parsePathDims(v: string | undefined): string[] {
+  const ids = new Set(DIMENSIONS.map((d) => d.id));
+  const d = (v ?? '').split(',').filter((x, i, a) => ids.has(x) && !PATH_EXCLUDED.has(x) && a.indexOf(x) === i).slice(0, 3);
+  return d.length >= 2 ? d : ['device', 'app', 'remote_as'];
+}
 
 @Component({
   selector: 'nfa-explorer',
@@ -32,6 +41,43 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
       <div class="card-block">
         <nfa-filter-bar [(filters)]="filters" />
         <div class="controls">
+          <div class="btn-group btn-sm" role="group" aria-label="View" i18n-aria-label="@@explorer.view">
+            <button class="btn" [class.btn-primary]="view() === 'chart'" [class.btn-outline]="view() !== 'chart'" (click)="view.set('chart')"><cds-icon shape="line-chart"></cds-icon> <ng-container i18n="@@explorer.viewChart">Chart</ng-container></button>
+            <button class="btn" [class.btn-primary]="view() === 'paths'" [class.btn-outline]="view() !== 'paths'" (click)="view.set('paths')"><cds-icon shape="tree-view"></cds-icon> <ng-container i18n="@@explorer.viewPaths">Paths</ng-container></button>
+          </div>
+          @if (view() === 'paths') {
+            @for (col of [0, 1, 2]; track col) {
+              @if (col > 0) {
+                <cds-icon shape="arrow" direction="right" class="path-arrow"></cds-icon>
+              }
+              <select class="clr-select path-dim" [attr.aria-label]="pathColumnLabel(col)" [ngModel]="pathDims()[col] ?? ''" (ngModelChange)="setPathDim(col, $event)" [name]="'path' + col">
+                @if (col === 2) {
+                  <option value="" i18n="@@explorer.pathNone">— none —</option>
+                }
+                @for (d of pathDimOptions; track d.id) {
+                  <option [value]="d.id" [disabled]="pathDims().includes(d.id) && pathDims()[col] !== d.id">{{ d.label }}</option>
+                }
+              </select>
+            }
+            <label class="ctl">
+              <span i18n="@@explorer.perColumn">Per column</span>
+              <select class="clr-select" [ngModel]="limit()" (ngModelChange)="limit.set(+$event)" name="pathLimit">
+                @for (n of [5, 8, 10, 12, 15]; track n) {
+                  <option [value]="n" i18n="@@explorer.topN">Top {{ n }}</option>
+                }
+              </select>
+            </label>
+            <div class="btn-group btn-sm" role="group" aria-label="Metric" i18n-aria-label="@@explorer.metric">
+              @for (m of metrics; track m.id) {
+                <button class="btn" [class.btn-primary]="metric() === m.id" [class.btn-outline]="metric() !== m.id" (click)="metric.set(m.id)">{{ m.label }}</button>
+              }
+            </div>
+            <div class="btn-group btn-sm" role="group" aria-label="Direction" i18n-aria-label="@@explorer.directionGroup">
+              <button class="btn" [class.btn-primary]="!direction()" [class.btn-outline]="!!direction()" (click)="setDirection('')" i18n="@@explorer.dirBoth">Both</button>
+              <button class="btn" [class.btn-primary]="direction() === 'download'" [class.btn-outline]="direction() !== 'download'" (click)="setDirection('download')" i18n="@@explorer.dirDownload">Download</button>
+              <button class="btn" [class.btn-primary]="direction() === 'upload'" [class.btn-outline]="direction() !== 'upload'" (click)="setDirection('upload')" i18n="@@explorer.dirUpload">Upload</button>
+            </div>
+          } @else {
           <label class="ctl">
             <span i18n="@@explorer.groupBy">Group by</span>
             <select class="clr-select" [ngModel]="groupBy()" (ngModelChange)="groupBy.set($event)" name="groupBy">
@@ -58,14 +104,32 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
             <button class="btn" [class.btn-primary]="stacked()" [class.btn-outline]="!stacked()" (click)="stacked.set(true)" i18n="@@explorer.stacked">Stacked</button>
             <button class="btn" [class.btn-primary]="!stacked()" [class.btn-outline]="stacked()" (click)="stacked.set(false)" i18n="@@explorer.lines">Lines</button>
           </div>
+          }
         </div>
       </div>
     </div>
 
-    @if (series.error() || top.error()) {
-      <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ series.error() || top.error() }}</span></div></div></div>
+    @if (series.error() || top.error() || paths.error()) {
+      <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ series.error() || top.error() || paths.error() }}</span></div></div></div>
     }
 
+    @if (view() === 'paths') {
+      <div class="card">
+        <div class="card-header">
+          <span i18n="@@explorer.pathsTitle">Traffic paths</span>
+          @if (paths.value(); as p) {
+            <span class="card-hint" i18n="@@explorer.pathsHint">{{ sourceLabel(p.source) }} · click a node or path to filter on it</span>
+          }
+        </div>
+        <div class="card-block">
+          @if (paths.value()?.nodes?.length === 0 && !paths.loading()) {
+            <p class="empty" i18n="@@explorer.noMatch">No traffic matches the current filters.</p>
+          } @else {
+            <nfa-chart [option]="pathOpt()" [loading]="paths.loading()" [height]="pathHeight()" (chartClick)="pathClick($event)" />
+          }
+        </div>
+      </div>
+    } @else {
     <div class="card">
       <div class="card-header">
         @if (groupBy()) {
@@ -131,6 +195,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
         </clr-dg-footer>
       </clr-datagrid>
     }
+    }
   `,
   styles: `
     .toolbar { margin-top: 0; }
@@ -148,6 +213,9 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
     .share { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
     .bar { width: 60px; height: 6px; background: var(--cds-alias-object-border-color); border-radius: 3px; overflow: hidden; }
     .fill { height: 100%; }
+    .path-dim { max-width: 220px; }
+    .path-arrow { color: var(--cds-alias-typography-color-300); margin: 0 -8px; }
+    .empty { color: var(--cds-alias-typography-color-300); padding: 40px 0; text-align: center; }
     clr-datagrid { margin-top: 12px; }
     .footer-summary { margin-right: auto; }
   `,
@@ -168,13 +236,32 @@ export class Explorer {
   readonly metric = signal<Metric>((this.qp['metric'] as Metric) ?? 'bps');
   readonly limit = signal<number>(+(this.qp['limit'] ?? 10));
   readonly stacked = signal<boolean>(this.qp['style'] !== 'lines');
+  readonly view = signal<'chart' | 'paths'>(this.qp['view'] === 'paths' ? 'paths' : 'chart');
+  readonly pathDims = signal<string[]>(parsePathDims(this.qp['path']));
+  readonly pathDimOptions = DIMENSIONS.filter((d) => !PATH_EXCLUDED.has(d.id));
+  readonly direction = computed(() => this.filters()['direction'] ?? '');
+
+  readonly paths = loader(
+    () => (this.view() === 'paths' ? { w: this.time.window(), f: this.filters(), m: this.metric(), d: this.pathDims(), l: this.limit() } : undefined),
+    (p) => this.api.paths(p.w, p.f, p.d, p.m, p.l),
+  );
+  readonly pathOpt = computed(() => {
+    const p = this.paths.value();
+    return p ? sankeyOption(p) : null;
+  });
+  /** Tall enough that the busiest column's nodes stay readable. */
+  readonly pathHeight = computed(() => {
+    const counts = [0, 0, 0];
+    for (const n of this.paths.value()?.nodes ?? []) counts[n.column]++;
+    return Math.max(420, Math.max(...counts) * 52 + 40);
+  });
 
   readonly series = loader(
-    () => ({ w: this.time.window(), f: this.filters(), m: this.metric(), g: this.groupBy(), l: this.limit() }),
+    () => (this.view() === 'chart' ? { w: this.time.window(), f: this.filters(), m: this.metric(), g: this.groupBy(), l: this.limit() } : undefined),
     (p) => this.api.timeseries(p.w, p.f, p.m, p.g, p.l),
   );
   readonly top = loader(
-    () => (this.groupBy() ? { w: this.time.window(), f: this.filters(), m: this.metric(), g: this.groupBy() } : undefined),
+    () => (this.view() === 'chart' && this.groupBy() ? { w: this.time.window(), f: this.filters(), m: this.metric(), g: this.groupBy() } : undefined),
     (p) => this.api.top(p.w, p.f, p.g, p.m, 100),
   );
 
@@ -207,6 +294,8 @@ export class Explorer {
       qp['metric'] = this.metric() === 'bps' ? null : this.metric();
       qp['limit'] = this.limit() === 10 ? null : String(this.limit());
       qp['style'] = this.stacked() ? null : 'lines';
+      qp['view'] = this.view() === 'paths' ? 'paths' : null;
+      qp['path'] = this.view() === 'paths' ? this.pathDims().join(',') : null;
       untracked(() => this.router.navigate([], { queryParams: qp, replaceUrl: true }));
     });
   }
@@ -227,6 +316,38 @@ export class Explorer {
 
   seriesClick(ev: { seriesId?: string }) {
     if (this.groupBy() && ev.seriesId && ev.seriesId !== '__other__') this.addFilter({ key: ev.seriesId } as TopRow, false);
+  }
+
+  pathColumnLabel(col: number) {
+    return [$localize`:@@explorer.pathFrom:From`, $localize`:@@explorer.pathThrough:Through`, $localize`:@@explorer.pathTo:To`][col];
+  }
+
+  setPathDim(col: number, id: string) {
+    const d = [...this.pathDims()];
+    if (id) d[col] = id;
+    else d.splice(col, 1);
+    this.pathDims.set(d.filter(Boolean));
+  }
+
+  setDirection(v: string) {
+    const f = { ...this.filters() };
+    if (v) f['direction'] = v;
+    else delete f['direction'];
+    this.filters.set(f);
+  }
+
+  /** Clicking a node filters on its value; a path filters on both ends. */
+  pathClick(ev: { dataType?: string; data: unknown }) {
+    const p = this.paths.value();
+    const idx = (ev.data as { index?: number })?.index;
+    if (!p || idx === undefined) return;
+    const nodes = ev.dataType === 'edge' ? [p.nodes[p.links[idx].source], p.nodes[p.links[idx].target]] : [p.nodes[idx]];
+    const next = { ...this.filters() };
+    for (const n of nodes) {
+      if (n.key === '__other__') continue;
+      Object.assign(next, drillFilter(p.dimensions[n.column], n.key) ?? {});
+    }
+    this.filters.set(next);
   }
 
   showFlowsFor(r: TopRow) {

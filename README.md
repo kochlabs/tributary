@@ -15,6 +15,7 @@ with an enterprise UI built on [Clarity](https://clarity.design/).
 | ![Traffic Explorer](docs/screenshots/explorer.png) **Traffic Explorer**: break traffic down by any dimension and filter, drag to zoom | ![Flow Search](docs/screenshots/flow-search.png) **Flow Search**: individual flow records with full detail, paging and CSV export |
 | ![Devices](docs/screenshots/devices.png) **Devices**: local devices identified by MAC address, with vendor and every address they used | ![Exporter detail](docs/screenshots/exporter-detail.png) **Exporter detail**: live counters, sampling, and per-interface traffic and utilization |
 | ![Exporters](docs/screenshots/exporters.png) **Exporters**: every router, switch and firewall sending flows, with health at a glance | ![Data Sources](docs/screenshots/data-sources.png) **Data Sources**: choose where GeoIP, ASN and MAC vendor data comes from |
+| ![Traffic paths](docs/screenshots/paths.png) **Traffic paths**: a Sankey diagram across 2–3 dimensions, here device → application → remote organization | ![Interface paths](docs/screenshots/interface-paths.png) **Interface paths**: which ports traffic crosses on an exporter |
 | ![Dark theme](docs/screenshots/dashboard-dark.png) **Dark theme** | ![Sign in](docs/screenshots/login.png) **Sign in**: local accounts or single sign-on (OpenID Connect) |
 
 Screenshots show simulated traffic from `cmd/flowgen`.
@@ -50,7 +51,8 @@ Screenshots show simulated traffic from `cmd/flowgen`.
   the IEEE registry (the default, refreshed weekly), a URL or a file. Reverse DNS at query
   time with caching and a bounded wait.
 - **Analytics**: dashboard, Traffic Explorer (any dimension × any filter, stacked
-  series with "Other", drag-to-zoom, URL-shareable views), Flow Search with
+  series with "Other", drag-to-zoom, URL-shareable views, and a Paths view: a
+  Sankey diagram of how traffic moves across 2–3 dimensions), Flow Search with
   server-side paging/sorting and CSV export, exporter/interface pages with
   utilization.
 - **Filters**: IP/CIDR (v4 and v6), ports and ranges, protocol names, AS, country,

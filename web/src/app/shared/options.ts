@@ -1,5 +1,5 @@
-import { Metric, TimeSeries, TopRow } from '../core/api';
-import { rate } from '../core/format';
+import { Metric, PathResult, TimeSeries, TopRow } from '../core/api';
+import { bytes, rate } from '../core/format';
 import { chartColors, ChartOption, OTHER_COLOR, PALETTE } from './chart';
 
 function esc(s: string) {
@@ -116,5 +116,63 @@ export function barOption(rows: TopRow[], metric: Metric): ChartOption {
     xAxis: { type: 'value', axisLabel: { color: c.muted, formatter: (v: number) => rate(v, metric) }, splitLine: { lineStyle: { color: c.grid, type: 'dashed' } } },
     yAxis: { type: 'category', data: r.map((x) => x.label), axisLabel: { color: c.text, width: 180, overflow: 'truncate' }, axisLine: { lineStyle: { color: c.grid } } },
     series: [{ type: 'bar', data: r.map((x) => x.rate), itemStyle: { color: PALETTE[0], borderRadius: [0, 3, 3, 0] }, barMaxWidth: 18 }],
+  };
+}
+
+/** Display name of a path node; "Other" collects values outside the top N. */
+export function pathNodeLabel(label: string, key: string) {
+  if (key === '__other__') return $localize`:@@options.other:Other`;
+  return label || key || $localize`:@@options.pathUnknown:Unknown / internal`;
+}
+
+/**
+ * Sankey diagram of traffic paths. Nodes are named by index so the same value
+ * in two columns (e.g. an interface as input and output) stays two nodes.
+ */
+export function sankeyOption(res: PathResult): ChartOption {
+  const c = chartColors();
+  const metric = res.metric;
+  const total = res.nodes.filter((n) => n.column === 0).reduce((s, n) => s + n.rate, 0) || 1;
+  const pct = (v: number) => `${((v / total) * 100).toFixed(1)}%`;
+  const names = res.nodes.map((n) => pathNodeLabel(n.label, n.key));
+  const colorIdx = [0, 0, 0];
+  const colors = res.nodes.map((n) => (n.key === '__other__' ? OTHER_COLOR : PALETTE[(n.column * 4 + colorIdx[n.column]++) % PALETTE.length]));
+  return {
+    animation: false,
+    tooltip: {
+      trigger: 'item',
+      confine: true,
+      backgroundColor: c.bg,
+      borderColor: c.grid,
+      textStyle: { color: c.text, fontSize: 12 },
+      formatter: (p: any) => {
+        if (p.dataType === 'edge') {
+          const l = res.links[p.data.index];
+          return `<div style="min-width:220px">${esc(names[l.source])} → ${esc(names[l.target])}<div style="display:flex;gap:12px;justify-content:space-between;margin-top:4px"><b>${rate(l.rate, metric)}</b><span>${bytes(l.bytes)} · ${pct(l.rate)}</span></div></div>`;
+        }
+        const n = res.nodes[p.data.index];
+        const detail = n.detail ? `<div style="color:${c.muted}">${esc(n.detail)}</div>` : '';
+        return `<div style="min-width:200px"><b>${esc(names[p.data.index])}</b>${detail}<div style="display:flex;gap:12px;justify-content:space-between;margin-top:4px"><b>${rate(n.rate, metric)}</b><span>${bytes(n.bytes)} · ${pct(n.rate)}</span></div></div>`;
+      },
+    },
+    series: [
+      {
+        type: 'sankey',
+        left: 8,
+        right: 160,
+        top: 8,
+        bottom: 8,
+        nodeWidth: 14,
+        nodeGap: 14,
+        nodeAlign: 'justify',
+        layoutIterations: 0, // keep each column ordered largest first
+        draggable: false,
+        emphasis: { focus: 'adjacency' },
+        label: { color: c.text, fontSize: 12, width: 150, overflow: 'truncate', formatter: (p: any) => names[p.data.index] },
+        lineStyle: { color: 'gradient', opacity: 0.35, curveness: 0.5 },
+        data: res.nodes.map((n, i) => ({ name: String(i), index: i, itemStyle: { color: colors[i], borderWidth: 0 } })),
+        links: res.links.map((l, i) => ({ source: String(l.source), target: String(l.target), value: l.rate, index: i })),
+      },
+    ],
   };
 }

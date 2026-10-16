@@ -29,6 +29,7 @@ import { timeSeriesOption } from '../shared/options';
       <div class="header-controls">
         <nfa-range-bar />
         <a class="btn btn-sm btn-outline" [routerLink]="['/explorer']" [queryParams]="{ exporter: addr(), groupBy: 'app' }"><cds-icon shape="line-chart"></cds-icon> <ng-container i18n="@@exporterDetail.analyze">Analyze traffic</ng-container></a>
+        <a class="btn btn-sm btn-outline" [routerLink]="['/explorer']" [queryParams]="{ exporter: addr(), view: 'paths', path: 'in_if,out_if' }"><cds-icon shape="tree-view"></cds-icon> <ng-container i18n="@@exporterDetail.interfacePaths">Interface paths</ng-container></a>
       </div>
     </div>
 

@@ -107,6 +107,35 @@ export interface TopRow {
   pct: number;
 }
 
+/** Traffic across 2–3 dimensions, for a Sankey diagram. */
+export interface PathNode {
+  column: number;
+  key: string; // '__other__' collects values outside the column's top N
+  label: string;
+  detail?: string;
+  bytes: number;
+  packets: number;
+  flows: number;
+  rate: number;
+}
+
+export interface PathLink {
+  source: number; // node indexes
+  target: number;
+  bytes: number;
+  packets: number;
+  flows: number;
+  rate: number;
+}
+
+export interface PathResult {
+  dimensions: string[];
+  metric: Metric;
+  nodes: PathNode[];
+  links: PathLink[];
+  source: string;
+}
+
 export interface TopResult {
   dimension: string;
   metric: Metric;
@@ -471,6 +500,9 @@ export class Api {
   }
   top(t: TimeQuery, f: Filters, dimension: string, metric: Metric, limit = 10) {
     return this.get<TopResult>('/api/top', this.params(t, f, { dimension, metric, limit }));
+  }
+  paths(t: TimeQuery, f: Filters, dims: string[], metric: Metric, limit = 8) {
+    return this.get<PathResult>('/api/paths', this.params(t, f, { dims: dims.join(','), metric, limit }));
   }
   flows(t: TimeQuery, f: Filters, opts: { sort?: string; desc?: boolean; limit?: number; offset?: number }) {
     return this.get<FlowPage>('/api/flows', this.params(t, f, opts));

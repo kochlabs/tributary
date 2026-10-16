@@ -1088,3 +1088,41 @@ func (s *Server) storageEstimate(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, est)
 }
+
+// paths returns a Sankey diagram of traffic across 2–3 dimensions.
+func (s *Server) paths(w http.ResponseWriter, r *http.Request) {
+	q, err := parseQuery(r)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	dims := strings.Split(r.URL.Query().Get("dims"), ",")
+	if err := store.ValidPathDimensions(dims); err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	ctx, cancel := queryCtx(r)
+	defer cancel()
+	res, err := s.Store.Paths(ctx, q, dims, limit)
+	if err != nil {
+		s.dbErr(w, err)
+		return
+	}
+	// Label each column's nodes the way the top-N table does.
+	for col, dim := range dims {
+		var idx []int
+		var rows []store.TopRow
+		for i, n := range res.Nodes {
+			if n.Column == col && n.Key != store.OtherKey {
+				idx = append(idx, i)
+				rows = append(rows, store.TopRow{Key: n.Key, Label: s.label(dim, n.Key)})
+			}
+		}
+		s.details(r.Context(), dim, rows)
+		for j, i := range idx {
+			res.Nodes[i].Label, res.Nodes[i].Detail = rows[j].Label, rows[j].Detail
+		}
+	}
+	writeJSON(w, http.StatusOK, res)
+}

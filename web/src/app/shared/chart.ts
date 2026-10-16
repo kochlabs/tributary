@@ -1,5 +1,5 @@
 import { afterNextRender, Component, DestroyRef, effect, ElementRef, inject, input, output, viewChild } from '@angular/core';
-import { BarChart, LineChart, PieChart } from 'echarts/charts';
+import { BarChart, LineChart, PieChart, SankeyChart } from 'echarts/charts';
 import {
   BrushComponent,
   GridComponent,
@@ -12,7 +12,7 @@ import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { Theme } from '../core/util';
 
-echarts.use([LineChart, BarChart, PieChart, GridComponent, TooltipComponent, LegendComponent, TitleComponent, BrushComponent, ToolboxComponent, CanvasRenderer]);
+echarts.use([LineChart, BarChart, PieChart, SankeyChart, GridComponent, TooltipComponent, LegendComponent, TitleComponent, BrushComponent, ToolboxComponent, CanvasRenderer]);
 
 export type ChartOption = echarts.EChartsCoreOption;
 
@@ -30,7 +30,7 @@ export class Chart {
   readonly height = input(280);
   readonly loading = input(false);
   readonly brushTime = input(false);
-  readonly chartClick = output<{ name: string; seriesName: string; data: unknown; seriesId?: string }>();
+  readonly chartClick = output<{ name: string; seriesName: string; data: unknown; seriesId?: string; dataType?: string }>();
   readonly timeSelect = output<{ from: number; to: number }>();
 
   private el = viewChild.required<ElementRef<HTMLDivElement>>('el');
@@ -63,7 +63,7 @@ export class Chart {
 
   private init() {
     this.chart = echarts.init(this.el().nativeElement, undefined, { renderer: 'canvas' });
-    this.chart.on('click', (p: any) => this.chartClick.emit({ name: p.name, seriesName: p.seriesName, data: p.data, seriesId: p.seriesId }));
+    this.chart.on('click', (p: any) => this.chartClick.emit({ name: p.name, seriesName: p.seriesName, data: p.data, seriesId: p.seriesId, dataType: p.dataType }));
     this.chart.on('brushEnd', (p: any) => {
       const range = p.areas?.[0]?.coordRange;
       if (range && range[1] - range[0] > 60_000) this.timeSelect.emit({ from: Math.round(range[0]), to: Math.round(range[1]) });

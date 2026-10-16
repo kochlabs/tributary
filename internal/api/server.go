@@ -87,6 +87,7 @@ func (s *Server) Handler() http.Handler {
 	auth("GET /api/timeseries", s.timeseries)
 	auth("GET /api/top", s.top)
 	auth("GET /api/flows", s.flows)
+	auth("GET /api/paths", s.paths)
 	auth("GET /api/flows.csv", s.flowsCSV)
 	auth("GET /api/exporters", s.exporters)
 	auth("GET /api/devices", s.devicesList)
