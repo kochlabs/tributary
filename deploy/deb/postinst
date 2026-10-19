@@ -53,10 +53,14 @@ for f in /etc/systemd/system/nfad.service /etc/systemd/system/tributary-admin.pa
          /etc/systemd/system/tributary-update.service; do
   if [ -f "$f" ]; then rm -f "$f"; legacy=yes; fi
 done
+# Remove only links to the old unit files: links to the packaged units are
+# how the units are enabled and must stay.
 for f in /etc/systemd/system/multi-user.target.wants/nfad.service \
          /etc/systemd/system/multi-user.target.wants/tributary-admin.path \
          /etc/systemd/system/timers.target.wants/tributary-update-check.timer; do
-  [ -L "$f" ] && rm -f "$f"
+  if [ -L "$f" ]; then
+    case "$(readlink "$f")" in /etc/systemd/system/*) rm -f "$f" ;; esac
+  fi
 done
 rm -f /usr/local/bin/nfad /usr/local/bin/nfa-flowgen
 rm -rf /usr/local/lib/tributary
@@ -75,6 +79,15 @@ SUM=$(cat /etc/clickhouse-server/config.d/tributary.xml "$USERS" | sha256sum | c
 sysctl -q --load /usr/lib/sysctl.d/99-tributary.conf || true
 
 UNITS="nfad.service tributary-admin.path tributary-update-check.timer"
+# Earlier packages deleted their own enable links on every upgrade, which
+# deb-systemd-helper then took for an administrator's choice to disable the
+# units, so they no longer started at boot. Forget that state once so the
+# units are enabled again.
+REPAIRED=/var/lib/tributary-admin/.units-reenabled
+if [ ! -e "$REPAIRED" ]; then
+  for u in $UNITS; do deb-systemd-helper purge "$u" >/dev/null 2>&1 || true; done
+  touch "$REPAIRED"
+fi
 for u in $UNITS; do
   deb-systemd-helper unmask "$u" >/dev/null || true
   deb-systemd-helper enable "$u" >/dev/null || true
