@@ -27,6 +27,7 @@ import (
 	"nfa/internal/config"
 	"nfa/internal/enrich"
 	"nfa/internal/flow"
+	"nfa/internal/snmp"
 	"nfa/internal/store"
 	"nfa/internal/syslog"
 	"nfa/internal/system"
@@ -130,6 +131,8 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	fwd.SetConfig(cfg.Syslog())
 	cfg.OnAudit = func(e config.AuditEntry) { fwd.Send(syslog.FromAudit(e)) }
 	go fwd.Run(ctx)
+	poller := snmp.New(cfg, log)
+	go poller.Run(ctx)
 
 	writer := st.NewWriter(log)
 	writerDone := make(chan struct{})
@@ -215,7 +218,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	}
 
 	srv := &api.Server{
-		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop, Syslog: fwd,
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop, Syslog: fwd, SNMP: poller,
 		Backups: &backup.Manager{Dir: dataDir, Version: version, Log: log, Snapshot: cfg.Snapshot,
 			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {

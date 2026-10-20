@@ -53,7 +53,7 @@
     <unit id="nav.exporters">
       <notes>
         <note category="location">src/app/app.routes.ts:18</note>
-        <note category="location">src/app/pages/exporter-detail.ts:18</note>
+        <note category="location">src/app/pages/exporter-detail.ts:19</note>
         <note category="location">src/app/pages/exporters.ts:18,19</note>
         <note category="location">src/app/shared/notice-text.ts:87</note>
         <note category="location">src/app/shell.ts:86,87</note>
@@ -184,7 +184,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:522</note>
+        <note category="location">src/app/core/api.ts:545</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1942,8 +1942,8 @@
         <note category="location">src/app/pages/certificates.ts:155,156</note>
         <note category="location">src/app/pages/devices.ts:90,91</note>
         <note category="location">src/app/pages/explorer.ts:188,189</note>
-        <note category="location">src/app/pages/exporter-detail.ts:100,101</note>
-        <note category="location">src/app/pages/exporters.ts:91,92</note>
+        <note category="location">src/app/pages/exporter-detail.ts:105,106</note>
+        <note category="location">src/app/pages/exporters.ts:94,95</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
         <note category="location">src/app/pages/services.ts:68,69</note>
         <note category="location">src/app/pages/updates.ts:92,93</note>
@@ -2288,9 +2288,9 @@
         <note category="location">src/app/pages/certificates.ts:289,290</note>
         <note category="location">src/app/pages/certificates.ts:298,299</note>
         <note category="location">src/app/pages/devices.ts:117,118</note>
-        <note category="location">src/app/pages/exporter-detail.ts:137,138</note>
-        <note category="location">src/app/pages/exporters.ts:128,129</note>
-        <note category="location">src/app/pages/exporters.ts:139,140</note>
+        <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
+        <note category="location">src/app/pages/exporters.ts:131,132</note>
+        <note category="location">src/app/pages/exporters.ts:142,143</note>
         <note category="location">src/app/pages/identity-sources.ts:117,119</note>
         <note category="location">src/app/pages/identity-sources.ts:250,251</note>
         <note category="location">src/app/pages/identity-sources.ts:261,262</note>
@@ -2651,8 +2651,8 @@
       <notes>
         <note category="location">src/app/pages/certificates.ts:140,141</note>
         <note category="location">src/app/pages/devices.ts:110,111</note>
-        <note category="location">src/app/pages/exporter-detail.ts:66,67</note>
-        <note category="location">src/app/pages/exporter-detail.ts:115,116</note>
+        <note category="location">src/app/pages/exporter-detail.ts:71,72</note>
+        <note category="location">src/app/pages/exporter-detail.ts:120,121</note>
         <note category="location">src/app/pages/identity-sources.ts:58,59</note>
         <note category="location">src/app/pages/identity-sources.ts:129,130</note>
         <note category="location">src/app/shared/top-table.ts:77</note>
@@ -2964,7 +2964,7 @@
       <notes>
         <note category="location">src/app/pages/certificates.ts:299,301</note>
         <note category="location">src/app/pages/exporters.ts:46,47</note>
-        <note category="location">src/app/pages/exporters.ts:140,142</note>
+        <note category="location">src/app/pages/exporters.ts:143,145</note>
         <note category="location">src/app/pages/time.ts:99,100</note>
       </notes>
       <segment>
@@ -3928,12 +3928,13 @@
       <notes>
         <note category="location">src/app/pages/data-sources.ts:189,190</note>
         <note category="location">src/app/pages/devices.ts:118,120</note>
-        <note category="location">src/app/pages/exporter-detail.ts:138,140</note>
-        <note category="location">src/app/pages/exporters.ts:129,131</note>
+        <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
+        <note category="location">src/app/pages/exporters.ts:132,134</note>
         <note category="location">src/app/pages/identity-sources.ts:251,253</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
         <note category="location">src/app/pages/users.ts:98</note>
+        <note category="location">src/app/shared/snmp-settings.ts:88,89</note>
       </notes>
       <segment>
         <source>Save</source>
@@ -4563,7 +4564,7 @@
     </unit>
     <unit id="exporterDetail.status">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:24,27</note>
+        <note category="location">src/app/pages/exporter-detail.ts:25,28</note>
         <note category="description">Exporter status</note>
       </notes>
       <segment>
@@ -4572,8 +4573,8 @@
     </unit>
     <unit id="exporterDetail.analyze">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:31,32</note>
-        <note category="location">src/app/pages/exporter-detail.ts:75,76</note>
+        <note category="location">src/app/pages/exporter-detail.ts:32,33</note>
+        <note category="location">src/app/pages/exporter-detail.ts:80,81</note>
       </notes>
       <segment>
         <source>Analyze traffic</source>
@@ -4581,7 +4582,7 @@
     </unit>
     <unit id="exporterDetail.interfacePaths">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:32,35</note>
+        <note category="location">src/app/pages/exporter-detail.ts:33,36</note>
       </notes>
       <segment>
         <source>Interface paths</source>
@@ -4589,7 +4590,7 @@
     </unit>
     <unit id="exporterDetail.kpi.flowsPerSec">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:38</note>
+        <note category="location">src/app/pages/exporter-detail.ts:39</note>
       </notes>
       <segment>
         <source>Flows/s</source>
@@ -4597,7 +4598,7 @@
     </unit>
     <unit id="exporterDetail.kpi.live">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:38,39</note>
+        <note category="location">src/app/pages/exporter-detail.ts:39,40</note>
       </notes>
       <segment>
         <source>live</source>
@@ -4605,7 +4606,7 @@
     </unit>
     <unit id="exporterDetail.kpi.throughput">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:39</note>
+        <note category="location">src/app/pages/exporter-detail.ts:40</note>
       </notes>
       <segment>
         <source>Throughput</source>
@@ -4613,7 +4614,7 @@
     </unit>
     <unit id="exporterDetail.kpi.liveCorrected">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:39,40</note>
+        <note category="location">src/app/pages/exporter-detail.ts:40,41</note>
       </notes>
       <segment>
         <source>live, sampling-corrected</source>
@@ -4621,7 +4622,7 @@
     </unit>
     <unit id="exporterDetail.kpi.protocol">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:40</note>
+        <note category="location">src/app/pages/exporter-detail.ts:41</note>
       </notes>
       <segment>
         <source>Protocol</source>
@@ -4629,7 +4630,7 @@
     </unit>
     <unit id="exporterDetail.kpi.templatesCached">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:40,41</note>
+        <note category="location">src/app/pages/exporter-detail.ts:41,42</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ e.live?.templates ?? 0 }}"/> templates cached</source>
@@ -4637,7 +4638,7 @@
     </unit>
     <unit id="exporterDetail.kpi.sampling">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:42</note>
+        <note category="location">src/app/pages/exporter-detail.ts:43</note>
       </notes>
       <segment>
         <source>Sampling</source>
@@ -4645,7 +4646,7 @@
     </unit>
     <unit id="exporterDetail.kpi.lostErrors">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:43</note>
+        <note category="location">src/app/pages/exporter-detail.ts:44</note>
       </notes>
       <segment>
         <source>Lost / errors</source>
@@ -4653,7 +4654,7 @@
     </unit>
     <unit id="exporterDetail.kpi.setsWithoutTemplate">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:43,44</note>
+        <note category="location">src/app/pages/exporter-detail.ts:44,45</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtCount(e.live?.missingTemplates ?? 0) }}"/> sets w/o template</source>
@@ -4661,7 +4662,7 @@
     </unit>
     <unit id="exporterDetail.kpi.volume">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:44</note>
+        <note category="location">src/app/pages/exporter-detail.ts:45</note>
       </notes>
       <segment>
         <source>Volume</source>
@@ -4669,7 +4670,7 @@
     </unit>
     <unit id="exporterDetail.kpi.firstLastSeen">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:44,45</note>
+        <note category="location">src/app/pages/exporter-detail.ts:45,46</note>
       </notes>
       <segment>
         <source>first seen <ph id="0" equiv="INTERPOLATION" disp="{{ dt(e.firstSeen) }}"/> · last <ph id="1" equiv="INTERPOLATION_1" disp="{{ ago(e.live?.lastSeen ?? 0) }}"/></source>
@@ -4677,7 +4678,7 @@
     </unit>
     <unit id="exporterDetail.chartTitle">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:50,51</note>
+        <note category="location">src/app/pages/exporter-detail.ts:51,52</note>
       </notes>
       <segment>
         <source>Traffic by input interface · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
@@ -4685,7 +4686,7 @@
     </unit>
     <unit id="exporterDetail.interfaces">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:62,63</note>
+        <note category="location">src/app/pages/exporter-detail.ts:67,68</note>
       </notes>
       <segment>
         <source>Interfaces</source>
@@ -4693,7 +4694,7 @@
     </unit>
     <unit id="exporterDetail.interfacesSeen">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:63</note>
+        <note category="location">src/app/pages/exporter-detail.ts:68</note>
       </notes>
       <segment>
         <source>Interfaces seen in <ph id="0" equiv="INTERPOLATION" disp="{{ time.label().toLowerCase() }}"/>.</source>
@@ -4701,7 +4702,7 @@
     </unit>
     <unit id="exporterDetail.interfacesAdminHint">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:63,64</note>
+        <note category="location">src/app/pages/exporter-detail.ts:68,69</note>
       </notes>
       <segment>
         <source>Name them to make reports readable; set the speed to see utilization.</source>
@@ -4709,7 +4710,7 @@
     </unit>
     <unit id="exporterDetail.col.ifIndex">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:65,66</note>
+        <note category="location">src/app/pages/exporter-detail.ts:70,71</note>
       </notes>
       <segment>
         <source>ifIndex</source>
@@ -4717,9 +4718,9 @@
     </unit>
     <unit id="common.description">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:67,68</note>
-        <note category="location">src/app/pages/exporter-detail.ts:119,120</note>
-        <note category="location">src/app/pages/exporters.ts:114,115</note>
+        <note category="location">src/app/pages/exporter-detail.ts:72,73</note>
+        <note category="location">src/app/pages/exporter-detail.ts:127,128</note>
+        <note category="location">src/app/pages/exporters.ts:117,118</note>
         <note category="location">src/app/pages/services.ts:43,44</note>
       </notes>
       <segment>
@@ -4728,7 +4729,7 @@
     </unit>
     <unit id="exporterDetail.col.speed">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:68,69</note>
+        <note category="location">src/app/pages/exporter-detail.ts:73,74</note>
       </notes>
       <segment>
         <source>Speed</source>
@@ -4736,7 +4737,7 @@
     </unit>
     <unit id="exporterDetail.col.in">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:69,70</note>
+        <note category="location">src/app/pages/exporter-detail.ts:74,75</note>
         <note category="description">Inbound traffic</note>
       </notes>
       <segment>
@@ -4745,7 +4746,7 @@
     </unit>
     <unit id="exporterDetail.col.out">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:70,71</note>
+        <note category="location">src/app/pages/exporter-detail.ts:75,76</note>
         <note category="description">Outbound traffic</note>
       </notes>
       <segment>
@@ -4754,7 +4755,7 @@
     </unit>
     <unit id="exporterDetail.col.utilization">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:71,73</note>
+        <note category="location">src/app/pages/exporter-detail.ts:76,78</note>
       </notes>
       <segment>
         <source>Avg utilization in / out</source>
@@ -4762,7 +4763,7 @@
     </unit>
     <unit id="common.edit">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:77,79</note>
+        <note category="location">src/app/pages/exporter-detail.ts:82,84</note>
         <note category="location">src/app/pages/exporters.ts:45,46</note>
         <note category="location">src/app/pages/identity-sources.ts:47,48</note>
         <note category="location">src/app/pages/users.ts:33,34</note>
@@ -4773,7 +4774,7 @@
     </unit>
     <unit id="exporterDetail.speedUnknown">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:83,84</note>
+        <note category="location">src/app/pages/exporter-detail.ts:88,89</note>
       </notes>
       <segment>
         <source>unknown</source>
@@ -4781,7 +4782,7 @@
     </unit>
     <unit id="exporterDetail.utilIn">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:89</note>
+        <note category="location">src/app/pages/exporter-detail.ts:94</note>
         <note category="description">Inbound</note>
       </notes>
       <segment>
@@ -4790,7 +4791,7 @@
     </unit>
     <unit id="exporterDetail.utilOut">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:90</note>
+        <note category="location">src/app/pages/exporter-detail.ts:95</note>
         <note category="description">Outbound</note>
       </notes>
       <segment>
@@ -4799,7 +4800,7 @@
     </unit>
     <unit id="exporterDetail.setSpeed">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:93,95</note>
+        <note category="location">src/app/pages/exporter-detail.ts:98,100</note>
       </notes>
       <segment>
         <source>set speed</source>
@@ -4807,7 +4808,7 @@
     </unit>
     <unit id="exporterDetail.placeholder">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:97,98</note>
+        <note category="location">src/app/pages/exporter-detail.ts:102,103</note>
       </notes>
       <segment>
         <source>No interfaces carried traffic in this time range.</source>
@@ -4815,7 +4816,7 @@
     </unit>
     <unit id="exporterDetail.footer">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:102,103</note>
+        <note category="location">src/app/pages/exporter-detail.ts:107,108</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -4824,7 +4825,7 @@
     </unit>
     <unit id="exporterDetail.empty">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:104,106</note>
+        <note category="location">src/app/pages/exporter-detail.ts:109,111</note>
       </notes>
       <segment>
         <source>No interfaces</source>
@@ -4832,15 +4833,47 @@
     </unit>
     <unit id="exporterDetail.ifTitle">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:111,112</note>
+        <note category="location">src/app/pages/exporter-detail.ts:116,117</note>
       </notes>
       <segment>
         <source>Interface <ph id="0" equiv="INTERPOLATION" disp="{{ ifForm.index }}"/></source>
       </segment>
     </unit>
+    <unit id="exporterDetail.ifNameHelp">
+      <notes>
+        <note category="location">src/app/pages/exporter-detail.ts:123,125</note>
+      </notes>
+      <segment>
+        <source>Leave empty to use the name reported by the device.</source>
+      </segment>
+    </unit>
+    <unit id="exporterDetail.speed">
+      <notes>
+        <note category="location">src/app/pages/exporter-detail.ts:131,132</note>
+      </notes>
+      <segment>
+        <source>Speed</source>
+      </segment>
+    </unit>
+    <unit id="exporterDetail.speedFromSnmp">
+      <notes>
+        <note category="location">src/app/pages/exporter-detail.ts:134,135</note>
+      </notes>
+      <segment>
+        <source>As reported by SNMP (<ph id="0" equiv="INTERPOLATION" disp="{{ fmtBits(ifForm.snmpSpeed) }}"/>)</source>
+      </segment>
+    </unit>
+    <unit id="exporterDetail.speedUnknownOption">
+      <notes>
+        <note category="location">src/app/pages/exporter-detail.ts:136,138</note>
+      </notes>
+      <segment>
+        <source>Unknown</source>
+      </segment>
+    </unit>
     <unit id="exporterDetail.ifNamePlaceholder">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:116</note>
+        <note category="location">src/app/pages/exporter-detail.ts:200</note>
       </notes>
       <segment>
         <source>e.g. Gi0/0/1</source>
@@ -4848,26 +4881,10 @@
     </unit>
     <unit id="exporterDetail.ifDescPlaceholder">
       <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:120</note>
+        <note category="location">src/app/pages/exporter-detail.ts:201</note>
       </notes>
       <segment>
         <source>e.g. Uplink to ISP-A</source>
-      </segment>
-    </unit>
-    <unit id="exporterDetail.speed">
-      <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:123,124</note>
-      </notes>
-      <segment>
-        <source>Speed</source>
-      </segment>
-    </unit>
-    <unit id="exporterDetail.speedUnknownOption">
-      <notes>
-        <note category="location">src/app/pages/exporter-detail.ts:125,126</note>
-      </notes>
-      <segment>
-        <source>Unknown</source>
       </segment>
     </unit>
     <unit id="exporters.subtitle">
@@ -4983,9 +5000,17 @@
         <source>{VAR_SELECT, select, active {active} idle {idle} stale {stale} other {<ph id="0" equiv="INTERPOLATION"/>}}</source>
       </segment>
     </unit>
+    <unit id="exporters.snmpSysName">
+      <notes>
+        <note category="location">src/app/pages/exporters.ts:61</note>
+      </notes>
+      <segment>
+        <source>SNMP: <ph id="0" equiv="INTERPOLATION" disp="{{ e.snmp?.sysName }}"/></source>
+      </segment>
+    </unit>
     <unit id="exporters.placeholder">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:87,89</note>
+        <note category="location">src/app/pages/exporters.ts:90,92</note>
       </notes>
       <segment>
         <source> No exporters yet. Point your devices&apos; NetFlow/IPFIX export at this appliance on UDP 2055 / 4739, or sFlow on UDP 6343. </source>
@@ -4993,7 +5018,7 @@
     </unit>
     <unit id="exporters.footer">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:93,94</note>
+        <note category="location">src/app/pages/exporters.ts:96,97</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -5002,7 +5027,7 @@
     </unit>
     <unit id="exporters.empty">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:95,97</note>
+        <note category="location">src/app/pages/exporters.ts:98,100</note>
       </notes>
       <segment>
         <source>No exporters</source>
@@ -5010,7 +5035,7 @@
     </unit>
     <unit id="exporters.editTitle">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:102,103</note>
+        <note category="location">src/app/pages/exporters.ts:105,106</note>
       </notes>
       <segment>
         <source>Edit exporter <ph id="0" equiv="INTERPOLATION" disp="{{ form.addr }}"/></source>
@@ -5018,7 +5043,7 @@
     </unit>
     <unit id="exporters.displayName">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:106,107</note>
+        <note category="location">src/app/pages/exporters.ts:109,110</note>
       </notes>
       <segment>
         <source>Display name</source>
@@ -5026,7 +5051,7 @@
     </unit>
     <unit id="exporters.namePlaceholder">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:107</note>
+        <note category="location">src/app/pages/exporters.ts:110</note>
       </notes>
       <segment>
         <source>e.g. core-rtr-01</source>
@@ -5034,7 +5059,7 @@
     </unit>
     <unit id="exporters.location">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:110,111</note>
+        <note category="location">src/app/pages/exporters.ts:113,114</note>
       </notes>
       <segment>
         <source>Location</source>
@@ -5042,7 +5067,7 @@
     </unit>
     <unit id="exporters.locationPlaceholder">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:111</note>
+        <note category="location">src/app/pages/exporters.ts:114</note>
       </notes>
       <segment>
         <source>e.g. DC1 / Rack 12</source>
@@ -5050,7 +5075,7 @@
     </unit>
     <unit id="exporters.samplingOverride">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:118,119</note>
+        <note category="location">src/app/pages/exporters.ts:121,122</note>
       </notes>
       <segment>
         <source>Sampling rate override</source>
@@ -5058,7 +5083,7 @@
     </unit>
     <unit id="exporters.samplingHelper">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:120,121</note>
+        <note category="location">src/app/pages/exporters.ts:123,124</note>
       </notes>
       <segment>
         <source>0 = use the rate announced by the device. Set N for 1:N sampling when the device doesn&apos;t export it.</source>
@@ -5066,7 +5091,7 @@
     </unit>
     <unit id="exporters.removeTitle">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:134,135</note>
+        <note category="location">src/app/pages/exporters.ts:137,138</note>
       </notes>
       <segment>
         <source>Remove exporter?</source>
@@ -5074,7 +5099,7 @@
     </unit>
     <unit id="exporters.removeBody">
       <notes>
-        <note category="location">src/app/pages/exporters.ts:136,138</note>
+        <note category="location">src/app/pages/exporters.ts:139,141</note>
       </notes>
       <segment>
         <source>This removes the name and interface labels for <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name || confirmDelete()?.addr }}"/></pc>. Stored flow data is kept. The exporter reappears if it sends flows again.</source>
@@ -8421,6 +8446,135 @@
       </notes>
       <segment>
         <source>Reset zoom</source>
+      </segment>
+    </unit>
+    <unit id="snmp.pollFailed">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:18</note>
+      </notes>
+      <segment>
+        <source>last poll failed <ph id="0" equiv="INTERPOLATION" disp="{{ ago(st.lastPoll) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="snmp.lastPoll">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:20,21</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ st.sysName || &apos;–&apos; }}"/> · <ph id="1" equiv="INTERPOLATION_1" disp="{{ st.interfaces }}"/> interfaces · polled <ph id="2" equiv="INTERPOLATION_2" disp="{{ ago(st.lastPoll) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="snmp.notPolled">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:22,23</note>
+      </notes>
+      <segment>
+        <source>not polled yet</source>
+      </segment>
+    </unit>
+    <unit id="snmp.hint">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:29,30</note>
+      </notes>
+      <segment>
+        <source>Polls the device every 15 minutes for interface names, descriptions (ifAlias) and speeds. Names and speeds you set yourself always take precedence; SNMP replaces names learned from flow data.</source>
+      </segment>
+    </unit>
+    <unit id="snmp.version">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:31,32</note>
+      </notes>
+      <segment>
+        <source>Version</source>
+      </segment>
+    </unit>
+    <unit id="snmp.off">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:33,34</note>
+      </notes>
+      <segment>
+        <source>Off</source>
+      </segment>
+    </unit>
+    <unit id="snmp.agent">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:38,39</note>
+      </notes>
+      <segment>
+        <source>Agent</source>
+      </segment>
+    </unit>
+    <unit id="snmp.agentHelp">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:43,45</note>
+      </notes>
+      <segment>
+        <source>empty: the exporter&apos;s address</source>
+      </segment>
+    </unit>
+    <unit id="snmp.community">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:47,48</note>
+      </notes>
+      <segment>
+        <source>Community</source>
+      </segment>
+    </unit>
+    <unit id="snmp.user">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:52,53</note>
+      </notes>
+      <segment>
+        <source>User</source>
+      </segment>
+    </unit>
+    <unit id="snmp.auth">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:54,55</note>
+      </notes>
+      <segment>
+        <source>Authentication</source>
+      </segment>
+    </unit>
+    <unit id="snmp.none">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:57,58</note>
+        <note category="location">src/app/shared/snmp-settings.ts:68,69</note>
+      </notes>
+      <segment>
+        <source>None</source>
+      </segment>
+    </unit>
+    <unit id="snmp.privacy">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:65,66</note>
+      </notes>
+      <segment>
+        <source>Privacy</source>
+      </segment>
+    </unit>
+    <unit id="snmp.pollNow">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:90,92</note>
+      </notes>
+      <segment>
+        <source>Poll now</source>
+      </segment>
+    </unit>
+    <unit id="snmp.storedKeep">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:126</note>
+      </notes>
+      <segment>
+        <source>Stored · leave empty to keep</source>
+      </segment>
+    </unit>
+    <unit id="snmp.passphrase">
+      <notes>
+        <note category="location">src/app/shared/snmp-settings.ts:127</note>
+      </notes>
+      <segment>
+        <source>Passphrase (8+ characters)</source>
       </segment>
     </unit>
     <unit id="timeRange.select">

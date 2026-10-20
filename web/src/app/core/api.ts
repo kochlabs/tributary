@@ -212,6 +212,7 @@ export interface Exporter {
   bytes: number;
   flows: number;
   status: 'active' | 'idle' | 'stale';
+  snmp?: { version: string; sysName: string; sysDescr: string; lastPoll: number; lastError?: string };
 }
 
 export interface Interface {
@@ -222,6 +223,28 @@ export interface Interface {
   speed: number;
   inBytes: number;
   outBytes: number;
+  /** Name/description came from NetFlow options rather than an administrator. */
+  learned: boolean;
+  snmpName: string;
+  snmpAlias: string;
+  snmpSpeed: number;
+}
+
+/** An exporter's SNMP polling settings; secrets are write-only. */
+export interface SnmpSettings {
+  version: '' | '2c' | '3';
+  host: string;
+  port: number;
+  community?: string;
+  user: string;
+  authProto: '' | 'MD5' | 'SHA' | 'SHA256' | 'SHA512';
+  authPass?: string;
+  privProto: '' | 'DES' | 'AES' | 'AES256';
+  privPass?: string;
+  hasCommunity?: boolean;
+  hasAuthPass?: boolean;
+  hasPrivPass?: boolean;
+  status?: { sysName: string; sysDescr: string; lastPoll: number; lastError: string; interfaces: number };
 }
 
 export interface Settings {
@@ -584,6 +607,15 @@ export class Api {
   }
   deleteExporter(addr: string) {
     return firstValueFrom(this.http.delete(`/api/exporters/${encodeURIComponent(addr)}`));
+  }
+  snmp(addr: string) {
+    return this.get<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp`);
+  }
+  saveSnmp(addr: string, s: SnmpSettings) {
+    return firstValueFrom(this.http.put<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp`, s));
+  }
+  pollSnmp(addr: string) {
+    return firstValueFrom(this.http.post<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp/poll`, {}));
   }
   interfaces(addr: string, t: TimeQuery) {
     return this.get<Interface[]>(`/api/exporters/${encodeURIComponent(addr)}/interfaces`, this.params(t));

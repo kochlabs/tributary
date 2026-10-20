@@ -439,10 +439,20 @@ func (s *Server) dbErr(w http.ResponseWriter, err error) {
 
 type exporterView struct {
 	config.Exporter
-	Live   any    `json:"live"`
-	Bytes  uint64 `json:"bytes"`
-	Flows  uint64 `json:"flows"`
-	Status string `json:"status"` // active | idle | stale
+	Live any `json:"live"`
+	// SNMP summarises polling for the exporter (nil when off).
+	SNMP   *exporterSNMP `json:"snmp,omitempty"`
+	Bytes  uint64        `json:"bytes"`
+	Flows  uint64        `json:"flows"`
+	Status string        `json:"status"` // active | idle | stale
+}
+
+type exporterSNMP struct {
+	Version   string `json:"version"`
+	SysName   string `json:"sysName"`
+	SysDescr  string `json:"sysDescr"`
+	LastPoll  int64  `json:"lastPoll"`
+	LastError string `json:"lastError,omitempty"`
 }
 
 func (s *Server) exporters(w http.ResponseWriter, r *http.Request) {
@@ -468,6 +478,9 @@ func (s *Server) exporters(w http.ResponseWriter, r *http.Request) {
 	now := time.Now().UnixMilli()
 	for _, e := range s.Config.Exporters() {
 		v := exporterView{Exporter: e, Live: live[e.Addr], Bytes: traffic[e.Addr].Bytes, Flows: traffic[e.Addr].Flows}
+		if c, st, err := s.Config.SNMP(e.Addr); err == nil && c.Version != "" {
+			v.SNMP = &exporterSNMP{Version: c.Version, SysName: st.SysName, SysDescr: st.SysDescr, LastPoll: st.LastPoll, LastError: st.LastError}
+		}
 		last := max(lastSeen[e.Addr], traffic[e.Addr].LastSeen)
 		switch {
 		case now-last < 2*60*1000:

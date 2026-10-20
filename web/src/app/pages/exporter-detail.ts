@@ -9,11 +9,12 @@ import { TimeRange } from '../core/time';
 import { loader, trackByKey } from '../core/util';
 import { Chart } from '../shared/chart';
 import { RangeBar } from '../shared/range-bar';
+import { SnmpSettingsCard } from '../shared/snmp-settings';
 import { timeSeriesOption } from '../shared/options';
 
 @Component({
   selector: 'nfa-exporter-detail',
-  imports: [ClarityModule, FormsModule, Chart, RouterLink, RangeBar],
+  imports: [ClarityModule, FormsModule, Chart, RouterLink, RangeBar, SnmpSettingsCard],
   template: `
     <div class="breadcrumb"><a routerLink="/exporters" i18n="@@nav.exporters">Exporters</a> / {{ exp()?.name || addr() }}</div>
     <div class="page-header">
@@ -59,6 +60,10 @@ import { timeSeriesOption } from '../shared/options';
       </div>
     </div>
 
+    @if (auth.isAdmin()) {
+      <nfa-snmp-settings [addr]="addr()" (polled)="ifaces.reload()" />
+    }
+
     <h3 class="section-title" i18n="@@exporterDetail.interfaces">Interfaces</h3>
     <p class="hint"><ng-container i18n="@@exporterDetail.interfacesSeen">Interfaces seen in {{ time.label().toLowerCase() }}.</ng-container> @if (auth.isAdmin()) {<ng-container i18n="@@exporterDetail.interfacesAdminHint">Name them to make reports readable; set the speed to see utilization.</ng-container>}</p>
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="ifaces.loading()">
@@ -70,7 +75,7 @@ import { timeSeriesOption } from '../shared/options';
       <clr-dg-column [clrDgField]="'outBytes'" i18n="Outbound traffic@@exporterDetail.col.out">Out</clr-dg-column>
       <clr-dg-column i18n="@@exporterDetail.col.utilization">Avg utilization in / out</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let i of ifaces.value() ?? []; trackBy: byIndex" [clrDgItem]="i">
+      <clr-dg-row *clrDgItems="let i of rows(); trackBy: byIndex" [clrDgItem]="i">
         <clr-dg-action-overflow>
           <a class="action-item" [routerLink]="['/explorer']" [queryParams]="{ exporter: addr(), iface: i.index, groupBy: 'app' }" i18n="@@exporterDetail.analyze">Analyze traffic</a>
           @if (auth.isAdmin()) {
@@ -78,16 +83,16 @@ import { timeSeriesOption } from '../shared/options';
           }
         </clr-dg-action-overflow>
         <clr-dg-cell>{{ i.index }}</clr-dg-cell>
-        <clr-dg-cell>{{ i.name || '–' }}</clr-dg-cell>
-        <clr-dg-cell>{{ i.description }}</clr-dg-cell>
-        <clr-dg-cell>@if (i.speed) { {{ fmtBits(i.speed) }} } @else {<ng-container i18n="@@exporterDetail.speedUnknown">unknown</ng-container>}</clr-dg-cell>
+        <clr-dg-cell>{{ i.effName || '–' }} @if (i.nameFromSnmp) {<span class="src">SNMP</span>}</clr-dg-cell>
+        <clr-dg-cell>{{ i.effDesc }} @if (i.descFromSnmp) {<span class="src">SNMP</span>}</clr-dg-cell>
+        <clr-dg-cell>@if (i.effSpeed) { {{ fmtBits(i.effSpeed) }} @if (i.speedFromSnmp) {<span class="src">SNMP</span>} } @else {<ng-container i18n="@@exporterDetail.speedUnknown">unknown</ng-container>}</clr-dg-cell>
         <clr-dg-cell class="num">{{ fmtBytes(i.inBytes) }}</clr-dg-cell>
         <clr-dg-cell class="num">{{ fmtBytes(i.outBytes) }}</clr-dg-cell>
         <clr-dg-cell>
-          @if (i.speed) {
+          @if (i.effSpeed) {
             <div class="util">
-              <span class="u-lbl" i18n="Inbound@@exporterDetail.utilIn">in</span><span class="u-bar"><span [style.width.%]="util(i.inBytes, i.speed)"></span></span><span class="u-pct">{{ util(i.inBytes, i.speed).toFixed(1) }}%</span>
-              <span class="u-lbl" i18n="Outbound@@exporterDetail.utilOut">out</span><span class="u-bar"><span [style.width.%]="util(i.outBytes, i.speed)"></span></span><span class="u-pct">{{ util(i.outBytes, i.speed).toFixed(1) }}%</span>
+              <span class="u-lbl" i18n="Inbound@@exporterDetail.utilIn">in</span><span class="u-bar"><span [style.width.%]="util(i.inBytes, i.effSpeed)"></span></span><span class="u-pct">{{ util(i.inBytes, i.effSpeed).toFixed(1) }}%</span>
+              <span class="u-lbl" i18n="Outbound@@exporterDetail.utilOut">out</span><span class="u-bar"><span [style.width.%]="util(i.outBytes, i.effSpeed)"></span></span><span class="u-pct">{{ util(i.outBytes, i.effSpeed).toFixed(1) }}%</span>
             </div>
           } @else {
             <span class="hint" i18n="@@exporterDetail.setSpeed">set speed</span>
@@ -113,16 +118,23 @@ import { timeSeriesOption } from '../shared/options';
         <form clrForm clrLayout="vertical" id="ifform" (ngSubmit)="saveIf()">
           <clr-input-container>
             <label i18n="@@common.name">Name</label>
-            <input clrInput name="name" [(ngModel)]="ifForm.name" placeholder="e.g. Gi0/0/1" i18n-placeholder="@@exporterDetail.ifNamePlaceholder" maxlength="64" />
+            <input clrInput name="name" [(ngModel)]="ifForm.name" [placeholder]="ifForm.snmpName || ifForm.learnedName || egName" maxlength="64" />
+            @if (ifForm.snmpName || ifForm.learnedName) {
+              <clr-control-helper i18n="@@exporterDetail.ifNameHelp">Leave empty to use the name reported by the device.</clr-control-helper>
+            }
           </clr-input-container>
           <clr-input-container>
             <label i18n="@@common.description">Description</label>
-            <input clrInput name="description" [(ngModel)]="ifForm.description" placeholder="e.g. Uplink to ISP-A" i18n-placeholder="@@exporterDetail.ifDescPlaceholder" maxlength="256" />
+            <input clrInput name="description" [(ngModel)]="ifForm.description" [placeholder]="ifForm.snmpAlias || egDesc" maxlength="256" />
           </clr-input-container>
           <clr-select-container>
             <label i18n="@@exporterDetail.speed">Speed</label>
             <select clrSelect name="speed" [(ngModel)]="ifForm.speed">
-              <option [ngValue]="0" i18n="@@exporterDetail.speedUnknownOption">Unknown</option>
+              @if (ifForm.snmpSpeed) {
+                <option [ngValue]="0" i18n="@@exporterDetail.speedFromSnmp">As reported by SNMP ({{ fmtBits(ifForm.snmpSpeed) }})</option>
+              } @else {
+                <option [ngValue]="0" i18n="@@exporterDetail.speedUnknownOption">Unknown</option>
+              }
               @for (s of speeds; track s.v) {
                 <option [ngValue]="s.v">{{ s.l }}</option>
               }
@@ -140,6 +152,7 @@ import { timeSeriesOption } from '../shared/options';
     </clr-modal>
   `,
   styles: `
+    .src { font-size: 10px; font-weight: 600; letter-spacing: .03em; color: var(--cds-alias-typography-color-300); border: 1px solid var(--cds-alias-object-border-color); border-radius: 3px; padding: 0 3px; margin-left: 4px; }
     .breadcrumb { font-size: 12px; margin-bottom: 4px; }
     h2 cds-icon { vertical-align: -4px; }
     h2 .badge { vertical-align: 4px; }
@@ -183,7 +196,27 @@ export class ExporterDetail {
     { v: 25e9, l: '25 Gbps' }, { v: 40e9, l: '40 Gbps' }, { v: 100e9, l: '100 Gbps' }, { v: 400e9, l: '400 Gbps' },
   ];
   readonly ifOpen = signal(false);
-  ifForm = { index: 0, name: '', description: '', speed: 0 };
+  ifForm = { index: 0, name: '', description: '', speed: 0, snmpName: '', snmpAlias: '', snmpSpeed: 0, learnedName: '' };
+  readonly egName = $localize`:@@exporterDetail.ifNamePlaceholder:e.g. Gi0/0/1`;
+  readonly egDesc = $localize`:@@exporterDetail.ifDescPlaceholder:e.g. Uplink to ISP-A`;
+
+  /** Interfaces with the values in effect: typed by an administrator, else
+   *  polled over SNMP, else learned from flow data. */
+  readonly rows = computed(() =>
+    (this.ifaces.value() ?? []).map((i) => {
+      const manualName = i.learned ? '' : i.name;
+      const manualDesc = i.learned ? '' : i.description;
+      return {
+        ...i,
+        effName: manualName || i.snmpName || i.name,
+        nameFromSnmp: !manualName && !!i.snmpName,
+        effDesc: manualDesc || i.snmpAlias || i.description,
+        descFromSnmp: !manualDesc && !!i.snmpAlias,
+        effSpeed: i.speed || i.snmpSpeed,
+        speedFromSnmp: !i.speed && !!i.snmpSpeed,
+      };
+    }),
+  );
   readonly ifError = signal('');
 
   ago = ago;
@@ -200,7 +233,10 @@ export class ExporterDetail {
   }
 
   editIf(i: Interface) {
-    this.ifForm = { index: i.index, name: i.name, description: i.description, speed: i.speed };
+    this.ifForm = {
+      index: i.index, name: i.learned ? '' : i.name, description: i.learned ? '' : i.description, speed: i.speed,
+      snmpName: i.snmpName, snmpAlias: i.snmpAlias, snmpSpeed: i.snmpSpeed, learnedName: i.learned ? i.name : '',
+    };
     this.ifError.set('');
     this.ifOpen.set(true);
   }

@@ -92,6 +92,9 @@ func Open(path string) (*DB, error) {
 		return nil, fmt.Errorf("secret key: %w", err)
 	}
 	c := &DB{db: db, key: key}
+	if err := c.migrateSNMP(); err != nil {
+		return nil, err
+	}
 	if err := c.migrateIdentity(); err != nil {
 		return nil, fmt.Errorf("identity schema: %w", err)
 	}
@@ -499,6 +502,13 @@ type Interface struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Speed       uint64 `json:"speed"` // bits per second, 0 = unknown
+	// Learned is set when Name/Description came from NetFlow options rather
+	// than an administrator; SNMP values then take precedence.
+	Learned bool `json:"learned"`
+	// What SNMP polling reported, if enabled for the exporter.
+	SNMPName  string `json:"snmpName"`
+	SNMPAlias string `json:"snmpAlias"`
+	SNMPSpeed uint64 `json:"snmpSpeed"`
 }
 
 func (c *DB) reload() error {
@@ -517,7 +527,15 @@ func (c *DB) reload() error {
 	}
 	rows.Close()
 	ifs := map[string]string{}
-	rows, err = c.db.Query("SELECT exporter, idx, name FROM interfaces WHERE name != ''")
+	// Effective name: typed by an administrator, else polled over SNMP,
+	// else learned from NetFlow options.
+	rows, err = c.db.Query(`SELECT exporter, idx, name FROM (
+		SELECT k.exporter, k.idx, COALESCE(
+			NULLIF(CASE WHEN i.learned = 0 THEN i.name END, ''), NULLIF(s.name, ''), i.name, '') AS name
+		FROM (SELECT exporter, idx FROM interfaces UNION SELECT exporter, idx FROM interface_snmp) k
+		LEFT JOIN interfaces i ON i.exporter = k.exporter AND i.idx = k.idx
+		LEFT JOIN interface_snmp s ON s.exporter = k.exporter AND s.idx = k.idx
+	) WHERE name != ''`)
 	if err != nil {
 		return err
 	}
@@ -593,7 +611,12 @@ func (c *DB) DeleteExporter(addr string) error {
 }
 
 func (c *DB) Interfaces(exporter string) ([]Interface, error) {
-	rows, err := c.db.Query("SELECT exporter, idx, name, description, speed FROM interfaces WHERE exporter = ? ORDER BY idx", exporter)
+	rows, err := c.db.Query(`SELECT k.exporter, k.idx, COALESCE(i.name, ''), COALESCE(i.description, ''), COALESCE(i.speed, 0), COALESCE(i.learned, 0),
+			COALESCE(s.name, ''), COALESCE(s.alias, ''), COALESCE(s.speed, 0)
+		FROM (SELECT exporter, idx FROM interfaces WHERE exporter = ? UNION SELECT exporter, idx FROM interface_snmp WHERE exporter = ?) k
+		LEFT JOIN interfaces i ON i.exporter = k.exporter AND i.idx = k.idx
+		LEFT JOIN interface_snmp s ON s.exporter = k.exporter AND s.idx = k.idx
+		ORDER BY k.idx`, exporter, exporter)
 	if err != nil {
 		return nil, err
 	}
@@ -601,7 +624,7 @@ func (c *DB) Interfaces(exporter string) ([]Interface, error) {
 	out := []Interface{}
 	for rows.Next() {
 		var i Interface
-		if err := rows.Scan(&i.Exporter, &i.Index, &i.Name, &i.Description, &i.Speed); err != nil {
+		if err := rows.Scan(&i.Exporter, &i.Index, &i.Name, &i.Description, &i.Speed, &i.Learned, &i.SNMPName, &i.SNMPAlias, &i.SNMPSpeed); err != nil {
 			return nil, err
 		}
 		out = append(out, i)
@@ -610,8 +633,14 @@ func (c *DB) Interfaces(exporter string) ([]Interface, error) {
 }
 
 func (c *DB) SaveInterface(i Interface) error {
-	_, err := c.db.Exec(`INSERT INTO interfaces(exporter, idx, name, description, speed) VALUES(?, ?, ?, ?, ?)
-		ON CONFLICT(exporter, idx) DO UPDATE SET name = excluded.name, description = excluded.description, speed = excluded.speed`,
+	// An empty name keeps a name learned from the exporter (still marked as
+	// learned, so SNMP can replace it); anything typed counts as manual.
+	_, err := c.db.Exec(`INSERT INTO interfaces(exporter, idx, name, description, speed, learned) VALUES(?, ?, ?, ?, ?, 0)
+		ON CONFLICT(exporter, idx) DO UPDATE SET
+			learned = CASE WHEN excluded.name = '' AND excluded.description = '' AND interfaces.learned = 1 THEN 1 ELSE 0 END,
+			name = CASE WHEN excluded.name = '' AND interfaces.learned = 1 THEN interfaces.name ELSE excluded.name END,
+			description = CASE WHEN excluded.description = '' AND interfaces.learned = 1 THEN interfaces.description ELSE excluded.description END,
+			speed = excluded.speed`,
 		i.Exporter, i.Index, i.Name, i.Description, i.Speed)
 	if err != nil {
 		return err
@@ -629,8 +658,8 @@ func (c *DB) LearnInterface(exporter string, idx uint32, name, desc string) {
 	if known && cur != "" {
 		return
 	}
-	_, err := c.db.Exec(`INSERT INTO interfaces(exporter, idx, name, description) VALUES(?, ?, ?, ?)
-		ON CONFLICT(exporter, idx) DO UPDATE SET name = excluded.name,
+	_, err := c.db.Exec(`INSERT INTO interfaces(exporter, idx, name, description, learned) VALUES(?, ?, ?, ?, 1)
+		ON CONFLICT(exporter, idx) DO UPDATE SET name = excluded.name, learned = 1,
 			description = CASE WHEN interfaces.description = '' THEN excluded.description ELSE interfaces.description END
 		WHERE interfaces.name = ''`, exporter, idx, name, desc)
 	if err != nil {

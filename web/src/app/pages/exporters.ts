@@ -57,6 +57,9 @@ import { RangeBar } from '../shared/range-bar';
           @if (e.location) {
             <div class="sub">{{ e.location }}</div>
           }
+          @if (e.snmp?.sysName) {
+            <div class="sub" [title]="e.snmp?.sysDescr ?? ''"><ng-container i18n="@@exporters.snmpSysName">SNMP: {{ e.snmp?.sysName }}</ng-container>@if (e.snmp?.lastError) { <cds-icon shape="error-standard" class="bad-icon" [title]="e.snmp?.lastError ?? ''"></cds-icon>}</div>
+          }
         </clr-dg-cell>
         <clr-dg-cell>
           @for (t of e.live?.types ?? []; track t) {
@@ -147,6 +150,7 @@ import { RangeBar } from '../shared/range-bar';
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
     .exp-name { font-weight: 600; }
     .warn { color: var(--cds-alias-status-danger); font-weight: 600; }
+    .bad-icon { color: var(--cds-alias-status-danger); width: 12px; height: 12px; }
   `,
 })
 export class Exporters {
