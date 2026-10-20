@@ -5,10 +5,11 @@ import { ClarityModule } from '@clr/angular';
 import { Api, BackupInfo, BackupJob, BackupManifest, errorMessage } from '../core/api';
 import { bytes, count, dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
+import { BackupScheduleCard } from './backup-schedule';
 
 @Component({
   selector: 'nfa-backup',
-  imports: [ClarityModule, FormsModule],
+  imports: [ClarityModule, FormsModule, BackupScheduleCard],
   template: `
     <div class="page-header">
       <div>
@@ -86,8 +87,10 @@ import { loader, trackByKey } from '../core/util';
       </div>
     </div>
 
+    <nfa-backup-schedule (changed)="tick.set(tick() + 1)" />
+
     <h3 class="section-title" i18n="@@backup.stored">Backups on this appliance</h3>
-    <p class="hint" i18n="@@backup.storedHint">Download backups to keep them elsewhere: a backup on the appliance's own disk won't help if that disk fails.</p>
+    <p class="hint" i18n="@@backup.storedHint2">Download backups, or schedule copies to another system above: a backup on the appliance's own disk won't help if that disk fails.</p>
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="status.loading() && !status.value()">
       <clr-dg-column [clrDgField]="'created'" [clrDgSortOrder]="-1" i18n="@@backup.col.created">Created</clr-dg-column>
       <clr-dg-column i18n="@@backup.col.contents">Contents</clr-dg-column>
@@ -107,6 +110,9 @@ import { loader, trackByKey } from '../core/util';
             <ng-container i18n="@@backup.withFlows">Configuration + flow history ({{ fmtCount(flowRows(b.flows)) }} flows)</ng-container>
           } @else {
             <ng-container i18n="@@backup.configOnly">Configuration</ng-container>
+          }
+          @if (b.scheduled) {
+            <span class="label label-info sched" i18n="@@backup.scheduledLabel">Scheduled</span>
           }
         </clr-dg-cell>
         <clr-dg-cell>{{ b.hostname }} · {{ b.version }}</clr-dg-cell>
@@ -135,7 +141,11 @@ import { loader, trackByKey } from '../core/util';
         @if (uploaded()) {
           <div class="step">
             <span class="num-badge">2</span>
-            <input class="clr-input pass" type="password" name="rpass" [(ngModel)]="restorePass" placeholder="Backup passphrase" i18n-placeholder="@@backup.restorePassPlaceholder" autocomplete="off" (keyup.enter)="inspect()" />
+            <input class="clr-input pass" type="password" name="rpass" [(ngModel)]="restorePass" placeholder="Passphrase or private key" i18n-placeholder="@@backup.restoreSecretPlaceholder" autocomplete="off" (keyup.enter)="inspect()" />
+            <label class="btn btn-sm btn-link keyfile">
+              <ng-container i18n="@@backup.keyFile">Key file…</ng-container>
+              <input type="file" (change)="pickKey($event)" hidden />
+            </label>
             <button class="btn btn-sm btn-outline" (click)="inspect()" [disabled]="!restorePass || busy()" i18n="@@backup.check">Check backup</button>
           </div>
         }
@@ -208,6 +218,8 @@ import { loader, trackByKey } from '../core/util';
     .num-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; flex: none;
       background: var(--cds-alias-object-interaction-background-selected, #e8f1f8); color: var(--cds-alias-typography-color-400); font-size: 12px; font-weight: 600; }
     .pass { width: 260px; }
+    .keyfile { margin: 0; }
+    .sched { margin-left: 6px; }
     .progress-text { font-size: 13px; }
     .manifest .kv { margin: 0 0 8px; max-width: 560px; }
     .manifest .kv td { text-align: left; padding: 2px 12px 2px 0; border: 0; }
@@ -218,7 +230,7 @@ import { loader, trackByKey } from '../core/util';
 export class Backup {
   readonly api = inject(Api);
   readonly byName = trackByKey<BackupInfo>((b) => b.name);
-  private tick = signal(0);
+  readonly tick = signal(0);
   readonly status = loader(() => this.tick(), () => this.api.backups());
   readonly error = signal('');
   readonly restarting = signal(false);
@@ -325,6 +337,20 @@ export class Backup {
         this.working.set(false);
       },
     });
+  }
+
+  /** Reads an age key file (from age-keygen) to open a public-key backup. */
+  async pickKey(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    if (file.size > 64 * 1024) {
+      this.error.set($localize`:@@backup.keyFileTooLarge:That file is too large to be an age key file.`);
+      return;
+    }
+    this.restorePass = await file.text();
+    this.inspect();
   }
 
   async inspect() {

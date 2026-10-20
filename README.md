@@ -66,7 +66,10 @@ Screenshots show simulated traffic from `cmd/flowgen`.
 - **Backup & restore**: encrypted backups (age, passphrase) of the whole
   configuration — users, SSO, settings, names, certificates and the key that
   protects stored credentials — optionally with flow history; restore on the same
-  or a new appliance.
+  or a new appliance. Scheduled backups (daily or weekly) are copied to an SMB/CIFS
+  share, S3-compatible object storage or an SFTP server, with retention at both
+  ends; they can be encrypted to an age public key so the appliance can write
+  backups but never read them.
 - **Exporter allowlist**: accept flows only from listed addresses or prefixes;
   rejected senders are counted and shown on System Health.
 - **SNMP polling**: per exporter (v2c or v3), interface names, descriptions and

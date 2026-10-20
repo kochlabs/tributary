@@ -36,7 +36,7 @@ type ssoPending struct {
 	verifier  string
 	requestID string // SAML AuthnRequest ID
 	next      string
-	expires  time.Time
+	expires   time.Time
 }
 
 type ssoState struct {

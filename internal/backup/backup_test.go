@@ -2,6 +2,7 @@ package backup
 
 import (
 	"bytes"
+	"filippo.io/age"
 	"io"
 	"log/slog"
 	"os"
@@ -147,4 +148,74 @@ func waitJob(t *testing.T, m *Manager) {
 		time.Sleep(20 * time.Millisecond)
 	}
 	t.Fatal("job did not finish")
+}
+
+func TestPublicKeyBackupAndPruning(t *testing.T) {
+	src := t.TempDir()
+	for f, c := range map[string]string{"config.db": "DB-v1", "secret.key": "KEY-1"} {
+		os.WriteFile(filepath.Join(src, f), []byte(c), 0o600)
+	}
+	log := slog.New(slog.NewTextHandler(io.Discard, nil))
+	m := &Manager{Dir: src, Version: "test", Log: log, Snapshot: func(p string) error {
+		b, _ := os.ReadFile(filepath.Join(src, "config.db"))
+		return os.WriteFile(p, b, 0o600)
+	}}
+	id, _ := age.GenerateX25519Identity()
+	if _, err := Recipients("", "age1notakey"); err == nil {
+		t.Fatal("invalid public key accepted")
+	}
+	rcpts, err := Recipients("", "# backup key\n"+id.Recipient().String()+"\n")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// A manual backup (never pruned) and three scheduled ones.
+	if err := m.StartBackup("correct horse battery", false); err != nil {
+		t.Fatal(err)
+	}
+	waitJob(t, m)
+	var names []string
+	for range 3 {
+		time.Sleep(1100 * time.Millisecond) // names have one-second resolution
+		name, err := m.RunScheduled(rcpts, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !IsOwn(name) {
+			t.Fatalf("%s not recognised as this appliance's", name)
+		}
+		names = append(names, name)
+	}
+	if IsOwn("tributary-otherhost-20260101-000000.tbk") || IsOwn(strings.Replace(names[0], ".tbk", "x.tbk", 1)) {
+		t.Fatal("foreign name treated as own")
+	}
+	gone, err := m.PruneScheduled(2)
+	if err != nil || len(gone) != 1 || gone[0] != names[0] {
+		t.Fatalf("pruned %v, %v", gone, err)
+	}
+	list, _ := m.List()
+	if len(list) != 3 {
+		t.Fatalf("left %d backups", len(list))
+	}
+
+	// Restore with the private key (as a key file would hold it), not a passphrase.
+	r := &Manager{Dir: t.TempDir(), Version: "test", Log: log}
+	f, _ := os.Open(filepath.Join(src, "backups", names[2]))
+	r.Upload(f, 1<<30)
+	f.Close()
+	if _, err := r.Inspect("correct horse battery"); err == nil {
+		t.Fatal("passphrase opened a public-key backup")
+	}
+	other, _ := age.GenerateX25519Identity()
+	if _, err := r.Inspect(other.String()); err == nil {
+		t.Fatal("wrong key opened the backup")
+	}
+	man, err := r.Inspect("# created: today\n# public key: " + id.Recipient().String() + "\n" + id.String() + "\n")
+	if err != nil || !man.Scheduled {
+		t.Fatalf("inspect with key: %v %+v", err, man)
+	}
+	// The same key file pasted into a single-line field.
+	man, err = r.Inspect("# created: today# public key: " + id.Recipient().String() + id.String())
+	if err != nil || !man.Scheduled {
+		t.Fatalf("inspect with key: %v %+v", err, man)
+	}
 }

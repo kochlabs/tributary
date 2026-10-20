@@ -22,6 +22,7 @@ import (
 	"nfa/internal/collector"
 	"nfa/internal/config"
 	"nfa/internal/enrich"
+	"nfa/internal/offsite"
 	"nfa/internal/snmp"
 	"nfa/internal/store"
 	"nfa/internal/syslog"
@@ -50,8 +51,10 @@ type Server struct {
 	started time.Time
 
 	Backups *backup.Manager
-	Syslog  *syslog.Forwarder
-	SNMP    *snmp.Poller
+	// Scheduler runs scheduled backups (nil in tests that don't need it).
+	Scheduler *offsite.Scheduler
+	Syslog    *syslog.Forwarder
+	SNMP      *snmp.Poller
 	// Restart stops the process so systemd starts it again (to apply a restore).
 	Restart func()
 	// DataDir is the appliance's data directory (disk checks, initial password).
@@ -149,6 +152,10 @@ func (s *Server) Handler() http.Handler {
 	admin("GET /api/syslog", s.syslogGet)
 	admin("PUT /api/syslog", s.syslogPut)
 	admin("POST /api/syslog/test", s.syslogTest)
+	admin("GET /api/backup-schedule", s.backupSchedule)
+	admin("PUT /api/backup-schedule", s.backupScheduleSave)
+	admin("POST /api/backup-schedule/test", s.backupScheduleTest)
+	admin("POST /api/backup-schedule/run", s.backupScheduleRun)
 	admin("GET /api/backups", s.backupsList)
 	admin("POST /api/backups", s.backupCreate)
 	admin("GET /api/backups/{name}", s.backupDownload)

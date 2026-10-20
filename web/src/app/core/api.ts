@@ -412,6 +412,74 @@ export interface BackupInfo {
   hostname: string;
   version: string;
   flows?: BackupTable[];
+  scheduled?: boolean;
+}
+
+export interface BackupDestination {
+  type: '' | 'smb' | 's3' | 'sftp';
+  host: string;
+  port: number;
+  share: string;
+  domain: string;
+  username: string;
+  path: string;
+  password?: string; // write-only
+  hasPassword?: boolean;
+  endpoint: string;
+  region: string;
+  bucket: string;
+  accessKey: string;
+  secretKey?: string; // write-only
+  hasSecretKey?: boolean;
+  pathStyle: boolean;
+  sftpAuth: 'key' | 'password';
+  hostKey: string;
+}
+
+export interface BackupSchedule {
+  enabled: boolean;
+  frequency: 'daily' | 'weekly';
+  weekday: number;
+  time: string;
+  includeFlows: boolean;
+  encryption: 'passphrase' | 'publickey';
+  passphrase?: string; // write-only
+  hasPassphrase?: boolean;
+  publicKeys: string;
+  keepLocal: number;
+  keepRemote: number;
+  destination: BackupDestination;
+  updated?: number;
+}
+
+export interface BackupRun {
+  started: number;
+  finished: number;
+  ok: boolean;
+  error?: string;
+  name?: string;
+  size?: number;
+  copied: boolean;
+  lastSuccess: number;
+}
+
+export interface BackupScheduleStatus {
+  schedule: BackupSchedule;
+  run: BackupRun;
+  running?: boolean;
+  phase?: string;
+  next?: number;
+  sshPublicKey?: string;
+  minPassphrase: number;
+}
+
+export interface DestinationTest {
+  ok: boolean;
+  message: string;
+  backups: number;
+  hostKey?: string;
+  fingerprint?: string;
+  keyFile?: string;
 }
 
 export interface BackupJob {
@@ -757,6 +825,18 @@ export class Api {
   }
   createBackup(passphrase: string, includeFlows: boolean) {
     return firstValueFrom(this.http.post<BackupJob>('/api/backups', { passphrase, includeFlows }));
+  }
+  backupSchedule() {
+    return this.get<BackupScheduleStatus>('/api/backup-schedule');
+  }
+  saveBackupSchedule(s: BackupSchedule) {
+    return firstValueFrom(this.http.put<BackupScheduleStatus>('/api/backup-schedule', s));
+  }
+  testBackupDestination(s: BackupSchedule) {
+    return firstValueFrom(this.http.post<DestinationTest>('/api/backup-schedule/test', s));
+  }
+  runBackupSchedule() {
+    return firstValueFrom(this.http.post('/api/backup-schedule/run', {}));
   }
   deleteBackup(name: string) {
     return firstValueFrom(this.http.delete(`/api/backups/${encodeURIComponent(name)}`));

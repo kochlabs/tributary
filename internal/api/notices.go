@@ -200,6 +200,9 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 	if n := s.initialPasswordNotice(); n != nil {
 		add(*n)
 	}
+	if n := s.backupNotice(now); n != nil {
+		add(*n)
+	}
 	if settled {
 		if ts, err := s.System.TimeStatus(ctx); err == nil && ts.NTPEnabled && !ts.Synchronized {
 			add(Notice{ID: "time-unsynced", Kind: "time-unsynced", Level: "warning", adminOnly: true,

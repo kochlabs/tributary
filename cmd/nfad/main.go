@@ -27,6 +27,7 @@ import (
 	"nfa/internal/config"
 	"nfa/internal/enrich"
 	"nfa/internal/flow"
+	"nfa/internal/offsite"
 	"nfa/internal/snmp"
 	"nfa/internal/store"
 	"nfa/internal/syslog"
@@ -251,6 +252,8 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12, GetCertificate: certMgr.GetCertificate},
 	}
 	go srv.RunNotices(ctx)
+	srv.Scheduler = &offsite.Scheduler{Cfg: cfg, Backups: srv.Backups, Log: log, RootCAs: trust.Pool}
+	go srv.Scheduler.Run(ctx)
 
 	go func() {
 		t := time.NewTicker(time.Hour)

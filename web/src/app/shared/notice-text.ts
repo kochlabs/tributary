@@ -58,6 +58,12 @@ import { Notice } from '../core/api';
           <ng-container i18n="@@notice.vendorsFailed">The MAC vendor database could not be updated: {{ p['error'] }}</ng-container>
         }
       }
+      @case ('backup-failed') {
+        <ng-container i18n="@@notice.backupFailed">The last scheduled backup failed: {{ p['error'] }}</ng-container>
+      }
+      @case ('backup-overdue') {
+        <ng-container i18n="@@notice.backupOverdue">No scheduled backup has succeeded recently. Check the backup schedule and its destination.</ng-container>
+      }
       @default {
         {{ notice().message }}
       }
@@ -100,6 +106,9 @@ export function noticeActionLabel(n: Notice): string {
       return $localize`:@@notice.action.time:Time settings`;
     case 'datasource-failed':
       return $localize`:@@nav.dataSources:Data Sources`;
+    case 'backup-failed':
+    case 'backup-overdue':
+      return $localize`:@@nav.backup:Backup & Restore`;
   }
   return n.action?.label ?? '';
 }

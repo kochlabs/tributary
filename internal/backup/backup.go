@@ -3,8 +3,9 @@
 // the secret key that protects stored credentials) and, optionally, the flow
 // history from ClickHouse.
 //
-// A backup file is age-encrypted (passphrase, scrypt), zstd-compressed and
-// holds a sequence of entries (see container.go), the manifest first.
+// A backup file is age-encrypted (to a passphrase with scrypt, or to age
+// public keys), zstd-compressed and holds a sequence of entries (see
+// container.go), the manifest first.
 package backup
 
 import (
@@ -65,6 +66,9 @@ type Manifest struct {
 	Hostname string      `json:"hostname"`
 	Files    []string    `json:"files"`
 	Flows    []TableInfo `json:"flows,omitempty"`
+	// Scheduled marks backups made by the schedule; only these are pruned
+	// automatically.
+	Scheduled bool `json:"scheduled,omitempty"`
 }
 
 type TableInfo struct {
@@ -74,12 +78,13 @@ type TableInfo struct {
 
 // Info describes a stored backup file.
 type Info struct {
-	Name     string      `json:"name"`
-	Size     int64       `json:"size"`
-	Created  int64       `json:"created"`
-	Hostname string      `json:"hostname"`
-	Version  string      `json:"version"`
-	Flows    []TableInfo `json:"flows,omitempty"`
+	Name      string      `json:"name"`
+	Size      int64       `json:"size"`
+	Created   int64       `json:"created"`
+	Hostname  string      `json:"hostname"`
+	Version   string      `json:"version"`
+	Flows     []TableInfo `json:"flows,omitempty"`
+	Scheduled bool        `json:"scheduled,omitempty"`
 }
 
 // Job is the state of the running or last backup/restore.
@@ -118,6 +123,8 @@ func (m *Manager) uploadPath() string { return filepath.Join(m.restoreDir(), "up
 // StagedDir holds a restored configuration until the next start applies it.
 func StagedDir(dataDir string) string { return filepath.Join(dataDir, "restore", "staged") }
 
+var ageKeyRE = regexp.MustCompile(`AGE-SECRET-KEY-(PQ-)?1[0-9A-Z]+`)
+
 var nameRE = regexp.MustCompile(`^tributary-[A-Za-z0-9._-]+\.tbk$`)
 
 // Job returns the current or last job, with live progress.
@@ -141,7 +148,7 @@ func (m *Manager) setJob(update func(j *Job)) {
 
 func (m *Manager) begin(kind string) error {
 	if !m.mu.TryLock() {
-		return errors.New("a backup or restore is already running")
+		return ErrBusy
 	}
 	m.bytes.Store(0)
 	m.job.Store(&Job{Kind: kind, State: "running", Started: time.Now().UnixMilli()})
@@ -186,7 +193,7 @@ func (m *Manager) List() ([]Info, error) {
 		if b, err := os.ReadFile(filepath.Join(m.backupsDir(), e.Name()+".json")); err == nil {
 			var man Manifest
 			if json.Unmarshal(b, &man) == nil {
-				info.Created, info.Hostname, info.Version, info.Flows = man.Created, man.Hostname, man.Version, man.Flows
+				info.Created, info.Hostname, info.Version, info.Flows, info.Scheduled = man.Created, man.Hostname, man.Version, man.Flows, man.Scheduled
 			}
 		}
 		out = append(out, info)
@@ -242,43 +249,114 @@ func (m *Manager) FlowsSize(ctx context.Context) (uint64, error) {
 	return n, err
 }
 
-// StartBackup writes a new backup in the background.
-func (m *Manager) StartBackup(passphrase string, includeFlows bool) error {
-	if len(passphrase) < MinPassphrase {
-		return fmt.Errorf("the passphrase must be at least %d characters", MinPassphrase)
-	}
-	if includeFlows {
-		size, err := m.FlowsSize(context.Background())
+// ErrBusy means another backup or restore is running.
+var ErrBusy = errors.New("a backup or restore is already running")
+
+// Recipients returns what a backup is encrypted to: a passphrase (scrypt),
+// or one or more age public keys (age1…, one per line), in which case the
+// appliance can write backups but not read them.
+func Recipients(passphrase, publicKeys string) ([]age.Recipient, error) {
+	if strings.TrimSpace(publicKeys) != "" {
+		r, err := age.ParseRecipients(strings.NewReader(publicKeys))
 		if err != nil {
-			return fmt.Errorf("could not size the flow history: %w", err)
+			return nil, fmt.Errorf("invalid public key: %w", err)
 		}
-		if need := size*3/2 + 200<<20; FreeSpace(m.Dir) < need {
-			return fmt.Errorf("not enough free disk space for a backup with flow history (about %d MB needed)", need>>20)
+		return r, nil
+	}
+	if len(passphrase) < MinPassphrase {
+		return nil, fmt.Errorf("the passphrase must be at least %d characters", MinPassphrase)
+	}
+	r, err := age.NewScryptRecipient(passphrase)
+	if err != nil {
+		return nil, err
+	}
+	return []age.Recipient{r}, nil
+}
+
+// identities turns what the user typed to open a backup into age
+// identities: a private key (AGE-SECRET-KEY-…, possibly a whole key file)
+// or a passphrase.
+func identities(secret string) ([]age.Identity, error) {
+	// Keys are found anywhere in the text, so a key file pasted into a
+	// single-line field (comments and all, line breaks lost) still works.
+	if keys := ageKeyRE.FindAllString(secret, -1); len(keys) > 0 {
+		ids, err := age.ParseIdentities(strings.NewReader(strings.Join(keys, "\n")))
+		if err != nil {
+			return nil, fmt.Errorf("invalid private key: %w", err)
 		}
+		return ids, nil
+	}
+	id, err := age.NewScryptIdentity(secret)
+	if err != nil {
+		return nil, err
+	}
+	return []age.Identity{id}, nil
+}
+
+func (m *Manager) checkFlowSpace(includeFlows bool) error {
+	if !includeFlows {
+		return nil
+	}
+	size, err := m.FlowsSize(context.Background())
+	if err != nil {
+		return fmt.Errorf("could not size the flow history: %w", err)
+	}
+	if need := size*3/2 + 200<<20; FreeSpace(m.Dir) < need {
+		return fmt.Errorf("not enough free disk space for a backup with flow history (about %d MB needed)", need>>20)
+	}
+	return nil
+}
+
+// StartBackup writes a new backup, encrypted with a passphrase, in the
+// background.
+func (m *Manager) StartBackup(passphrase string, includeFlows bool) error {
+	rcpts, err := Recipients(passphrase, "")
+	if err != nil {
+		return err
+	}
+	if err := m.checkFlowSpace(includeFlows); err != nil {
+		return err
 	}
 	if err := m.begin("backup"); err != nil {
 		return err
 	}
-	go func() { m.finish(m.backup(passphrase, includeFlows)) }()
+	go func() {
+		_, err := m.backup(rcpts, includeFlows, false)
+		m.finish(err)
+	}()
 	return nil
 }
 
-func (m *Manager) backup(passphrase string, includeFlows bool) (err error) {
+// RunScheduled writes a scheduled backup and waits for it; it returns
+// ErrBusy if another job is running.
+func (m *Manager) RunScheduled(rcpts []age.Recipient, includeFlows bool) (string, error) {
+	if err := m.checkFlowSpace(includeFlows); err != nil {
+		return "", err
+	}
+	if err := m.begin("backup"); err != nil {
+		return "", err
+	}
+	name, err := m.backup(rcpts, includeFlows, true)
+	m.finish(err)
+	return name, err
+}
+
+func (m *Manager) backup(rcpts []age.Recipient, includeFlows, scheduled bool) (name string, err error) {
 	ctx := context.Background()
 	if err := os.MkdirAll(m.backupsDir(), 0o700); err != nil {
-		return err
+		return "", err
 	}
 	host, _ := os.Hostname()
 	now := time.Now()
-	name := fmt.Sprintf("tributary-%s-%s.tbk", safeName(host), now.Format("20060102-150405"))
+	name = fmt.Sprintf("tributary-%s-%s.tbk", safeName(host), now.Format("20060102-150405"))
 	m.setJob(func(j *Job) { j.Name = name })
-	man := Manifest{Format: Format, Version: m.Version, Created: now.UnixMilli(), Hostname: host}
+	man := Manifest{Format: Format, Version: m.Version, Created: now.UnixMilli(), Hostname: host, Scheduled: scheduled}
 
 	m.phase("config")
 	snap := filepath.Join(m.backupsDir(), ".config.db.snapshot")
 	_ = os.Remove(snap)
 	if err := m.Snapshot(snap); err != nil {
-		return fmt.Errorf("could not snapshot the configuration: %w", err)
+		return "", fmt.Errorf("could not snapshot the configuration: %w", err)
 	}
 	defer os.Remove(snap)
 	type file struct{ entry, path string }
@@ -292,7 +370,7 @@ func (m *Manager) backup(passphrase string, includeFlows bool) (err error) {
 			if f.optional {
 				continue
 			}
-			return fmt.Errorf("%s is missing", f.file)
+			return "", fmt.Errorf("%s is missing", f.file)
 		}
 		files = append(files, file{f.entry, p})
 		man.Files = append(man.Files, f.entry)
@@ -301,7 +379,7 @@ func (m *Manager) backup(passphrase string, includeFlows bool) (err error) {
 		for _, t := range flowTables {
 			n, err := m.count(ctx, t)
 			if err != nil {
-				return err
+				return "", err
 			}
 			man.Flows = append(man.Flows, TableInfo{Table: t, Rows: n})
 		}
@@ -310,7 +388,7 @@ func (m *Manager) backup(passphrase string, includeFlows bool) (err error) {
 	tmp := filepath.Join(m.backupsDir(), "."+name+".partial")
 	f, err := os.OpenFile(tmp, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o600)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer func() {
 		f.Close()
@@ -318,35 +396,31 @@ func (m *Manager) backup(passphrase string, includeFlows bool) (err error) {
 			os.Remove(tmp)
 		}
 	}()
-	rcpt, err := age.NewScryptRecipient(passphrase)
+	enc, err := age.Encrypt(&countingWriter{w: f, n: &m.bytes}, rcpts...)
 	if err != nil {
-		return err
-	}
-	enc, err := age.Encrypt(&countingWriter{w: f, n: &m.bytes}, rcpt)
-	if err != nil {
-		return err
+		return "", err
 	}
 	zw, err := zstd.NewWriter(enc, zstd.WithEncoderLevel(zstd.SpeedDefault))
 	if err != nil {
-		return err
+		return "", err
 	}
 	ew, err := newEntryWriter(zw)
 	if err != nil {
-		return err
+		return "", err
 	}
 	mb, _ := json.Marshal(man)
 	if _, err := ew.add("manifest.json", strings.NewReader(string(mb))); err != nil {
-		return err
+		return "", err
 	}
 	for _, fl := range files {
 		r, err := os.Open(fl.path)
 		if err != nil {
-			return err
+			return "", err
 		}
 		_, err = ew.add(fl.entry, r)
 		r.Close()
 		if err != nil {
-			return err
+			return "", err
 		}
 	}
 	for _, t := range man.Flows {
@@ -356,29 +430,29 @@ func (m *Manager) backup(passphrase string, includeFlows bool) (err error) {
 			_, err := ew.add("flows/"+t.Table+".native", r)
 			return err
 		}); err != nil {
-			return fmt.Errorf("exporting %s: %w", t.Table, err)
+			return "", fmt.Errorf("exporting %s: %w", t.Table, err)
 		}
 	}
 	m.phase("finishing")
 	if err := ew.close(); err != nil {
-		return err
+		return "", err
 	}
 	if err := zw.Close(); err != nil {
-		return err
+		return "", err
 	}
 	if err := enc.Close(); err != nil {
-		return err
+		return "", err
 	}
 	if err := f.Sync(); err != nil {
-		return err
+		return "", err
 	}
 	if err := os.Rename(tmp, filepath.Join(m.backupsDir(), name)); err != nil {
-		return err
+		return "", err
 	}
 	// An unencrypted summary for the list (no secrets in it).
 	_ = os.WriteFile(filepath.Join(m.backupsDir(), name+".json"), mb, 0o600)
-	m.Log.Info("backup written", "name", name, "flows", includeFlows)
-	return nil
+	m.Log.Info("backup written", "name", name, "flows", includeFlows, "scheduled", scheduled)
+	return name, nil
 }
 
 // Upload stores an uploaded backup for inspection and restore.
@@ -410,7 +484,7 @@ func (m *Manager) Upload(r io.Reader, limit int64) (int64, error) {
 }
 
 // open decrypts the uploaded backup and reads its manifest.
-func (m *Manager) open(passphrase string) (*os.File, *entryReader, *Manifest, error) {
+func (m *Manager) open(secret string) (*os.File, *entryReader, *Manifest, error) {
 	f, err := os.Open(m.uploadPath())
 	if err != nil {
 		return nil, nil, nil, errors.New("upload a backup file first")
@@ -419,13 +493,13 @@ func (m *Manager) open(passphrase string) (*os.File, *entryReader, *Manifest, er
 		f.Close()
 		return nil, nil, nil, err
 	}
-	id, err := age.NewScryptIdentity(passphrase)
+	ids, err := identities(secret)
 	if err != nil {
 		return fail(err)
 	}
-	dec, err := age.Decrypt(f, id)
+	dec, err := age.Decrypt(f, ids...)
 	if err != nil {
-		return fail(errors.New("wrong passphrase, or not a Tributary backup"))
+		return fail(errors.New("wrong passphrase or key, or not a Tributary backup"))
 	}
 	zr, err := zstd.NewReader(dec)
 	if err != nil {
@@ -707,4 +781,41 @@ func contains(list []string, s string) bool {
 		}
 	}
 	return false
+}
+
+// ValidName reports whether name is a backup file name this appliance
+// writes (and so may be managed or pruned).
+func ValidName(name string) bool { return nameRE.MatchString(name) }
+
+// IsOwn reports whether name is a backup made by this appliance (by host
+// name and the exact timestamp format), so appliances sharing a destination
+// never prune each other's backups, even when one host name is a prefix of
+// another.
+func IsOwn(name string) bool {
+	host, _ := os.Hostname()
+	return regexp.MustCompile(`^tributary-` + regexp.QuoteMeta(safeName(host)) + `-\d{8}-\d{6}\.tbk$`).MatchString(name)
+}
+
+// PruneScheduled deletes this appliance's scheduled backups beyond the
+// newest keep. Backups made by hand are never pruned.
+func (m *Manager) PruneScheduled(keep int) ([]string, error) {
+	list, err := m.List()
+	if err != nil {
+		return nil, err
+	}
+	var gone []string
+	n := 0
+	for _, b := range list { // newest first
+		if !b.Scheduled {
+			continue
+		}
+		if n++; n <= keep {
+			continue
+		}
+		if err := m.Delete(b.Name); err != nil {
+			return gone, err
+		}
+		gone = append(gone, b.Name)
+	}
+	return gone, nil
 }
