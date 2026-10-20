@@ -22,8 +22,8 @@ func (s *Server) backupSchedule(w http.ResponseWriter, r *http.Request) {
 	if sch.Enabled {
 		out["next"] = offsite.Next(sch, time.Now()).UnixMilli()
 	}
-	if _, pub, err := s.Config.BackupSSHKey(); err == nil {
-		out["sshPublicKey"] = pub
+	if _, key, err := s.Config.BackupSSHKey(); err == nil {
+		out["sshKey"] = key
 	}
 	writeJSON(w, http.StatusOK, out)
 }
@@ -121,4 +121,37 @@ func (s *Server) backupNotice(now time.Time) *Notice {
 			Params: map[string]string{"since": time.UnixMilli(since).UTC().Format(time.RFC3339)}, Message: "No scheduled backup has succeeded recently.", Action: action}
 	}
 	return nil
+}
+
+// backupSSHKeyRegenerate replaces the appliance's SSH key with a new one.
+func (s *Server) backupSSHKeyRegenerate(w http.ResponseWriter, r *http.Request) {
+	_, old, _ := s.Config.BackupSSHKey()
+	info, err := s.Config.RegenerateBackupSSHKey()
+	if err != nil {
+		writeErr(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	s.Config.Audit(userFrom(r).Username, "backup.sshkey.regenerate", fmt.Sprintf("%s replaced by %s", old.Fingerprint, info.Fingerprint))
+	writeJSON(w, http.StatusOK, info)
+}
+
+// backupSSHKeyUpload replaces the appliance's SSH key with the
+// administrator's own private key.
+func (s *Server) backupSSHKeyUpload(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		PrivateKey string `json:"privateKey"`
+		Passphrase string `json:"passphrase"`
+	}
+	if err := readJSON(r, &req); err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	_, old, _ := s.Config.BackupSSHKey()
+	info, err := s.Config.SetBackupSSHKey(req.PrivateKey, req.Passphrase)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	s.Config.Audit(userFrom(r).Username, "backup.sshkey.upload", fmt.Sprintf("%s replaced by %s (%s)", old.Fingerprint, info.Fingerprint, info.Type))
+	writeJSON(w, http.StatusOK, info)
 }

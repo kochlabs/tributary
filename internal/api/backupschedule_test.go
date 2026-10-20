@@ -2,7 +2,10 @@ package api
 
 import (
 	"bytes"
+	"crypto/ed25519"
+	"crypto/rand"
 	"encoding/json"
+	"encoding/pem"
 	"io"
 	"log/slog"
 	"net/http"
@@ -11,6 +14,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"golang.org/x/crypto/ssh"
 
 	"nfa/internal/config"
 )
@@ -55,7 +60,7 @@ func TestBackupScheduleAPI(t *testing.T) {
 		t.Fatalf("secret returned: %s", raw)
 	}
 	got := out["schedule"].(map[string]any)
-	if got["hasPassphrase"] != true || got["destination"].(map[string]any)["hasSecretKey"] != true || out["next"] == nil || !strings.HasPrefix(out["sshPublicKey"].(string), "ssh-ed25519 ") {
+	if got["hasPassphrase"] != true || got["destination"].(map[string]any)["hasSecretKey"] != true || out["next"] == nil || !strings.HasPrefix(out["sshKey"].(map[string]any)["publicKey"].(string), "ssh-ed25519 ") {
 		t.Fatalf("status: %s", raw)
 	}
 	// Saving again without secrets keeps them.
@@ -86,12 +91,39 @@ func TestBackupScheduleAPI(t *testing.T) {
 	if code, _, raw := c.do("PUT", "/api/backup-schedule", bad); code != 400 || !strings.Contains(raw, "host key") {
 		t.Fatalf("sftp without host key: %d %s", code, raw)
 	}
+	// The SSH key can be regenerated or replaced; both are audited by fingerprint.
+	first := out["sshKey"].(map[string]any)["fingerprint"].(string)
+	code, re, raw := c.do("POST", "/api/backup-schedule/ssh-key/regenerate", nil)
+	if code != 200 || re["fingerprint"] == first || strings.Contains(raw, "PRIVATE") {
+		t.Fatalf("regenerate: %d %s", code, raw)
+	}
+	_, priv, _ := ed25519.GenerateKey(rand.Reader)
+	block, _ := ssh.MarshalPrivateKey(priv, "")
+	code, up, raw := c.do("PUT", "/api/backup-schedule/ssh-key", map[string]string{"privateKey": string(pem.EncodeToMemory(block))})
+	if code != 200 || up["source"] != "uploaded" || strings.Contains(raw, "PRIVATE") {
+		t.Fatalf("upload: %d %s", code, raw)
+	}
+	if code, _, _ := c.do("PUT", "/api/backup-schedule/ssh-key", map[string]string{"privateKey": "nope"}); code != 400 {
+		t.Fatalf("bad key: %d", code)
+	}
+	entries, _ := cfg.AuditLog(10)
+	var actions []string
+	for _, e := range entries {
+		actions = append(actions, e.Action+" "+e.Detail)
+	}
+	if all := strings.Join(actions, "\n"); !strings.Contains(all, "backup.sshkey.regenerate "+first+" replaced by "+re["fingerprint"].(string)) || !strings.Contains(all, "backup.sshkey.upload") {
+		t.Fatalf("audit: %s", all)
+	}
+
 	// A viewer can't see or change the schedule.
 	cfg.CreateUser(config.User{Username: "viewer", Role: "viewer"}, "Viewer-pass-1")
 	v := newClient(t, app.URL)
 	v.post("/api/auth/login", map[string]string{"username": "viewer", "password": "Viewer-pass-1"})
 	if v.get("/api/backup-schedule") != 403 {
 		t.Fatal("viewer can read the schedule")
+	}
+	if code, _, _ := v.do("POST", "/api/backup-schedule/ssh-key/regenerate", nil); code != 403 {
+		t.Fatal("viewer can regenerate the key")
 	}
 
 	// Notices: a failed run, then overdue.

@@ -469,8 +469,17 @@ export interface BackupScheduleStatus {
   running?: boolean;
   phase?: string;
   next?: number;
-  sshPublicKey?: string;
+  sshKey?: SSHKeyInfo;
   minPassphrase: number;
+}
+
+/** The appliance's SSH key for SFTP destinations (never the private key). */
+export interface SSHKeyInfo {
+  publicKey: string;
+  fingerprint: string;
+  type: string;
+  created: number;
+  source: 'generated' | 'uploaded';
 }
 
 export interface DestinationTest {
@@ -834,6 +843,12 @@ export class Api {
   }
   testBackupDestination(s: BackupSchedule) {
     return firstValueFrom(this.http.post<DestinationTest>('/api/backup-schedule/test', s));
+  }
+  regenerateBackupSSHKey() {
+    return firstValueFrom(this.http.post<SSHKeyInfo>('/api/backup-schedule/ssh-key/regenerate', {}));
+  }
+  uploadBackupSSHKey(privateKey: string, passphrase: string) {
+    return firstValueFrom(this.http.put<SSHKeyInfo>('/api/backup-schedule/ssh-key', { privateKey, passphrase }));
   }
   runBackupSchedule() {
     return firstValueFrom(this.http.post('/api/backup-schedule/run', {}));

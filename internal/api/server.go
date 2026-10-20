@@ -156,6 +156,8 @@ func (s *Server) Handler() http.Handler {
 	admin("PUT /api/backup-schedule", s.backupScheduleSave)
 	admin("POST /api/backup-schedule/test", s.backupScheduleTest)
 	admin("POST /api/backup-schedule/run", s.backupScheduleRun)
+	admin("POST /api/backup-schedule/ssh-key/regenerate", s.backupSSHKeyRegenerate)
+	admin("PUT /api/backup-schedule/ssh-key", s.backupSSHKeyUpload)
 	admin("GET /api/backups", s.backupsList)
 	admin("POST /api/backups", s.backupCreate)
 	admin("GET /api/backups/{name}", s.backupDownload)

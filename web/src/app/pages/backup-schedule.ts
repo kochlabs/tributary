@@ -1,8 +1,8 @@
 import { Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { Api, BackupSchedule, BackupScheduleStatus, DestinationTest, errorMessage } from '../core/api';
-import { ago, bytes, dateTime } from '../core/format';
+import { Api, BackupSchedule, BackupScheduleStatus, DestinationTest, errorMessage, SSHKeyInfo } from '../core/api';
+import { ago, bytes, dateOnly, dateTime } from '../core/format';
 
 const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6].map((d) => ({
   id: d,
@@ -156,10 +156,27 @@ const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6].map((d) => ({
                     <button type="button" class="btn" [class.btn-primary]="d.sftpAuth === 'key'" [class.btn-outline]="d.sftpAuth !== 'key'" (click)="d.sftpAuth = 'key'" i18n="@@sched.applianceKey">Appliance SSH key</button>
                     <button type="button" class="btn" [class.btn-primary]="d.sftpAuth === 'password'" [class.btn-outline]="d.sftpAuth !== 'password'" (click)="d.sftpAuth = 'password'" i18n="@@sched.password">Password</button>
                   </div>
-                  @if (d.sftpAuth === 'key' && st()?.sshPublicKey; as pub) {
+                  @if (d.sftpAuth === 'key' && st()?.sshKey; as k) {
                     <div class="pubkey">
                       <span class="sub" i18n="@@sched.addKey">Add this line to the user's ~/.ssh/authorized_keys on the server:</span>
-                      <div class="uri"><code>{{ pub }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy(pub)">{{ copied() ? copiedLabel : copyLabel }}</button></div>
+                      <div class="uri"><code>{{ k.publicKey }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy(k.publicKey)">{{ copied() ? copiedLabel : copyLabel }}</button></div>
+                      <div class="keyinfo">
+                        <code>{{ k.fingerprint }}</code> · {{ keyTypeLabel(k.type) }} ·
+                        @if (k.source === 'uploaded') {
+                          <ng-container i18n="@@sched.keyUploaded">your own key, added {{ dateOnly(k.created) }}</ng-container>
+                        } @else if (k.created) {
+                          <ng-container i18n="@@sched.keyGenerated">generated on this appliance {{ dateOnly(k.created) }}</ng-container>
+                        } @else {
+                          <ng-container i18n="@@sched.keyGeneratedUndated">generated on this appliance</ng-container>
+                        }
+                      </div>
+                      @if (keyNote()) {
+                        <div class="keynote"><cds-icon shape="info-standard"></cds-icon> {{ keyNote() }}</div>
+                      }
+                      <div class="keyactions">
+                        <button type="button" class="btn btn-link btn-sm" (click)="confirmRegen.set(true)"><cds-icon shape="refresh"></cds-icon> <ng-container i18n="@@sched.regenerate">Regenerate…</ng-container></button>
+                        <button type="button" class="btn btn-link btn-sm" (click)="openUpload()"><cds-icon shape="upload"></cds-icon> <ng-container i18n="@@sched.useOwnKey">Use my own key…</ng-container></button>
+                      </div>
                     </div>
                   }
                 </div>
@@ -284,6 +301,40 @@ const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6].map((d) => ({
         }
       </div>
     </div>
+
+    <clr-modal [clrModalOpen]="confirmRegen()" (clrModalOpenChange)="confirmRegen.set($event)" clrModalSize="md">
+      <h3 class="modal-title" i18n="@@sched.regenTitle">Regenerate the appliance's SSH key?</h3>
+      <div class="modal-body">
+        <p i18n="@@sched.regenBody">A new Ed25519 key replaces the current one ({{ st()?.sshKey?.fingerprint }}), which is deleted. SFTP servers will reject the appliance until you add the new public key to authorized_keys; remove the old line there too. Do this if the key may have been exposed, or after restoring this appliance's backup onto another one.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="confirmRegen.set(false)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-warning" (click)="regenerate()" [clrLoading]="keyBusy()" i18n="@@sched.regenerateButton">Regenerate</button>
+      </div>
+    </clr-modal>
+
+    <clr-modal [clrModalOpen]="uploadOpen()" (clrModalOpenChange)="uploadOpen.set($event)" clrModalSize="lg">
+      <h3 class="modal-title" i18n="@@sched.uploadTitle">Use your own SSH key</h3>
+      <div class="modal-body">
+        <p class="sub" i18n="@@sched.uploadHelp">Paste or choose an OpenSSH private key (Ed25519 recommended; ECDSA, or RSA of 2048 bits or more). It replaces the appliance's current key, is stored encrypted and is never shown again. A passphrase is only used to read it and isn't stored.</p>
+        <textarea class="clr-textarea privkey mono" name="privkey" [(ngModel)]="upKey" rows="8" spellcheck="false" autocomplete="off"
+          placeholder="-----BEGIN OPENSSH PRIVATE KEY-----"></textarea>
+        <div class="uprow">
+          <label class="btn btn-sm btn-outline keyfile">
+            <ng-container i18n="@@sched.chooseKeyFile">Choose key file…</ng-container>
+            <input type="file" (change)="pickKey($event)" hidden />
+          </label>
+          <input class="clr-input" type="password" name="upPass" [(ngModel)]="upPass" placeholder="Key passphrase (if any)" i18n-placeholder="@@sched.keyPassphrase" autocomplete="off" />
+        </div>
+        @if (keyError()) {
+          <div class="alert alert-danger alert-sm" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ keyError() }}</span></div></div></div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="closeUpload()" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="upload()" [disabled]="!upKey.trim()" [clrLoading]="keyBusy()" i18n="@@sched.useThisKey">Use this key</button>
+      </div>
+    </clr-modal>
   `,
   styles: `
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -301,6 +352,14 @@ const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6].map((d) => ({
     .sub { font-size: 12px; color: var(--cds-alias-typography-color-300); }
     .btn-group { margin: 0; }
     .pubkey { margin-top: 8px; }
+    .keyinfo { font-size: 12px; margin-top: 4px; }
+    .keyinfo code { font-size: 11px; }
+    .keynote { font-size: 12px; margin-top: 6px; color: var(--cds-alias-status-info); }
+    .keyactions { margin-top: 2px; }
+    .keyactions .btn { margin: 0 8px 0 0; padding-left: 0; }
+    .privkey { width: 100%; font-size: 11px; }
+    .uprow { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+    .uprow .btn { margin: 0; }
     .uri { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .uri code { font-size: 11px; word-break: break-all; }
     .uri .btn { margin: 0; }
@@ -334,6 +393,14 @@ export class BackupScheduleCard {
   readonly testing = signal(false);
   readonly result = signal<DestinationTest | null>(null);
   readonly copied = signal(false);
+  readonly confirmRegen = signal(false);
+  readonly uploadOpen = signal(false);
+  readonly keyBusy = signal(false);
+  readonly keyError = signal('');
+  readonly keyNote = signal('');
+  upKey = '';
+  upPass = '';
+  dateOnly = dateOnly;
   readonly weekdays = WEEKDAYS;
   readonly types: { id: BackupSchedule['destination']['type']; label: string }[] = [
     { id: '', label: $localize`:@@sched.thisAppliance:This appliance only` },
@@ -383,6 +450,68 @@ export class BackupScheduleCard {
       d.type = t;
       d.port = null as unknown as number;
       this.result.set(null);
+    }
+  }
+
+  keyTypeLabel(t: string) {
+    if (t === 'ssh-ed25519') return 'Ed25519';
+    if (t.startsWith('ecdsa-sha2-nistp')) return 'ECDSA P-' + t.slice('ecdsa-sha2-nistp'.length);
+    if (t === 'ssh-rsa') return 'RSA';
+    return t;
+  }
+
+  private keyChanged(k: SSHKeyInfo) {
+    const st = this.st();
+    if (st) this.st.set({ ...st, sshKey: k });
+    this.keyNote.set($localize`:@@sched.keyChangedNote:New key in use (${k.fingerprint}:fingerprint:). Add its public key to the server's authorized_keys and remove the old one.`);
+  }
+
+  async regenerate() {
+    this.keyBusy.set(true);
+    try {
+      this.keyChanged(await this.api.regenerateBackupSSHKey());
+      this.confirmRegen.set(false);
+    } catch (e) {
+      this.error.set(errorMessage(e));
+      this.confirmRegen.set(false);
+    } finally {
+      this.keyBusy.set(false);
+    }
+  }
+
+  openUpload() {
+    this.upKey = this.upPass = '';
+    this.keyError.set('');
+    this.uploadOpen.set(true);
+  }
+
+  closeUpload() {
+    this.upKey = this.upPass = '';
+    this.uploadOpen.set(false);
+  }
+
+  async pickKey(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    if (file.size > 32 * 1024) {
+      this.keyError.set($localize`:@@sched.keyFileTooLarge:That file is too large to be an SSH private key.`);
+      return;
+    }
+    this.upKey = await file.text();
+  }
+
+  async upload() {
+    this.keyBusy.set(true);
+    this.keyError.set('');
+    try {
+      this.keyChanged(await this.api.uploadBackupSSHKey(this.upKey, this.upPass));
+      this.closeUpload();
+    } catch (e) {
+      this.keyError.set(errorMessage(e));
+    } finally {
+      this.keyBusy.set(false);
     }
   }
 

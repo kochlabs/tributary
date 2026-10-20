@@ -185,7 +185,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:672</note>
+        <note category="location">src/app/core/api.ts:681</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -2258,7 +2258,7 @@
     <unit id="sched.password">
       <notes>
         <note category="location">src/app/pages/backup-schedule.ts:157,158</note>
-        <note category="location">src/app/pages/backup-schedule.ts:170,171</note>
+        <note category="location">src/app/pages/backup-schedule.ts:187,188</note>
       </notes>
       <segment>
         <source>Password</source>
@@ -2272,9 +2272,49 @@
         <source>Add this line to the user&apos;s ~/.ssh/authorized_keys on the server:</source>
       </segment>
     </unit>
+    <unit id="sched.keyUploaded">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:166,167</note>
+      </notes>
+      <segment>
+        <source>your own key, added <ph id="0" equiv="INTERPOLATION" disp="{{ dateOnly(k.created) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="sched.keyGenerated">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:168,169</note>
+      </notes>
+      <segment>
+        <source>generated on this appliance <ph id="0" equiv="INTERPOLATION" disp="{{ dateOnly(k.created) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="sched.keyGeneratedUndated">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:170,171</note>
+      </notes>
+      <segment>
+        <source>generated on this appliance</source>
+      </segment>
+    </unit>
+    <unit id="sched.regenerate">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:177,178</note>
+      </notes>
+      <segment>
+        <source>Regenerate…</source>
+      </segment>
+    </unit>
+    <unit id="sched.useOwnKey">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:178,179</note>
+      </notes>
+      <segment>
+        <source>Use my own key…</source>
+      </segment>
+    </unit>
     <unit id="sched.endpoint">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:176,177</note>
+        <note category="location">src/app/pages/backup-schedule.ts:193,194</note>
       </notes>
       <segment>
         <source>Endpoint</source>
@@ -2282,7 +2322,7 @@
     </unit>
     <unit id="sched.endpointHelp">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:178,179</note>
+        <note category="location">src/app/pages/backup-schedule.ts:195,196</note>
       </notes>
       <segment>
         <source>Empty for Amazon S3. For other providers (MinIO, Wasabi, Backblaze B2, Cloudflare R2, Ceph…) their S3 endpoint.</source>
@@ -2290,7 +2330,7 @@
     </unit>
     <unit id="sched.region">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:181,182</note>
+        <note category="location">src/app/pages/backup-schedule.ts:198,199</note>
       </notes>
       <segment>
         <source>Region</source>
@@ -2298,7 +2338,7 @@
     </unit>
     <unit id="sched.bucket">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:185,186</note>
+        <note category="location">src/app/pages/backup-schedule.ts:202,203</note>
       </notes>
       <segment>
         <source>Bucket</source>
@@ -2306,7 +2346,7 @@
     </unit>
     <unit id="sched.accessKey">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:189,190</note>
+        <note category="location">src/app/pages/backup-schedule.ts:206,207</note>
       </notes>
       <segment>
         <source>Access key</source>
@@ -2314,7 +2354,7 @@
     </unit>
     <unit id="sched.secretKey">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:193,194</note>
+        <note category="location">src/app/pages/backup-schedule.ts:210,211</note>
       </notes>
       <segment>
         <source>Secret key</source>
@@ -2322,7 +2362,7 @@
     </unit>
     <unit id="sched.pathStyle">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:200,201</note>
+        <note category="location">src/app/pages/backup-schedule.ts:217,218</note>
       </notes>
       <segment>
         <source>Path-style requests (usually needed for MinIO and Ceph)</source>
@@ -2330,7 +2370,7 @@
     </unit>
     <unit id="sched.prefix">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:206</note>
+        <note category="location">src/app/pages/backup-schedule.ts:223</note>
       </notes>
       <segment>
         <source>Prefix</source>
@@ -2338,7 +2378,7 @@
     </unit>
     <unit id="sched.folder">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:206,207</note>
+        <note category="location">src/app/pages/backup-schedule.ts:223,224</note>
       </notes>
       <segment>
         <source>Folder</source>
@@ -2346,7 +2386,7 @@
     </unit>
     <unit id="sched.folderHelp">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:208,209</note>
+        <note category="location">src/app/pages/backup-schedule.ts:225,226</note>
       </notes>
       <segment>
         <source>Created if missing. Several appliances can share it: each prunes only its own backups.</source>
@@ -2354,7 +2394,7 @@
     </unit>
     <unit id="sched.hostKey">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:213,214</note>
+        <note category="location">src/app/pages/backup-schedule.ts:230,231</note>
       </notes>
       <segment>
         <source>Host key</source>
@@ -2362,7 +2402,7 @@
     </unit>
     <unit id="sched.hostKeyPinned">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:216,217</note>
+        <note category="location">src/app/pages/backup-schedule.ts:233,234</note>
       </notes>
       <segment>
         <source>Confirmed: <ph id="0" equiv="INTERPOLATION" disp="{{ hostKeyType(d.hostKey) }}"/></source>
@@ -2370,7 +2410,7 @@
     </unit>
     <unit id="sched.hostKeyNone">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:218,220</note>
+        <note category="location">src/app/pages/backup-schedule.ts:235,237</note>
       </notes>
       <segment>
         <source>Not confirmed yet: test the connection to see the server&apos;s key.</source>
@@ -2378,7 +2418,7 @@
     </unit>
     <unit id="sched.test">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:227,228</note>
+        <note category="location">src/app/pages/backup-schedule.ts:244,245</note>
       </notes>
       <segment>
         <source>Test connection</source>
@@ -2386,7 +2426,7 @@
     </unit>
     <unit id="sched.existing">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:232,233</note>
+        <note category="location">src/app/pages/backup-schedule.ts:249,250</note>
       </notes>
       <segment>
         <source>(<ph id="0" equiv="INTERPOLATION" disp="{{ r.backups }}"/> of this appliance&apos;s backups already there)</source>
@@ -2394,7 +2434,7 @@
     </unit>
     <unit id="sched.fingerprintHelp">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:236,237</note>
+        <note category="location">src/app/pages/backup-schedule.ts:253,254</note>
       </notes>
       <segment>
         <source>Compare it with the server&apos;s own fingerprint (on the server: <pc id="0" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">ssh-keygen -lf <ph id="1" equiv="INTERPOLATION" disp="{{ r.keyFile }}"/></pc>) before trusting it.</source>
@@ -2402,7 +2442,7 @@
     </unit>
     <unit id="sched.trustKey">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:237,238</note>
+        <note category="location">src/app/pages/backup-schedule.ts:254,255</note>
       </notes>
       <segment>
         <source>Trust this key and test again</source>
@@ -2410,7 +2450,7 @@
     </unit>
     <unit id="sched.retention">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:245,246</note>
+        <note category="location">src/app/pages/backup-schedule.ts:262,263</note>
       </notes>
       <segment>
         <source>Retention</source>
@@ -2418,7 +2458,7 @@
     </unit>
     <unit id="sched.keep">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:247,248</note>
+        <note category="location">src/app/pages/backup-schedule.ts:264,265</note>
       </notes>
       <segment>
         <source>Keep</source>
@@ -2426,7 +2466,7 @@
     </unit>
     <unit id="sched.atDestination">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:251,253</note>
+        <note category="location">src/app/pages/backup-schedule.ts:268,270</note>
       </notes>
       <segment>
         <source>at the destination,</source>
@@ -2434,7 +2474,7 @@
     </unit>
     <unit id="sched.onAppliance">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:254,256</note>
+        <note category="location">src/app/pages/backup-schedule.ts:271,273</note>
       </notes>
       <segment>
         <source>on this appliance (newest first)</source>
@@ -2442,7 +2482,7 @@
     </unit>
     <unit id="sched.lastRunCopied">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:269,270</note>
+        <note category="location">src/app/pages/backup-schedule.ts:286,287</note>
       </notes>
       <segment>
         <source>Last: <ph id="0" equiv="INTERPOLATION" disp="{{ run.name }}"/> · <ph id="1" equiv="INTERPOLATION_1" disp="{{ fmtBytes(run.size ?? 0) }}"/> · <ph id="2" equiv="INTERPOLATION_2" disp="{{ dt(run.finished) }}"/> · copied</source>
@@ -2450,7 +2490,7 @@
     </unit>
     <unit id="sched.lastRun">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:271,272</note>
+        <note category="location">src/app/pages/backup-schedule.ts:288,289</note>
       </notes>
       <segment>
         <source>Last: <ph id="0" equiv="INTERPOLATION" disp="{{ run.name }}"/> · <ph id="1" equiv="INTERPOLATION_1" disp="{{ fmtBytes(run.size ?? 0) }}"/> · <ph id="2" equiv="INTERPOLATION_2" disp="{{ dt(run.finished) }}"/></source>
@@ -2458,7 +2498,7 @@
     </unit>
     <unit id="common.save">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:277,278</note>
+        <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
         <note category="location">src/app/pages/data-sources.ts:189,190</note>
         <note category="location">src/app/pages/devices.ts:118,120</note>
         <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
@@ -2475,7 +2515,7 @@
     </unit>
     <unit id="sched.runNow">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:278,279</note>
+        <note category="location">src/app/pages/backup-schedule.ts:295,296</note>
       </notes>
       <segment>
         <source>Back up now</source>
@@ -2483,16 +2523,111 @@
     </unit>
     <unit id="backup.mismatch">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:280,282</note>
+        <note category="location">src/app/pages/backup-schedule.ts:297,299</note>
         <note category="location">src/app/pages/backup.ts:83,85</note>
       </notes>
       <segment>
         <source>The passphrases don&apos;t match.</source>
       </segment>
     </unit>
+    <unit id="sched.regenTitle">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:306,307</note>
+      </notes>
+      <segment>
+        <source>Regenerate the appliance&apos;s SSH key?</source>
+      </segment>
+    </unit>
+    <unit id="sched.regenBody">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:308,309</note>
+      </notes>
+      <segment>
+        <source>A new Ed25519 key replaces the current one (<ph id="0" equiv="INTERPOLATION" disp="{{ st()?.sshKey?.fingerprint }}"/>), which is deleted. SFTP servers will reject the appliance until you add the new public key to authorized_keys; remove the old line there too. Do this if the key may have been exposed, or after restoring this appliance&apos;s backup onto another one.</source>
+      </segment>
+    </unit>
+    <unit id="common.cancel">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:311,312</note>
+        <note category="location">src/app/pages/backup-schedule.ts:334,335</note>
+        <note category="location">src/app/pages/backup.ts:186,187</note>
+        <note category="location">src/app/pages/backup.ts:200,201</note>
+        <note category="location">src/app/pages/certificates.ts:185,186</note>
+        <note category="location">src/app/pages/certificates.ts:243,244</note>
+        <note category="location">src/app/pages/certificates.ts:269,270</note>
+        <note category="location">src/app/pages/certificates.ts:289,290</note>
+        <note category="location">src/app/pages/certificates.ts:298,299</note>
+        <note category="location">src/app/pages/devices.ts:117,118</note>
+        <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
+        <note category="location">src/app/pages/exporters.ts:131,132</note>
+        <note category="location">src/app/pages/exporters.ts:142,143</note>
+        <note category="location">src/app/pages/identity-sources.ts:162,164</note>
+        <note category="location">src/app/pages/identity-sources.ts:507,508</note>
+        <note category="location">src/app/pages/identity-sources.ts:518,519</note>
+        <note category="location">src/app/pages/services.ts:84,85</note>
+        <note category="location">src/app/pages/updates.ts:121,122</note>
+        <note category="location">src/app/pages/users.ts:102,103</note>
+        <note category="location">src/app/pages/users.ts:113,114</note>
+        <note category="location">src/app/pages/users.ts:122,123</note>
+        <note category="location">src/app/shared/filter-bar.ts:37,39</note>
+        <note category="location">src/app/shared/time-range.ts:55,56</note>
+        <note category="location">src/app/shell.ts:138,139</note>
+      </notes>
+      <segment>
+        <source>Cancel</source>
+      </segment>
+    </unit>
+    <unit id="sched.regenerateButton">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:312,314</note>
+      </notes>
+      <segment>
+        <source>Regenerate</source>
+      </segment>
+    </unit>
+    <unit id="sched.uploadTitle">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:317,318</note>
+      </notes>
+      <segment>
+        <source>Use your own SSH key</source>
+      </segment>
+    </unit>
+    <unit id="sched.uploadHelp">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:319,320</note>
+      </notes>
+      <segment>
+        <source>Paste or choose an OpenSSH private key (Ed25519 recommended; ECDSA, or RSA of 2048 bits or more). It replaces the appliance&apos;s current key, is stored encrypted and is never shown again. A passphrase is only used to read it and isn&apos;t stored.</source>
+      </segment>
+    </unit>
+    <unit id="sched.chooseKeyFile">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:324,325</note>
+      </notes>
+      <segment>
+        <source>Choose key file…</source>
+      </segment>
+    </unit>
+    <unit id="sched.keyPassphrase">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:327</note>
+      </notes>
+      <segment>
+        <source>Key passphrase (if any)</source>
+      </segment>
+    </unit>
+    <unit id="sched.useThisKey">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:335,337</note>
+      </notes>
+      <segment>
+        <source>Use this key</source>
+      </segment>
+    </unit>
     <unit id="sched.thisAppliance">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:339</note>
+        <note category="location">src/app/pages/backup-schedule.ts:406</note>
       </notes>
       <segment>
         <source>This appliance only</source>
@@ -2500,7 +2635,7 @@
     </unit>
     <unit id="snmp.storedKeep">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:344</note>
+        <note category="location">src/app/pages/backup-schedule.ts:411</note>
         <note category="location">src/app/shared/snmp-settings.ts:126</note>
       </notes>
       <segment>
@@ -2509,7 +2644,7 @@
     </unit>
     <unit id="identitySources.copy">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:345</note>
+        <note category="location">src/app/pages/backup-schedule.ts:412</note>
         <note category="location">src/app/pages/identity-sources.ts:602</note>
       </notes>
       <segment>
@@ -2518,16 +2653,32 @@
     </unit>
     <unit id="identitySources.copied">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:346</note>
+        <note category="location">src/app/pages/backup-schedule.ts:413</note>
         <note category="location">src/app/pages/identity-sources.ts:603</note>
       </notes>
       <segment>
         <source>Copied</source>
       </segment>
     </unit>
+    <unit id="sched.keyChangedNote">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:466</note>
+      </notes>
+      <segment>
+        <source>New key in use (<ph id="0" equiv="fingerprint" disp="k.fingerprint"/>). Add its public key to the server&apos;s authorized_keys and remove the old one.</source>
+      </segment>
+    </unit>
+    <unit id="sched.keyFileTooLarge">
+      <notes>
+        <note category="location">src/app/pages/backup-schedule.ts:499</note>
+      </notes>
+      <segment>
+        <source>That file is too large to be an SSH private key.</source>
+      </segment>
+    </unit>
     <unit id="sched.phaseBackup">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:399</note>
+        <note category="location">src/app/pages/backup-schedule.ts:528</note>
       </notes>
       <segment>
         <source>making the backup</source>
@@ -2535,7 +2686,7 @@
     </unit>
     <unit id="sched.phaseCopy">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:400</note>
+        <note category="location">src/app/pages/backup-schedule.ts:529</note>
       </notes>
       <segment>
         <source>copying to the destination</source>
@@ -2543,7 +2694,7 @@
     </unit>
     <unit id="sched.phasePrune">
       <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:401</note>
+        <note category="location">src/app/pages/backup-schedule.ts:530</note>
       </notes>
       <segment>
         <source>removing old backups</source>
@@ -2839,35 +2990,6 @@
       </notes>
       <segment>
         <source>Delete this backup?</source>
-      </segment>
-    </unit>
-    <unit id="common.cancel">
-      <notes>
-        <note category="location">src/app/pages/backup.ts:186,187</note>
-        <note category="location">src/app/pages/backup.ts:200,201</note>
-        <note category="location">src/app/pages/certificates.ts:185,186</note>
-        <note category="location">src/app/pages/certificates.ts:243,244</note>
-        <note category="location">src/app/pages/certificates.ts:269,270</note>
-        <note category="location">src/app/pages/certificates.ts:289,290</note>
-        <note category="location">src/app/pages/certificates.ts:298,299</note>
-        <note category="location">src/app/pages/devices.ts:117,118</note>
-        <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
-        <note category="location">src/app/pages/exporters.ts:131,132</note>
-        <note category="location">src/app/pages/exporters.ts:142,143</note>
-        <note category="location">src/app/pages/identity-sources.ts:162,164</note>
-        <note category="location">src/app/pages/identity-sources.ts:507,508</note>
-        <note category="location">src/app/pages/identity-sources.ts:518,519</note>
-        <note category="location">src/app/pages/services.ts:84,85</note>
-        <note category="location">src/app/pages/updates.ts:121,122</note>
-        <note category="location">src/app/pages/users.ts:102,103</note>
-        <note category="location">src/app/pages/users.ts:113,114</note>
-        <note category="location">src/app/pages/users.ts:122,123</note>
-        <note category="location">src/app/shared/filter-bar.ts:37,39</note>
-        <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:138,139</note>
-      </notes>
-      <segment>
-        <source>Cancel</source>
       </segment>
     </unit>
     <unit id="backup.restoreTitle">

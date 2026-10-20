@@ -1,11 +1,7 @@
 package config
 
 import (
-	"crypto/ed25519"
-	"crypto/rand"
-	"database/sql"
 	"encoding/json"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"net"
@@ -378,38 +374,3 @@ func (c *DB) BackupRun() BackupRun {
 }
 
 func (c *DB) SaveBackupRun(r BackupRun) error { return c.saveSettingJSON("backup_run", r) }
-
-// BackupSSHKey returns the appliance's SSH key for SFTP destinations,
-// creating it on first use, and its public half in authorized_keys format.
-func (c *DB) BackupSSHKey() (ssh.Signer, string, error) {
-	var enc string
-	err := c.db.QueryRow("SELECT value FROM settings WHERE key = 'backup_ssh_key'").Scan(&enc)
-	if errors.Is(err, sql.ErrNoRows) {
-		_, priv, gerr := ed25519.GenerateKey(rand.Reader)
-		if gerr != nil {
-			return nil, "", gerr
-		}
-		block, merr := ssh.MarshalPrivateKey(priv, "tributary backup")
-		if merr != nil {
-			return nil, "", merr
-		}
-		if enc, err = c.encrypt(string(pem.EncodeToMemory(block))); err != nil {
-			return nil, "", err
-		}
-		if _, err = c.db.Exec("INSERT INTO settings(key, value) VALUES('backup_ssh_key', ?)", enc); err != nil {
-			return nil, "", err
-		}
-	} else if err != nil {
-		return nil, "", err
-	}
-	plain, err := c.decrypt(enc)
-	if err != nil {
-		return nil, "", err
-	}
-	signer, err := ssh.ParsePrivateKey([]byte(plain))
-	if err != nil {
-		return nil, "", err
-	}
-	pub := strings.TrimSpace(string(ssh.MarshalAuthorizedKey(signer.PublicKey()))) + " tributary-backup"
-	return signer, pub, nil
-}
