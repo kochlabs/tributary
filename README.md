@@ -1,6 +1,6 @@
 # Tributary
 
-*Network flow analytics appliance.*
+*Self-hosted network flow analytics: NetFlow, IPFIX and sFlow.*
 
 A self-contained flow collector and traffic analytics appliance: NetFlow v5/v9,
 IPFIX and sFlow v5 in; dashboards, drill-down analysis and flow search out,
