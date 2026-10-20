@@ -148,6 +148,21 @@ make demo-start          # simulated exporters on 127.0.1.1–4 (make demo-stop)
 bin/flowgen -backfill 72h -geoip-dir /var/lib/nfa/geoip   # history
 ```
 
+### Releasing
+
+CI (`.github/workflows/ci.yml`) runs `make check` on every push and pull
+request. Pushing a version tag publishes a release: the workflow runs the
+checks, builds the `.deb` and attaches it with `install.sh`, `SHA256SUMS` and
+build attestations to a GitHub release.
+
+```bash
+git tag -a v0.2.0 -m "Tributary 0.2.0"   # v0.2.0-rc.1 makes a pre-release
+git push origin v0.2.0
+```
+
+Package versions follow the tags: a release is `0.2.0`, and builds between
+releases are `0.2.0+git<count>.<sha>`, so apt always sees them as newer.
+
 ## Operating notes
 
 - Configure exporters with an active timeout of 60 s so long flows are reported

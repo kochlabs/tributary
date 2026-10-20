@@ -1,12 +1,19 @@
-export PATH := /usr/local/go/bin:/usr/local/node/bin:$(PATH)
+# Use local toolchains when installed there (CI provides its own).
+empty    :=
+space    := $(empty) $(empty)
+export PATH := $(subst $(space),:,$(strip $(wildcard /usr/local/go/bin /usr/local/node/bin) $(PATH)))
 
-# Package versions must increase with every commit for apt to see upgrades:
-# 0.1.0+git<commit count>.<sha>, with .dirty for uncommitted changes.
-BASE     := 0.1.0
+# Package versions must increase with every commit for apt to see upgrades.
+# A clean checkout of a release tag (v1.2.3) builds as 1.2.3; anything else as
+# <latest release>+git<commit count>.<sha>, with .dirty for uncommitted
+# changes (0.1.0 before the first release). Release builds set VERSION.
 SHA      := $(shell git rev-parse --short HEAD 2>/dev/null || echo 0)
 COUNT    := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
 DIRTY    := $(shell git diff --quiet HEAD 2>/dev/null || echo .dirty)
-VERSION  ?= $(BASE)+git$(COUNT).$(SHA)$(DIRTY)
+TAG      := $(shell git describe --tags --exact-match --match 'v[0-9]*' 2>/dev/null)
+LASTTAG  := $(shell git describe --tags --abbrev=0 --match 'v[0-9]*' 2>/dev/null)
+BASE     := $(or $(patsubst v%,%,$(LASTTAG)),0.1.0)
+VERSION  ?= $(if $(and $(TAG),$(if $(DIRTY),,clean)),$(patsubst v%,%,$(TAG)),$(BASE)+git$(COUNT).$(SHA)$(DIRTY))
 SOURCE_URL ?= https://github.com/kochlabs/tributary
 LDFLAGS  := -s -w -X main.version=$(VERSION) -X main.sourceURL=$(SOURCE_URL)
 DEB      := dist/tributary_$(VERSION)_amd64.deb
@@ -30,6 +37,7 @@ web: web/node_modules/.stamp ## Build the web UI into the embedded dist director
 	install -m 644 LICENSE web/public/LICENSE.txt
 	install -m 644 THIRD_PARTY_NOTICES.md web/public/THIRD_PARTY_NOTICES.txt
 	cd web && npx ng build
+	@touch internal/webui/dist/.gitkeep # the build empties the directory; Go needs it present
 
 build: ## Build nfad and flowgen into bin/ (embeds the last web build)
 	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o bin/ ./cmd/...
@@ -59,6 +67,7 @@ check: web/node_modules/.stamp ## Pre-commit check: gofmt, vet, tests and a web 
 	@unformatted=$$(gofmt -l cmd internal); if [ -n "$$unformatted" ]; then echo "gofmt needed:"; echo "$$unformatted"; exit 1; fi
 	$(MAKE) --no-print-directory test
 	cd web && npx ng build
+	@touch internal/webui/dist/.gitkeep
 
 fuzz: ## Fuzz the flow decoders for 60s
 	go test ./internal/decode -run XXX -fuzz FuzzDecode -fuzztime 60s

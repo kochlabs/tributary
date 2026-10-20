@@ -26,6 +26,15 @@ package with `make deb`), then:
 sudo ./install.sh tributary_<version>_amd64.deb
 ```
 
+To check the download first: `SHA256SUMS` lists the files' checksums, and
+each file has a build attestation showing it was built from this repository
+by its release workflow:
+
+```bash
+sha256sum -c SHA256SUMS --ignore-missing
+gh attestation verify tributary_<version>_amd64.deb --repo kochlabs/tributary
+```
+
 The script does exactly the steps in [Manual install](#manual-install). It
 shows what it will add to apt and asks first; `-y` skips the question for
 unattended installs. Running it again later is safe: it checks that the

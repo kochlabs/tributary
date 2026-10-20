@@ -1,9 +1,9 @@
-bin/
+/bin/
 .devdata/
 web/node_modules/
 web/.angular/
 internal/webui/dist/*
 !internal/webui/dist/.gitkeep
-dist/
+/dist/
 web/public/LICENSE.txt
 web/public/THIRD_PARTY_NOTICES.txt
