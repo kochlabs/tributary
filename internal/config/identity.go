@@ -16,8 +16,9 @@ import (
 )
 
 // Identity sources let users sign in through an external provider: OpenID
-// Connect (redirect-based single sign-on), or LDAP/Active Directory and
-// RADIUS (username and password checked against the directory or server).
+// Connect and SAML 2.0 (redirect-based single sign-on), or LDAP/Active
+// Directory and RADIUS (username and password checked against the directory
+// or server).
 
 const identitySchema = `
 CREATE TABLE IF NOT EXISTS identity_sources (
@@ -81,11 +82,12 @@ type RADIUSConfig struct {
 
 type IdentitySource struct {
 	ID          int64         `json:"id"`
-	Type        string        `json:"type"` // oidc | ldap | radius
+	Type        string        `json:"type"` // oidc | saml | ldap | radius
 	Name        string        `json:"name"`
 	Enabled     bool          `json:"enabled"`
 	Priority    int           `json:"priority"`
 	OIDC        *OIDCConfig   `json:"oidc,omitempty"`
+	SAML        *SAMLConfig   `json:"saml,omitempty"`
 	LDAP        *LDAPConfig   `json:"ldap,omitempty"`
 	RADIUS      *RADIUSConfig `json:"radius,omitempty"`
 	Mappings    []RoleMapping `json:"mappings"`
@@ -192,7 +194,7 @@ func (s *IdentitySource) normalize() error {
 		return errors.New("name is required (up to 64 characters)")
 	}
 	switch s.Type {
-	case "oidc", "ldap", "radius":
+	case "oidc", "saml", "ldap", "radius":
 	default:
 		return ErrUnsupportedSource
 	}
@@ -219,13 +221,16 @@ func (s *IdentitySource) normalize() error {
 	}
 	switch s.Type {
 	case "ldap":
-		s.OIDC, s.RADIUS = nil, nil
+		s.OIDC, s.SAML, s.RADIUS = nil, nil, nil
 		return s.LDAP.normalize()
 	case "radius":
-		s.OIDC, s.LDAP = nil, nil
+		s.OIDC, s.SAML, s.LDAP = nil, nil, nil
 		return s.RADIUS.normalize()
+	case "saml":
+		s.OIDC, s.LDAP, s.RADIUS = nil, nil, nil
+		return s.SAML.normalize()
 	}
-	s.LDAP, s.RADIUS = nil, nil
+	s.SAML, s.LDAP, s.RADIUS = nil, nil, nil
 	o := s.OIDC
 	if o == nil {
 		return errors.New("OpenID Connect settings are required")
@@ -277,6 +282,9 @@ func (c *DB) scanSource(row interface{ Scan(...any) error }, withSecret bool) (*
 	case "oidc":
 		s.OIDC = &OIDCConfig{}
 		target = s.OIDC
+	case "saml":
+		s.SAML = &SAMLConfig{}
+		target = s.SAML
 	case "ldap":
 		s.LDAP = &LDAPConfig{}
 		target = s.LDAP
@@ -341,20 +349,21 @@ func (c *DB) SaveIdentitySource(s IdentitySource) (int64, error) {
 		return 0, err
 	}
 	sec := s.secret()
-	if s.ID != 0 && *sec == "" {
-		stored, err := c.IdentitySource(s.ID, false)
+	if s.Type == "saml" {
+		// The appliance's own key pair, never taken from the request.
+		if err := c.prepareSAMLKeys(&s); err != nil {
+			return 0, err
+		}
+	} else if s.ID != 0 && *sec == "" {
+		typ, cfg, err := c.storedSourceConfig(s.ID)
 		if err != nil {
 			return 0, err
 		}
-		if stored.Type != s.Type {
+		if typ != s.Type {
 			return 0, errors.New("the type of an identity source can't be changed")
 		}
-		var cfg string
-		if err := c.db.QueryRow("SELECT config FROM identity_sources WHERE id = ?", s.ID).Scan(&cfg); err != nil {
-			return 0, err
-		}
 		var raw map[string]any
-		if err := json.Unmarshal([]byte(cfg), &raw); err != nil {
+		if err := json.Unmarshal(cfg, &raw); err != nil {
 			return 0, err
 		}
 		*sec, _ = raw[secretField[s.Type]].(string) // already encrypted
@@ -365,7 +374,7 @@ func (c *DB) SaveIdentitySource(s IdentitySource) (int64, error) {
 		}
 		*sec = enc
 	}
-	if s.Type != "oidc" && *sec == "" {
+	if s.PasswordBased() && *sec == "" {
 		return 0, fmt.Errorf("the %s is required", secretLabel[s.Type])
 	}
 	cfg, _ := json.Marshal(s.config())
@@ -417,7 +426,7 @@ func (c *DB) DeleteIdentitySource(id int64) error {
 func (s *IdentitySource) Validate() error { return s.normalize() }
 
 // secretField names each type's secret in the stored JSON.
-var secretField = map[string]string{"oidc": "clientSecret", "ldap": "bindPassword", "radius": "secret"}
+var secretField = map[string]string{"oidc": "clientSecret", "saml": "spKey", "ldap": "bindPassword", "radius": "secret"}
 var secretLabel = map[string]string{"oidc": "client secret", "ldap": "bind password", "radius": "shared secret"}
 
 // secret points at the type's write-only secret.
@@ -427,6 +436,8 @@ func (s *IdentitySource) secret() *string {
 		return &s.LDAP.BindPassword
 	case s.RADIUS != nil:
 		return &s.RADIUS.Secret
+	case s.SAML != nil:
+		return &s.SAML.SPKey
 	case s.OIDC != nil:
 		return &s.OIDC.ClientSecret
 	}
@@ -440,6 +451,8 @@ func (s *IdentitySource) config() any {
 		return s.LDAP
 	case "radius":
 		return s.RADIUS
+	case "saml":
+		return s.SAML
 	}
 	return s.OIDC
 }
@@ -461,10 +474,13 @@ func (c *DB) ExternalUserSource(username string) (int64, bool) {
 // ResolveRole applies a source's mappings to a user's groups: the highest
 // matching role wins, else the default role ("" = deny).
 func (s *IdentitySource) ResolveRole(groups []string) string {
+	// Directory-style group names compare case-insensitively (AD FS and Entra
+	// ID send AD group names or object IDs); OIDC claims compare exactly.
+	fold := s.Type != "oidc"
 	have := map[string]bool{}
 	for _, g := range groups {
 		have[g] = true
-		if s.Type == "ldap" || s.Type == "radius" {
+		if fold {
 			// Directory names compare case-insensitively, and an LDAP group
 			// can be mapped by its full DN or just its CN.
 			have[strings.ToLower(g)] = true
@@ -473,7 +489,7 @@ func (s *IdentitySource) ResolveRole(groups []string) string {
 			}
 		}
 	}
-	if s.Type == "ldap" || s.Type == "radius" {
+	if fold {
 		for i := range s.Mappings {
 			s.Mappings[i].Group = strings.ToLower(s.Mappings[i].Group)
 		}

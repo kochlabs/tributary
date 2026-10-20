@@ -59,6 +59,25 @@ export interface RADIUSConfig {
   roleAttribute: 'Class' | 'Filter-Id';
 }
 
+export interface SAMLConfig {
+  metadataUrl: string;
+  metadataXml: string;
+  metadataFetched?: number;
+  entityId: string;
+  usernameAttr: string;
+  nameAttr: string;
+  groupsAttr: string;
+  signRequests: boolean;
+}
+
+/** The appliance's side of a SAML source, for the provider administrator. */
+export interface SAMLInfo {
+  entityId: string;
+  acsUrl: string;
+  metadataUrl: string;
+  certExpires?: number;
+}
+
 export interface IdentitySource {
   id: number;
   type: 'oidc' | 'ldap' | 'radius' | 'saml';
@@ -66,6 +85,7 @@ export interface IdentitySource {
   enabled: boolean;
   priority: number;
   oidc?: OIDCConfig;
+  saml?: SAMLConfig;
   ldap?: LDAPConfig;
   radius?: RADIUSConfig;
   mappings: RoleMapping[];
@@ -87,6 +107,10 @@ export interface ProviderTest {
   scopes?: string[];
   claims?: string[];
   pkce?: string[];
+  idpEntityId?: string;
+  ssoUrl?: string;
+  signingCerts?: { subject: string; notAfter: number }[];
+  wantsSignedRequests?: boolean;
 }
 
 export interface LocalSuggestions {
@@ -797,16 +821,17 @@ export class Api {
     return this.get<IdentitySource[]>('/api/identity-sources');
   }
   identitySource(id: number) {
-    return this.get<{ source: IdentitySource; redirectUri: string }>(`/api/identity-sources/${id}`);
+    return this.get<{ source: IdentitySource; redirectUri: string; saml?: SAMLInfo }>(`/api/identity-sources/${id}`);
   }
   saveIdentitySource(s: Partial<IdentitySource>) {
-    const req = s.id ? this.http.put<{ id: number; redirectUri: string }>(`/api/identity-sources/${s.id}`, s) : this.http.post<{ id: number; redirectUri: string }>('/api/identity-sources', s);
+    type Saved = { id: number; redirectUri: string; saml?: SAMLInfo };
+    const req = s.id ? this.http.put<Saved>(`/api/identity-sources/${s.id}`, s) : this.http.post<Saved>('/api/identity-sources', s);
     return firstValueFrom(req);
   }
   deleteIdentitySource(id: number) {
     return firstValueFrom(this.http.delete(`/api/identity-sources/${id}`));
   }
-  testIdentitySource(body: { type: string; id?: number; issuer?: string; ldap?: LDAPConfig; radius?: RADIUSConfig; username?: string; password?: string; mappings?: RoleMapping[]; defaultRole?: string }) {
+  testIdentitySource(body: { type: string; id?: number; issuer?: string; saml?: SAMLConfig; ldap?: LDAPConfig; radius?: RADIUSConfig; username?: string; password?: string; mappings?: RoleMapping[]; defaultRole?: string }) {
     return firstValueFrom(this.http.post<ProviderTest>('/api/identity-sources/test', body));
   }
   certificate() {

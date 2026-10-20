@@ -20,9 +20,10 @@ import (
 	"nfa/internal/dirauth"
 )
 
-// OpenID Connect sign-in: Authorization Code flow with PKCE, state and nonce.
-// The pending login is kept server-side and bound to the browser with a
-// short-lived cookie, so a stolen or forged callback URL is useless.
+// Single sign-on. OpenID Connect uses the Authorization Code flow with PKCE,
+// state and nonce; SAML is in saml.go. The pending login is kept server-side
+// and bound to the browser with a short-lived cookie, so a stolen or forged
+// callback is useless.
 
 const (
 	ssoCookie  = "nfa_sso"
@@ -30,10 +31,11 @@ const (
 )
 
 type ssoPending struct {
-	sourceID int64
-	nonce    string
-	verifier string
-	next     string
+	sourceID  int64
+	nonce     string
+	verifier  string
+	requestID string // SAML AuthnRequest ID
+	next      string
 	expires  time.Time
 }
 
@@ -127,6 +129,10 @@ func safeNext(next string) string {
 func (s *Server) ssoStart(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	src, err := s.Config.IdentitySource(id, true)
+	if err == nil && src.Enabled && src.SAML != nil {
+		s.samlStart(w, r, src)
+		return
+	}
 	if err != nil || !src.Enabled || src.OIDC == nil {
 		ssoFail(w, r, "That sign-in option is not available.")
 		return
@@ -227,7 +233,13 @@ func (s *Server) ssoCallback(w http.ResponseWriter, r *http.Request) {
 		ssoFail(w, r, fmt.Sprintf("Sign-in failed: the provider did not send the %q claim used as the username.", src.OIDC.UsernameClaim))
 		return
 	}
-	groups := claimStrings(claims[src.OIDC.GroupsClaim])
+	fullName, _ := claims["name"].(string)
+	s.ssoFinish(w, r, src, username, fullName, claimStrings(claims[src.OIDC.GroupsClaim]), pend.next)
+}
+
+// ssoFinish signs in a user a provider has vouched for: map the role, create
+// or update the account, and start a session.
+func (s *Server) ssoFinish(w http.ResponseWriter, r *http.Request, src *config.IdentitySource, username, fullName string, groups []string, next string) {
 	role := src.ResolveRole(groups)
 	ip := clientIP(r)
 	if role == "" {
@@ -235,7 +247,6 @@ func (s *Server) ssoCallback(w http.ResponseWriter, r *http.Request) {
 		ssoFail(w, r, "You signed in to "+src.Name+", but your account isn't permitted to use this appliance. Ask an administrator to add your group.")
 		return
 	}
-	fullName, _ := claims["name"].(string)
 	u, err := s.Config.UpsertExternalUser(src.ID, username, fullName, role)
 	if err != nil {
 		s.Config.Audit(username, "login.sso.denied", fmt.Sprintf("%s via %s: %v", ip, src.Name, err))
@@ -255,7 +266,8 @@ func (s *Server) ssoCallback(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{Name: cookieName, Value: sess, Path: "/", HttpOnly: true, Secure: s.SecureCookies,
 		SameSite: http.SameSiteStrictMode, MaxAge: int(ttl.Seconds())})
 	s.Config.Audit(u.Username, "login.sso", fmt.Sprintf("%s via %s as %s", ip, src.Name, role))
-	http.Redirect(w, r, pend.next, http.StatusFound)
+	// 303: the SAML response arrives as a POST.
+	http.Redirect(w, r, next, http.StatusSeeOther)
 }
 
 // claimStrings accepts a claim that is a list of strings or a single string.
@@ -293,7 +305,7 @@ func (s *Server) identitySourceGet(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusNotFound, "identity source not found")
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"source": src, "redirectUri": s.redirectURI(r, id)})
+	writeJSON(w, http.StatusOK, map[string]any{"source": src, "redirectUri": s.redirectURI(r, id), "saml": s.samlInfo(r, src)})
 }
 
 func (s *Server) identitySourceSave(w http.ResponseWriter, r *http.Request) {
@@ -306,6 +318,12 @@ func (s *Server) identitySourceSave(w http.ResponseWriter, r *http.Request) {
 		src.ID, _ = strconv.ParseInt(idStr, 10, 64)
 	} else {
 		src.ID = 0
+	}
+	if src.Type == "saml" {
+		if err := s.prepareSAML(r.Context(), &src); err != nil {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
 	}
 	id, err := s.Config.SaveIdentitySource(src)
 	if err != nil {
@@ -321,7 +339,11 @@ func (s *Server) identitySourceSave(w http.ResponseWriter, r *http.Request) {
 		action = "identity.create"
 	}
 	s.Config.Audit(userFrom(r).Username, action, src.Name)
-	writeJSON(w, http.StatusOK, map[string]any{"id": id, "redirectUri": s.redirectURI(r, id)})
+	out := map[string]any{"id": id, "redirectUri": s.redirectURI(r, id)}
+	if saved, err := s.Config.IdentitySource(id, false); err == nil {
+		out["saml"] = s.samlInfo(r, saved)
+	}
+	writeJSON(w, http.StatusOK, out)
 }
 
 func (s *Server) identitySourceDelete(w http.ResponseWriter, r *http.Request) {
@@ -344,13 +366,14 @@ func (s *Server) identitySourceDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 // identitySourceTest checks a source's settings before saving: OIDC loads
-// the discovery document; LDAP binds the service account (and optionally
+// the discovery document; SAML loads the provider metadata; LDAP binds the service account (and optionally
 // looks up a user); RADIUS sends a request with test credentials.
 func (s *Server) identitySourceTest(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Type     string               `json:"type"`
 		ID       int64                `json:"id"` // reuse the stored secret when the form leaves it empty
 		Issuer   string               `json:"issuer"`
+		SAML     *config.SAMLConfig   `json:"saml"`
 		LDAP     *config.LDAPConfig   `json:"ldap"`
 		RADIUS   *config.RADIUSConfig `json:"radius"`
 		Username string               `json:"username"`
@@ -364,6 +387,9 @@ func (s *Server) identitySourceTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch req.Type {
+	case "saml":
+		s.samlTest(w, r, req.SAML)
+		return
 	case "ldap", "radius":
 		s.directoryTest(w, r, config.IdentitySource{Type: req.Type, Name: "test", LDAP: req.LDAP, RADIUS: req.RADIUS, Mappings: req.Mappings, DefaultRole: req.DefaultRole},
 			req.ID, req.Username, req.Password)
@@ -454,7 +480,7 @@ func (s *Server) ssoOptions() []map[string]any {
 	}
 	out := []map[string]any{}
 	for _, src := range list {
-		if src.Enabled && src.Type == "oidc" { // LDAP/RADIUS use the regular sign-in form
+		if src.Enabled && !src.PasswordBased() { // LDAP/RADIUS use the regular sign-in form
 			out = append(out, map[string]any{"id": src.ID, "name": src.Name})
 		}
 	}

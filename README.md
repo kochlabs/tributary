@@ -72,7 +72,7 @@ Screenshots show simulated traffic from `cmd/flowgen`.
 - **SNMP polling**: per exporter (v2c or v3), interface names, descriptions and
   speeds from IF-MIB every 15 minutes, for routers that don't send names in their
   flow data and for accurate utilization. Values you set yourself take precedence.
-- **Sign-in**: local accounts, OpenID Connect SSO, LDAP / Active Directory
+- **Sign-in**: local accounts, OpenID Connect and SAML 2.0 SSO, LDAP / Active Directory
   (StartTLS or LDAPS, nested groups) and RADIUS (Message-Authenticator, failover),
   with roles mapped from groups; TOTP two-factor authentication with recovery
   codes, optionally required for administrators.

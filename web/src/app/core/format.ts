@@ -62,6 +62,11 @@ export function dateTime(ms: number): string {
   });
 }
 
+export function dateOnly(ms: number): string {
+  if (!ms) return '–';
+  return new Date(ms).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+}
+
 export function ago(ms: number): string {
   if (!ms) return $localize`:@@format.never:never`;
   const s = Math.max(0, (Date.now() - ms) / 1000);

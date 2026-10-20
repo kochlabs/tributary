@@ -136,7 +136,7 @@
     <unit id="nav.identitySources">
       <notes>
         <note category="location">src/app/app.routes.ts:30</note>
-        <note category="location">src/app/pages/identity-sources.ts:51,52</note>
+        <note category="location">src/app/pages/identity-sources.ts:77,78</note>
         <note category="location">src/app/shell.ts:97,98</note>
       </notes>
       <segment>
@@ -184,7 +184,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:580</note>
+        <note category="location">src/app/core/api.ts:604</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1314,7 +1314,7 @@
     </unit>
     <unit id="format.never">
       <notes>
-        <note category="location">src/app/core/format.ts:66</note>
+        <note category="location">src/app/core/format.ts:71</note>
       </notes>
       <segment>
         <source>never</source>
@@ -1322,7 +1322,7 @@
     </unit>
     <unit id="format.secondsAgo">
       <notes>
-        <note category="location">src/app/core/format.ts:68</note>
+        <note category="location">src/app/core/format.ts:73</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="n" disp="Math.floor(s)"/>s ago</source>
@@ -1330,7 +1330,7 @@
     </unit>
     <unit id="format.minutesAgo">
       <notes>
-        <note category="location">src/app/core/format.ts:69</note>
+        <note category="location">src/app/core/format.ts:74</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="n" disp="Math.floor(s / 60)"/>m ago</source>
@@ -1338,7 +1338,7 @@
     </unit>
     <unit id="format.hoursAgo">
       <notes>
-        <note category="location">src/app/core/format.ts:70</note>
+        <note category="location">src/app/core/format.ts:75</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="n" disp="Math.floor(s / 3600)"/>h ago</source>
@@ -1346,7 +1346,7 @@
     </unit>
     <unit id="format.daysAgo">
       <notes>
-        <note category="location">src/app/core/format.ts:71</note>
+        <note category="location">src/app/core/format.ts:76</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="n" disp="Math.floor(s / 86400)"/>d ago</source>
@@ -1354,7 +1354,7 @@
     </unit>
     <unit id="format.unknown">
       <notes>
-        <note category="location">src/app/core/format.ts:96</note>
+        <note category="location">src/app/core/format.ts:101</note>
       </notes>
       <segment>
         <source>Unknown</source>
@@ -1362,7 +1362,7 @@
     </unit>
     <unit id="format.serviceRemoteOrganization">
       <notes>
-        <note category="location">src/app/core/format.ts:99</note>
+        <note category="location">src/app/core/format.ts:104</note>
       </notes>
       <segment>
         <source>Service (remote organization)</source>
@@ -1370,8 +1370,8 @@
     </unit>
     <unit id="format.device">
       <notes>
-        <note category="location">src/app/core/format.ts:100</note>
-        <note category="location">src/app/core/format.ts:185</note>
+        <note category="location">src/app/core/format.ts:105</note>
+        <note category="location">src/app/core/format.ts:190</note>
       </notes>
       <segment>
         <source>Device</source>
@@ -1379,7 +1379,7 @@
     </unit>
     <unit id="format.localHostIp">
       <notes>
-        <note category="location">src/app/core/format.ts:101</note>
+        <note category="location">src/app/core/format.ts:106</note>
       </notes>
       <segment>
         <source>Local host (IP)</source>
@@ -1387,7 +1387,7 @@
     </unit>
     <unit id="format.remoteHost">
       <notes>
-        <note category="location">src/app/core/format.ts:102</note>
+        <note category="location">src/app/core/format.ts:107</note>
       </notes>
       <segment>
         <source>Remote host</source>
@@ -1395,7 +1395,7 @@
     </unit>
     <unit id="format.remoteCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:103</note>
+        <note category="location">src/app/core/format.ts:108</note>
       </notes>
       <segment>
         <source>Remote country</source>
@@ -1403,8 +1403,8 @@
     </unit>
     <unit id="format.direction">
       <notes>
-        <note category="location">src/app/core/format.ts:104</note>
-        <note category="location">src/app/core/format.ts:186</note>
+        <note category="location">src/app/core/format.ts:109</note>
+        <note category="location">src/app/core/format.ts:191</note>
       </notes>
       <segment>
         <source>Direction</source>
@@ -1412,8 +1412,8 @@
     </unit>
     <unit id="format.application">
       <notes>
-        <note category="location">src/app/core/format.ts:105</note>
-        <note category="location">src/app/core/format.ts:194</note>
+        <note category="location">src/app/core/format.ts:110</note>
+        <note category="location">src/app/core/format.ts:199</note>
       </notes>
       <segment>
         <source>Application</source>
@@ -1421,8 +1421,8 @@
     </unit>
     <unit id="format.sourceAddress">
       <notes>
-        <note category="location">src/app/core/format.ts:106</note>
-        <note category="location">src/app/core/format.ts:188</note>
+        <note category="location">src/app/core/format.ts:111</note>
+        <note category="location">src/app/core/format.ts:193</note>
       </notes>
       <segment>
         <source>Source address</source>
@@ -1430,8 +1430,8 @@
     </unit>
     <unit id="format.destinationAddress">
       <notes>
-        <note category="location">src/app/core/format.ts:107</note>
-        <note category="location">src/app/core/format.ts:189</note>
+        <note category="location">src/app/core/format.ts:112</note>
+        <note category="location">src/app/core/format.ts:194</note>
       </notes>
       <segment>
         <source>Destination address</source>
@@ -1439,7 +1439,7 @@
     </unit>
     <unit id="format.hostEitherSide">
       <notes>
-        <note category="location">src/app/core/format.ts:108</note>
+        <note category="location">src/app/core/format.ts:113</note>
       </notes>
       <segment>
         <source>Host (either side)</source>
@@ -1447,7 +1447,7 @@
     </unit>
     <unit id="format.conversation">
       <notes>
-        <note category="location">src/app/core/format.ts:109</note>
+        <note category="location">src/app/core/format.ts:114</note>
       </notes>
       <segment>
         <source>Conversation</source>
@@ -1455,8 +1455,8 @@
     </unit>
     <unit id="format.protocol">
       <notes>
-        <note category="location">src/app/core/format.ts:110</note>
-        <note category="location">src/app/core/format.ts:193</note>
+        <note category="location">src/app/core/format.ts:115</note>
+        <note category="location">src/app/core/format.ts:198</note>
       </notes>
       <segment>
         <source>Protocol</source>
@@ -1464,8 +1464,8 @@
     </unit>
     <unit id="format.destinationPort">
       <notes>
-        <note category="location">src/app/core/format.ts:111</note>
-        <note category="location">src/app/core/format.ts:192</note>
+        <note category="location">src/app/core/format.ts:116</note>
+        <note category="location">src/app/core/format.ts:197</note>
       </notes>
       <segment>
         <source>Destination port</source>
@@ -1473,8 +1473,8 @@
     </unit>
     <unit id="format.sourcePort">
       <notes>
-        <note category="location">src/app/core/format.ts:112</note>
-        <note category="location">src/app/core/format.ts:191</note>
+        <note category="location">src/app/core/format.ts:117</note>
+        <note category="location">src/app/core/format.ts:196</note>
       </notes>
       <segment>
         <source>Source port</source>
@@ -1482,7 +1482,7 @@
     </unit>
     <unit id="format.countryEitherSide">
       <notes>
-        <note category="location">src/app/core/format.ts:113</note>
+        <note category="location">src/app/core/format.ts:118</note>
       </notes>
       <segment>
         <source>Country (either side)</source>
@@ -1490,8 +1490,8 @@
     </unit>
     <unit id="format.sourceCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:114</note>
-        <note category="location">src/app/core/format.ts:200</note>
+        <note category="location">src/app/core/format.ts:119</note>
+        <note category="location">src/app/core/format.ts:205</note>
       </notes>
       <segment>
         <source>Source country</source>
@@ -1499,8 +1499,8 @@
     </unit>
     <unit id="format.destinationCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:115</note>
-        <note category="location">src/app/core/format.ts:201</note>
+        <note category="location">src/app/core/format.ts:120</note>
+        <note category="location">src/app/core/format.ts:206</note>
       </notes>
       <segment>
         <source>Destination country</source>
@@ -1508,8 +1508,8 @@
     </unit>
     <unit id="format.sourceAs">
       <notes>
-        <note category="location">src/app/core/format.ts:116</note>
-        <note category="location">src/app/core/format.ts:203</note>
+        <note category="location">src/app/core/format.ts:121</note>
+        <note category="location">src/app/core/format.ts:208</note>
       </notes>
       <segment>
         <source>Source AS</source>
@@ -1517,8 +1517,8 @@
     </unit>
     <unit id="format.destinationAs">
       <notes>
-        <note category="location">src/app/core/format.ts:117</note>
-        <note category="location">src/app/core/format.ts:204</note>
+        <note category="location">src/app/core/format.ts:122</note>
+        <note category="location">src/app/core/format.ts:209</note>
       </notes>
       <segment>
         <source>Destination AS</source>
@@ -1526,8 +1526,8 @@
     </unit>
     <unit id="format.exporter">
       <notes>
-        <note category="location">src/app/core/format.ts:118</note>
-        <note category="location">src/app/core/format.ts:195</note>
+        <note category="location">src/app/core/format.ts:123</note>
+        <note category="location">src/app/core/format.ts:200</note>
       </notes>
       <segment>
         <source>Exporter</source>
@@ -1535,8 +1535,8 @@
     </unit>
     <unit id="format.inputInterface">
       <notes>
-        <note category="location">src/app/core/format.ts:119</note>
-        <note category="location">src/app/core/format.ts:197</note>
+        <note category="location">src/app/core/format.ts:124</note>
+        <note category="location">src/app/core/format.ts:202</note>
       </notes>
       <segment>
         <source>Input interface</source>
@@ -1544,8 +1544,8 @@
     </unit>
     <unit id="format.outputInterface">
       <notes>
-        <note category="location">src/app/core/format.ts:120</note>
-        <note category="location">src/app/core/format.ts:198</note>
+        <note category="location">src/app/core/format.ts:125</note>
+        <note category="location">src/app/core/format.ts:203</note>
       </notes>
       <segment>
         <source>Output interface</source>
@@ -1553,8 +1553,8 @@
     </unit>
     <unit id="format.dscp">
       <notes>
-        <note category="location">src/app/core/format.ts:121</note>
-        <note category="location">src/app/core/format.ts:206</note>
+        <note category="location">src/app/core/format.ts:126</note>
+        <note category="location">src/app/core/format.ts:211</note>
       </notes>
       <segment>
         <source>DSCP</source>
@@ -1562,8 +1562,8 @@
     </unit>
     <unit id="format.ipVersion">
       <notes>
-        <note category="location">src/app/core/format.ts:122</note>
-        <note category="location">src/app/core/format.ts:207</note>
+        <note category="location">src/app/core/format.ts:127</note>
+        <note category="location">src/app/core/format.ts:212</note>
       </notes>
       <segment>
         <source>IP version</source>
@@ -1571,8 +1571,8 @@
     </unit>
     <unit id="format.vlan">
       <notes>
-        <note category="location">src/app/core/format.ts:123</note>
-        <note category="location">src/app/core/format.ts:205</note>
+        <note category="location">src/app/core/format.ts:128</note>
+        <note category="location">src/app/core/format.ts:210</note>
       </notes>
       <segment>
         <source>VLAN</source>
@@ -1580,7 +1580,7 @@
     </unit>
     <unit id="format.flowProtocol">
       <notes>
-        <note category="location">src/app/core/format.ts:124</note>
+        <note category="location">src/app/core/format.ts:129</note>
       </notes>
       <segment>
         <source>Flow protocol</source>
@@ -1588,7 +1588,7 @@
     </unit>
     <unit id="format.host">
       <notes>
-        <note category="location">src/app/core/format.ts:184</note>
+        <note category="location">src/app/core/format.ts:189</note>
       </notes>
       <segment>
         <source>Host</source>
@@ -1596,7 +1596,7 @@
     </unit>
     <unit id="format.hintHost">
       <notes>
-        <note category="location">src/app/core/format.ts:184</note>
+        <note category="location">src/app/core/format.ts:189</note>
       </notes>
       <segment>
         <source>10.0.0.5 or 10.0.0.0/8</source>
@@ -1604,7 +1604,7 @@
     </unit>
     <unit id="format.hintDevice">
       <notes>
-        <note category="location">src/app/core/format.ts:185</note>
+        <note category="location">src/app/core/format.ts:190</note>
       </notes>
       <segment>
         <source>MAC address, e.g. bc:24:11:52:d1:06</source>
@@ -1612,7 +1612,7 @@
     </unit>
     <unit id="5321881130377942895">
       <notes>
-        <note category="location">src/app/core/format.ts:186</note>
+        <note category="location">src/app/core/format.ts:191</note>
         <note category="description">Filter hint; keep download, upload, internal and transit untranslated</note>
       </notes>
       <segment>
@@ -1621,7 +1621,7 @@
     </unit>
     <unit id="format.peerEitherSide">
       <notes>
-        <note category="location">src/app/core/format.ts:187</note>
+        <note category="location">src/app/core/format.ts:192</note>
       </notes>
       <segment>
         <source>Peer (either side)</source>
@@ -1629,7 +1629,7 @@
     </unit>
     <unit id="format.hintPeer">
       <notes>
-        <note category="location">src/app/core/format.ts:187</note>
+        <note category="location">src/app/core/format.ts:192</note>
       </notes>
       <segment>
         <source>second host, e.g. with Host for one conversation</source>
@@ -1637,9 +1637,9 @@
     </unit>
     <unit id="format.hintIpOrCidr">
       <notes>
-        <note category="location">src/app/core/format.ts:188</note>
-        <note category="location">src/app/core/format.ts:189</note>
-        <note category="location">src/app/core/format.ts:208</note>
+        <note category="location">src/app/core/format.ts:193</note>
+        <note category="location">src/app/core/format.ts:194</note>
+        <note category="location">src/app/core/format.ts:213</note>
       </notes>
       <segment>
         <source>IP or CIDR</source>
@@ -1647,7 +1647,7 @@
     </unit>
     <unit id="format.portEither">
       <notes>
-        <note category="location">src/app/core/format.ts:190</note>
+        <note category="location">src/app/core/format.ts:195</note>
       </notes>
       <segment>
         <source>Port (either)</source>
@@ -1655,7 +1655,7 @@
     </unit>
     <unit id="format.hintPort">
       <notes>
-        <note category="location">src/app/core/format.ts:190</note>
+        <note category="location">src/app/core/format.ts:195</note>
       </notes>
       <segment>
         <source>443 or 8000-8100</source>
@@ -1663,7 +1663,7 @@
     </unit>
     <unit id="7814486560188059636">
       <notes>
-        <note category="location">src/app/core/format.ts:193</note>
+        <note category="location">src/app/core/format.ts:198</note>
         <note category="description">Filter hint; keep tcp, udp and icmp untranslated</note>
       </notes>
       <segment>
@@ -1672,7 +1672,7 @@
     </unit>
     <unit id="format.hintExporter">
       <notes>
-        <note category="location">src/app/core/format.ts:195</note>
+        <note category="location">src/app/core/format.ts:200</note>
       </notes>
       <segment>
         <source>exporter IP</source>
@@ -1680,7 +1680,7 @@
     </unit>
     <unit id="format.interfaceEither">
       <notes>
-        <note category="location">src/app/core/format.ts:196</note>
+        <note category="location">src/app/core/format.ts:201</note>
       </notes>
       <segment>
         <source>Interface (either)</source>
@@ -1688,7 +1688,7 @@
     </unit>
     <unit id="format.countryEither">
       <notes>
-        <note category="location">src/app/core/format.ts:199</note>
+        <note category="location">src/app/core/format.ts:204</note>
       </notes>
       <segment>
         <source>Country (either)</source>
@@ -1696,7 +1696,7 @@
     </unit>
     <unit id="format.hintCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:199</note>
+        <note category="location">src/app/core/format.ts:204</note>
       </notes>
       <segment>
         <source>US or US,DE</source>
@@ -1704,7 +1704,7 @@
     </unit>
     <unit id="format.hintSrcCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:200</note>
+        <note category="location">src/app/core/format.ts:205</note>
       </notes>
       <segment>
         <source>ISO code, e.g. CN</source>
@@ -1712,7 +1712,7 @@
     </unit>
     <unit id="format.hintDstCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:201</note>
+        <note category="location">src/app/core/format.ts:206</note>
       </notes>
       <segment>
         <source>ISO code, e.g. US</source>
@@ -1720,7 +1720,7 @@
     </unit>
     <unit id="format.asEither">
       <notes>
-        <note category="location">src/app/core/format.ts:202</note>
+        <note category="location">src/app/core/format.ts:207</note>
       </notes>
       <segment>
         <source>AS (either)</source>
@@ -1728,7 +1728,7 @@
     </unit>
     <unit id="5622964876741782070">
       <notes>
-        <note category="location">src/app/core/format.ts:207</note>
+        <note category="location">src/app/core/format.ts:212</note>
         <note category="description">Filter hint; keep ipv4 and ipv6 untranslated</note>
       </notes>
       <segment>
@@ -1737,7 +1737,7 @@
     </unit>
     <unit id="format.nextHop">
       <notes>
-        <note category="location">src/app/core/format.ts:208</note>
+        <note category="location">src/app/core/format.ts:213</note>
       </notes>
       <segment>
         <source>Next hop</source>
@@ -1745,7 +1745,7 @@
     </unit>
     <unit id="format.samplingOverride">
       <notes>
-        <note category="location">src/app/core/format.ts:238</note>
+        <note category="location">src/app/core/format.ts:243</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1754,7 +1754,7 @@
     </unit>
     <unit id="format.samplingOverrideHint">
       <notes>
-        <note category="location">src/app/core/format.ts:238</note>
+        <note category="location">src/app/core/format.ts:243</note>
       </notes>
       <segment>
         <source>Manual override set on this exporter</source>
@@ -1762,7 +1762,7 @@
     </unit>
     <unit id="format.samplingAnnouncedHint">
       <notes>
-        <note category="location">src/app/core/format.ts:241</note>
+        <note category="location">src/app/core/format.ts:246</note>
       </notes>
       <segment>
         <source>Announced by the device in its options data</source>
@@ -1770,7 +1770,7 @@
     </unit>
     <unit id="format.samplingRememberedHint">
       <notes>
-        <note category="location">src/app/core/format.ts:242</note>
+        <note category="location">src/app/core/format.ts:247</note>
       </notes>
       <segment>
         <source>Remembered from before the last restart; waiting for the device to confirm</source>
@@ -1778,7 +1778,7 @@
     </unit>
     <unit id="format.samplingPacketHint">
       <notes>
-        <note category="location">src/app/core/format.ts:243</note>
+        <note category="location">src/app/core/format.ts:248</note>
       </notes>
       <segment>
         <source>Carried in every datagram (sFlow / NetFlow v5)</source>
@@ -1786,7 +1786,7 @@
     </unit>
     <unit id="format.samplingUnsampledHint">
       <notes>
-        <note category="location">src/app/core/format.ts:244</note>
+        <note category="location">src/app/core/format.ts:249</note>
       </notes>
       <segment>
         <source>Device reports no sampling: every flow is exported</source>
@@ -1794,7 +1794,7 @@
     </unit>
     <unit id="format.samplingAnnounced">
       <notes>
-        <note category="location">src/app/core/format.ts:247</note>
+        <note category="location">src/app/core/format.ts:252</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1803,7 +1803,7 @@
     </unit>
     <unit id="format.samplingRemembered">
       <notes>
-        <note category="location">src/app/core/format.ts:248</note>
+        <note category="location">src/app/core/format.ts:253</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1812,7 +1812,7 @@
     </unit>
     <unit id="format.samplingPacket">
       <notes>
-        <note category="location">src/app/core/format.ts:249</note>
+        <note category="location">src/app/core/format.ts:254</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1821,7 +1821,7 @@
     </unit>
     <unit id="format.samplingUnsampled">
       <notes>
-        <note category="location">src/app/core/format.ts:250</note>
+        <note category="location">src/app/core/format.ts:255</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1895,7 +1895,7 @@
     <unit id="common.refresh">
       <notes>
         <note category="location">src/app/pages/audit.ts:17,18</note>
-        <note category="location">src/app/pages/identity-sources.ts:62</note>
+        <note category="location">src/app/pages/identity-sources.ts:88</note>
         <note category="location">src/app/pages/services.ts:26,27</note>
         <note category="location">src/app/pages/time.ts:20,21</note>
         <note category="location">src/app/shared/time-range.ts:33</note>
@@ -1944,7 +1944,7 @@
         <note category="location">src/app/pages/explorer.ts:188,189</note>
         <note category="location">src/app/pages/exporter-detail.ts:105,106</note>
         <note category="location">src/app/pages/exporters.ts:94,95</note>
-        <note category="location">src/app/pages/identity-sources.ts:89,90</note>
+        <note category="location">src/app/pages/identity-sources.ts:115,116</note>
         <note category="location">src/app/pages/services.ts:68,69</note>
         <note category="location">src/app/pages/updates.ts:92,93</note>
         <note category="location">src/app/pages/users.ts:52,53</note>
@@ -2170,8 +2170,8 @@
         <note category="location">src/app/pages/backup.ts:99,100</note>
         <note category="location">src/app/pages/backup.ts:177,179</note>
         <note category="location">src/app/pages/certificates.ts:137,138</note>
-        <note category="location">src/app/pages/identity-sources.ts:60,61</note>
-        <note category="location">src/app/pages/identity-sources.ts:396,398</note>
+        <note category="location">src/app/pages/identity-sources.ts:86,87</note>
+        <note category="location">src/app/pages/identity-sources.ts:519,521</note>
         <note category="location">src/app/pages/users.ts:39,40</note>
         <note category="location">src/app/pages/users.ts:123,125</note>
       </notes>
@@ -2291,9 +2291,9 @@
         <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
         <note category="location">src/app/pages/exporters.ts:131,132</note>
         <note category="location">src/app/pages/exporters.ts:142,143</note>
-        <note category="location">src/app/pages/identity-sources.ts:137,139</note>
-        <note category="location">src/app/pages/identity-sources.ts:384,385</note>
-        <note category="location">src/app/pages/identity-sources.ts:395,396</note>
+        <note category="location">src/app/pages/identity-sources.ts:162,164</note>
+        <note category="location">src/app/pages/identity-sources.ts:507,508</note>
+        <note category="location">src/app/pages/identity-sources.ts:518,519</note>
         <note category="location">src/app/pages/services.ts:84,85</note>
         <note category="location">src/app/pages/updates.ts:121,122</note>
         <note category="location">src/app/pages/users.ts:102,103</note>
@@ -2654,8 +2654,8 @@
         <note category="location">src/app/pages/devices.ts:110,111</note>
         <note category="location">src/app/pages/exporter-detail.ts:71,72</note>
         <note category="location">src/app/pages/exporter-detail.ts:120,121</note>
-        <note category="location">src/app/pages/identity-sources.ts:70,71</note>
-        <note category="location">src/app/pages/identity-sources.ts:149,150</note>
+        <note category="location">src/app/pages/identity-sources.ts:96,97</note>
+        <note category="location">src/app/pages/identity-sources.ts:174,175</note>
         <note category="location">src/app/shared/top-table.ts:77</note>
       </notes>
       <segment>
@@ -3931,7 +3931,7 @@
         <note category="location">src/app/pages/devices.ts:118,120</note>
         <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
         <note category="location">src/app/pages/exporters.ts:132,134</note>
-        <note category="location">src/app/pages/identity-sources.ts:385,387</note>
+        <note category="location">src/app/pages/identity-sources.ts:508,510</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
         <note category="location">src/app/pages/users.ts:103</note>
@@ -4766,7 +4766,7 @@
       <notes>
         <note category="location">src/app/pages/exporter-detail.ts:82,84</note>
         <note category="location">src/app/pages/exporters.ts:45,46</note>
-        <note category="location">src/app/pages/identity-sources.ts:59,60</note>
+        <note category="location">src/app/pages/identity-sources.ts:85,86</note>
         <note category="location">src/app/pages/users.ts:34,35</note>
       </notes>
       <segment>
@@ -5381,7 +5381,7 @@
     </unit>
     <unit id="identitySources.subtitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:52,56</note>
+        <note category="location">src/app/pages/identity-sources.ts:78,82</note>
       </notes>
       <segment>
         <source>Single sign-on providers for console sign-in</source>
@@ -5389,7 +5389,7 @@
     </unit>
     <unit id="identitySources.addSource">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:58,59</note>
+        <note category="location">src/app/pages/identity-sources.ts:84,85</note>
       </notes>
       <segment>
         <source>Add source</source>
@@ -5397,7 +5397,7 @@
     </unit>
     <unit id="identitySources.col.type">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:71,72</note>
+        <note category="location">src/app/pages/identity-sources.ts:97,98</note>
       </notes>
       <segment>
         <source>Type</source>
@@ -5405,7 +5405,7 @@
     </unit>
     <unit id="identitySources.col.status">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:72,73</note>
+        <note category="location">src/app/pages/identity-sources.ts:98,99</note>
       </notes>
       <segment>
         <source>Status</source>
@@ -5413,7 +5413,7 @@
     </unit>
     <unit id="identitySources.col.usedFor">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:73,74</note>
+        <note category="location">src/app/pages/identity-sources.ts:99,100</note>
       </notes>
       <segment>
         <source>Used for</source>
@@ -5421,7 +5421,7 @@
     </unit>
     <unit id="identitySources.col.priority">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:74,75</note>
+        <note category="location">src/app/pages/identity-sources.ts:100,101</note>
       </notes>
       <segment>
         <source>Priority</source>
@@ -5429,7 +5429,7 @@
     </unit>
     <unit id="identitySources.col.roleMappings">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:75,76</note>
+        <note category="location">src/app/pages/identity-sources.ts:101,102</note>
       </notes>
       <segment>
         <source>Role mappings</source>
@@ -5437,7 +5437,7 @@
     </unit>
     <unit id="identitySources.col.users">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:76,77</note>
+        <note category="location">src/app/pages/identity-sources.ts:102,103</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -5445,8 +5445,8 @@
     </unit>
     <unit id="identitySources.enabled">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:80</note>
-        <note category="location">src/app/pages/identity-sources.ts:158,159</note>
+        <note category="location">src/app/pages/identity-sources.ts:106</note>
+        <note category="location">src/app/pages/identity-sources.ts:183,184</note>
       </notes>
       <segment>
         <source>Enabled</source>
@@ -5454,7 +5454,7 @@
     </unit>
     <unit id="identitySources.disabled">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:80,81</note>
+        <note category="location">src/app/pages/identity-sources.ts:106,107</note>
       </notes>
       <segment>
         <source>Disabled</source>
@@ -5462,7 +5462,7 @@
     </unit>
     <unit id="identitySources.console">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:81,82</note>
+        <note category="location">src/app/pages/identity-sources.ts:107,108</note>
       </notes>
       <segment>
         <source>Console</source>
@@ -5470,7 +5470,7 @@
     </unit>
     <unit id="identitySources.mappingCount">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:83</note>
+        <note category="location">src/app/pages/identity-sources.ts:109</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 mapping} other {<ph id="0" equiv="INTERPOLATION"/> mappings}}</source>
@@ -5478,7 +5478,7 @@
     </unit>
     <unit id="identitySources.othersRole">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:83</note>
+        <note category="location">src/app/pages/identity-sources.ts:109</note>
       </notes>
       <segment>
         <source> · others: <ph id="0" equiv="INTERPOLATION" disp="{{ roleLabel(s.defaultRole) }}"/></source>
@@ -5486,7 +5486,7 @@
     </unit>
     <unit id="identitySources.placeholder">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:86,87</note>
+        <note category="location">src/app/pages/identity-sources.ts:112,113</note>
       </notes>
       <segment>
         <source>No identity sources. Everyone signs in with local accounts.</source>
@@ -5494,7 +5494,7 @@
     </unit>
     <unit id="identitySources.footer">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:91,92</note>
+        <note category="location">src/app/pages/identity-sources.ts:117,118</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -5503,7 +5503,7 @@
     </unit>
     <unit id="identitySources.empty">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:93,95</note>
+        <note category="location">src/app/pages/identity-sources.ts:119,121</note>
       </notes>
       <segment>
         <source>No sources</source>
@@ -5511,7 +5511,7 @@
     </unit>
     <unit id="identitySources.howTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:101,103</note>
+        <note category="location">src/app/pages/identity-sources.ts:127,129</note>
       </notes>
       <segment>
         <source>How sign-in works</source>
@@ -5519,23 +5519,31 @@
     </unit>
     <unit id="identitySources.howLocal">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:103,104</note>
+        <note category="location">src/app/pages/identity-sources.ts:129,130</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Local accounts</pc> always authenticate locally with their password and are never passed to a provider.</source>
       </segment>
     </unit>
-    <unit id="identitySources.howOidc">
+    <unit id="identitySources.howSso">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:104,105</note>
+        <note category="location">src/app/pages/identity-sources.ts:130,131</note>
       </notes>
       <segment>
-        <source>Enabled <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">OpenID Connect</pc> sources appear as buttons on the sign-in page, in priority order (lowest first).</source>
+        <source>Enabled <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">OpenID Connect</pc> and <pc id="1" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">SAML</pc> sources appear as buttons on the sign-in page, in priority order (lowest first).</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.howDirectory">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:131,132</note>
+      </notes>
+      <segment>
+        <source><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">LDAP</pc> and <pc id="1" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">RADIUS</pc> sources check the regular username and password form, after local accounts.</source>
       </segment>
     </unit>
     <unit id="identitySources.howRole">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:105,106</note>
+        <note category="location">src/app/pages/identity-sources.ts:132,133</note>
       </notes>
       <segment>
         <source>The role comes from the highest matching group mapping, otherwise the &quot;everyone else&quot; role. With neither, access is denied. Roles are re-evaluated at every sign-in.</source>
@@ -5543,7 +5551,7 @@
     </unit>
     <unit id="identitySources.howIsolation">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:106,109</note>
+        <note category="location">src/app/pages/identity-sources.ts:133,136</note>
       </notes>
       <segment>
         <source>A provider can never sign in to a local account, or to an account created by another source, even with the same username.</source>
@@ -5551,7 +5559,7 @@
     </unit>
     <unit id="identitySources.addTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:113,115</note>
+        <note category="location">src/app/pages/identity-sources.ts:140,142</note>
       </notes>
       <segment>
         <source>Add identity source</source>
@@ -5559,15 +5567,23 @@
     </unit>
     <unit id="identitySources.oidcDescription">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:118,120</note>
+        <note category="location">src/app/pages/identity-sources.ts:145,147</note>
       </notes>
       <segment>
         <source>Single sign-on with Authentik, Entra ID, Okta, Keycloak, Google and other OIDC providers.</source>
       </segment>
     </unit>
+    <unit id="identitySources.samlDescription">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:149,151</note>
+      </notes>
+      <segment>
+        <source>Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.</source>
+      </segment>
+    </unit>
     <unit id="identitySources.ldapDescription">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:122,124</note>
+        <note category="location">src/app/pages/identity-sources.ts:153,155</note>
       </notes>
       <segment>
         <source>Bind to a directory and map groups to roles.</source>
@@ -5575,23 +5591,15 @@
     </unit>
     <unit id="identitySources.radiusDescription">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:126,128</note>
+        <note category="location">src/app/pages/identity-sources.ts:157,160</note>
       </notes>
       <segment>
         <source>PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).</source>
       </segment>
     </unit>
-    <unit id="identitySources.comingSoon">
-      <notes>
-        <note category="location">src/app/pages/identity-sources.ts:130,131</note>
-      </notes>
-      <segment>
-        <source>Coming soon</source>
-      </segment>
-    </unit>
     <unit id="identitySources.editTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:143</note>
+        <note category="location">src/app/pages/identity-sources.ts:168</note>
       </notes>
       <segment>
         <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(form.type) }}"/> source</source>
@@ -5599,7 +5607,7 @@
     </unit>
     <unit id="identitySources.addTypeTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:143</note>
+        <note category="location">src/app/pages/identity-sources.ts:168</note>
       </notes>
       <segment>
         <source>Add <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(form.type) }}"/> source</source>
@@ -5607,7 +5615,7 @@
     </unit>
     <unit id="identitySources.general">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:147,148</note>
+        <note category="location">src/app/pages/identity-sources.ts:172,173</note>
       </notes>
       <segment>
         <source>General</source>
@@ -5615,7 +5623,7 @@
     </unit>
     <unit id="identitySources.nameHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:152,153</note>
+        <note category="location">src/app/pages/identity-sources.ts:177,178</note>
       </notes>
       <segment>
         <source>Shown on the sign-in button</source>
@@ -5623,7 +5631,7 @@
     </unit>
     <unit id="identitySources.namePasswordHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:154,156</note>
+        <note category="location">src/app/pages/identity-sources.ts:179,181</note>
       </notes>
       <segment>
         <source>Users sign in with the regular username and password form</source>
@@ -5631,7 +5639,7 @@
     </unit>
     <unit id="identitySources.enabledToggle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:161,162</note>
+        <note category="location">src/app/pages/identity-sources.ts:186,187</note>
       </notes>
       <segment>
         <source>Accept sign-ins from this source</source>
@@ -5639,7 +5647,7 @@
     </unit>
     <unit id="identitySources.priority">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:165,166</note>
+        <note category="location">src/app/pages/identity-sources.ts:190,191</note>
       </notes>
       <segment>
         <source>Priority</source>
@@ -5647,7 +5655,7 @@
     </unit>
     <unit id="identitySources.priorityHelp2">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:167,168</note>
+        <note category="location">src/app/pages/identity-sources.ts:192,193</note>
       </notes>
       <segment>
         <source>Lowest first: the order of sign-in buttons, and of directories tried for a password sign-in</source>
@@ -5655,7 +5663,7 @@
     </unit>
     <unit id="identitySources.directory">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:171,172</note>
+        <note category="location">src/app/pages/identity-sources.ts:196,197</note>
       </notes>
       <segment>
         <source>Directory</source>
@@ -5663,7 +5671,7 @@
     </unit>
     <unit id="identitySources.ldapUrl">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:173,174</note>
+        <note category="location">src/app/pages/identity-sources.ts:198,199</note>
       </notes>
       <segment>
         <source>Server URL</source>
@@ -5671,7 +5679,7 @@
     </unit>
     <unit id="identitySources.ldapUrlHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:175,176</note>
+        <note category="location">src/app/pages/identity-sources.ts:200,201</note>
       </notes>
       <segment>
         <source>ldaps:// (port 636) or ldap:// with StartTLS. Certificates are checked against the trusted CAs on the Certificates page.</source>
@@ -5679,7 +5687,7 @@
     </unit>
     <unit id="identitySources.startTls">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:181,182</note>
+        <note category="location">src/app/pages/identity-sources.ts:206,207</note>
       </notes>
       <segment>
         <source>Use StartTLS (for ldap:// URLs)</source>
@@ -5687,7 +5695,7 @@
     </unit>
     <unit id="identitySources.ldapPlainWarning">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:185,187</note>
+        <note category="location">src/app/pages/identity-sources.ts:210,212</note>
       </notes>
       <segment>
         <source>Without TLS, passwords cross the network unencrypted.</source>
@@ -5695,7 +5703,7 @@
     </unit>
     <unit id="identitySources.bindDn">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:188,189</note>
+        <note category="location">src/app/pages/identity-sources.ts:213,214</note>
       </notes>
       <segment>
         <source>Bind DN</source>
@@ -5703,7 +5711,7 @@
     </unit>
     <unit id="identitySources.bindDnHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:190,191</note>
+        <note category="location">src/app/pages/identity-sources.ts:215,216</note>
       </notes>
       <segment>
         <source>A read-only service account used to find users</source>
@@ -5711,7 +5719,7 @@
     </unit>
     <unit id="identitySources.bindPassword">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:193,194</note>
+        <note category="location">src/app/pages/identity-sources.ts:218,219</note>
       </notes>
       <segment>
         <source>Bind password</source>
@@ -5719,7 +5727,7 @@
     </unit>
     <unit id="identitySources.baseDn">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:197,198</note>
+        <note category="location">src/app/pages/identity-sources.ts:222,223</note>
       </notes>
       <segment>
         <source>Base DN</source>
@@ -5727,7 +5735,7 @@
     </unit>
     <unit id="identitySources.schema">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:201,202</note>
+        <note category="location">src/app/pages/identity-sources.ts:226,227</note>
       </notes>
       <segment>
         <source>Directory type</source>
@@ -5735,7 +5743,7 @@
     </unit>
     <unit id="identitySources.userFilter">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:208,209</note>
+        <note category="location">src/app/pages/identity-sources.ts:233,234</note>
       </notes>
       <segment>
         <source>User filter</source>
@@ -5743,7 +5751,7 @@
     </unit>
     <unit id="identitySources.userFilterHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:210</note>
+        <note category="location">src/app/pages/identity-sources.ts:235</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ &apos;{&apos; }}"/>username<ph id="1" equiv="INTERPOLATION_1" disp="{{ &apos;}&apos; }}"/> is replaced with the name typed on the sign-in page</source>
@@ -5751,7 +5759,7 @@
     </unit>
     <unit id="identitySources.usernameAttr">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:213,214</note>
+        <note category="location">src/app/pages/identity-sources.ts:238,239</note>
       </notes>
       <segment>
         <source>Username attribute</source>
@@ -5759,7 +5767,8 @@
     </unit>
     <unit id="identitySources.nameAttr">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:217,218</note>
+        <note category="location">src/app/pages/identity-sources.ts:242,243</note>
+        <note category="location">src/app/pages/identity-sources.ts:328,329</note>
       </notes>
       <segment>
         <source>Display name attribute</source>
@@ -5767,7 +5776,7 @@
     </unit>
     <unit id="identitySources.groupAttr">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:221,222</note>
+        <note category="location">src/app/pages/identity-sources.ts:246,247</note>
       </notes>
       <segment>
         <source>Group attribute</source>
@@ -5775,7 +5784,7 @@
     </unit>
     <unit id="identitySources.nestedGroups">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:228,229</note>
+        <note category="location">src/app/pages/identity-sources.ts:253,254</note>
       </notes>
       <segment>
         <source>Include nested groups (Active Directory)</source>
@@ -5783,7 +5792,7 @@
     </unit>
     <unit id="identitySources.radiusServers">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:233,234</note>
+        <note category="location">src/app/pages/identity-sources.ts:258,259</note>
       </notes>
       <segment>
         <source>RADIUS</source>
@@ -5791,7 +5800,7 @@
     </unit>
     <unit id="identitySources.servers">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:235,236</note>
+        <note category="location">src/app/pages/identity-sources.ts:260,261</note>
       </notes>
       <segment>
         <source>Servers</source>
@@ -5799,7 +5808,7 @@
     </unit>
     <unit id="identitySources.radiusServer">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:237</note>
+        <note category="location">src/app/pages/identity-sources.ts:262</note>
       </notes>
       <segment>
         <source>RADIUS server</source>
@@ -5807,7 +5816,7 @@
     </unit>
     <unit id="identitySources.serversHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:238,240</note>
+        <note category="location">src/app/pages/identity-sources.ts:263,265</note>
       </notes>
       <segment>
         <source>Tried in order when one doesn&apos;t answer; default port 1812. Add this appliance as a client on each server.</source>
@@ -5815,7 +5824,7 @@
     </unit>
     <unit id="identitySources.sharedSecret">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:242,243</note>
+        <note category="location">src/app/pages/identity-sources.ts:267,268</note>
       </notes>
       <segment>
         <source>Shared secret</source>
@@ -5823,7 +5832,7 @@
     </unit>
     <unit id="identitySources.nasId">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:246,247</note>
+        <note category="location">src/app/pages/identity-sources.ts:271,272</note>
       </notes>
       <segment>
         <source>NAS-Identifier</source>
@@ -5831,7 +5840,7 @@
     </unit>
     <unit id="identitySources.timeout">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:250,251</note>
+        <note category="location">src/app/pages/identity-sources.ts:275,276</note>
       </notes>
       <segment>
         <source>Timeout (seconds)</source>
@@ -5839,7 +5848,7 @@
     </unit>
     <unit id="identitySources.roleAttribute">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:254,255</note>
+        <note category="location">src/app/pages/identity-sources.ts:279,280</note>
       </notes>
       <segment>
         <source>Role attribute</source>
@@ -5847,7 +5856,7 @@
     </unit>
     <unit id="identitySources.roleAttributeHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:259,260</note>
+        <note category="location">src/app/pages/identity-sources.ts:284,285</note>
       </notes>
       <segment>
         <source>Values of this reply attribute are matched against the role mappings below</source>
@@ -5855,15 +5864,209 @@
     </unit>
     <unit id="identitySources.provider">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:263,264</note>
+        <note category="location">src/app/pages/identity-sources.ts:288,289</note>
+        <note category="location">src/app/pages/identity-sources.ts:372,373</note>
       </notes>
       <segment>
         <source>Provider</source>
       </segment>
     </unit>
+    <unit id="identitySources.samlMetadata">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:290,291</note>
+      </notes>
+      <segment>
+        <source>Provider metadata</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlFromUrl">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:293,294</note>
+      </notes>
+      <segment>
+        <source>From URL</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlPasteXml">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:294,296</note>
+      </notes>
+      <segment>
+        <source>Paste XML</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlMetadataUrl">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:300,301</note>
+      </notes>
+      <segment>
+        <source>Metadata URL</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlMetadataUrlHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:302,303</note>
+      </notes>
+      <segment>
+        <source>Fetched when you save and refreshed daily, so certificate rollovers are picked up</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlMetadataXml">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:306,307</note>
+      </notes>
+      <segment>
+        <source>Metadata XML</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlMetadataXmlHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:309,311</note>
+      </notes>
+      <segment>
+        <source>For providers without a metadata URL. Paste the new metadata here when the provider&apos;s signing certificate changes.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlProviderType">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:314,315</note>
+      </notes>
+      <segment>
+        <source>Provider type</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlUsernameAttr">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:323,324</note>
+      </notes>
+      <segment>
+        <source>Username attribute</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlNameId">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:324</note>
+      </notes>
+      <segment>
+        <source>NameID</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlUsernameAttrHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:325,326</note>
+      </notes>
+      <segment>
+        <source>Empty: the assertion&apos;s NameID. Attributes match by Name or FriendlyName.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlGroupsAttr">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:332,333</note>
+      </notes>
+      <segment>
+        <source>Groups attribute</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlGroupsAttrHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:334,335</note>
+      </notes>
+      <segment>
+        <source>Its values are matched against the role mappings below (Entra ID sends group object IDs)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSignRequests">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:340,341</note>
+      </notes>
+      <segment>
+        <source>Sign authentication requests</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlEntityId">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:344,345</note>
+        <note category="location">src/app/pages/identity-sources.ts:354,355</note>
+      </notes>
+      <segment>
+        <source>Entity ID</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlEntityIdHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:346,347</note>
+      </notes>
+      <segment>
+        <source>How this appliance identifies itself to the provider. Empty: its metadata URL.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlThisAppliance">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:350,352</note>
+      </notes>
+      <segment>
+        <source>This appliance (service provider)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlRegister">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:352,354</note>
+      </notes>
+      <segment>
+        <source>Import the metadata into the provider, or enter these values:</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlAcs">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:356,357</note>
+      </notes>
+      <segment>
+        <source>Reply / ACS URL (HTTP-POST)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSpMetadata">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:358,359</note>
+      </notes>
+      <segment>
+        <source>Metadata</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.download">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:360,361</note>
+      </notes>
+      <segment>
+        <source>Download</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSpCert">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:362,363</note>
+      </notes>
+      <segment>
+        <source>Signing certificate</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSpCertExpires">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:363,364</note>
+      </notes>
+      <segment>
+        <source>Self-signed, expires <ph id="0" equiv="INTERPOLATION" disp="{{ dateOnly(si.certExpires) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSaveFirst">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:367,370</note>
+      </notes>
+      <segment>
+        <source>Save the source first: its entity ID, reply URL and metadata appear here, ready for the provider.</source>
+      </segment>
+    </unit>
     <unit id="identitySources.issuerUrl">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:265,266</note>
+        <note category="location">src/app/pages/identity-sources.ts:374,375</note>
       </notes>
       <segment>
         <source>Issuer URL</source>
@@ -5871,7 +6074,7 @@
     </unit>
     <unit id="identitySources.clientId">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:269,270</note>
+        <note category="location">src/app/pages/identity-sources.ts:378,379</note>
       </notes>
       <segment>
         <source>Client ID</source>
@@ -5879,7 +6082,7 @@
     </unit>
     <unit id="identitySources.clientSecret">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:273,274</note>
+        <note category="location">src/app/pages/identity-sources.ts:382,383</note>
       </notes>
       <segment>
         <source>Client secret</source>
@@ -5887,7 +6090,7 @@
     </unit>
     <unit id="identitySources.scopes">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:278,279</note>
+        <note category="location">src/app/pages/identity-sources.ts:387,388</note>
       </notes>
       <segment>
         <source>Scopes</source>
@@ -5895,7 +6098,7 @@
     </unit>
     <unit id="identitySources.removeScope">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:284</note>
+        <note category="location">src/app/pages/identity-sources.ts:393</note>
       </notes>
       <segment>
         <source>Remove scope</source>
@@ -5903,7 +6106,7 @@
     </unit>
     <unit id="identitySources.addScope">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:288,289</note>
+        <note category="location">src/app/pages/identity-sources.ts:397,398</note>
       </notes>
       <segment>
         <source>Add scope</source>
@@ -5911,7 +6114,7 @@
     </unit>
     <unit id="identitySources.usernameClaim">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:292,293</note>
+        <note category="location">src/app/pages/identity-sources.ts:401,402</note>
       </notes>
       <segment>
         <source>Username claim</source>
@@ -5919,7 +6122,7 @@
     </unit>
     <unit id="identitySources.groupsClaim">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:296,297</note>
+        <note category="location">src/app/pages/identity-sources.ts:405,406</note>
       </notes>
       <segment>
         <source>Groups claim</source>
@@ -5927,7 +6130,7 @@
     </unit>
     <unit id="identitySources.groupsClaimHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:298,299</note>
+        <note category="location">src/app/pages/identity-sources.ts:407,408</note>
       </notes>
       <segment>
         <source>Read from the ID token, or from userinfo if absent</source>
@@ -5935,7 +6138,7 @@
     </unit>
     <unit id="identitySources.redirectUri">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:302,304</note>
+        <note category="location">src/app/pages/identity-sources.ts:411,413</note>
       </notes>
       <segment>
         <source>Redirect URI</source>
@@ -5943,31 +6146,15 @@
     </unit>
     <unit id="identitySources.redirectUriRegister">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:304,305</note>
+        <note category="location">src/app/pages/identity-sources.ts:413,414</note>
       </notes>
       <segment>
         <source>Register this redirect URI in the provider&apos;s application settings:</source>
       </segment>
     </unit>
-    <unit id="identitySources.copied">
-      <notes>
-        <note category="location">src/app/pages/identity-sources.ts:305</note>
-      </notes>
-      <segment>
-        <source>Copied</source>
-      </segment>
-    </unit>
-    <unit id="identitySources.copy">
-      <notes>
-        <note category="location">src/app/pages/identity-sources.ts:305,306</note>
-      </notes>
-      <segment>
-        <source>Copy</source>
-      </segment>
-    </unit>
     <unit id="identitySources.redirectUriSaveFirst">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:307,310</note>
+        <note category="location">src/app/pages/identity-sources.ts:416,419</note>
       </notes>
       <segment>
         <source>Save the source first; its redirect URI appears here, ready to copy into the provider.</source>
@@ -5975,7 +6162,7 @@
     </unit>
     <unit id="identitySources.roleMapping">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:312,314</note>
+        <note category="location">src/app/pages/identity-sources.ts:421,423</note>
       </notes>
       <segment>
         <source>Role mapping</source>
@@ -5983,7 +6170,7 @@
     </unit>
     <unit id="identitySources.group">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:314</note>
+        <note category="location">src/app/pages/identity-sources.ts:423</note>
       </notes>
       <segment>
         <source>Group</source>
@@ -5991,8 +6178,8 @@
     </unit>
     <unit id="identitySources.role">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:314,315</note>
-        <note category="location">src/app/pages/identity-sources.ts:360</note>
+        <note category="location">src/app/pages/identity-sources.ts:423,424</note>
+        <note category="location">src/app/pages/identity-sources.ts:471</note>
       </notes>
       <segment>
         <source>Role</source>
@@ -6000,9 +6187,9 @@
     </unit>
     <unit id="identitySources.roleAdministrator">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:320,321</note>
-        <note category="location">src/app/pages/identity-sources.ts:334,336</note>
-        <note category="location">src/app/pages/identity-sources.ts:486</note>
+        <note category="location">src/app/pages/identity-sources.ts:429,430</note>
+        <note category="location">src/app/pages/identity-sources.ts:443,445</note>
+        <note category="location">src/app/pages/identity-sources.ts:623</note>
       </notes>
       <segment>
         <source>Administrator</source>
@@ -6010,9 +6197,9 @@
     </unit>
     <unit id="identitySources.roleViewer">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:321,323</note>
-        <note category="location">src/app/pages/identity-sources.ts:333,334</note>
-        <note category="location">src/app/pages/identity-sources.ts:486</note>
+        <note category="location">src/app/pages/identity-sources.ts:430,432</note>
+        <note category="location">src/app/pages/identity-sources.ts:442,443</note>
+        <note category="location">src/app/pages/identity-sources.ts:623</note>
       </notes>
       <segment>
         <source>Viewer</source>
@@ -6020,7 +6207,7 @@
     </unit>
     <unit id="identitySources.removeMapping">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:324</note>
+        <note category="location">src/app/pages/identity-sources.ts:433</note>
       </notes>
       <segment>
         <source>Remove mapping</source>
@@ -6028,7 +6215,7 @@
     </unit>
     <unit id="identitySources.addMapping">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:327,328</note>
+        <note category="location">src/app/pages/identity-sources.ts:436,437</note>
       </notes>
       <segment>
         <source>Add mapping</source>
@@ -6036,7 +6223,7 @@
     </unit>
     <unit id="identitySources.everyoneElse">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:330,331</note>
+        <note category="location">src/app/pages/identity-sources.ts:439,440</note>
       </notes>
       <segment>
         <source>Everyone else</source>
@@ -6044,7 +6231,7 @@
     </unit>
     <unit id="identitySources.denyAccess">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:332,333</note>
+        <note category="location">src/app/pages/identity-sources.ts:441,442</note>
       </notes>
       <segment>
         <source>Deny console access</source>
@@ -6052,7 +6239,7 @@
     </unit>
     <unit id="identitySources.everyoneElseHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:336,337</note>
+        <note category="location">src/app/pages/identity-sources.ts:445,446</note>
       </notes>
       <segment>
         <source>Role for authenticated users matching no mapping</source>
@@ -6060,7 +6247,7 @@
     </unit>
     <unit id="identitySources.testConnection">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:341,342</note>
+        <note category="location">src/app/pages/identity-sources.ts:450,451</note>
       </notes>
       <segment>
         <source>Test connection</source>
@@ -6068,15 +6255,23 @@
     </unit>
     <unit id="identitySources.testHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:343,344</note>
+        <note category="location">src/app/pages/identity-sources.ts:452,453</note>
       </notes>
       <segment>
         <source>Checks that the provider&apos;s metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</source>
       </segment>
     </unit>
+    <unit id="identitySources.testSamlHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:454,455</note>
+      </notes>
+      <segment>
+        <source>Loads the provider&apos;s metadata and shows its sign-in URL and certificates. Complete a full sign-in with the button on the sign-in page.</source>
+      </segment>
+    </unit>
     <unit id="identitySources.testLdapHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:345,346</note>
+        <note category="location">src/app/pages/identity-sources.ts:456,457</note>
       </notes>
       <segment>
         <source>Connects and signs in with the service account. Enter a username to also see their entry, groups and the role they would get.</source>
@@ -6084,7 +6279,7 @@
     </unit>
     <unit id="identitySources.testUserOptional">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:346</note>
+        <note category="location">src/app/pages/identity-sources.ts:457</note>
       </notes>
       <segment>
         <source>Username (optional)</source>
@@ -6092,7 +6287,7 @@
     </unit>
     <unit id="identitySources.testRadiusHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:348,349</note>
+        <note category="location">src/app/pages/identity-sources.ts:459,460</note>
       </notes>
       <segment>
         <source>RADIUS can only be tested with a sign-in attempt. Even a rejection shows the server is reachable and the shared secret is right.</source>
@@ -6100,7 +6295,7 @@
     </unit>
     <unit id="identitySources.testUser">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:349</note>
+        <note category="location">src/app/pages/identity-sources.ts:460</note>
       </notes>
       <segment>
         <source>Username</source>
@@ -6108,7 +6303,7 @@
     </unit>
     <unit id="identitySources.testPass">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:350</note>
+        <note category="location">src/app/pages/identity-sources.ts:461</note>
       </notes>
       <segment>
         <source>Password</source>
@@ -6116,7 +6311,7 @@
     </unit>
     <unit id="identitySources.runTest">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:352,353</note>
+        <note category="location">src/app/pages/identity-sources.ts:463,464</note>
       </notes>
       <segment>
         <source>Run test</source>
@@ -6124,15 +6319,71 @@
     </unit>
     <unit id="identitySources.groupsFound">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:359</note>
+        <note category="location">src/app/pages/identity-sources.ts:470</note>
       </notes>
       <segment>
         <source>Groups</source>
       </segment>
     </unit>
+    <unit id="identitySources.samlIdpEntity">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:476,477</note>
+      </notes>
+      <segment>
+        <source>Provider entity ID</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSsoUrl">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:477,478</note>
+      </notes>
+      <segment>
+        <source>Sign-in URL</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlIdpCert">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:479,480</note>
+      </notes>
+      <segment>
+        <source>Signing certificate</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlIdpCertExpires">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:480,481</note>
+      </notes>
+      <segment>
+        <source>(expires <ph id="0" equiv="INTERPOLATION" disp="{{ dateOnly(c.notAfter) }}"/>)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlSignedRequests">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:482,483</note>
+      </notes>
+      <segment>
+        <source>Signed requests</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlRequired">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:483</note>
+      </notes>
+      <segment>
+        <source>required</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlOptional">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:483,484</note>
+      </notes>
+      <segment>
+        <source>optional</source>
+      </segment>
+    </unit>
     <unit id="identitySources.authorization">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:365,366</note>
+        <note category="location">src/app/pages/identity-sources.ts:488,489</note>
         <note category="description">OIDC authorization endpoint</note>
       </notes>
       <segment>
@@ -6141,7 +6392,7 @@
     </unit>
     <unit id="identitySources.token">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:366,367</note>
+        <note category="location">src/app/pages/identity-sources.ts:489,490</note>
         <note category="description">OIDC token endpoint</note>
       </notes>
       <segment>
@@ -6150,7 +6401,7 @@
     </unit>
     <unit id="identitySources.pkceSupported">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:368</note>
+        <note category="location">src/app/pages/identity-sources.ts:491</note>
       </notes>
       <segment>
         <source>S256 supported</source>
@@ -6158,7 +6409,7 @@
     </unit>
     <unit id="identitySources.pkceNotAdvertised">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:368,369</note>
+        <note category="location">src/app/pages/identity-sources.ts:491,492</note>
       </notes>
       <segment>
         <source>not advertised (sign-in still sends S256)</source>
@@ -6166,7 +6417,7 @@
     </unit>
     <unit id="identitySources.claims">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:369,370</note>
+        <note category="location">src/app/pages/identity-sources.ts:492,493</note>
       </notes>
       <segment>
         <source>Claims</source>
@@ -6174,7 +6425,7 @@
     </unit>
     <unit id="common.close">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:384</note>
+        <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
         <note category="location">src/app/shell.ts:171,173</note>
       </notes>
@@ -6184,7 +6435,7 @@
     </unit>
     <unit id="identitySources.deleteTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:390,391</note>
+        <note category="location">src/app/pages/identity-sources.ts:513,514</note>
       </notes>
       <segment>
         <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>?</source>
@@ -6192,15 +6443,39 @@
     </unit>
     <unit id="identitySources.deleteConfirm">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:392,393</note>
+        <note category="location">src/app/pages/identity-sources.ts:515,516</note>
       </notes>
       <segment>
         <source>The sign-in button disappears and the <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.users }}"/> account(s) created by this source are deleted and signed out. Local accounts are not affected.</source>
       </segment>
     </unit>
+    <unit id="identitySources.copy">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:602</note>
+      </notes>
+      <segment>
+        <source>Copy</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.copied">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:603</note>
+      </notes>
+      <segment>
+        <source>Copied</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.samlGroupPlaceholder">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:607</note>
+      </notes>
+      <segment>
+        <source>Group name or object ID</source>
+      </segment>
+    </unit>
     <unit id="identitySources.secretUnchanged">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:474</note>
+        <note category="location">src/app/pages/identity-sources.ts:615</note>
       </notes>
       <segment>
         <source>Unchanged (stored securely)</source>
@@ -6208,23 +6483,15 @@
     </unit>
     <unit id="identitySources.secretRequired">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:475</note>
+        <note category="location">src/app/pages/identity-sources.ts:616</note>
       </notes>
       <segment>
         <source>Required for confidential clients</source>
       </segment>
     </unit>
-    <unit id="identitySources.samlDescription">
-      <notes>
-        <note category="location">src/app/pages/identity-sources.ts:478</note>
-      </notes>
-      <segment>
-        <source>Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.</source>
-      </segment>
-    </unit>
     <unit id="identitySources.roleDenied">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:486</note>
+        <note category="location">src/app/pages/identity-sources.ts:623</note>
       </notes>
       <segment>
         <source>denied</source>
@@ -6232,7 +6499,7 @@
     </unit>
     <unit id="identitySources.badServer">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:496</note>
+        <note category="location">src/app/pages/identity-sources.ts:633</note>
       </notes>
       <segment>
         <source>Not a host name or address</source>
@@ -6240,15 +6507,23 @@
     </unit>
     <unit id="identitySources.savedNote">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:551</note>
+        <note category="location">src/app/pages/identity-sources.ts:699</note>
       </notes>
       <segment>
         <source>Saved. Register the redirect URI above in your provider, then sign in with the new button on the sign-in page.</source>
       </segment>
     </unit>
+    <unit id="identitySources.samlSavedNote">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:701</note>
+      </notes>
+      <segment>
+        <source>Saved. Add this appliance to your provider with the metadata or values above, then sign in with the new button on the sign-in page.</source>
+      </segment>
+    </unit>
     <unit id="identitySources.claimsMissing">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:592</note>
+        <note category="location">src/app/pages/identity-sources.ts:746</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="claims" disp="missing.join(&apos;, &apos;)"/> not advertised (may still be sent)</source>
@@ -6256,7 +6531,7 @@
     </unit>
     <unit id="identitySources.claimsAdvertised">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:593</note>
+        <note category="location">src/app/pages/identity-sources.ts:747</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="claims" disp="want.join(&apos;, &apos;)"/> advertised</source>

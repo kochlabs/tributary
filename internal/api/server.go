@@ -88,6 +88,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/auth/logout", s.logout)
 	mux.HandleFunc("GET /api/auth/sso/{id}/start", s.ssoStart)
 	mux.HandleFunc("GET /api/auth/sso/{id}/callback", s.ssoCallback)
+	mux.HandleFunc("POST /api/auth/sso/{id}/acs", s.samlACS)
+	mux.HandleFunc("GET /api/auth/sso/{id}/metadata", s.samlMetadata)
 
 	auth := func(pattern string, h http.HandlerFunc) { mux.Handle(pattern, s.requireUser(h, false)) }
 	admin := func(pattern string, h http.HandlerFunc) { mux.Handle(pattern, s.requireUser(h, true)) }
@@ -187,7 +189,10 @@ func (s *Server) middleware(next http.Handler) http.Handler {
 		}
 		// State-changing API calls must be JSON: browsers cannot send that
 		// cross-site without a CORS preflight, which we never grant.
-		if strings.HasPrefix(r.URL.Path, "/api/") && r.Method != http.MethodGet && r.Method != http.MethodHead {
+		// The exception is the SAML assertion consumer service: identity
+		// providers post a form to it, and the response is checked by its
+		// signature, its single-use request ID and the browser-bound cookie.
+		if strings.HasPrefix(r.URL.Path, "/api/") && r.Method != http.MethodGet && r.Method != http.MethodHead && !isSAMLACS(r.URL.Path) {
 			raw := r.URL.Path == uploadPath && r.Header.Get("Content-Type") == "application/octet-stream"
 			if r.ContentLength != 0 && !raw && !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
 				writeErr(w, http.StatusUnsupportedMediaType, "content type must be application/json")
@@ -380,4 +385,14 @@ func (l *loginLimiter) reset(ip string) {
 	l.mu.Lock()
 	delete(l.m, ip)
 	l.mu.Unlock()
+}
+
+// isSAMLACS matches /api/auth/sso/{id}/acs.
+func isSAMLACS(path string) bool {
+	id, ok := strings.CutPrefix(path, "/api/auth/sso/")
+	if !ok {
+		return false
+	}
+	id, ok = strings.CutSuffix(id, "/acs")
+	return ok && id != "" && strings.Trim(id, "0123456789") == ""
 }

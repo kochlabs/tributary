@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage, IdentitySource, LDAPConfig, ProviderTest, RADIUSConfig, RoleMapping } from '../core/api';
+import { Api, errorMessage, IdentitySource, LDAPConfig, ProviderTest, RADIUSConfig, RoleMapping, SAMLConfig, SAMLInfo } from '../core/api';
+import { dateOnly } from '../core/format';
 import { loader, trackByKey } from '../core/util';
 import { ListEditor, listValues } from '../shared/list-editor';
 
@@ -9,7 +10,7 @@ const TYPE_LABELS: Record<string, string> = { oidc: 'OpenID Connect', ldap: 'LDA
 
 interface Form {
   id: number;
-  type: 'oidc' | 'ldap' | 'radius';
+  type: 'oidc' | 'saml' | 'ldap' | 'radius';
   name: string;
   enabled: boolean;
   priority: number;
@@ -22,6 +23,9 @@ interface Form {
   groupsClaim: string;
   mappings: RoleMapping[];
   defaultRole: '' | 'viewer' | 'admin';
+  saml: SAMLConfig;
+  /** Where the provider metadata comes from. */
+  samlSource: 'url' | 'xml';
   ldap: LDAPConfig;
   radius: RADIUSConfig;
   testUser: string;
@@ -31,11 +35,33 @@ interface Form {
 const AD_PRESET = { userFilter: '(&(objectClass=user)(sAMAccountName={username}))', usernameAttr: 'sAMAccountName', nameAttr: 'displayName', groupAttr: 'memberOf' };
 const OPENLDAP_PRESET = { userFilter: '(&(objectClass=inetOrgPerson)(uid={username}))', usernameAttr: 'uid', nameAttr: 'cn', groupAttr: 'memberOf' };
 
+/** Attribute names each SAML provider sends by default (username empty: the NameID). */
+const SAML_PRESETS: Record<string, Pick<SAMLConfig, 'usernameAttr' | 'nameAttr' | 'groupsAttr'>> = {
+  entra: {
+    usernameAttr: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+    nameAttr: 'http://schemas.microsoft.com/identity/claims/displayname',
+    groupsAttr: 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups',
+  },
+  adfs: {
+    usernameAttr: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn',
+    nameAttr: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+    groupsAttr: 'http://schemas.xmlsoap.org/claims/Group',
+  },
+  okta: { usernameAttr: '', nameAttr: 'displayName', groupsAttr: 'groups' },
+  authentik: {
+    usernameAttr: 'http://schemas.goauthentik.io/2021/02/saml/username',
+    nameAttr: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+    groupsAttr: 'http://schemas.xmlsoap.org/claims/Group',
+  },
+};
+
 function blankForm(type: Form['type'] = 'oidc'): Form {
   return {
     id: 0, type, name: '', enabled: true, priority: 10, issuer: '', clientId: '', clientSecret: '', hasSecret: false,
     scopes: ['openid', 'profile', 'email'], usernameClaim: 'preferred_username', groupsClaim: 'groups',
     mappings: [{ group: '', role: 'admin' }], defaultRole: '',
+    saml: { metadataUrl: '', metadataXml: '', entityId: '', signRequests: true, ...SAML_PRESETS['entra'] },
+    samlSource: 'url',
     ldap: { url: '', startTls: false, bindDn: '', baseDn: '', nestedGroups: false, ...AD_PRESET },
     radius: { servers: [''], nasIdentifier: 'tributary', timeoutSec: 5, roleAttribute: 'Class' },
     testUser: '', testPass: '',
@@ -101,7 +127,8 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
         <h4 class="card-title" i18n="@@identitySources.howTitle">How sign-in works</h4>
         <ul>
           <li i18n="@@identitySources.howLocal"><b>Local accounts</b> always authenticate locally with their password and are never passed to a provider.</li>
-          <li i18n="@@identitySources.howOidc">Enabled <b>OpenID Connect</b> sources appear as buttons on the sign-in page, in priority order (lowest first).</li>
+          <li i18n="@@identitySources.howSso">Enabled <b>OpenID Connect</b> and <b>SAML</b> sources appear as buttons on the sign-in page, in priority order (lowest first).</li>
+          <li i18n="@@identitySources.howDirectory"><b>LDAP</b> and <b>RADIUS</b> sources check the regular username and password form, after local accounts.</li>
           <li i18n="@@identitySources.howRole">The role comes from the highest matching group mapping, otherwise the "everyone else" role. With neither, access is denied. Roles are re-evaluated at every sign-in.</li>
           <li i18n="@@identitySources.howIsolation">A provider can never sign in to a local account, or to an account created by another source, even with the same username.</li>
         </ul>
@@ -117,6 +144,10 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
             <h4>OpenID Connect</h4>
             <p i18n="@@identitySources.oidcDescription">Single sign-on with Authentik, Entra ID, Okta, Keycloak, Google and other OIDC providers.</p>
           </button>
+          <button class="type-card" (click)="openNew('saml')">
+            <h4>SAML 2.0</h4>
+            <p i18n="@@identitySources.samlDescription">Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.</p>
+          </button>
           <button class="type-card" (click)="openNew('ldap')">
             <h4>LDAP / Active Directory</h4>
             <p i18n="@@identitySources.ldapDescription">Bind to a directory and map groups to roles.</p>
@@ -125,12 +156,6 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
             <h4>RADIUS</h4>
             <p i18n="@@identitySources.radiusDescription">PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).</p>
           </button>
-          @for (t of later; track t.title) {
-            <div class="type-card disabled" aria-disabled="true">
-              <h4>{{ t.title }} <span class="label" i18n="@@identitySources.comingSoon">Coming soon</span></h4>
-              <p>{{ t.text }}</p>
-            </div>
-          }
         </div>
       </div>
       <div class="modal-footer">
@@ -138,7 +163,7 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
       </div>
     </clr-modal>
 
-    <!-- OpenID Connect editor -->
+    <!-- Source editor -->
     <clr-modal [clrModalOpen]="editOpen()" (clrModalOpenChange)="editOpen.set($event)" clrModalSize="xl" [clrModalStaticBackdrop]="true">
       <h3 class="modal-title">@if (form.id) {<ng-container i18n="@@identitySources.editTitle">Edit {{ typeLabel(form.type) }} source</ng-container>} @else {<ng-container i18n="@@identitySources.addTypeTitle">Add {{ typeLabel(form.type) }} source</ng-container>}</h3>
       <div class="modal-body">
@@ -147,8 +172,8 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
             <h5 class="section" i18n="@@identitySources.general">General</h5>
             <clr-input-container>
               <label i18n="@@common.name">Name</label>
-              <input clrInput name="name" [(ngModel)]="form.name" required maxlength="64" [placeholder]="form.type === 'oidc' ? 'Authentik' : form.type === 'ldap' ? 'Corporate AD' : 'NPS'" />
-              @if (form.type === 'oidc') {
+              <input clrInput name="name" [(ngModel)]="form.name" required maxlength="64" [placeholder]="namePlaceholder[form.type]" />
+              @if (form.type === 'oidc' || form.type === 'saml') {
                 <clr-control-helper i18n="@@identitySources.nameHelp">Shown on the sign-in button</clr-control-helper>
               } @else {
                 <clr-control-helper i18n="@@identitySources.namePasswordHelp">Users sign in with the regular username and password form</clr-control-helper>
@@ -259,6 +284,90 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
                 <clr-control-helper i18n="@@identitySources.roleAttributeHelp">Values of this reply attribute are matched against the role mappings below</clr-control-helper>
               </clr-select-container>
             }
+            @if (form.type === 'saml') {
+              <h5 class="section" i18n="@@identitySources.provider">Provider</h5>
+              <div class="clr-form-control clr-row">
+                <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@identitySources.samlMetadata">Provider metadata</label>
+                <div class="clr-col-12 clr-col-md-8">
+                  <div class="btn-group btn-sm" role="group">
+                    <button type="button" class="btn" [class.btn-primary]="form.samlSource === 'url'" [class.btn-outline]="form.samlSource !== 'url'" (click)="form.samlSource = 'url'" i18n="@@identitySources.samlFromUrl">From URL</button>
+                    <button type="button" class="btn" [class.btn-primary]="form.samlSource === 'xml'" [class.btn-outline]="form.samlSource !== 'xml'" (click)="form.samlSource = 'xml'" i18n="@@identitySources.samlPasteXml">Paste XML</button>
+                  </div>
+                </div>
+              </div>
+              @if (form.samlSource === 'url') {
+                <clr-input-container>
+                  <label i18n="@@identitySources.samlMetadataUrl">Metadata URL</label>
+                  <input clrInput name="samlUrl" [(ngModel)]="form.saml.metadataUrl" required placeholder="https://login.microsoftonline.com/…/federationmetadata/2007-06/federationmetadata.xml" class="wide" />
+                  <clr-control-helper i18n="@@identitySources.samlMetadataUrlHelp">Fetched when you save and refreshed daily, so certificate rollovers are picked up</clr-control-helper>
+                </clr-input-container>
+              } @else {
+                <div class="clr-form-control clr-row">
+                  <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@identitySources.samlMetadataXml">Metadata XML</label>
+                  <div class="clr-control-container clr-col-12 clr-col-md-8">
+                    <textarea class="clr-textarea xml mono" name="samlXml" [(ngModel)]="form.saml.metadataXml" rows="7" spellcheck="false" placeholder="<EntityDescriptor …>"></textarea>
+                    <span class="clr-subtext" i18n="@@identitySources.samlMetadataXmlHelp">For providers without a metadata URL. Paste the new metadata here when the provider's signing certificate changes.</span>
+                  </div>
+                </div>
+              }
+              <div class="clr-form-control clr-row">
+                <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@identitySources.samlProviderType">Provider type</label>
+                <div class="clr-col-12 clr-col-md-8 presets">
+                  <button type="button" class="btn btn-sm btn-outline" (click)="samlPreset('entra')">Entra ID</button>
+                  <button type="button" class="btn btn-sm btn-outline" (click)="samlPreset('adfs')">AD FS</button>
+                  <button type="button" class="btn btn-sm btn-outline" (click)="samlPreset('okta')">Okta</button>
+                  <button type="button" class="btn btn-sm btn-outline" (click)="samlPreset('authentik')">Authentik</button>
+                </div>
+              </div>
+              <clr-input-container>
+                <label i18n="@@identitySources.samlUsernameAttr">Username attribute</label>
+                <input clrInput name="samlUser" [(ngModel)]="form.saml.usernameAttr" class="wide mono" placeholder="NameID" i18n-placeholder="@@identitySources.samlNameId" />
+                <clr-control-helper i18n="@@identitySources.samlUsernameAttrHelp">Empty: the assertion's NameID. Attributes match by Name or FriendlyName.</clr-control-helper>
+              </clr-input-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.nameAttr">Display name attribute</label>
+                <input clrInput name="samlName" [(ngModel)]="form.saml.nameAttr" class="wide mono" />
+              </clr-input-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.samlGroupsAttr">Groups attribute</label>
+                <input clrInput name="samlGroups" [(ngModel)]="form.saml.groupsAttr" class="wide mono" />
+                <clr-control-helper i18n="@@identitySources.samlGroupsAttrHelp">Its values are matched against the role mappings below (Entra ID sends group object IDs)</clr-control-helper>
+              </clr-input-container>
+              <clr-checkbox-container>
+                <label></label>
+                <clr-checkbox-wrapper>
+                  <input type="checkbox" clrCheckbox name="signReq" [(ngModel)]="form.saml.signRequests" />
+                  <label i18n="@@identitySources.samlSignRequests">Sign authentication requests</label>
+                </clr-checkbox-wrapper>
+              </clr-checkbox-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.samlEntityId">Entity ID</label>
+                <input clrInput name="samlEntity" [(ngModel)]="form.saml.entityId" class="wide" [placeholder]="samlInfo()?.metadataUrl ?? ''" />
+                <clr-control-helper i18n="@@identitySources.samlEntityIdHelp">How this appliance identifies itself to the provider. Empty: its metadata URL.</clr-control-helper>
+              </clr-input-container>
+
+              <div class="redirect">
+                <h5 i18n="@@identitySources.samlThisAppliance">This appliance (service provider)</h5>
+                @if (samlInfo(); as si) {
+                  <p i18n="@@identitySources.samlRegister">Import the metadata into the provider, or enter these values:</p>
+                  <dl class="sp">
+                    <dt i18n="@@identitySources.samlEntityId">Entity ID</dt>
+                    <dd class="uri"><code>{{ si.entityId }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy(si.entityId, 'entity')">{{ copied() === 'entity' ? copiedLabel : copyLabel }}</button></dd>
+                    <dt i18n="@@identitySources.samlAcs">Reply / ACS URL (HTTP-POST)</dt>
+                    <dd class="uri"><code>{{ si.acsUrl }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy(si.acsUrl, 'acs')">{{ copied() === 'acs' ? copiedLabel : copyLabel }}</button></dd>
+                    <dt i18n="@@identitySources.samlSpMetadata">Metadata</dt>
+                    <dd class="uri"><code>{{ si.metadataUrl }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy(si.metadataUrl, 'meta')">{{ copied() === 'meta' ? copiedLabel : copyLabel }}</button>
+                      <a class="btn btn-link btn-sm" [href]="si.metadataUrl + '?download'" i18n="@@identitySources.download">Download</a></dd>
+                    @if (si.certExpires) {
+                      <dt i18n="@@identitySources.samlSpCert">Signing certificate</dt>
+                      <dd i18n="@@identitySources.samlSpCertExpires">Self-signed, expires {{ dateOnly(si.certExpires) }}</dd>
+                    }
+                  </dl>
+                } @else {
+                  <p i18n="@@identitySources.samlSaveFirst">Save the source first: its entity ID, reply URL and metadata appear here, ready for the provider.</p>
+                }
+              </div>
+            }
             @if (form.type === 'oidc') {
             <h5 class="section" i18n="@@identitySources.provider">Provider</h5>
             <clr-input-container>
@@ -302,7 +411,7 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
               <h5 i18n="@@identitySources.redirectUri">Redirect URI</h5>
               @if (redirectUri()) {
                 <p i18n="@@identitySources.redirectUriRegister">Register this redirect URI in the provider's application settings:</p>
-                <div class="uri"><code>{{ redirectUri() }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy()">@if (copied()) {<ng-container i18n="@@identitySources.copied">Copied</ng-container>} @else {<ng-container i18n="@@identitySources.copy">Copy</ng-container>}</button></div>
+                <div class="uri"><code>{{ redirectUri() }}</code> <button type="button" class="btn btn-link btn-sm" (click)="copy(redirectUri(), 'redirect')">{{ copied() === 'redirect' ? copiedLabel : copyLabel }}</button></div>
               } @else {
                 <p i18n="@@identitySources.redirectUriSaveFirst">Save the source first; its redirect URI appears here, ready to copy into the provider.</p>
               }
@@ -314,7 +423,7 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
               <div class="map-head"><span i18n="@@identitySources.group">Group</span><span i18n="@@identitySources.role">Role</span><span></span></div>
               @for (m of form.mappings; track $index; let i = $index) {
                 <div class="map-row">
-                  <input class="clr-input" [name]="'group' + i" [(ngModel)]="m.group" [placeholder]="form.type === 'ldap' ? 'Net Admins (CN or full DN)' : form.type === 'radius' ? 'Class or Filter-Id value' : 'tributary-admins'" />
+                  <input class="clr-input" [name]="'group' + i" [(ngModel)]="m.group" [placeholder]="groupPlaceholder[form.type]" />
                   <div class="clr-select-wrapper">
                     <select class="clr-select" [name]="'role' + i" [(ngModel)]="m.role">
                       <option value="admin" i18n="@@identitySources.roleAdministrator">Administrator</option>
@@ -341,6 +450,8 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
             <h5 i18n="@@identitySources.testConnection">Test connection</h5>
             @if (form.type === 'oidc') {
               <p i18n="@@identitySources.testHelp">Checks that the provider's metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</p>
+            } @else if (form.type === 'saml') {
+              <p i18n="@@identitySources.testSamlHelp">Loads the provider's metadata and shows its sign-in URL and certificates. Complete a full sign-in with the button on the sign-in page.</p>
             } @else if (form.type === 'ldap') {
               <p i18n="@@identitySources.testLdapHelp">Connects and signs in with the service account. Enter a username to also see their entry, groups and the role they would get.</p>
               <input class="clr-input test-input" name="testUser" [(ngModel)]="form.testUser" placeholder="Username (optional)" i18n-placeholder="@@identitySources.testUserOptional" autocomplete="off" />
@@ -353,11 +464,23 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
             @if (test(); as t) {
               <div class="result" [class.bad]="!t.ok">
                 <div><span class="dot" [class.ok]="t.ok" [class.bad]="!t.ok"></span> {{ t.message }}</div>
-                @if (t.ok && form.type !== 'oidc' && (t.dn || t.groups)) {
+                @if (t.ok && (form.type === 'ldap' || form.type === 'radius') && (t.dn || t.groups)) {
                   <dl>
                     @if (t.dn) {<dt>DN</dt><dd>{{ t.dn }}</dd>}
                     <dt i18n="@@identitySources.groupsFound">Groups</dt><dd>{{ t.groups?.length ? t.groups!.join('; ') : '–' }}</dd>
                     <dt i18n="@@identitySources.role">Role</dt><dd>{{ roleLabel(t.role ?? '') }}</dd>
+                  </dl>
+                }
+                @if (t.ok && form.type === 'saml') {
+                  <dl>
+                    <dt i18n="@@identitySources.samlIdpEntity">Provider entity ID</dt><dd>{{ t.idpEntityId }}</dd>
+                    <dt i18n="@@identitySources.samlSsoUrl">Sign-in URL</dt><dd>{{ t.ssoUrl }}</dd>
+                    @for (c of t.signingCerts ?? []; track $index) {
+                      <dt i18n="@@identitySources.samlIdpCert">Signing certificate</dt>
+                      <dd>{{ c.subject }} <span [class.bad-text]="c.notAfter < now" i18n="@@identitySources.samlIdpCertExpires">(expires {{ dateOnly(c.notAfter) }})</span></dd>
+                    }
+                    <dt i18n="@@identitySources.samlSignedRequests">Signed requests</dt>
+                    <dd>@if (t.wantsSignedRequests) {<ng-container i18n="@@identitySources.samlRequired">required</ng-container>} @else {<ng-container i18n="@@identitySources.samlOptional">optional</ng-container>}</dd>
                   </dl>
                 }
                 @if (t.ok && form.type === 'oidc') {
@@ -435,6 +558,12 @@ function blankForm(type: Form['type'] = 'oidc'): Form {
     .uri { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .uri code { font-size: 12px; word-break: break-all; }
     .uri .btn { margin: 0; }
+    .sp { margin: 0; font-size: 13px; }
+    .sp dt { font-size: 11px; color: var(--cds-alias-typography-color-300); margin-top: 8px; }
+    .sp dd { margin: 0; }
+    .xml { width: 100%; max-width: 520px; font-size: 11px; }
+    .btn-group { margin: 0; }
+    .bad-text { color: var(--cds-alias-status-danger); }
     .mappings { margin-top: 6px; }
     .map-head, .map-row { display: grid; grid-template-columns: minmax(0, 1fr) 170px 32px; gap: 12px; align-items: center; }
     .map-head { font-size: 11px; text-transform: uppercase; color: var(--cds-alias-typography-color-300); }
@@ -466,17 +595,25 @@ export class IdentitySources {
   readonly test = signal<ProviderTest | null>(null);
   readonly testing = signal(false);
   readonly saving = signal(false);
-  readonly copied = signal(false);
+  readonly copied = signal('');
+  readonly samlInfo = signal<SAMLInfo | null>(null);
+  readonly now = Date.now();
+  readonly dateOnly = dateOnly;
+  readonly copyLabel = $localize`:@@identitySources.copy:Copy`;
+  readonly copiedLabel = $localize`:@@identitySources.copied:Copied`;
+  readonly namePlaceholder: Record<Form['type'], string> = { oidc: 'Authentik', saml: 'Entra ID', ldap: 'Corporate AD', radius: 'NPS' };
+  readonly groupPlaceholder: Record<Form['type'], string> = {
+    oidc: 'tributary-admins',
+    saml: $localize`:@@identitySources.samlGroupPlaceholder:Group name or object ID`,
+    ldap: 'Net Admins (CN or full DN)',
+    radius: 'Class or Filter-Id value',
+  };
   readonly formError = signal('');
   readonly savedNote = signal('');
   readonly pageError = signal('');
   form: Form = blankForm();
   readonly secretUnchanged = $localize`:@@identitySources.secretUnchanged:Unchanged (stored securely)`;
   readonly secretRequired = $localize`:@@identitySources.secretRequired:Required for confidential clients`;
-
-  readonly later = [
-    { title: 'SAML 2.0', text: $localize`:@@identitySources.samlDescription:Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.` },
-  ];
 
   typeLabel(t: string) {
     return TYPE_LABELS[t] ?? t;
@@ -490,7 +627,7 @@ export class IdentitySources {
     this.test.set(null);
     this.formError.set('');
     this.savedNote.set('');
-    this.copied.set(false);
+    this.copied.set('');
   }
 
   readonly serverError = (v: string) => (/^[^\s/\\]+$/.test(v) ? null : $localize`:@@identitySources.badServer:Not a host name or address`);
@@ -499,10 +636,15 @@ export class IdentitySources {
     Object.assign(this.form.ldap, kind === 'ad' ? AD_PRESET : OPENLDAP_PRESET);
   }
 
+  samlPreset(kind: string) {
+    Object.assign(this.form.saml, SAML_PRESETS[kind]);
+  }
+
   openNew(type: Form['type'] = 'oidc') {
     this.chooserOpen.set(false);
     this.form = blankForm(type);
     this.redirectUri.set('');
+    this.samlInfo.set(null);
     this.reset();
     this.editOpen.set(true);
   }
@@ -519,10 +661,15 @@ export class IdentitySources {
         const o = src.oidc;
         Object.assign(f, { issuer: o.issuer, clientId: o.clientId, scopes: [...o.scopes], usernameClaim: o.usernameClaim, groupsClaim: o.groupsClaim });
       }
+      if (src.saml) {
+        f.saml = { ...src.saml };
+        f.samlSource = src.saml.metadataUrl ? 'url' : 'xml';
+      }
       if (src.ldap) f.ldap = { ...src.ldap, bindPassword: undefined };
       if (src.radius) f.radius = { ...src.radius, secret: undefined, servers: [...src.radius.servers] };
       this.form = f;
       this.redirectUri.set(r.redirectUri);
+      this.samlInfo.set(r.saml ?? null);
       this.editOpen.set(true);
     } catch (e) {
       this.pageError.set(errorMessage(e));
@@ -545,10 +692,13 @@ export class IdentitySources {
       if (f.clientSecret) f.hasSecret = true;
       f.clientSecret = '';
       this.redirectUri.set(r.redirectUri);
+      this.samlInfo.set(r.saml ?? null);
       this.list.reload();
       if (created && f.type === 'oidc') {
         // Keep the dialog open so the redirect URI can be copied into the provider.
         this.savedNote.set($localize`:@@identitySources.savedNote:Saved. Register the redirect URI above in your provider, then sign in with the new button on the sign-in page.`);
+      } else if (created && f.type === 'saml') {
+        this.savedNote.set($localize`:@@identitySources.samlSavedNote:Saved. Add this appliance to your provider with the metadata or values above, then sign in with the new button on the sign-in page.`);
       } else {
         this.editOpen.set(false);
       }
@@ -560,9 +710,13 @@ export class IdentitySources {
   }
 
   /** The type-specific settings, with the secret typed in the form. */
-  private typeConfig(): { oidc?: IdentitySource['oidc']; ldap?: LDAPConfig; radius?: RADIUSConfig } {
+  private typeConfig(): { oidc?: IdentitySource['oidc']; saml?: SAMLConfig; ldap?: LDAPConfig; radius?: RADIUSConfig } {
     const f = this.form;
     switch (f.type) {
+      case 'saml': {
+        const url = f.samlSource === 'url';
+        return { saml: { ...f.saml, metadataUrl: url ? f.saml.metadataUrl : '', metadataXml: url ? '' : f.saml.metadataXml } };
+      }
       case 'ldap':
         return { ldap: { ...f.ldap, bindPassword: f.clientSecret } };
       case 'radius':
@@ -593,11 +747,11 @@ export class IdentitySources {
       : $localize`:@@identitySources.claimsAdvertised:${want.join(', ')}:claims: advertised`;
   }
 
-  async copy() {
+  async copy(text: string, key: string) {
     try {
-      await navigator.clipboard.writeText(this.redirectUri());
-      this.copied.set(true);
-      setTimeout(() => this.copied.set(false), 2000);
+      await navigator.clipboard.writeText(text);
+      this.copied.set(key);
+      setTimeout(() => this.copied.set(''), 2000);
     } catch {
       /* clipboard unavailable: the URI is selectable */
     }
