@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Package struct {
@@ -62,7 +63,25 @@ func (m *Manager) UpdateStatus() (*UpdateStatus, error) {
 		_ = json.Unmarshal(b, &r)
 		st.Pending = r.Action
 	}
+	// The helper's snapshot goes stale on reboot (/run is cleared), so read
+	// the current state rather than trusting the last check.
+	_, err = os.Stat(RebootRequiredFile)
+	st.RebootRequired = err == nil
+	if k := runningKernel(); k != "" {
+		st.Kernel = k
+	}
 	return st, nil
+}
+
+// RebootRequiredFile is created by Debian packages that need a restart.
+var RebootRequiredFile = "/run/reboot-required"
+
+func runningKernel() string {
+	b, err := os.ReadFile("/proc/sys/kernel/osrelease")
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(b))
 }
 
 // Log returns the output of the current or last action, starting at offset.
