@@ -94,6 +94,7 @@ import { TimeRangePicker } from './shared/time-range';
                 <a clrVerticalNavLink routerLink="/admin/users" routerLinkActive="active" i18n="@@nav.users">Users</a>
                 <a clrVerticalNavLink routerLink="/admin/identity-sources" routerLinkActive="active" i18n="@@nav.identitySources">Identity Sources</a>
                 <a clrVerticalNavLink routerLink="/admin/data-sources" routerLinkActive="active" i18n="@@nav.dataSources">Data Sources</a>
+                <a clrVerticalNavLink routerLink="/admin/backup" routerLinkActive="active" i18n="@@nav.backup">Backup &amp; Restore</a>
                 <a clrVerticalNavLink routerLink="/admin/certificates" routerLinkActive="active" i18n="@@nav.certificates">Certificates</a>
                 <a clrVerticalNavLink routerLink="/admin/services" routerLinkActive="active" i18n="@@nav.services">Services</a>
                 <a clrVerticalNavLink routerLink="/admin/time" routerLinkActive="active" i18n="@@nav.time">Time</a>

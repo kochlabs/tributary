@@ -63,6 +63,10 @@ Screenshots show simulated traffic from `cmd/flowgen`.
 - **Notices**: banners above the header for conditions that need attention, such
   as low disk space, OS updates, an expiring certificate, exporters that stopped
   sending, or a database outage.
+- **Backup & restore**: encrypted backups (age, passphrase) of the whole
+  configuration — users, SSO, settings, names, certificates and the key that
+  protects stored credentials — optionally with flow history; restore on the same
+  or a new appliance.
 - **Exporter allowlist**: accept flows only from listed addresses or prefixes;
   rejected senders are counted and shown on System Health.
 - **Appliance**: HTTPS by default (plain HTTP on port 80 redirects to it) (self-signed on first boot), bcrypt + hashed

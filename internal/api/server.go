@@ -17,6 +17,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"nfa/internal/backup"
 	"nfa/internal/certs"
 	"nfa/internal/collector"
 	"nfa/internal/config"
@@ -46,6 +47,9 @@ type Server struct {
 
 	started time.Time
 
+	Backups *backup.Manager
+	// Restart stops the process so systemd starts it again (to apply a restore).
+	Restart func()
 	// DataDir is the appliance's data directory (disk checks, initial password).
 	DataDir      string
 	notices      atomic.Pointer[[]Notice]
@@ -125,6 +129,13 @@ func (s *Server) Handler() http.Handler {
 	admin("POST /api/identity-sources/test", s.identitySourceTest)
 	auth("GET /api/geo", s.geoStatus)
 	auth("GET /api/notices", s.noticesList)
+	admin("GET /api/backups", s.backupsList)
+	admin("POST /api/backups", s.backupCreate)
+	admin("GET /api/backups/{name}", s.backupDownload)
+	admin("DELETE /api/backups/{name}", s.backupDelete)
+	admin("POST "+uploadPath, s.restoreUpload)
+	admin("POST /api/restore/inspect", s.restoreInspect)
+	admin("POST /api/restore", s.restoreApply)
 	auth("GET /api/local-suggestions", s.localSuggestions)
 	admin("POST /api/geo/update", s.geoUpdate)
 	admin("POST /api/oui/update", s.ouiUpdate)
@@ -159,7 +170,8 @@ func (s *Server) middleware(next http.Handler) http.Handler {
 		// State-changing API calls must be JSON: browsers cannot send that
 		// cross-site without a CORS preflight, which we never grant.
 		if strings.HasPrefix(r.URL.Path, "/api/") && r.Method != http.MethodGet && r.Method != http.MethodHead {
-			if r.ContentLength != 0 && !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
+			raw := r.URL.Path == uploadPath && r.Header.Get("Content-Type") == "application/octet-stream"
+			if r.ContentLength != 0 && !raw && !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
 				writeErr(w, http.StatusUnsupportedMediaType, "content type must be application/json")
 				return
 			}

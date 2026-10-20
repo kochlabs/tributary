@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpInterceptorFn, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, firstValueFrom, throwError } from 'rxjs';
+import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 
 export type Filters = Record<string, string>;
 export type Metric = 'bps' | 'pps' | 'fps';
@@ -297,6 +297,49 @@ export interface Enrichment {
   geoAsnHost?: string;
 }
 
+/** Backup and restore. */
+export interface BackupTable {
+  table: string;
+  rows: number;
+}
+
+export interface BackupInfo {
+  name: string;
+  size: number;
+  created: number;
+  hostname: string;
+  version: string;
+  flows?: BackupTable[];
+}
+
+export interface BackupJob {
+  kind: 'backup' | 'restore';
+  state: 'running' | 'done' | 'failed';
+  phase: string;
+  bytes: number;
+  error?: string;
+  started: number;
+  finished?: number;
+  name?: string;
+}
+
+export interface BackupManifest {
+  format: number;
+  version: string;
+  created: number;
+  hostname: string;
+  files: string[];
+  flows?: BackupTable[];
+}
+
+export interface BackupStatus {
+  backups: BackupInfo[];
+  job: BackupJob | null;
+  freeBytes: number;
+  flowsBytes: number;
+  minPassphrase: number;
+}
+
 export interface UpdateStatus {
   installed: boolean;
   state: 'idle' | 'running' | 'done' | 'failed';
@@ -565,6 +608,32 @@ export class Api {
   }
   updateGeo() {
     return firstValueFrom(this.http.post('/api/geo/update', {}));
+  }
+  backups() {
+    return this.get<BackupStatus>('/api/backups');
+  }
+  createBackup(passphrase: string, includeFlows: boolean) {
+    return firstValueFrom(this.http.post<BackupJob>('/api/backups', { passphrase, includeFlows }));
+  }
+  deleteBackup(name: string) {
+    return firstValueFrom(this.http.delete(`/api/backups/${encodeURIComponent(name)}`));
+  }
+  backupUrl(name: string) {
+    return `/api/backups/${encodeURIComponent(name)}`;
+  }
+  /** Uploads a backup file for restore, reporting progress events. */
+  uploadRestore(file: Blob): Observable<HttpEvent<{ size: number }>> {
+    return this.http.post<{ size: number }>('/api/restore/upload', file, {
+      headers: { 'Content-Type': 'application/octet-stream' },
+      reportProgress: true,
+      observe: 'events',
+    });
+  }
+  inspectRestore(passphrase: string) {
+    return firstValueFrom(this.http.post<BackupManifest>('/api/restore/inspect', { passphrase }));
+  }
+  applyRestore(passphrase: string, restoreFlows: boolean) {
+    return firstValueFrom(this.http.post<BackupJob>('/api/restore', { passphrase, restoreFlows }));
   }
   notices() {
     return this.get<Notice[]>('/api/notices');

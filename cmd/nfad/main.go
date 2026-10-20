@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"nfa/internal/api"
+	"nfa/internal/backup"
 	"nfa/internal/certs"
 	"nfa/internal/collector"
 	"nfa/internal/config"
@@ -44,6 +45,7 @@ func main() {
 		redirect   = flag.String("redirect-http", "", "also listen on this address (e.g. :80) and redirect plain HTTP to HTTPS")
 		dataDir    = flag.String("data", "/var/lib/nfa", "directory for configuration database and TLS material")
 		chAddr     = flag.String("ch-addr", "127.0.0.1:9000", "ClickHouse native protocol address")
+		chHTTP     = flag.String("ch-http-addr", "127.0.0.1:8123", "ClickHouse HTTP address (used to back up and restore flow history)")
 		chUser     = flag.String("ch-user", "netflow", "ClickHouse user")
 		chPassFile = flag.String("ch-password-file", "/etc/netflow/clickhouse.pw", "file containing the ClickHouse password")
 		logLevel   = flag.String("log-level", "info", "debug, info, warn or error")
@@ -57,24 +59,34 @@ func main() {
 	var lvl slog.Level
 	_ = lvl.UnmarshalText([]byte(*logLevel))
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
-	if err := run(log, *listen, *plainHTTP, *redirect, *dataDir, *chAddr, *chUser, *chPassFile); err != nil {
+	if err := run(log, *listen, *plainHTTP, *redirect, *dataDir, *chAddr, *chHTTP, *chUser, *chPassFile); err != nil {
 		log.Error("fatal", "err", err)
 		os.Exit(1)
 	}
 }
 
-func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chAddr, chUser, chPassFile string) error {
+func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chAddr, chHTTP, chUser, chPassFile string) error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
 	if err := os.MkdirAll(dataDir, 0o750); err != nil {
 		return err
 	}
+	// A restore stages the configuration and restarts; apply it before the
+	// database is opened.
+	restored, err := backup.ApplyStaged(dataDir, log)
+	if err != nil {
+		log.Error("could not apply the restored configuration; starting with the current one", "err", err)
+	}
 	cfg, err := config.Open(filepath.Join(dataDir, "config.db"))
 	if err != nil {
 		return err
 	}
 	defer cfg.Close()
+	if restored {
+		// Sessions from the backup's appliance mean nothing here.
+		_ = cfg.DeleteAllSessions()
+	}
 	if err := bootstrapAdmin(log, cfg, dataDir); err != nil {
 		return err
 	}
@@ -197,7 +209,9 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	}
 
 	srv := &api.Server{
-		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop,
+		Backups: &backup.Manager{Dir: dataDir, Version: version, Log: log, Snapshot: cfg.Snapshot,
+			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)

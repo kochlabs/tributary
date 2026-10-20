@@ -425,6 +425,19 @@ func (c *DB) DeleteSession(token string) error {
 	return err
 }
 
+// Snapshot writes a consistent copy of the configuration database to path
+// (which must not exist), safe to take while the appliance is running.
+func (c *DB) Snapshot(path string) error {
+	_, err := c.db.Exec("VACUUM INTO ?", path)
+	return err
+}
+
+// DeleteAllSessions signs everyone out, e.g. after restoring a backup.
+func (c *DB) DeleteAllSessions() error {
+	_, err := c.db.Exec("DELETE FROM sessions")
+	return err
+}
+
 func (c *DB) PurgeSessions() {
 	_, _ = c.db.Exec("DELETE FROM sessions WHERE expires_at < ?", time.Now().UnixMilli())
 }
