@@ -23,6 +23,7 @@ import (
 	"nfa/internal/config"
 	"nfa/internal/enrich"
 	"nfa/internal/store"
+	"nfa/internal/syslog"
 	"nfa/internal/system"
 )
 
@@ -48,6 +49,7 @@ type Server struct {
 	started time.Time
 
 	Backups *backup.Manager
+	Syslog  *syslog.Forwarder
 	// Restart stops the process so systemd starts it again (to apply a restore).
 	Restart func()
 	// DataDir is the appliance's data directory (disk checks, initial password).
@@ -129,6 +131,9 @@ func (s *Server) Handler() http.Handler {
 	admin("POST /api/identity-sources/test", s.identitySourceTest)
 	auth("GET /api/geo", s.geoStatus)
 	auth("GET /api/notices", s.noticesList)
+	admin("GET /api/syslog", s.syslogGet)
+	admin("PUT /api/syslog", s.syslogPut)
+	admin("POST /api/syslog/test", s.syslogTest)
 	admin("GET /api/backups", s.backupsList)
 	admin("POST /api/backups", s.backupCreate)
 	admin("GET /api/backups/{name}", s.backupDownload)

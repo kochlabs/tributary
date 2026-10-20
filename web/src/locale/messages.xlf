@@ -184,7 +184,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:502</note>
+        <note category="location">src/app/core/api.ts:522</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1878,7 +1878,7 @@
     </unit>
     <unit id="audit.title">
       <notes>
-        <note category="location">src/app/pages/audit.ts:13,14</note>
+        <note category="location">src/app/pages/audit.ts:14,15</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -1886,7 +1886,7 @@
     </unit>
     <unit id="audit.subtitle">
       <notes>
-        <note category="location">src/app/pages/audit.ts:14,16</note>
+        <note category="location">src/app/pages/audit.ts:15,17</note>
       </notes>
       <segment>
         <source>Sign-ins and configuration changes (most recent 500)</source>
@@ -1894,7 +1894,7 @@
     </unit>
     <unit id="common.refresh">
       <notes>
-        <note category="location">src/app/pages/audit.ts:16,17</note>
+        <note category="location">src/app/pages/audit.ts:17,18</note>
         <note category="location">src/app/pages/identity-sources.ts:50</note>
         <note category="location">src/app/pages/services.ts:26,27</note>
         <note category="location">src/app/pages/time.ts:20,21</note>
@@ -1906,7 +1906,7 @@
     </unit>
     <unit id="audit.col.time">
       <notes>
-        <note category="location">src/app/pages/audit.ts:19,20</note>
+        <note category="location">src/app/pages/audit.ts:21,22</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -1914,7 +1914,7 @@
     </unit>
     <unit id="audit.col.user">
       <notes>
-        <note category="location">src/app/pages/audit.ts:20,21</note>
+        <note category="location">src/app/pages/audit.ts:22,23</note>
       </notes>
       <segment>
         <source>User</source>
@@ -1922,7 +1922,7 @@
     </unit>
     <unit id="audit.col.action">
       <notes>
-        <note category="location">src/app/pages/audit.ts:21,22</note>
+        <note category="location">src/app/pages/audit.ts:23,24</note>
       </notes>
       <segment>
         <source>Action</source>
@@ -1930,7 +1930,7 @@
     </unit>
     <unit id="audit.col.detail">
       <notes>
-        <note category="location">src/app/pages/audit.ts:22,23</note>
+        <note category="location">src/app/pages/audit.ts:24,25</note>
       </notes>
       <segment>
         <source>Detail</source>
@@ -1938,7 +1938,7 @@
     </unit>
     <unit id="common.rowsPerPage">
       <notes>
-        <note category="location">src/app/pages/audit.ts:31,32</note>
+        <note category="location">src/app/pages/audit.ts:33,34</note>
         <note category="location">src/app/pages/certificates.ts:155,156</note>
         <note category="location">src/app/pages/devices.ts:90,91</note>
         <note category="location">src/app/pages/explorer.ts:188,189</note>
@@ -1955,7 +1955,7 @@
     </unit>
     <unit id="audit.footer">
       <notes>
-        <note category="location">src/app/pages/audit.ts:33,34</note>
+        <note category="location">src/app/pages/audit.ts:35,36</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -1964,7 +1964,7 @@
     </unit>
     <unit id="audit.empty">
       <notes>
-        <note category="location">src/app/pages/audit.ts:35,36</note>
+        <note category="location">src/app/pages/audit.ts:37,38</note>
       </notes>
       <segment>
         <source>No entries</source>
@@ -3931,6 +3931,7 @@
         <note category="location">src/app/pages/exporter-detail.ts:138,140</note>
         <note category="location">src/app/pages/exporters.ts:129,131</note>
         <note category="location">src/app/pages/identity-sources.ts:251,253</note>
+        <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
         <note category="location">src/app/pages/users.ts:98</note>
       </notes>
@@ -6583,6 +6584,151 @@
         <source>Fix the highlighted entries first: <ph id="0" equiv="entries" disp="bad.join(&apos;, &apos;)"/></source>
       </segment>
     </unit>
+    <unit id="syslog.title">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:22,23</note>
+      </notes>
+      <segment>
+        <source>Forward to syslog</source>
+      </segment>
+    </unit>
+    <unit id="syslog.counters">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:25,26</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtCount(st.sent) }}"/> sent · <ph id="1" equiv="INTERPOLATION_1" disp="{{ fmtCount(st.dropped) }}"/> dropped</source>
+      </segment>
+    </unit>
+    <unit id="syslog.hint">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:31,32</note>
+      </notes>
+      <segment>
+        <source>Sends every audit entry (sign-ins, failed sign-ins, configuration changes) to your syslog servers as it happens, for SIEM and compliance. Messages that can&apos;t be delivered are counted as dropped.</source>
+      </segment>
+    </unit>
+    <unit id="syslog.enable">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:34,35</note>
+      </notes>
+      <segment>
+        <source>Forward the audit log</source>
+      </segment>
+    </unit>
+    <unit id="syslog.server">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:39</note>
+      </notes>
+      <segment>
+        <source>Server</source>
+      </segment>
+    </unit>
+    <unit id="syslog.transport">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:39,40</note>
+      </notes>
+      <segment>
+        <source>Transport</source>
+      </segment>
+    </unit>
+    <unit id="syslog.defaultPort">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:52,53</note>
+      </notes>
+      <segment>
+        <source>port <ph id="0" equiv="INTERPOLATION" disp="{{ t.transport === &apos;tls&apos; ? 6514 : 514 }}"/></source>
+      </segment>
+    </unit>
+    <unit id="listEditor.remove">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:55</note>
+        <note category="location">src/app/shared/list-editor.ts:60</note>
+      </notes>
+      <segment>
+        <source>Remove</source>
+      </segment>
+    </unit>
+    <unit id="syslog.addServer">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:61,62</note>
+      </notes>
+      <segment>
+        <source>Add server</source>
+      </segment>
+    </unit>
+    <unit id="syslog.tlsHint">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:63,65</note>
+      </notes>
+      <segment>
+        <source>TLS verifies the server&apos;s certificate against the system CAs and the trusted CAs on the Certificates page.</source>
+      </segment>
+    </unit>
+    <unit id="syslog.format">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:67,68</note>
+      </notes>
+      <segment>
+        <source>Format</source>
+      </segment>
+    </unit>
+    <unit id="syslog.rfc5424">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:69,70</note>
+      </notes>
+      <segment>
+        <source>RFC 5424 (recommended)</source>
+      </segment>
+    </unit>
+    <unit id="syslog.rfc3164">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:70,71</note>
+      </notes>
+      <segment>
+        <source>RFC 3164 (BSD, older collectors)</source>
+      </segment>
+    </unit>
+    <unit id="syslog.facility">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:74,75</note>
+      </notes>
+      <segment>
+        <source>Facility</source>
+      </segment>
+    </unit>
+    <unit id="syslog.testSent">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:90,91</note>
+      </notes>
+      <segment>
+        <source>test message sent</source>
+      </segment>
+    </unit>
+    <unit id="syslog.lastError">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:99,101</note>
+      </notes>
+      <segment>
+        <source>Last delivery error (<ph id="0" equiv="INTERPOLATION" disp="{{ dt(status()!.lastErrorAt!) }}"/>): <ph id="1" equiv="INTERPOLATION_1" disp="{{ e }}"/></source>
+      </segment>
+    </unit>
+    <unit id="syslog.saved">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:105,107</note>
+      </notes>
+      <segment>
+        <source>Saved.</source>
+      </segment>
+    </unit>
+    <unit id="syslog.test">
+      <notes>
+        <note category="location">src/app/pages/syslog-settings.ts:109,110</note>
+      </notes>
+      <segment>
+        <source>Send test message</source>
+      </segment>
+    </unit>
     <unit id="system.subtitle">
       <notes>
         <note category="location">src/app/pages/system.ts:16,19</note>
@@ -8048,14 +8194,6 @@
       </notes>
       <segment>
         <source>Move down</source>
-      </segment>
-    </unit>
-    <unit id="listEditor.remove">
-      <notes>
-        <note category="location">src/app/shared/list-editor.ts:60</note>
-      </notes>
-      <segment>
-        <source>Remove</source>
       </segment>
     </unit>
     <unit id="notice.dbDown">

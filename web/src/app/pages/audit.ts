@@ -3,10 +3,11 @@ import { ClarityModule } from '@clr/angular';
 import { Api } from '../core/api';
 import { dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
+import { SyslogSettings } from './syslog-settings';
 
 @Component({
   selector: 'nfa-audit',
-  imports: [ClarityModule],
+  imports: [ClarityModule, SyslogSettings],
   template: `
     <div class="page-header">
       <div>
@@ -15,6 +16,7 @@ import { loader, trackByKey } from '../core/util';
       </div>
       <button class="btn btn-sm btn-outline" (click)="log.reload()"><cds-icon shape="refresh"></cds-icon> <ng-container i18n="@@common.refresh">Refresh</ng-container></button>
     </div>
+    <nfa-syslog-settings />
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="log.loading()">
       <clr-dg-column [clrDgField]="'ts'" [clrDgSortOrder]="-1" i18n="@@audit.col.time">Time</clr-dg-column>
       <clr-dg-column [clrDgField]="'username'" i18n="@@audit.col.user">User</clr-dg-column>

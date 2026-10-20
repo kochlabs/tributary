@@ -28,6 +28,7 @@ import (
 	"nfa/internal/enrich"
 	"nfa/internal/flow"
 	"nfa/internal/store"
+	"nfa/internal/syslog"
 	"nfa/internal/system"
 	"nfa/internal/webui"
 )
@@ -124,6 +125,11 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		log.Info("generated self-signed TLS certificate", "dir", dataDir)
 	}
 	trust := certs.NewTrustStore()
+	// Audit entries also go to syslog when forwarding is configured.
+	fwd := syslog.New(log, trust.Pool)
+	fwd.SetConfig(cfg.Syslog())
+	cfg.OnAudit = func(e config.AuditEntry) { fwd.Send(syslog.FromAudit(e)) }
+	go fwd.Run(ctx)
 
 	writer := st.NewWriter(log)
 	writerDone := make(chan struct{})
@@ -209,7 +215,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	}
 
 	srv := &api.Server{
-		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop,
+		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop, Syslog: fwd,
 		Backups: &backup.Manager{Dir: dataDir, Version: version, Log: log, Snapshot: cfg.Snapshot,
 			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {

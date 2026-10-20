@@ -297,6 +297,26 @@ export interface Enrichment {
   geoAsnHost?: string;
 }
 
+/** Audit log forwarding to syslog. */
+export interface SyslogTarget {
+  address: string;
+  transport: 'udp' | 'tcp' | 'tls';
+}
+
+export interface SyslogConfig {
+  enabled: boolean;
+  targets: SyslogTarget[];
+  format: 'rfc5424' | 'rfc3164';
+  facility: number;
+}
+
+export interface SyslogStatus {
+  sent: number;
+  dropped: number;
+  lastError?: string;
+  lastErrorAt?: number;
+}
+
 /** Backup and restore. */
 export interface BackupTable {
   table: string;
@@ -608,6 +628,15 @@ export class Api {
   }
   updateGeo() {
     return firstValueFrom(this.http.post('/api/geo/update', {}));
+  }
+  syslog() {
+    return this.get<{ config: SyslogConfig; status: SyslogStatus }>('/api/syslog');
+  }
+  saveSyslog(c: SyslogConfig) {
+    return firstValueFrom(this.http.put<{ config: SyslogConfig; status: SyslogStatus }>('/api/syslog', c));
+  }
+  testSyslog(c: SyslogConfig) {
+    return firstValueFrom(this.http.post<{ address: string; ok: boolean; error?: string }[]>('/api/syslog/test', c));
   }
   backups() {
     return this.get<BackupStatus>('/api/backups');

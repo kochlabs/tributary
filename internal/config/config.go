@@ -21,6 +21,10 @@ import (
 )
 
 type DB struct {
+	// OnAudit, when set, receives every audit entry after it is stored
+	// (e.g. to forward it to syslog). It must not block.
+	OnAudit func(AuditEntry)
+
 	db  *sql.DB
 	key []byte // encrypts secrets at rest (identity source client secrets)
 
@@ -453,8 +457,12 @@ type AuditEntry struct {
 }
 
 func (c *DB) Audit(username, action, detail string) {
-	_, _ = c.db.Exec("INSERT INTO audit(ts, username, action, detail) VALUES(?, ?, ?, ?)", time.Now().UnixMilli(), username, action, detail)
+	ts := time.Now().UnixMilli()
+	_, _ = c.db.Exec("INSERT INTO audit(ts, username, action, detail) VALUES(?, ?, ?, ?)", ts, username, action, detail)
 	_, _ = c.db.Exec("DELETE FROM audit WHERE id <= (SELECT max(id) - 10000 FROM audit)")
+	if f := c.OnAudit; f != nil {
+		f(AuditEntry{TS: ts, Username: username, Action: action, Detail: detail})
+	}
 }
 
 func (c *DB) AuditLog(limit int) ([]AuditEntry, error) {
