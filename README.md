@@ -113,12 +113,15 @@ Requires Go 1.27+ and Node 24+ to build. Run `make` to list all targets.
 
 ```bash
 make deb                 # dist/tributary_<version>_amd64.deb
-sudo deploy/install.sh   # adds the ClickHouse apt repo, installs the newest .deb
+sudo deploy/install.sh   # adds the ClickHouse apt repo (asks first), installs the newest .deb
 ```
 
-On another Debian/Ubuntu box, copy the `.deb` and `deploy/install.sh` (or add
-the ClickHouse repository yourself and `apt install ./tributary_*.deb`). The
-package installs:
+On another Debian/Ubuntu box, copy the `.deb` and `deploy/install.sh`. The
+installer checks ClickHouse's signing key against a pinned fingerprint and
+restricts ClickHouse's repository to its own packages.
+[docs/INSTALL.md](docs/INSTALL.md) gives the same steps to do by hand, and
+describes exactly how ClickHouse is configured for Tributary. The package
+installs:
 
 | Path | Contents |
 |---|---|
@@ -151,8 +154,9 @@ bin/flowgen -backfill 72h -geoip-dir /var/lib/nfa/geoip   # history
 - GeoIP data: "IP Geolocation by DB-IP" (https://db-ip.com), CC BY 4.0. Drop
   `GeoLite2-Country.mmdb` / `GeoLite2-ASN.mmdb` into `/var/lib/nfa/geoip` to use
   MaxMind instead.
-- ClickHouse listens on localhost only and runs with a fixed memory cap
-  (`deploy/clickhouse/netflow-appliance.xml`).
+- ClickHouse listens on localhost only and is capped at half the RAM
+  (`deploy/clickhouse/tributary.xml`); see
+  [How ClickHouse is set up](docs/INSTALL.md#how-clickhouse-is-set-up-for-tributary).
 
 ## License
 

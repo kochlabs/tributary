@@ -19,6 +19,7 @@ for u in deploy/nfad.service deploy/admin/tributary-admin.path deploy/admin/trib
   install -D -m 644 "$u" "$ROOT/usr/lib/systemd/system/$(basename "$u")"
 done
 install -D -m 644 README.md                             "$ROOT/usr/share/doc/tributary/README.md"
+install -D -m 644 docs/INSTALL.md                       "$ROOT/usr/share/doc/tributary/INSTALL.md"
 install -D -m 644 deploy/deb/copyright                  "$ROOT/usr/share/doc/tributary/copyright"
 install -D -m 644 LICENSE                                "$ROOT/usr/share/doc/tributary/LICENSE"
 install -D -m 644 NOTICE                                 "$ROOT/usr/share/doc/tributary/NOTICE"

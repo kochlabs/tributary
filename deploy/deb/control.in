@@ -14,3 +14,5 @@ Description: network flow analytics appliance (NetFlow, IPFIX, sFlow)
  .
  clickhouse-server comes from the ClickHouse apt repository
  (packages.clickhouse.com); deploy/install.sh adds it before installing.
+ /usr/share/doc/tributary/INSTALL.md describes the manual steps and how
+ ClickHouse is configured.
