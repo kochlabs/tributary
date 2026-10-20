@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, GeoStatus, Settings, StorageEstimate, StorageRate } from '../core/api';
-import { prefixContains, validAddrOrPrefix } from '../core/cidr';
+import { prefixContains, validAddrOrPrefix, validAddrPort } from '../core/cidr';
 import { bytes, count, dateTime } from '../core/format';
+import { ListEditor, listValues } from '../shared/list-editor';
 
 @Component({
   selector: 'nfa-settings',
-  imports: [ClarityModule, FormsModule, RouterLink],
+  imports: [ClarityModule, FormsModule, RouterLink, ListEditor],
   template: `
     <div class="page-header">
       <div>
@@ -57,18 +58,21 @@ import { bytes, count, dateTime } from '../core/format';
               <label i18n="@@settings.sflowPort">sFlow UDP port</label>
               <input clrInput type="number" name="sflow" [(ngModel)]="s.sflowPort" min="0" max="65535" />
             </clr-input-container>
-            <clr-textarea-container>
-              <label i18n="@@settings.exporterAllowlist">Allowed exporters</label>
-              <textarea clrTextarea name="allowlist" rows="3" [ngModel]="allowText()" (ngModelChange)="allowText.set($event)" placeholder="Empty: accept flows from any source" i18n-placeholder="@@settings.allowlistPlaceholder"></textarea>
-              <clr-control-helper i18n="@@settings.allowlistHelp">One IP address or CIDR prefix per line. When set, datagrams from any other source are dropped before decoding and listed on System Health. Leave empty to accept every source.</clr-control-helper>
-            </clr-textarea-container>
-            <div class="allow-actions">
-              <button type="button" class="btn btn-sm btn-link" (click)="addActiveExporters()" i18n="@@settings.addActiveExporters">Add active exporters</button>
-              @if (allowInvalid().length) {
-                <span class="warn-text" i18n="@@settings.allowlistInvalid">Not an IP address or CIDR prefix: {{ allowInvalid().join(', ') }}</span>
-              } @else if (lockedOut().length) {
-                <span class="warn-text" i18n="@@settings.allowlistLockout">These exporters sent flows in the last hour and would be dropped: {{ lockedOut().join(', ') }}</span>
-              }
+            <div class="clr-form-control clr-row">
+              <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@settings.exporterAllowlist">Allowed exporters</label>
+              <div class="clr-control-container clr-col-12 clr-col-md-8">
+                @if (!allowList().length) {
+                  <p class="empty" i18n="@@settings.allowlistEmpty">No entries: flows are accepted from any source.</p>
+                }
+                <nfa-list-editor [(items)]="allowList" placeholder="192.168.1.1 or 10.0.0.0/24" label="Allowed exporter" i18n-label="@@settings.allowedExporterLabel" [validate]="prefixError" />
+                <div class="allow-actions">
+                  <button type="button" class="btn btn-sm btn-link" (click)="addActiveExporters()"><cds-icon shape="plus"></cds-icon> <ng-container i18n="@@settings.addActiveExporters">Add active exporters</ng-container></button>
+                  @if (lockedOut().length) {
+                    <span class="warn-text" i18n="@@settings.allowlistLockout">These exporters sent flows in the last hour and would be dropped: {{ lockedOut().join(', ') }}</span>
+                  }
+                </div>
+                <span class="clr-subtext" i18n="@@settings.allowlistHelp2">IP addresses or CIDR prefixes. When set, datagrams from any other source are dropped before decoding and listed on System Health.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -119,22 +123,28 @@ import { bytes, count, dateTime } from '../core/format';
               </clr-toggle-wrapper>
               <clr-control-helper i18n="@@settings.reverseDnsHelp">Lookups use the appliance's system resolver and are cached for 6 hours. Disable on isolated networks.</clr-control-helper>
             </clr-toggle-container>
-            <clr-textarea-container>
-              <label i18n="@@settings.localNetworks">Local networks</label>
-              <textarea clrTextarea name="localNetworks" rows="3" [ngModel]="localText()" (ngModelChange)="localText.set($event)" placeholder="2001:db8:1234::/56&#10;203.0.113.0/28"></textarea>
-              <clr-control-helper i18n="@@settings.localNetworksHelp">One CIDR per line. Your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</clr-control-helper>
-            </clr-textarea-container>
-            <clr-textarea-container>
-              <label i18n="@@settings.dnsResolvers">DNS resolvers</label>
-              <textarea clrTextarea name="dnsServers" rows="2" [ngModel]="dnsText()" (ngModelChange)="dnsText.set($event)" placeholder="Leave empty to use the system resolvers" i18n-placeholder="@@settings.dnsResolversPlaceholder"></textarea>
-              <clr-control-helper>
-                <ng-container i18n="@@settings.dnsResolversHelp">One IP address per line (optionally <code>:port</code>), tried in order. Used for Tributary's own lookups: reverse DNS, GeoIP downloads and ASN lookups.
-                Tip: your router/DHCP server usually knows local device names.</ng-container>
-                @if (geo()?.systemDnsServers?.length) {
-                  <ng-container i18n="@@settings.systemResolvers">System resolvers: {{ geo()!.systemDnsServers.join(', ') }}.</ng-container>
+            <div class="clr-form-control clr-row">
+              <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@settings.localNetworks">Local networks</label>
+              <div class="clr-control-container clr-col-12 clr-col-md-8">
+                @if (!localList().length) {
+                  <p class="empty" i18n="@@settings.localNetworksEmpty">None added: only private ranges are local.</p>
                 }
-              </clr-control-helper>
-            </clr-textarea-container>
+                <nfa-list-editor [(items)]="localList" placeholder="2001:db8:1234::/56" label="Local network" i18n-label="@@settings.localNetworkLabel" [validate]="cidrError" />
+                <span class="clr-subtext" i18n="@@settings.localNetworksHelp2">CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</span>
+              </div>
+            </div>
+            <div class="clr-form-control clr-row">
+              <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@settings.dnsResolvers">DNS resolvers</label>
+              <div class="clr-control-container clr-col-12 clr-col-md-8">
+                @if (!dnsList().length) {
+                  <p class="empty">
+                    <ng-container i18n="@@settings.dnsEmpty">None added: using the system resolvers</ng-container>@if (geo()?.systemDnsServers?.length) { ({{ geo()!.systemDnsServers.join(', ') }})}.
+                  </p>
+                }
+                <nfa-list-editor [(items)]="dnsList" [ordered]="true" placeholder="192.168.1.1 or [2001:db8::53]:53" label="DNS resolver" i18n-label="@@settings.dnsResolverLabel" [validate]="dnsError" />
+                <span class="clr-subtext" i18n="@@settings.dnsResolversHelp2">IP addresses, optionally with a port, tried in order. Used for Tributary's own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</span>
+              </div>
+            </div>
             <clr-toggle-container>
               <label i18n="@@settings.onlineAsn">Online ASN lookup</label>
               <clr-toggle-wrapper>
@@ -146,7 +156,7 @@ import { bytes, count, dateTime } from '../core/format';
             <p class="hint sources">
               <ng-container i18n="@@settings.dataSourcesHint">GeoIP, ASN and MAC vendor databases are chosen under <a routerLink="/admin/data-sources">Data Sources</a>.</ng-container>
               @if (geo(); as g) {
-                <ng-container i18n="@@settings.hostnameCache">Hostname cache: {{ g.rdnsCache }} entries.</ng-container>
+                &nbsp;<ng-container i18n="@@settings.hostnameCache">Hostname cache: {{ g.rdnsCache }} entries.</ng-container>
               }
             </p>
           </div>
@@ -160,7 +170,9 @@ import { bytes, count, dateTime } from '../core/format';
     }
   `,
   styles: `
-    .allow-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 0; }
+    .allow-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0; }
+    .empty { margin: 6px 0 4px; font-size: 13px; color: var(--cds-alias-typography-color-300); }
+    .clr-subtext { display: block; margin-top: 6px; }
     .allow-actions .btn { margin: 0; }
     .warn-text { font-size: 12px; color: var(--cds-alias-status-danger); }
     .settings-form { max-width: 820px; }
@@ -184,13 +196,15 @@ export class SettingsPage {
   readonly storage = signal<StorageEstimate | null>(null);
   fmtBytes = bytes;
   count = count;
-  readonly localText = signal('');
-  readonly dnsText = signal('');
-  readonly allowText = signal('');
+  readonly localList = signal<string[]>([]);
+  readonly dnsList = signal<string[]>([]);
+  readonly allowList = signal<string[]>([]);
+  readonly cidrError = (v: string) => (validAddrOrPrefix(v) && v.includes('/') ? null : $localize`:@@settings.notCidr:Not a CIDR prefix, e.g. 2001:db8:1234::/56`);
+  readonly prefixError = (v: string) => (validAddrOrPrefix(v) ? null : $localize`:@@settings.notAddrOrPrefix:Not an IP address or CIDR prefix`);
+  readonly dnsError = (v: string) => (validAddrPort(v) ? null : $localize`:@@settings.notAddrPort:Not an IP address (optionally with :port)`);
   /** Exporters that sent flows in the last hour, to warn before locking them out. */
   readonly activeExporters = signal<string[]>([]);
-  private allowEntries = computed(() => this.allowText().split(/[\s,]+/).map((x) => x.trim()).filter(Boolean));
-  readonly allowInvalid = computed(() => this.allowEntries().filter((e) => !validAddrOrPrefix(e)));
+  private allowEntries = computed(() => listValues(this.allowList()).filter((e) => validAddrOrPrefix(e)));
   readonly lockedOut = computed(() => {
     const list = this.allowEntries();
     if (!list.length) return [];
@@ -208,9 +222,9 @@ export class SettingsPage {
     try {
       const st = await this.api.settings();
       this.s.set(st);
-      this.localText.set((st.localNetworks ?? []).join('\n'));
-      this.dnsText.set((st.dnsServers ?? []).join('\n'));
-      this.allowText.set((st.exporterAllowlist ?? []).join('\n'));
+      this.localList.set(st.localNetworks ?? []);
+      this.dnsList.set(st.dnsServers ?? []);
+      this.allowList.set(st.exporterAllowlist ?? []);
       const now = Date.now();
       this.api.exporters({ from: now - 3600e3, to: now }).then((list) => this.activeExporters.set(list.filter((e) => e.flows > 0).map((e) => e.addr)), () => {});
       this.geo.set(await this.api.geo());
@@ -223,6 +237,16 @@ export class SettingsPage {
   async save() {
     const cur = this.s();
     if (!cur) return;
+    const bad = [
+      ...listValues(this.allowList()).filter((v) => this.prefixError(v)),
+      ...listValues(this.localList()).filter((v) => this.cidrError(v)),
+      ...listValues(this.dnsList()).filter((v) => this.dnsError(v)),
+    ];
+    if (bad.length) {
+      this.saved.set(false);
+      this.error.set($localize`:@@settings.fixEntries:Fix the highlighted entries first: ${bad.join(', ')}:entries:`);
+      return;
+    }
     this.busy.set(true);
     this.saved.set(false);
     this.error.set('');
@@ -231,9 +255,9 @@ export class SettingsPage {
       this.s.set(
         await this.api.saveSettings({
           ...cur,
-          dnsServers: this.dnsText().split(/[\s,]+/).map((x) => x.trim()).filter(Boolean),
-          localNetworks: this.localText().split(/[\s,]+/).map((x) => x.trim()).filter(Boolean),
-          exporterAllowlist: this.allowEntries(),
+          dnsServers: listValues(this.dnsList()),
+          localNetworks: listValues(this.localList()),
+          exporterAllowlist: listValues(this.allowList()),
           sessionHours: n(cur.sessionHours),
           netflowPort: n(cur.netflowPort),
           ipfixPort: n(cur.ipfixPort),
@@ -251,13 +275,13 @@ export class SettingsPage {
   }
 
   addActiveExporters() {
-    const have = this.allowEntries();
+    const have = listValues(this.allowList());
     const add = this.activeExporters().filter((a) => !have.some((e) => prefixContains(e, a)));
-    this.allowText.set([...have, ...add].join('\n'));
+    this.allowList.set([...have, ...add]);
   }
 
   rate(table: string): StorageRate | undefined {
-    const r = this.storage()?.tables.find((t) => t.table === table);
+    const r = this.storage()?.tables?.find((t) => t.table === table);
     return r && r.rowsPerDay > 0 ? r : undefined;
   }
 

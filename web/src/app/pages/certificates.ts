@@ -4,6 +4,8 @@ import { ClarityModule } from '@clr/angular';
 import { Api, CertDetails, CertIdentity, CSRInfo, errorMessage, TrustedCA } from '../core/api';
 import { dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
+import { validAddrOrPrefix } from '../core/cidr';
+import { ListEditor, listValues } from '../shared/list-editor';
 
 const KEY_TYPES = [
   { id: 'ecdsa-p256', label: $localize`:@@certificates.keyRecommended:ECDSA P-256 (recommended)` },
@@ -16,14 +18,8 @@ const KEY_TYPES = [
 interface IdForm {
   commonName: string;
   organization: string;
-  dnsNames: string;
-  ipAddresses: string;
   keyType: string;
   days: number;
-}
-
-function lines(s: string) {
-  return s.split(/[\s,]+/).map((x) => x.trim()).filter(Boolean);
 }
 
 function download(name: string, text: string) {
@@ -36,7 +32,7 @@ function download(name: string, text: string) {
 
 @Component({
   selector: 'nfa-certificates',
-  imports: [ClarityModule, FormsModule],
+  imports: [ClarityModule, FormsModule, ListEditor],
   template: `
     <div class="page-header">
       <div>
@@ -204,16 +200,20 @@ function download(name: string, text: string) {
             <label i18n="@@certificates.organization">Organization</label>
             <input clrInput name="org" [(ngModel)]="idf.organization" maxlength="64" />
           </clr-input-container>
-          <clr-textarea-container>
-            <label i18n="@@certificates.dnsNames">DNS names</label>
-            <textarea clrTextarea class="names" name="dns" [(ngModel)]="idf.dnsNames" rows="5" wrap="off" spellcheck="false"></textarea>
-            <clr-control-helper i18n="@@certificates.dnsHelp2">One per line. Pre-filled with the current certificate's names and those detected on this appliance (host name, FQDN, Tailscale MagicDNS name). Add any other name clients use, such as a DNS alias. Browsers check these, not the common name.</clr-control-helper>
-          </clr-textarea-container>
-          <clr-textarea-container>
-            <label i18n="@@certificates.ipAddresses">IP addresses</label>
-            <textarea clrTextarea class="names" name="ips" [(ngModel)]="idf.ipAddresses" rows="5" wrap="off" spellcheck="false"></textarea>
-            <clr-control-helper i18n="@@certificates.ipHelp2">One per line. Pre-filled with this appliance's addresses, including Tailscale. Add any other address clients browse to, such as a NAT or VPN address.</clr-control-helper>
-          </clr-textarea-container>
+          <div class="clr-form-control clr-row">
+            <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@certificates.dnsNames">DNS names</label>
+            <div class="clr-control-container clr-col-12 clr-col-md-8">
+              <nfa-list-editor [(items)]="dnsList" placeholder="appliance.example.com" label="DNS name" i18n-label="@@certificates.dnsNameLabel" [validate]="dnsNameError" />
+              <span class="clr-subtext" i18n="@@certificates.dnsHelp3">Pre-filled with the current certificate's names and those detected on this appliance (host name, FQDN, Tailscale MagicDNS name). Add any other name clients use, such as a DNS alias. Browsers check these, not the common name.</span>
+            </div>
+          </div>
+          <div class="clr-form-control clr-row">
+            <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@certificates.ipAddresses">IP addresses</label>
+            <div class="clr-control-container clr-col-12 clr-col-md-8">
+              <nfa-list-editor [(items)]="ipList" placeholder="192.168.1.10" label="IP address" i18n-label="@@certificates.ipLabel" [validate]="ipError" />
+              <span class="clr-subtext" i18n="@@certificates.ipHelp3">Pre-filled with this appliance's addresses, including Tailscale. Add any other address clients browse to, such as a NAT or VPN address.</span>
+            </div>
+          </div>
           <clr-select-container>
             <label i18n="@@certificates.key">Key</label>
             <select clrSelect name="kt" [(ngModel)]="idf.keyType">
@@ -301,8 +301,7 @@ function download(name: string, text: string) {
     </clr-modal>
   `,
   styles: `
-    /* One name per line: wide enough for FQDNs, never wrapped mid-name. */
-    textarea.names { width: 100%; min-width: 340px; white-space: pre; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .clr-subtext { display: block; margin-top: 6px; }
     .cert-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: 16px; align-items: start; margin-top: 12px; }
     .cert-layout .card { margin: 0; }
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -364,7 +363,7 @@ export class Certificates {
   upKey = '';
   caName = '';
   caPem = '';
-  idf: IdForm = { commonName: '', organization: '', dnsNames: '', ipAddresses: '', keyType: 'ecdsa-p256', days: 825 };
+  idf: IdForm = { commonName: '', organization: '', keyType: 'ecdsa-p256', days: 825 };
   dt = dateTime;
   readonly txt = {
     selfSigned: $localize`:@@certificates.selfSignedLabel:Self-signed`,
@@ -427,6 +426,14 @@ export class Certificates {
     }
   }
 
+  readonly dnsList = signal<string[]>([]);
+  readonly ipList = signal<string[]>([]);
+  readonly dnsNameError = (v: string) =>
+    /^(\*\.)?([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i.test(v) && v.length <= 253
+      ? null
+      : $localize`:@@certificates.notDnsName:Not a DNS name (letters, digits, hyphens and dots; *. allowed at the start)`;
+  readonly ipError = (v: string) => (validAddrOrPrefix(v) && !v.includes('/') ? null : $localize`:@@certificates.notIp:Not an IP address`);
+
   openId(mode: 'csr' | 'self') {
     const d = this.cert.value()?.defaults;
     const cur = this.cert.value()?.status.certificate;
@@ -435,23 +442,26 @@ export class Certificates {
     this.idf = {
       commonName: cur?.commonName || d?.commonName || '',
       organization: d?.organization || '',
-      dnsNames: mergeNames(cur?.dnsNames, d?.dnsNames).join('\n'),
-      ipAddresses: mergeNames(cur?.ipAddresses, d?.ipAddresses)
-        .filter((ip) => !/^fe[89ab][0-9a-f]:/i.test(ip)) // link-local: unusable in URLs
-        .join('\n'),
       keyType: 'ecdsa-p256',
       days: 825,
     };
+    this.dnsList.set(mergeNames(cur?.dnsNames, d?.dnsNames));
+    this.ipList.set(mergeNames(cur?.ipAddresses, d?.ipAddresses).filter((ip) => !/^fe[89ab][0-9a-f]:/i.test(ip))); // link-local: unusable in URLs
     this.idMode.set(mode);
     this.modalError.set('');
     this.idOpen.set(true);
   }
 
   private identity(): CertIdentity {
-    return { commonName: this.idf.commonName, organization: this.idf.organization, dnsNames: lines(this.idf.dnsNames), ipAddresses: lines(this.idf.ipAddresses) };
+    return { commonName: this.idf.commonName, organization: this.idf.organization, dnsNames: listValues(this.dnsList()), ipAddresses: listValues(this.ipList()) };
   }
 
   async submitId() {
+    const bad = [...listValues(this.dnsList()).filter((v) => this.dnsNameError(v)), ...listValues(this.ipList()).filter((v) => this.ipError(v))];
+    if (bad.length) {
+      this.modalError.set($localize`:@@certificates.fixEntries:Fix the highlighted entries first: ${bad.join(', ')}:entries:`);
+      return;
+    }
     this.busy.set(true);
     this.modalError.set('');
     try {

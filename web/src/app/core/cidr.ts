@@ -46,3 +46,14 @@ export function prefixContains(entry: string, addr: string): boolean {
   const shift = BigInt(width - len);
   return p.n >> shift === x.n >> shift;
 }
+
+/** Whether s is an IP address, optionally with a port (1.2.3.4:53, [2001:db8::1]:53). */
+export function validAddrPort(s: string): boolean {
+  s = s.trim();
+  const port = (p: string) => /^\d{1,5}$/.test(p) && +p > 0 && +p < 65536;
+  const v6 = s.match(/^\[([^\]]+)\]:(\d+)$/);
+  if (v6) return parseIP(v6[1])?.v6 === true && port(v6[2]);
+  const v4 = s.match(/^([\d.]+):(\d+)$/);
+  if (v4) return parseIP(v4[1])?.v6 === false && port(v4[2]);
+  return parseIP(s) !== null;
+}

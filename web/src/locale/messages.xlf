@@ -83,7 +83,7 @@
     <unit id="nav.settings">
       <notes>
         <note category="location">src/app/app.routes.ts:25</note>
-        <note category="location">src/app/pages/settings.ts:15,16</note>
+        <note category="location">src/app/pages/settings.ts:16,17</note>
         <note category="location">src/app/shell.ts:93,94</note>
       </notes>
       <segment>
@@ -125,7 +125,7 @@
     <unit id="nav.certificates">
       <notes>
         <note category="location">src/app/app.routes.ts:29</note>
-        <note category="location">src/app/pages/certificates.ts:43,44</note>
+        <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:96</note>
         <note category="location">src/app/shell.ts:98,99</note>
       </notes>
@@ -1939,7 +1939,7 @@
     <unit id="common.rowsPerPage">
       <notes>
         <note category="location">src/app/pages/audit.ts:31,32</note>
-        <note category="location">src/app/pages/certificates.ts:159,160</note>
+        <note category="location">src/app/pages/certificates.ts:155,156</note>
         <note category="location">src/app/pages/devices.ts:90,91</note>
         <note category="location">src/app/pages/explorer.ts:188,189</note>
         <note category="location">src/app/pages/exporter-detail.ts:100,101</note>
@@ -2169,7 +2169,7 @@
       <notes>
         <note category="location">src/app/pages/backup.ts:99,100</note>
         <note category="location">src/app/pages/backup.ts:177,179</note>
-        <note category="location">src/app/pages/certificates.ts:141,142</note>
+        <note category="location">src/app/pages/certificates.ts:137,138</note>
         <note category="location">src/app/pages/identity-sources.ts:48,49</note>
         <note category="location">src/app/pages/identity-sources.ts:262,264</note>
         <note category="location">src/app/pages/users.ts:35,36</note>
@@ -2282,7 +2282,7 @@
       <notes>
         <note category="location">src/app/pages/backup.ts:176,177</note>
         <note category="location">src/app/pages/backup.ts:190,191</note>
-        <note category="location">src/app/pages/certificates.ts:189,190</note>
+        <note category="location">src/app/pages/certificates.ts:185,186</note>
         <note category="location">src/app/pages/certificates.ts:243,244</note>
         <note category="location">src/app/pages/certificates.ts:269,270</note>
         <note category="location">src/app/pages/certificates.ts:289,290</note>
@@ -2372,7 +2372,7 @@
     </unit>
     <unit id="certificates.keyRecommended">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:9</note>
+        <note category="location">src/app/pages/certificates.ts:11</note>
       </notes>
       <segment>
         <source>ECDSA P-256 (recommended)</source>
@@ -2380,7 +2380,7 @@
     </unit>
     <unit id="certificates.subtitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:44,48</note>
+        <note category="location">src/app/pages/certificates.ts:40,44</note>
       </notes>
       <segment>
         <source>Management UI certificate and trusted certificate authorities</source>
@@ -2388,7 +2388,7 @@
     </unit>
     <unit id="certificates.tab.appliance">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:57,58</note>
+        <note category="location">src/app/pages/certificates.ts:53,54</note>
       </notes>
       <segment>
         <source>Appliance certificate</source>
@@ -2396,7 +2396,7 @@
     </unit>
     <unit id="certificates.pendingCsr">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:65,66</note>
+        <note category="location">src/app/pages/certificates.ts:61,62</note>
       </notes>
       <segment>
         <source>A CSR for <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ p.commonName }}"/></pc> (<ph id="2" equiv="INTERPOLATION_1" disp="{{ p.key }}"/>, <ph id="3" equiv="INTERPOLATION_2" disp="{{ dt(p.created) }}"/>) is waiting for its signed certificate. Upload the certificate from your CA; its key is already on the appliance.</source>
@@ -2404,7 +2404,7 @@
     </unit>
     <unit id="certificates.showCsr">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:67,68</note>
+        <note category="location">src/app/pages/certificates.ts:63,64</note>
       </notes>
       <segment>
         <source>Show CSR</source>
@@ -2412,7 +2412,7 @@
     </unit>
     <unit id="certificates.discard">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:68,70</note>
+        <note category="location">src/app/pages/certificates.ts:64,66</note>
       </notes>
       <segment>
         <source>Discard</source>
@@ -2420,7 +2420,7 @@
     </unit>
     <unit id="certificates.subject">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:82,83</note>
+        <note category="location">src/app/pages/certificates.ts:78,79</note>
       </notes>
       <segment>
         <source>Subject</source>
@@ -2428,7 +2428,7 @@
     </unit>
     <unit id="certificates.issuer">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:83</note>
+        <note category="location">src/app/pages/certificates.ts:79</note>
       </notes>
       <segment>
         <source>Issuer</source>
@@ -2436,7 +2436,7 @@
     </unit>
     <unit id="certificates.sans">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:84</note>
+        <note category="location">src/app/pages/certificates.ts:80</note>
       </notes>
       <segment>
         <source>Subject alternative names</source>
@@ -2444,7 +2444,7 @@
     </unit>
     <unit id="certificates.validFrom">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:85</note>
+        <note category="location">src/app/pages/certificates.ts:81</note>
       </notes>
       <segment>
         <source>Valid from</source>
@@ -2452,7 +2452,7 @@
     </unit>
     <unit id="certificates.validUntil">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:86</note>
+        <note category="location">src/app/pages/certificates.ts:82</note>
       </notes>
       <segment>
         <source>Valid until</source>
@@ -2460,7 +2460,7 @@
     </unit>
     <unit id="certificates.key">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:87,88</note>
+        <note category="location">src/app/pages/certificates.ts:83,84</note>
         <note category="location">src/app/pages/certificates.ts:218,219</note>
       </notes>
       <segment>
@@ -2469,7 +2469,7 @@
     </unit>
     <unit id="certificates.chain">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:88</note>
+        <note category="location">src/app/pages/certificates.ts:84</note>
       </notes>
       <segment>
         <source>Chain</source>
@@ -2477,7 +2477,7 @@
     </unit>
     <unit id="certificates.chainCount">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:88,89</note>
+        <note category="location">src/app/pages/certificates.ts:84,85</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 certificate} other {<ph id="0" equiv="INTERPOLATION"/> certificates}}</source>
@@ -2485,7 +2485,7 @@
     </unit>
     <unit id="certificates.serial">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:89</note>
+        <note category="location">src/app/pages/certificates.ts:85</note>
       </notes>
       <segment>
         <source>Serial</source>
@@ -2493,7 +2493,7 @@
     </unit>
     <unit id="certificates.sha256Fingerprint">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:90</note>
+        <note category="location">src/app/pages/certificates.ts:86</note>
       </notes>
       <segment>
         <source>SHA-256 fingerprint</source>
@@ -2501,7 +2501,7 @@
     </unit>
     <unit id="certificates.download">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:95,96</note>
+        <note category="location">src/app/pages/certificates.ts:91,92</note>
         <note category="location">src/app/pages/certificates.ts:259,260</note>
       </notes>
       <segment>
@@ -2510,7 +2510,7 @@
     </unit>
     <unit id="certificates.replaceTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:100,101</note>
+        <note category="location">src/app/pages/certificates.ts:96,97</note>
       </notes>
       <segment>
         <source>Replace certificate</source>
@@ -2518,8 +2518,8 @@
     </unit>
     <unit id="certificates.uploadTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:103,104</note>
-        <note category="location">src/app/pages/certificates.ts:174,176</note>
+        <note category="location">src/app/pages/certificates.ts:99,100</note>
+        <note category="location">src/app/pages/certificates.ts:170,172</note>
       </notes>
       <segment>
         <source>Upload a certificate</source>
@@ -2527,7 +2527,7 @@
     </unit>
     <unit id="certificates.uploadHelp">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:104,105</note>
+        <note category="location">src/app/pages/certificates.ts:100,101</note>
       </notes>
       <segment>
         <source>Install a certificate and private key issued by your CA, or the signed answer to a CSR.</source>
@@ -2535,7 +2535,7 @@
     </unit>
     <unit id="certificates.upload">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:105,106</note>
+        <note category="location">src/app/pages/certificates.ts:101,102</note>
       </notes>
       <segment>
         <source>Upload</source>
@@ -2543,7 +2543,7 @@
     </unit>
     <unit id="certificates.requestTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:108,109</note>
+        <note category="location">src/app/pages/certificates.ts:104,105</note>
       </notes>
       <segment>
         <source>Request from your CA</source>
@@ -2551,7 +2551,7 @@
     </unit>
     <unit id="certificates.requestHelp">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:109,110</note>
+        <note category="location">src/app/pages/certificates.ts:105,106</note>
       </notes>
       <segment>
         <source>Generate a key on the appliance and a CSR to submit to your certificate authority.</source>
@@ -2559,8 +2559,8 @@
     </unit>
     <unit id="certificates.generateCsr">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:110,111</note>
-        <note category="location">src/app/pages/certificates.ts:377</note>
+        <note category="location">src/app/pages/certificates.ts:106,107</note>
+        <note category="location">src/app/pages/certificates.ts:376</note>
       </notes>
       <segment>
         <source>Generate CSR</source>
@@ -2568,7 +2568,7 @@
     </unit>
     <unit id="certificates.selfSignedTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:113,114</note>
+        <note category="location">src/app/pages/certificates.ts:109,110</note>
       </notes>
       <segment>
         <source>Self-signed</source>
@@ -2576,7 +2576,7 @@
     </unit>
     <unit id="certificates.selfSignedHelp">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:114,115</note>
+        <note category="location">src/app/pages/certificates.ts:110,111</note>
       </notes>
       <segment>
         <source>Create a new self-signed certificate, e.g. after changing the hostname or address.</source>
@@ -2584,8 +2584,8 @@
     </unit>
     <unit id="certificates.regenerate">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:115,116</note>
-        <note category="location">src/app/pages/certificates.ts:378</note>
+        <note category="location">src/app/pages/certificates.ts:111,112</note>
+        <note category="location">src/app/pages/certificates.ts:377</note>
       </notes>
       <segment>
         <source>Regenerate</source>
@@ -2593,7 +2593,7 @@
     </unit>
     <unit id="certificates.previousTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:119,120</note>
+        <note category="location">src/app/pages/certificates.ts:115,116</note>
       </notes>
       <segment>
         <source>Previous certificate</source>
@@ -2601,7 +2601,7 @@
     </unit>
     <unit id="certificates.previousHelp">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:120,121</note>
+        <note category="location">src/app/pages/certificates.ts:116,117</note>
       </notes>
       <segment>
         <source>Switch back to the certificate that was active before the last change.</source>
@@ -2609,7 +2609,7 @@
     </unit>
     <unit id="certificates.restorePrevious">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:121,122</note>
+        <note category="location">src/app/pages/certificates.ts:117,118</note>
       </notes>
       <segment>
         <source>Restore previous</source>
@@ -2617,7 +2617,7 @@
     </unit>
     <unit id="certificates.loading">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:130,132</note>
+        <note category="location">src/app/pages/certificates.ts:126,128</note>
       </notes>
       <segment>
         <source>Loading…</source>
@@ -2625,7 +2625,7 @@
     </unit>
     <unit id="certificates.tab.trustedCas">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:136,137</note>
+        <note category="location">src/app/pages/certificates.ts:132,133</note>
       </notes>
       <segment>
         <source>Trusted CAs (<ph id="0" equiv="INTERPOLATION" disp="{{ (cas.value() ?? []).length }}"/>)</source>
@@ -2633,7 +2633,7 @@
     </unit>
     <unit id="certificates.trustedHint">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:138,140</note>
+        <note category="location">src/app/pages/certificates.ts:134,136</note>
       </notes>
       <segment>
         <source>Certificate authorities the appliance trusts for outbound TLS, in addition to the operating system&apos;s public CAs: identity providers (OpenID Connect) now, and LDAPS directories such as Active Directory later. Add your internal root and issuing CAs here.</source>
@@ -2641,7 +2641,7 @@
     </unit>
     <unit id="certificates.addCa">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:140,141</note>
+        <note category="location">src/app/pages/certificates.ts:136,137</note>
       </notes>
       <segment>
         <source>Add CA</source>
@@ -2649,7 +2649,7 @@
     </unit>
     <unit id="common.name">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:144,145</note>
+        <note category="location">src/app/pages/certificates.ts:140,141</note>
         <note category="location">src/app/pages/devices.ts:110,111</note>
         <note category="location">src/app/pages/exporter-detail.ts:66,67</note>
         <note category="location">src/app/pages/exporter-detail.ts:115,116</note>
@@ -2663,7 +2663,7 @@
     </unit>
     <unit id="certificates.col.type">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:145,146</note>
+        <note category="location">src/app/pages/certificates.ts:141,142</note>
       </notes>
       <segment>
         <source>Type</source>
@@ -2671,7 +2671,7 @@
     </unit>
     <unit id="certificates.col.expires">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:146,147</note>
+        <note category="location">src/app/pages/certificates.ts:142,143</note>
       </notes>
       <segment>
         <source>Expires</source>
@@ -2679,7 +2679,7 @@
     </unit>
     <unit id="certificates.col.key">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:147,148</note>
+        <note category="location">src/app/pages/certificates.ts:143,144</note>
       </notes>
       <segment>
         <source>Key</source>
@@ -2687,7 +2687,7 @@
     </unit>
     <unit id="certificates.issuedBy">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:151</note>
+        <note category="location">src/app/pages/certificates.ts:147</note>
       </notes>
       <segment>
         <source>issued by <ph id="0" equiv="INTERPOLATION" disp="{{ ca.issuer }}"/></source>
@@ -2695,7 +2695,7 @@
     </unit>
     <unit id="certificates.noTrustedCas">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:156,157</note>
+        <note category="location">src/app/pages/certificates.ts:152,153</note>
       </notes>
       <segment>
         <source>No trusted CAs added. Only the operating system&apos;s public CAs are trusted.</source>
@@ -2703,7 +2703,7 @@
     </unit>
     <unit id="certificates.footer">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:161,162</note>
+        <note category="location">src/app/pages/certificates.ts:157,158</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -2712,7 +2712,7 @@
     </unit>
     <unit id="certificates.noCas">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:163,165</note>
+        <note category="location">src/app/pages/certificates.ts:159,161</note>
       </notes>
       <segment>
         <source>No CAs</source>
@@ -2720,7 +2720,7 @@
     </unit>
     <unit id="certificates.certPem">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:176,177</note>
+        <note category="location">src/app/pages/certificates.ts:172,173</note>
       </notes>
       <segment>
         <source>Certificate (PEM), including intermediate CAs</source>
@@ -2728,7 +2728,7 @@
     </unit>
     <unit id="certificates.keyPem">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:179,180</note>
+        <note category="location">src/app/pages/certificates.ts:175,176</note>
       </notes>
       <segment>
         <source>Private key (PEM)</source>
@@ -2736,7 +2736,7 @@
     </unit>
     <unit id="certificates.uploadHint">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:183,185</note>
+        <note category="location">src/app/pages/certificates.ts:179,181</note>
       </notes>
       <segment>
         <source>The certificate takes effect immediately for new connections; reload the page afterwards. The previous certificate is kept and can be restored.</source>
@@ -2744,7 +2744,7 @@
     </unit>
     <unit id="certificates.install">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:190,192</note>
+        <note category="location">src/app/pages/certificates.ts:186,188</note>
       </notes>
       <segment>
         <source>Install</source>
@@ -2752,7 +2752,7 @@
     </unit>
     <unit id="certificates.commonName">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:200,201</note>
+        <note category="location">src/app/pages/certificates.ts:196,197</note>
       </notes>
       <segment>
         <source>Common name</source>
@@ -2760,7 +2760,7 @@
     </unit>
     <unit id="certificates.organization">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:204,205</note>
+        <note category="location">src/app/pages/certificates.ts:200,201</note>
       </notes>
       <segment>
         <source>Organization</source>
@@ -2768,34 +2768,50 @@
     </unit>
     <unit id="certificates.dnsNames">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:208,209</note>
+        <note category="location">src/app/pages/certificates.ts:204,205</note>
       </notes>
       <segment>
         <source>DNS names</source>
       </segment>
     </unit>
-    <unit id="certificates.dnsHelp2">
+    <unit id="certificates.dnsNameLabel">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:210,211</note>
+        <note category="location">src/app/pages/certificates.ts:206</note>
       </notes>
       <segment>
-        <source>One per line. Pre-filled with the current certificate&apos;s names and those detected on this appliance (host name, FQDN, Tailscale MagicDNS name). Add any other name clients use, such as a DNS alias. Browsers check these, not the common name.</source>
+        <source>DNS name</source>
+      </segment>
+    </unit>
+    <unit id="certificates.dnsHelp3">
+      <notes>
+        <note category="location">src/app/pages/certificates.ts:207,209</note>
+      </notes>
+      <segment>
+        <source>Pre-filled with the current certificate&apos;s names and those detected on this appliance (host name, FQDN, Tailscale MagicDNS name). Add any other name clients use, such as a DNS alias. Browsers check these, not the common name.</source>
       </segment>
     </unit>
     <unit id="certificates.ipAddresses">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:213,214</note>
+        <note category="location">src/app/pages/certificates.ts:211,212</note>
       </notes>
       <segment>
         <source>IP addresses</source>
       </segment>
     </unit>
-    <unit id="certificates.ipHelp2">
+    <unit id="certificates.ipLabel">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:215,216</note>
+        <note category="location">src/app/pages/certificates.ts:213</note>
       </notes>
       <segment>
-        <source>One per line. Pre-filled with this appliance&apos;s addresses, including Tailscale. Add any other address clients browse to, such as a NAT or VPN address.</source>
+        <source>IP address</source>
+      </segment>
+    </unit>
+    <unit id="certificates.ipHelp3">
+      <notes>
+        <note category="location">src/app/pages/certificates.ts:214,216</note>
+      </notes>
+      <segment>
+        <source>Pre-filled with this appliance&apos;s addresses, including Tailscale. Add any other address clients browse to, such as a NAT or VPN address.</source>
       </segment>
     </unit>
     <unit id="certificates.validDays">
@@ -2922,6 +2938,7 @@
       <notes>
         <note category="location">src/app/pages/certificates.ts:290,292</note>
         <note category="location">src/app/pages/time.ts:87,88</note>
+        <note category="location">src/app/shared/list-editor.ts:37,38</note>
       </notes>
       <segment>
         <source>Add</source>
@@ -2956,7 +2973,7 @@
     </unit>
     <unit id="certificates.selfSignedLabel">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:370</note>
+        <note category="location">src/app/pages/certificates.ts:369</note>
       </notes>
       <segment>
         <source>Self-signed</source>
@@ -2964,7 +2981,7 @@
     </unit>
     <unit id="certificates.none">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:371</note>
+        <note category="location">src/app/pages/certificates.ts:370</note>
       </notes>
       <segment>
         <source>none</source>
@@ -2972,7 +2989,7 @@
     </unit>
     <unit id="certificates.root">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:372</note>
+        <note category="location">src/app/pages/certificates.ts:371</note>
       </notes>
       <segment>
         <source>Root</source>
@@ -2980,7 +2997,7 @@
     </unit>
     <unit id="certificates.intermediate">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:373</note>
+        <note category="location">src/app/pages/certificates.ts:372</note>
       </notes>
       <segment>
         <source>Intermediate</source>
@@ -2988,7 +3005,7 @@
     </unit>
     <unit id="certificates.keyPlaceholderPending">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:374</note>
+        <note category="location">src/app/pages/certificates.ts:373</note>
       </notes>
       <segment>
         <source>Leave empty: this answers the pending CSR, whose key is on the appliance</source>
@@ -2996,7 +3013,7 @@
     </unit>
     <unit id="certificates.csrTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:375</note>
+        <note category="location">src/app/pages/certificates.ts:374</note>
       </notes>
       <segment>
         <source>Generate a certificate signing request</source>
@@ -3004,7 +3021,7 @@
     </unit>
     <unit id="certificates.selfTitle">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:376</note>
+        <note category="location">src/app/pages/certificates.ts:375</note>
       </notes>
       <segment>
         <source>Regenerate self-signed certificate</source>
@@ -3012,7 +3029,7 @@
     </unit>
     <unit id="certificates.copied">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:379</note>
+        <note category="location">src/app/pages/certificates.ts:378</note>
       </notes>
       <segment>
         <source>Copied</source>
@@ -3020,7 +3037,7 @@
     </unit>
     <unit id="certificates.copy">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:380</note>
+        <note category="location">src/app/pages/certificates.ts:379</note>
       </notes>
       <segment>
         <source>Copy</source>
@@ -3028,7 +3045,7 @@
     </unit>
     <unit id="certificates.expiredDaysAgo">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:392</note>
+        <note category="location">src/app/pages/certificates.ts:391</note>
       </notes>
       <segment>
         <source>expired <ph id="0" equiv="days" disp="-days"/> days ago</source>
@@ -3036,7 +3053,7 @@
     </unit>
     <unit id="certificates.oneDayLeft">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:393</note>
+        <note category="location">src/app/pages/certificates.ts:392</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="days" disp="days"/> day left</source>
@@ -3044,7 +3061,7 @@
     </unit>
     <unit id="certificates.daysLeft">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:393</note>
+        <note category="location">src/app/pages/certificates.ts:392</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="days" disp="days"/> days left</source>
@@ -3052,15 +3069,39 @@
     </unit>
     <unit id="certificates.installed">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:422</note>
+        <note category="location">src/app/pages/certificates.ts:421</note>
       </notes>
       <segment>
         <source>Installed the certificate for <ph id="0" equiv="name" disp="d.commonName"/>, valid until <ph id="1" equiv="validUntil" disp="this.dt(d.notAfter)"/>. Reload the page to use it.</source>
       </segment>
     </unit>
+    <unit id="certificates.notDnsName">
+      <notes>
+        <note category="location">src/app/pages/certificates.ts:434</note>
+      </notes>
+      <segment>
+        <source>Not a DNS name (letters, digits, hyphens and dots; *. allowed at the start)</source>
+      </segment>
+    </unit>
+    <unit id="certificates.notIp">
+      <notes>
+        <note category="location">src/app/pages/certificates.ts:435</note>
+      </notes>
+      <segment>
+        <source>Not an IP address</source>
+      </segment>
+    </unit>
+    <unit id="certificates.fixEntries">
+      <notes>
+        <note category="location">src/app/pages/certificates.ts:462</note>
+      </notes>
+      <segment>
+        <source>Fix the highlighted entries first: <ph id="0" equiv="entries" disp="bad.join(&apos;, &apos;)"/></source>
+      </segment>
+    </unit>
     <unit id="certificates.installedSelfSigned">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:466</note>
+        <note category="location">src/app/pages/certificates.ts:476</note>
       </notes>
       <segment>
         <source>Installed a new self-signed certificate for <ph id="0" equiv="name" disp="d.commonName"/>. Reload the page and accept it in your browser.</source>
@@ -3068,7 +3109,7 @@
     </unit>
     <unit id="certificates.csrDiscarded">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:481</note>
+        <note category="location">src/app/pages/certificates.ts:491</note>
       </notes>
       <segment>
         <source>Discarded the pending CSR and its key.</source>
@@ -3076,7 +3117,7 @@
     </unit>
     <unit id="certificates.restored">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:504</note>
+        <note category="location">src/app/pages/certificates.ts:514</note>
       </notes>
       <segment>
         <source>Restored the certificate for <ph id="0" equiv="name" disp="d.commonName"/>. Reload the page to use it.</source>
@@ -3084,7 +3125,7 @@
     </unit>
     <unit id="certificates.nowTrusting">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:525</note>
+        <note category="location">src/app/pages/certificates.ts:535</note>
       </notes>
       <segment>
         <source>Now trusting <ph id="0" equiv="names" disp="r.added.join(&apos;, &apos;)"/>.</source>
@@ -3092,7 +3133,7 @@
     </unit>
     <unit id="certificates.alreadyTrusted">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:525</note>
+        <note category="location">src/app/pages/certificates.ts:535</note>
       </notes>
       <segment>
         <source>Those CAs were already trusted.</source>
@@ -3100,7 +3141,7 @@
     </unit>
     <unit id="certificates.removed">
       <notes>
-        <note category="location">src/app/pages/certificates.ts:540</note>
+        <note category="location">src/app/pages/certificates.ts:550</note>
       </notes>
       <segment>
         <source>Removed <ph id="0" equiv="name" disp="ca.name"/>.</source>
@@ -3900,7 +3941,7 @@
     <unit id="common.revert">
       <notes>
         <note category="location">src/app/pages/data-sources.ts:190,191</note>
-        <note category="location">src/app/pages/settings.ts:157,159</note>
+        <note category="location">src/app/pages/settings.ts:167,169</note>
       </notes>
       <segment>
         <source>Revert</source>
@@ -6160,7 +6201,7 @@
     </unit>
     <unit id="settings.subtitle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:16,20</note>
+        <note category="location">src/app/pages/settings.ts:17,21</note>
       </notes>
       <segment>
         <source>Appliance configuration. Changes apply immediately.</source>
@@ -6168,7 +6209,7 @@
     </unit>
     <unit id="settings.saved">
       <notes>
-        <note category="location">src/app/pages/settings.ts:21,22</note>
+        <note category="location">src/app/pages/settings.ts:22,23</note>
       </notes>
       <segment>
         <source>Settings saved and applied.</source>
@@ -6176,7 +6217,7 @@
     </unit>
     <unit id="settings.general">
       <notes>
-        <note category="location">src/app/pages/settings.ts:30,31</note>
+        <note category="location">src/app/pages/settings.ts:31,32</note>
       </notes>
       <segment>
         <source>General</source>
@@ -6184,7 +6225,7 @@
     </unit>
     <unit id="settings.applianceName">
       <notes>
-        <note category="location">src/app/pages/settings.ts:33,34</note>
+        <note category="location">src/app/pages/settings.ts:34,35</note>
       </notes>
       <segment>
         <source>Appliance name</source>
@@ -6192,7 +6233,7 @@
     </unit>
     <unit id="settings.applianceNameHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:35,36</note>
+        <note category="location">src/app/pages/settings.ts:36,37</note>
       </notes>
       <segment>
         <source>Shown in the header and on the sign-in page.</source>
@@ -6200,7 +6241,7 @@
     </unit>
     <unit id="settings.sessionLifetime">
       <notes>
-        <note category="location">src/app/pages/settings.ts:38,39</note>
+        <note category="location">src/app/pages/settings.ts:39,40</note>
       </notes>
       <segment>
         <source>Session lifetime (hours)</source>
@@ -6208,7 +6249,7 @@
     </unit>
     <unit id="settings.flowCollection">
       <notes>
-        <note category="location">src/app/pages/settings.ts:45,46</note>
+        <note category="location">src/app/pages/settings.ts:46,47</note>
       </notes>
       <segment>
         <source>Flow collection</source>
@@ -6216,7 +6257,7 @@
     </unit>
     <unit id="settings.flowCollectionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:47,49</note>
+        <note category="location">src/app/pages/settings.ts:48,50</note>
       </notes>
       <segment>
         <source>Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener.</source>
@@ -6224,7 +6265,7 @@
     </unit>
     <unit id="settings.netflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:49,50</note>
+        <note category="location">src/app/pages/settings.ts:50,51</note>
       </notes>
       <segment>
         <source>NetFlow UDP port</source>
@@ -6232,7 +6273,7 @@
     </unit>
     <unit id="settings.ipfixPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:53,54</note>
+        <note category="location">src/app/pages/settings.ts:54,55</note>
       </notes>
       <segment>
         <source>IPFIX UDP port</source>
@@ -6240,7 +6281,7 @@
     </unit>
     <unit id="settings.sflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:57,58</note>
+        <note category="location">src/app/pages/settings.ts:58,59</note>
       </notes>
       <segment>
         <source>sFlow UDP port</source>
@@ -6248,55 +6289,55 @@
     </unit>
     <unit id="settings.exporterAllowlist">
       <notes>
-        <note category="location">src/app/pages/settings.ts:61,62</note>
+        <note category="location">src/app/pages/settings.ts:62,63</note>
       </notes>
       <segment>
         <source>Allowed exporters</source>
       </segment>
     </unit>
-    <unit id="settings.allowlistPlaceholder">
+    <unit id="settings.allowlistEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:62</note>
+        <note category="location">src/app/pages/settings.ts:65,67</note>
       </notes>
       <segment>
-        <source>Empty: accept flows from any source</source>
+        <source>No entries: flows are accepted from any source.</source>
       </segment>
     </unit>
-    <unit id="settings.allowlistHelp">
+    <unit id="settings.allowedExporterLabel">
       <notes>
-        <note category="location">src/app/pages/settings.ts:63,64</note>
+        <note category="location">src/app/pages/settings.ts:67</note>
       </notes>
       <segment>
-        <source>One IP address or CIDR prefix per line. When set, datagrams from any other source are dropped before decoding and listed on System Health. Leave empty to accept every source.</source>
+        <source>Allowed exporter</source>
       </segment>
     </unit>
     <unit id="settings.addActiveExporters">
       <notes>
-        <note category="location">src/app/pages/settings.ts:66,67</note>
+        <note category="location">src/app/pages/settings.ts:69,70</note>
       </notes>
       <segment>
         <source>Add active exporters</source>
       </segment>
     </unit>
-    <unit id="settings.allowlistInvalid">
-      <notes>
-        <note category="location">src/app/pages/settings.ts:68,69</note>
-      </notes>
-      <segment>
-        <source>Not an IP address or CIDR prefix: <ph id="0" equiv="INTERPOLATION" disp="{{ allowInvalid().join(&apos;, &apos;) }}"/></source>
-      </segment>
-    </unit>
     <unit id="settings.allowlistLockout">
       <notes>
-        <note category="location">src/app/pages/settings.ts:70,71</note>
+        <note category="location">src/app/pages/settings.ts:71,72</note>
       </notes>
       <segment>
         <source>These exporters sent flows in the last hour and would be dropped: <ph id="0" equiv="INTERPOLATION" disp="{{ lockedOut().join(&apos;, &apos;) }}"/></source>
       </segment>
     </unit>
+    <unit id="settings.allowlistHelp2">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:74,76</note>
+      </notes>
+      <segment>
+        <source>IP addresses or CIDR prefixes. When set, datagrams from any other source are dropped before decoding and listed on System Health.</source>
+      </segment>
+    </unit>
     <unit id="settings.dataRetention">
       <notes>
-        <note category="location">src/app/pages/settings.ts:77,78</note>
+        <note category="location">src/app/pages/settings.ts:81,82</note>
       </notes>
       <segment>
         <source>Data retention</source>
@@ -6304,7 +6345,7 @@
     </unit>
     <unit id="settings.dataRetentionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:79,81</note>
+        <note category="location">src/app/pages/settings.ts:83,85</note>
       </notes>
       <segment>
         <source>Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size.</source>
@@ -6312,7 +6353,7 @@
     </unit>
     <unit id="settings.rawFlowsDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:81,82</note>
+        <note category="location">src/app/pages/settings.ts:85,86</note>
       </notes>
       <segment>
         <source>Raw flows (days)</source>
@@ -6320,7 +6361,7 @@
     </unit>
     <unit id="settings.rawFlowsEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:84</note>
+        <note category="location">src/app/pages/settings.ts:88</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rawRetentionDays) }}"/> at the current rate (<ph id="1" equiv="INTERPOLATION_1" disp="{{ count(r.rowsPerDay) }}"/> flows/day)</source>
@@ -6328,7 +6369,7 @@
     </unit>
     <unit id="settings.rollupDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:88,89</note>
+        <note category="location">src/app/pages/settings.ts:92,93</note>
       </notes>
       <segment>
         <source>1-minute rollup (days)</source>
@@ -6336,7 +6377,7 @@
     </unit>
     <unit id="settings.rollupEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:91</note>
+        <note category="location">src/app/pages/settings.ts:95</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rollupRetentionDays) }}"/> at the current rate</source>
@@ -6344,7 +6385,7 @@
     </unit>
     <unit id="settings.totalEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:98,100</note>
+        <note category="location">src/app/pages/settings.ts:102,104</note>
       </notes>
       <segment>
         <source>Estimated total <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ fmtBytes(total) }}"/></pc> of <ph id="2" equiv="INTERPOLATION_1" disp="{{ fmtBytes(budget) }}"/> available for flow data (<ph id="3" equiv="INTERPOLATION_2" disp="{{ fmtBytes(st.diskFree) }}"/> free on a <ph id="4" equiv="INTERPOLATION_3" disp="{{ fmtBytes(st.diskTotal) }}"/> disk).</source>
@@ -6352,7 +6393,7 @@
     </unit>
     <unit id="settings.tooLittleSpace">
       <notes>
-        <note category="location">src/app/pages/settings.ts:101,103</note>
+        <note category="location">src/app/pages/settings.ts:105,107</note>
       </notes>
       <segment>
         <source>That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.</source>
@@ -6360,7 +6401,7 @@
     </unit>
     <unit id="settings.estimateSample">
       <notes>
-        <note category="location">src/app/pages/settings.ts:104,105</note>
+        <note category="location">src/app/pages/settings.ts:108,109</note>
       </notes>
       <segment>
         <source>Based on <ph id="0" equiv="INTERPOLATION" disp="{{ sampleHours().toFixed(1) }}"/> hours of data; the estimate firms up after a full day.</source>
@@ -6368,7 +6409,7 @@
     </unit>
     <unit id="settings.enrichment">
       <notes>
-        <note category="location">src/app/pages/settings.ts:112,113</note>
+        <note category="location">src/app/pages/settings.ts:116,117</note>
       </notes>
       <segment>
         <source>Enrichment</source>
@@ -6376,7 +6417,7 @@
     </unit>
     <unit id="settings.reverseDns">
       <notes>
-        <note category="location">src/app/pages/settings.ts:115,116</note>
+        <note category="location">src/app/pages/settings.ts:119,120</note>
       </notes>
       <segment>
         <source>Reverse DNS</source>
@@ -6384,7 +6425,7 @@
     </unit>
     <unit id="settings.reverseDnsToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:118,119</note>
+        <note category="location">src/app/pages/settings.ts:122,123</note>
       </notes>
       <segment>
         <source>Resolve hostnames for addresses in reports</source>
@@ -6392,7 +6433,7 @@
     </unit>
     <unit id="settings.reverseDnsHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:120,121</note>
+        <note category="location">src/app/pages/settings.ts:124,125</note>
       </notes>
       <segment>
         <source>Lookups use the appliance&apos;s system resolver and are cached for 6 hours. Disable on isolated networks.</source>
@@ -6400,55 +6441,71 @@
     </unit>
     <unit id="settings.localNetworks">
       <notes>
-        <note category="location">src/app/pages/settings.ts:123,124</note>
+        <note category="location">src/app/pages/settings.ts:127,128</note>
       </notes>
       <segment>
         <source>Local networks</source>
       </segment>
     </unit>
-    <unit id="settings.localNetworksHelp">
+    <unit id="settings.localNetworksEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:125,126</note>
+        <note category="location">src/app/pages/settings.ts:130,132</note>
       </notes>
       <segment>
-        <source>One CIDR per line. Your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</source>
+        <source>None added: only private ranges are local.</source>
+      </segment>
+    </unit>
+    <unit id="settings.localNetworkLabel">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:132</note>
+      </notes>
+      <segment>
+        <source>Local network</source>
+      </segment>
+    </unit>
+    <unit id="settings.localNetworksHelp2">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:133,135</note>
+      </notes>
+      <segment>
+        <source>CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</source>
       </segment>
     </unit>
     <unit id="settings.dnsResolvers">
       <notes>
-        <note category="location">src/app/pages/settings.ts:128,129</note>
+        <note category="location">src/app/pages/settings.ts:137,138</note>
       </notes>
       <segment>
         <source>DNS resolvers</source>
       </segment>
     </unit>
-    <unit id="settings.dnsResolversPlaceholder">
+    <unit id="settings.dnsEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:129</note>
+        <note category="location">src/app/pages/settings.ts:141</note>
       </notes>
       <segment>
-        <source>Leave empty to use the system resolvers</source>
+        <source>None added: using the system resolvers</source>
       </segment>
     </unit>
-    <unit id="settings.dnsResolversHelp">
+    <unit id="settings.dnsResolverLabel">
       <notes>
-        <note category="location">src/app/pages/settings.ts:131,132</note>
+        <note category="location">src/app/pages/settings.ts:144</note>
       </notes>
       <segment>
-        <source>One IP address per line (optionally <pc id="0" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">:port</pc>), tried in order. Used for Tributary&apos;s own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</source>
+        <source>DNS resolver</source>
       </segment>
     </unit>
-    <unit id="settings.systemResolvers">
+    <unit id="settings.dnsResolversHelp2">
       <notes>
-        <note category="location">src/app/pages/settings.ts:134,135</note>
+        <note category="location">src/app/pages/settings.ts:145,147</note>
       </notes>
       <segment>
-        <source>System resolvers: <ph id="0" equiv="INTERPOLATION" disp="{{ geo()!.systemDnsServers.join(&apos;, &apos;) }}"/>.</source>
+        <source>IP addresses, optionally with a port, tried in order. Used for Tributary&apos;s own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</source>
       </segment>
     </unit>
     <unit id="settings.onlineAsn">
       <notes>
-        <note category="location">src/app/pages/settings.ts:139,140</note>
+        <note category="location">src/app/pages/settings.ts:149,150</note>
       </notes>
       <segment>
         <source>Online ASN lookup</source>
@@ -6456,7 +6513,7 @@
     </unit>
     <unit id="settings.onlineAsnToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:142,143</note>
+        <note category="location">src/app/pages/settings.ts:152,153</note>
       </notes>
       <segment>
         <source>Look up ASNs missing from the local database via RIPEstat</source>
@@ -6464,7 +6521,7 @@
     </unit>
     <unit id="settings.onlineAsnHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:144,145</note>
+        <note category="location">src/app/pages/settings.ts:154,155</note>
       </notes>
       <segment>
         <source>Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</source>
@@ -6472,7 +6529,7 @@
     </unit>
     <unit id="settings.dataSourcesHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:147</note>
+        <note category="location">src/app/pages/settings.ts:157</note>
       </notes>
       <segment>
         <source>GeoIP, ASN and MAC vendor databases are chosen under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/data-sources&quot;&gt;" dispEnd="&lt;/a&gt;">Data Sources</pc>.</source>
@@ -6480,7 +6537,7 @@
     </unit>
     <unit id="settings.hostnameCache">
       <notes>
-        <note category="location">src/app/pages/settings.ts:149,150</note>
+        <note category="location">src/app/pages/settings.ts:159,160</note>
       </notes>
       <segment>
         <source>Hostname cache: <ph id="0" equiv="INTERPOLATION" disp="{{ g.rdnsCache }}"/> entries.</source>
@@ -6488,10 +6545,42 @@
     </unit>
     <unit id="settings.saveSettings">
       <notes>
-        <note category="location">src/app/pages/settings.ts:156,157</note>
+        <note category="location">src/app/pages/settings.ts:166,167</note>
       </notes>
       <segment>
         <source>Save settings</source>
+      </segment>
+    </unit>
+    <unit id="settings.notCidr">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:202</note>
+      </notes>
+      <segment>
+        <source>Not a CIDR prefix, e.g. 2001:db8:1234::/56</source>
+      </segment>
+    </unit>
+    <unit id="settings.notAddrOrPrefix">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:203</note>
+      </notes>
+      <segment>
+        <source>Not an IP address or CIDR prefix</source>
+      </segment>
+    </unit>
+    <unit id="settings.notAddrPort">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:204</note>
+      </notes>
+      <segment>
+        <source>Not an IP address (optionally with :port)</source>
+      </segment>
+    </unit>
+    <unit id="settings.fixEntries">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:247</note>
+      </notes>
+      <segment>
+        <source>Fix the highlighted entries first: <ph id="0" equiv="entries" disp="bad.join(&apos;, &apos;)"/></source>
       </segment>
     </unit>
     <unit id="system.subtitle">
@@ -7943,6 +8032,30 @@
       </notes>
       <segment>
         <source>Remove <ph id="0" equiv="field" disp="this.label(key)"/> filter</source>
+      </segment>
+    </unit>
+    <unit id="listEditor.moveUp">
+      <notes>
+        <note category="location">src/app/shared/list-editor.ts:58</note>
+      </notes>
+      <segment>
+        <source>Move up</source>
+      </segment>
+    </unit>
+    <unit id="listEditor.moveDown">
+      <notes>
+        <note category="location">src/app/shared/list-editor.ts:59</note>
+      </notes>
+      <segment>
+        <source>Move down</source>
+      </segment>
+    </unit>
+    <unit id="listEditor.remove">
+      <notes>
+        <note category="location">src/app/shared/list-editor.ts:60</note>
+      </notes>
+      <segment>
+        <source>Remove</source>
       </segment>
     </unit>
     <unit id="notice.dbDown">
