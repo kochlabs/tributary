@@ -55,7 +55,11 @@ type Collector struct {
 	exporters sync.Map // netip.Addr -> *ExporterStats
 
 	Packets, Flows, Bytes, Errors atomic.Uint64
-	started                       time.Time
+	// Rejected counts datagrams dropped by the exporter allowlist.
+	Rejected atomic.Uint64
+	allow    atomic.Pointer[[]netip.Prefix]
+	rejected rejections
+	started  time.Time
 
 	rateMu        sync.RWMutex
 	pps, fps, bps float64
@@ -202,6 +206,10 @@ func (c *Collector) readLoop(conn *net.UDPConn) {
 }
 
 func (c *Collector) handle(src netip.Addr, pkt []byte, now time.Time, batch *[]flow.Record) {
+	if !c.allowed(src) {
+		c.reject(src, now)
+		return
+	}
 	c.Packets.Add(1)
 	c.Bytes.Add(uint64(len(pkt)))
 	start := len(*batch)
@@ -379,6 +387,8 @@ type Status struct {
 	Flows        uint64            `json:"flows"`
 	Bytes        uint64            `json:"bytes"`
 	Errors       uint64            `json:"errors"`
+	Rejected     uint64            `json:"rejected"`
+	Allowlist    bool              `json:"allowlist"` // an exporter allowlist is in force
 	PacketsPerS  float64           `json:"packetsPerSec"`
 	FlowsPerS    float64           `json:"flowsPerSec"`
 	BitsPerS     float64           `json:"bitsPerSec"`
@@ -397,7 +407,7 @@ func (c *Collector) Status() Status {
 	c.rateMu.RLock()
 	defer c.rateMu.RUnlock()
 	return Status{Ports: p, ListenErrors: le, Packets: c.Packets.Load(), Flows: c.Flows.Load(), Bytes: c.Bytes.Load(),
-		Errors: c.Errors.Load(), PacketsPerS: c.pps, FlowsPerS: c.fps, BitsPerS: c.bps, Started: c.started.UnixMilli(), Workers: runtime.NumCPU()}
+		Errors: c.Errors.Load(), Rejected: c.Rejected.Load(), Allowlist: c.allow.Load() != nil, PacketsPerS: c.pps, FlowsPerS: c.fps, BitsPerS: c.bps, Started: c.started.UnixMilli(), Workers: runtime.NumCPU()}
 }
 
 // rates computes exponentially smoothed per-second rates every 2 seconds.

@@ -47,12 +47,13 @@ type Server struct {
 	started time.Time
 
 	// DataDir is the appliance's data directory (disk checks, initial password).
-	DataDir     string
-	notices     atomic.Pointer[[]Notice]
-	prevDropped atomic.Uint64
-	noticeRuns  atomic.Int64
-	limiter     loginLimiter
-	sso         ssoState
+	DataDir      string
+	notices      atomic.Pointer[[]Notice]
+	prevDropped  atomic.Uint64
+	prevRejected atomic.Uint64
+	noticeRuns   atomic.Int64
+	limiter      loginLimiter
+	sso          ssoState
 }
 
 const cookieName = "nfa_session"

@@ -134,6 +134,28 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 			Action:  &NoticeAction{Label: "System health", Route: "/system"}})
 	}
 
+	// Flows dropped by the exporter allowlist (in the last minute).
+	rejected := s.Collector.Rejected.Load()
+	if prev := s.prevRejected.Swap(rejected); s.noticeRuns.Load() > 1 && rejected > prev {
+		var addrs []string
+		for _, r := range s.Collector.RejectedSources() {
+			if now.UnixMilli()-r.LastSeen < 2*60*1000 {
+				addrs = append(addrs, r.Addr)
+			}
+		}
+		if len(addrs) > 0 {
+			slices.Sort(addrs)
+			if len(addrs) > 5 {
+				addrs = append(addrs[:5], "…")
+			}
+			names := strings.Join(addrs, ", ")
+			add(Notice{ID: "rejected:" + names, Kind: "exporters-rejected", Level: "warning", adminOnly: true,
+				Params:  map[string]string{"count": fmt.Sprint(len(addrs)), "addrs": names},
+				Message: "Flows from sources not in the exporter allowlist are being dropped: " + names + ".",
+				Action:  &NoticeAction{Label: "System health", Route: "/system", admin: true}})
+		}
+	}
+
 	// Exporters that stopped sending.
 	if settled {
 		if n := s.silentExporters(ctx, now); n != nil {

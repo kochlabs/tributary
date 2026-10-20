@@ -1,7 +1,8 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { ClarityModule } from '@clr/angular';
 import { Meter } from '../shared/meter';
-import { Api } from '../core/api';
+import { Api, errorMessage } from '../core/api';
+import { Auth } from '../core/auth';
 import { ago, bits, bytes, count, dateTime, duration } from '../core/format';
 import { loader } from '../core/util';
 
@@ -48,10 +49,45 @@ import { loader } from '../core/util';
                 <tr><td i18n="@@system.receiveWorkers">Receive workers</td><td>{{ s.collector.workers }} (SO_REUSEPORT)</td></tr>
                 <tr><td i18n="@@system.datagramsReceived">Datagrams received</td><td>{{ fmtCount(s.collector.packets) }} ({{ fmtBytes(s.collector.bytes) }})</td></tr>
                 <tr><td i18n="@@system.decodeErrors">Decode errors</td><td>{{ s.collector.errors }}</td></tr>
+                <tr>
+                  <td i18n="@@system.rejected">Rejected by allowlist</td>
+                  <td>
+                    @if (s.collector.allowlist) {
+                      {{ fmtCount(s.collector.rejected) }}
+                    } @else {
+                      <ng-container i18n="@@system.allowlistOff">no allowlist · every source accepted</ng-container>
+                    }
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
+        @if (s.rejectedSources?.length) {
+          <div class="card rejected">
+            <div class="card-header"><cds-icon shape="shield"></cds-icon> <ng-container i18n="@@system.rejectedSenders">Rejected senders</ng-container></div>
+            <div class="card-block">
+              <p class="hint" i18n="@@system.rejectedHint">Sources whose flows were dropped because they aren't in the exporter allowlist (most recent first).</p>
+              <table class="table table-compact table-noborder kv">
+                <tbody>
+                  @for (r of s.rejectedSources; track r.addr) {
+                    <tr>
+                      <td class="mono">{{ r.addr }}</td>
+                      <td>
+                        <ng-container i18n="@@system.rejectedLine">{{ fmtCount(r.datagrams) }} datagrams · last {{ ago(r.lastSeen) }}</ng-container>
+                        @if (auth.isAdmin() && !allowed().includes(r.addr)) {
+                          <button class="btn btn-sm btn-link allow" (click)="allow(r.addr)" i18n="@@system.allow">Allow</button>
+                        } @else if (allowed().includes(r.addr)) {
+                          <span class="label label-success" i18n="@@system.allowedNow">allowed</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
         <div class="card">
           <div class="card-header"><cds-icon shape="storage"></cds-icon> <ng-container i18n="@@system.writerQueue">Writer queue</ng-container></div>
           <div class="card-block">
@@ -122,6 +158,8 @@ import { loader } from '../core/util';
     }
   `,
   styles: `
+    .rejected .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .rejected .allow { margin: 0 0 0 8px; padding: 0; min-height: 0; line-height: 1; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; margin-top: 12px; }
     .grid .card { margin: 0; }
     .card-header cds-icon { margin-right: 6px; }
@@ -136,6 +174,20 @@ import { loader } from '../core/util';
 })
 export class System {
   private api = inject(Api);
+  readonly auth = inject(Auth);
+  /** Addresses allowed from this page since it loaded. */
+  readonly allowed = signal<string[]>([]);
+
+  /** Adds a rejected sender to the exporter allowlist. */
+  async allow(addr: string) {
+    try {
+      const st = await this.api.settings();
+      await this.api.saveSettings({ ...st, exporterAllowlist: [...(st.exporterAllowlist ?? []), addr] });
+      this.allowed.update((a) => [...a, addr]);
+    } catch (e) {
+      alert(errorMessage(e));
+    }
+  }
   private tick = signal(0);
   readonly now = signal(Date.now());
   readonly sys = loader(() => this.tick(), () => this.api.system());

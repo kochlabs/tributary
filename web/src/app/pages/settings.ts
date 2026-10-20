@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, errorMessage, GeoStatus, Settings, StorageEstimate, StorageRate } from '../core/api';
+import { prefixContains, validAddrOrPrefix } from '../core/cidr';
 import { bytes, count, dateTime } from '../core/format';
 
 @Component({
@@ -56,6 +57,19 @@ import { bytes, count, dateTime } from '../core/format';
               <label i18n="@@settings.sflowPort">sFlow UDP port</label>
               <input clrInput type="number" name="sflow" [(ngModel)]="s.sflowPort" min="0" max="65535" />
             </clr-input-container>
+            <clr-textarea-container>
+              <label i18n="@@settings.exporterAllowlist">Allowed exporters</label>
+              <textarea clrTextarea name="allowlist" rows="3" [ngModel]="allowText()" (ngModelChange)="allowText.set($event)" placeholder="Empty: accept flows from any source" i18n-placeholder="@@settings.allowlistPlaceholder"></textarea>
+              <clr-control-helper i18n="@@settings.allowlistHelp">One IP address or CIDR prefix per line. When set, datagrams from any other source are dropped before decoding and listed on System Health. Leave empty to accept every source.</clr-control-helper>
+            </clr-textarea-container>
+            <div class="allow-actions">
+              <button type="button" class="btn btn-sm btn-link" (click)="addActiveExporters()" i18n="@@settings.addActiveExporters">Add active exporters</button>
+              @if (allowInvalid().length) {
+                <span class="warn-text" i18n="@@settings.allowlistInvalid">Not an IP address or CIDR prefix: {{ allowInvalid().join(', ') }}</span>
+              } @else if (lockedOut().length) {
+                <span class="warn-text" i18n="@@settings.allowlistLockout">These exporters sent flows in the last hour and would be dropped: {{ lockedOut().join(', ') }}</span>
+              }
+            </div>
           </div>
         </div>
 
@@ -146,6 +160,9 @@ import { bytes, count, dateTime } from '../core/format';
     }
   `,
   styles: `
+    .allow-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 0; }
+    .allow-actions .btn { margin: 0; }
+    .warn-text { font-size: 12px; color: var(--cds-alias-status-danger); }
     .settings-form { max-width: 820px; }
     .settings-form .card:first-child { margin-top: 0; }
     .hint { font-size: 12px; color: var(--cds-alias-typography-color-300); margin-top: 0; }
@@ -169,6 +186,16 @@ export class SettingsPage {
   count = count;
   readonly localText = signal('');
   readonly dnsText = signal('');
+  readonly allowText = signal('');
+  /** Exporters that sent flows in the last hour, to warn before locking them out. */
+  readonly activeExporters = signal<string[]>([]);
+  private allowEntries = computed(() => this.allowText().split(/[\s,]+/).map((x) => x.trim()).filter(Boolean));
+  readonly allowInvalid = computed(() => this.allowEntries().filter((e) => !validAddrOrPrefix(e)));
+  readonly lockedOut = computed(() => {
+    const list = this.allowEntries();
+    if (!list.length) return [];
+    return this.activeExporters().filter((a) => !list.some((e) => prefixContains(e, a)));
+  });
   dt = dateTime;
 
   constructor() {
@@ -183,6 +210,9 @@ export class SettingsPage {
       this.s.set(st);
       this.localText.set((st.localNetworks ?? []).join('\n'));
       this.dnsText.set((st.dnsServers ?? []).join('\n'));
+      this.allowText.set((st.exporterAllowlist ?? []).join('\n'));
+      const now = Date.now();
+      this.api.exporters({ from: now - 3600e3, to: now }).then((list) => this.activeExporters.set(list.filter((e) => e.flows > 0).map((e) => e.addr)), () => {});
       this.geo.set(await this.api.geo());
       this.storage.set(await this.api.storageEstimate());
     } catch (e) {
@@ -203,6 +233,7 @@ export class SettingsPage {
           ...cur,
           dnsServers: this.dnsText().split(/[\s,]+/).map((x) => x.trim()).filter(Boolean),
           localNetworks: this.localText().split(/[\s,]+/).map((x) => x.trim()).filter(Boolean),
+          exporterAllowlist: this.allowEntries(),
           sessionHours: n(cur.sessionHours),
           netflowPort: n(cur.netflowPort),
           ipfixPort: n(cur.ipfixPort),
@@ -217,6 +248,12 @@ export class SettingsPage {
     } finally {
       this.busy.set(false);
     }
+  }
+
+  addActiveExporters() {
+    const have = this.allowEntries();
+    const add = this.activeExporters().filter((a) => !have.some((e) => prefixContains(e, a)));
+    this.allowText.set([...have, ...add].join('\n'));
   }
 
   rate(table: string): StorageRate | undefined {

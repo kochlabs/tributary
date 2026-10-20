@@ -646,9 +646,10 @@ func (s *Server) system(w http.ResponseWriter, r *http.Request) {
 	runtime.ReadMemStats(&ms)
 	lastErr, _ := s.Writer.LastError.Load().(string)
 	resp := map[string]any{
-		"version":   s.Version,
-		"started":   s.started.UnixMilli(),
-		"collector": s.Collector.Status(),
+		"version":         s.Version,
+		"started":         s.started.UnixMilli(),
+		"collector":       s.Collector.Status(),
+		"rejectedSources": s.Collector.RejectedSources(),
 		"writer": map[string]any{
 			"rowsWritten": s.Writer.RowsWritten.Load(), "batches": s.Writer.Batches.Load(), "errors": s.Writer.Errors.Load(),
 			"dropped": s.Writer.Dropped.Load(), "queue": s.Writer.QueueLen(), "queueCap": s.Writer.QueueCap(),

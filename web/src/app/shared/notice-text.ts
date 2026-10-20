@@ -26,6 +26,9 @@ import { Notice } from '../core/api';
       @case ('exporters-silent') {
         <ng-container i18n="@@notice.exportersSilent">{num('count'), plural, =1 {{{ p['names'] }} has stopped sending flows.} other {{{ p['count'] }} exporters have stopped sending flows: {{ p['names'] }}.}}</ng-container>
       }
+      @case ('exporters-rejected') {
+        <ng-container i18n="@@notice.exportersRejected">Flows from sources not in the exporter allowlist are being dropped: {{ p['addrs'] }}.</ng-container>
+      }
       @case ('updates') {
         @if (num('security') > 0) {
           <ng-container i18n="@@notice.updatesSecurity">{num('count'), plural, =1 {1 operating system update available, including {{ p['security'] }} security update.} other {{{ p['count'] }} operating system updates available, including {{ p['security'] }} security updates.}}</ng-container>
@@ -82,6 +85,8 @@ export function noticeActionLabel(n: Notice): string {
       return $localize`:@@notice.action.ports:Collector ports`;
     case 'exporters-silent':
       return $localize`:@@nav.exporters:Exporters`;
+    case 'exporters-rejected':
+      return $localize`:@@notice.action.systemHealth:System health`;
     case 'updates':
       return $localize`:@@notice.action.viewUpdates:View updates`;
     case 'reboot-required':

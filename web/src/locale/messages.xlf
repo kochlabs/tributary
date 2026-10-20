@@ -55,7 +55,7 @@
         <note category="location">src/app/app.routes.ts:18</note>
         <note category="location">src/app/pages/exporter-detail.ts:18</note>
         <note category="location">src/app/pages/exporters.ts:18,19</note>
-        <note category="location">src/app/shared/notice-text.ts:84</note>
+        <note category="location">src/app/shared/notice-text.ts:87</note>
         <note category="location">src/app/shell.ts:86,87</note>
       </notes>
       <segment>
@@ -73,7 +73,7 @@
     <unit id="nav.system">
       <notes>
         <note category="location">src/app/app.routes.ts:20</note>
-        <note category="location">src/app/pages/system.ts:14,15</note>
+        <note category="location">src/app/pages/system.ts:15,16</note>
         <note category="location">src/app/shell.ts:87,88</note>
       </notes>
       <segment>
@@ -83,7 +83,7 @@
     <unit id="nav.settings">
       <notes>
         <note category="location">src/app/app.routes.ts:25</note>
-        <note category="location">src/app/pages/settings.ts:14,15</note>
+        <note category="location">src/app/pages/settings.ts:15,16</note>
         <note category="location">src/app/shell.ts:93,94</note>
       </notes>
       <segment>
@@ -94,7 +94,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:26</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
-        <note category="location">src/app/shared/notice-text.ts:93</note>
+        <note category="location">src/app/shared/notice-text.ts:98</note>
         <note category="location">src/app/shell.ts:94,95</note>
       </notes>
       <segment>
@@ -105,7 +105,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:27</note>
         <note category="location">src/app/pages/data-sources.ts:26,27</note>
-        <note category="location">src/app/shared/notice-text.ts:97</note>
+        <note category="location">src/app/shared/notice-text.ts:102</note>
         <note category="location">src/app/shell.ts:96,97</note>
       </notes>
       <segment>
@@ -116,7 +116,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:28</note>
         <note category="location">src/app/pages/certificates.ts:43,44</note>
-        <note category="location">src/app/shared/notice-text.ts:91</note>
+        <note category="location">src/app/shared/notice-text.ts:96</note>
         <note category="location">src/app/shell.ts:97,98</note>
       </notes>
       <segment>
@@ -174,7 +174,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:458</note>
+        <note category="location">src/app/core/api.ts:459</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -3528,7 +3528,7 @@
     <unit id="common.revert">
       <notes>
         <note category="location">src/app/pages/data-sources.ts:190,191</note>
-        <note category="location">src/app/pages/settings.ts:143,145</note>
+        <note category="location">src/app/pages/settings.ts:157,159</note>
       </notes>
       <segment>
         <source>Revert</source>
@@ -5788,7 +5788,7 @@
     </unit>
     <unit id="settings.subtitle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:15,19</note>
+        <note category="location">src/app/pages/settings.ts:16,20</note>
       </notes>
       <segment>
         <source>Appliance configuration. Changes apply immediately.</source>
@@ -5796,7 +5796,7 @@
     </unit>
     <unit id="settings.saved">
       <notes>
-        <note category="location">src/app/pages/settings.ts:20,21</note>
+        <note category="location">src/app/pages/settings.ts:21,22</note>
       </notes>
       <segment>
         <source>Settings saved and applied.</source>
@@ -5804,7 +5804,7 @@
     </unit>
     <unit id="settings.general">
       <notes>
-        <note category="location">src/app/pages/settings.ts:29,30</note>
+        <note category="location">src/app/pages/settings.ts:30,31</note>
       </notes>
       <segment>
         <source>General</source>
@@ -5812,7 +5812,7 @@
     </unit>
     <unit id="settings.applianceName">
       <notes>
-        <note category="location">src/app/pages/settings.ts:32,33</note>
+        <note category="location">src/app/pages/settings.ts:33,34</note>
       </notes>
       <segment>
         <source>Appliance name</source>
@@ -5820,7 +5820,7 @@
     </unit>
     <unit id="settings.applianceNameHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:34,35</note>
+        <note category="location">src/app/pages/settings.ts:35,36</note>
       </notes>
       <segment>
         <source>Shown in the header and on the sign-in page.</source>
@@ -5828,7 +5828,7 @@
     </unit>
     <unit id="settings.sessionLifetime">
       <notes>
-        <note category="location">src/app/pages/settings.ts:37,38</note>
+        <note category="location">src/app/pages/settings.ts:38,39</note>
       </notes>
       <segment>
         <source>Session lifetime (hours)</source>
@@ -5836,7 +5836,7 @@
     </unit>
     <unit id="settings.flowCollection">
       <notes>
-        <note category="location">src/app/pages/settings.ts:44,45</note>
+        <note category="location">src/app/pages/settings.ts:45,46</note>
       </notes>
       <segment>
         <source>Flow collection</source>
@@ -5844,7 +5844,7 @@
     </unit>
     <unit id="settings.flowCollectionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:46,48</note>
+        <note category="location">src/app/pages/settings.ts:47,49</note>
       </notes>
       <segment>
         <source>Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener.</source>
@@ -5852,7 +5852,7 @@
     </unit>
     <unit id="settings.netflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:48,49</note>
+        <note category="location">src/app/pages/settings.ts:49,50</note>
       </notes>
       <segment>
         <source>NetFlow UDP port</source>
@@ -5860,7 +5860,7 @@
     </unit>
     <unit id="settings.ipfixPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:52,53</note>
+        <note category="location">src/app/pages/settings.ts:53,54</note>
       </notes>
       <segment>
         <source>IPFIX UDP port</source>
@@ -5868,15 +5868,63 @@
     </unit>
     <unit id="settings.sflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:56,57</note>
+        <note category="location">src/app/pages/settings.ts:57,58</note>
       </notes>
       <segment>
         <source>sFlow UDP port</source>
       </segment>
     </unit>
-    <unit id="settings.dataRetention">
+    <unit id="settings.exporterAllowlist">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:61,62</note>
+      </notes>
+      <segment>
+        <source>Allowed exporters</source>
+      </segment>
+    </unit>
+    <unit id="settings.allowlistPlaceholder">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:62</note>
+      </notes>
+      <segment>
+        <source>Empty: accept flows from any source</source>
+      </segment>
+    </unit>
+    <unit id="settings.allowlistHelp">
       <notes>
         <note category="location">src/app/pages/settings.ts:63,64</note>
+      </notes>
+      <segment>
+        <source>One IP address or CIDR prefix per line. When set, datagrams from any other source are dropped before decoding and listed on System Health. Leave empty to accept every source.</source>
+      </segment>
+    </unit>
+    <unit id="settings.addActiveExporters">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:66,67</note>
+      </notes>
+      <segment>
+        <source>Add active exporters</source>
+      </segment>
+    </unit>
+    <unit id="settings.allowlistInvalid">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:68,69</note>
+      </notes>
+      <segment>
+        <source>Not an IP address or CIDR prefix: <ph id="0" equiv="INTERPOLATION" disp="{{ allowInvalid().join(&apos;, &apos;) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="settings.allowlistLockout">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:70,71</note>
+      </notes>
+      <segment>
+        <source>These exporters sent flows in the last hour and would be dropped: <ph id="0" equiv="INTERPOLATION" disp="{{ lockedOut().join(&apos;, &apos;) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="settings.dataRetention">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:77,78</note>
       </notes>
       <segment>
         <source>Data retention</source>
@@ -5884,7 +5932,7 @@
     </unit>
     <unit id="settings.dataRetentionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:65,67</note>
+        <note category="location">src/app/pages/settings.ts:79,81</note>
       </notes>
       <segment>
         <source>Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size.</source>
@@ -5892,7 +5940,7 @@
     </unit>
     <unit id="settings.rawFlowsDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:67,68</note>
+        <note category="location">src/app/pages/settings.ts:81,82</note>
       </notes>
       <segment>
         <source>Raw flows (days)</source>
@@ -5900,7 +5948,7 @@
     </unit>
     <unit id="settings.rawFlowsEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:70</note>
+        <note category="location">src/app/pages/settings.ts:84</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rawRetentionDays) }}"/> at the current rate (<ph id="1" equiv="INTERPOLATION_1" disp="{{ count(r.rowsPerDay) }}"/> flows/day)</source>
@@ -5908,7 +5956,7 @@
     </unit>
     <unit id="settings.rollupDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:74,75</note>
+        <note category="location">src/app/pages/settings.ts:88,89</note>
       </notes>
       <segment>
         <source>1-minute rollup (days)</source>
@@ -5916,7 +5964,7 @@
     </unit>
     <unit id="settings.rollupEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:77</note>
+        <note category="location">src/app/pages/settings.ts:91</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rollupRetentionDays) }}"/> at the current rate</source>
@@ -5924,7 +5972,7 @@
     </unit>
     <unit id="settings.totalEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:84,86</note>
+        <note category="location">src/app/pages/settings.ts:98,100</note>
       </notes>
       <segment>
         <source>Estimated total <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ fmtBytes(total) }}"/></pc> of <ph id="2" equiv="INTERPOLATION_1" disp="{{ fmtBytes(budget) }}"/> available for flow data (<ph id="3" equiv="INTERPOLATION_2" disp="{{ fmtBytes(st.diskFree) }}"/> free on a <ph id="4" equiv="INTERPOLATION_3" disp="{{ fmtBytes(st.diskTotal) }}"/> disk).</source>
@@ -5932,7 +5980,7 @@
     </unit>
     <unit id="settings.tooLittleSpace">
       <notes>
-        <note category="location">src/app/pages/settings.ts:87,89</note>
+        <note category="location">src/app/pages/settings.ts:101,103</note>
       </notes>
       <segment>
         <source>That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.</source>
@@ -5940,7 +5988,7 @@
     </unit>
     <unit id="settings.estimateSample">
       <notes>
-        <note category="location">src/app/pages/settings.ts:90,91</note>
+        <note category="location">src/app/pages/settings.ts:104,105</note>
       </notes>
       <segment>
         <source>Based on <ph id="0" equiv="INTERPOLATION" disp="{{ sampleHours().toFixed(1) }}"/> hours of data; the estimate firms up after a full day.</source>
@@ -5948,7 +5996,7 @@
     </unit>
     <unit id="settings.enrichment">
       <notes>
-        <note category="location">src/app/pages/settings.ts:98,99</note>
+        <note category="location">src/app/pages/settings.ts:112,113</note>
       </notes>
       <segment>
         <source>Enrichment</source>
@@ -5956,7 +6004,7 @@
     </unit>
     <unit id="settings.reverseDns">
       <notes>
-        <note category="location">src/app/pages/settings.ts:101,102</note>
+        <note category="location">src/app/pages/settings.ts:115,116</note>
       </notes>
       <segment>
         <source>Reverse DNS</source>
@@ -5964,7 +6012,7 @@
     </unit>
     <unit id="settings.reverseDnsToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:104,105</note>
+        <note category="location">src/app/pages/settings.ts:118,119</note>
       </notes>
       <segment>
         <source>Resolve hostnames for addresses in reports</source>
@@ -5972,7 +6020,7 @@
     </unit>
     <unit id="settings.reverseDnsHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:106,107</note>
+        <note category="location">src/app/pages/settings.ts:120,121</note>
       </notes>
       <segment>
         <source>Lookups use the appliance&apos;s system resolver and are cached for 6 hours. Disable on isolated networks.</source>
@@ -5980,7 +6028,7 @@
     </unit>
     <unit id="settings.localNetworks">
       <notes>
-        <note category="location">src/app/pages/settings.ts:109,110</note>
+        <note category="location">src/app/pages/settings.ts:123,124</note>
       </notes>
       <segment>
         <source>Local networks</source>
@@ -5988,7 +6036,7 @@
     </unit>
     <unit id="settings.localNetworksHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:111,112</note>
+        <note category="location">src/app/pages/settings.ts:125,126</note>
       </notes>
       <segment>
         <source>One CIDR per line. Your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</source>
@@ -5996,7 +6044,7 @@
     </unit>
     <unit id="settings.dnsResolvers">
       <notes>
-        <note category="location">src/app/pages/settings.ts:114,115</note>
+        <note category="location">src/app/pages/settings.ts:128,129</note>
       </notes>
       <segment>
         <source>DNS resolvers</source>
@@ -6004,7 +6052,7 @@
     </unit>
     <unit id="settings.dnsResolversPlaceholder">
       <notes>
-        <note category="location">src/app/pages/settings.ts:115</note>
+        <note category="location">src/app/pages/settings.ts:129</note>
       </notes>
       <segment>
         <source>Leave empty to use the system resolvers</source>
@@ -6012,7 +6060,7 @@
     </unit>
     <unit id="settings.dnsResolversHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:117,118</note>
+        <note category="location">src/app/pages/settings.ts:131,132</note>
       </notes>
       <segment>
         <source>One IP address per line (optionally <pc id="0" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">:port</pc>), tried in order. Used for Tributary&apos;s own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</source>
@@ -6020,7 +6068,7 @@
     </unit>
     <unit id="settings.systemResolvers">
       <notes>
-        <note category="location">src/app/pages/settings.ts:120,121</note>
+        <note category="location">src/app/pages/settings.ts:134,135</note>
       </notes>
       <segment>
         <source>System resolvers: <ph id="0" equiv="INTERPOLATION" disp="{{ geo()!.systemDnsServers.join(&apos;, &apos;) }}"/>.</source>
@@ -6028,7 +6076,7 @@
     </unit>
     <unit id="settings.onlineAsn">
       <notes>
-        <note category="location">src/app/pages/settings.ts:125,126</note>
+        <note category="location">src/app/pages/settings.ts:139,140</note>
       </notes>
       <segment>
         <source>Online ASN lookup</source>
@@ -6036,7 +6084,7 @@
     </unit>
     <unit id="settings.onlineAsnToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:128,129</note>
+        <note category="location">src/app/pages/settings.ts:142,143</note>
       </notes>
       <segment>
         <source>Look up ASNs missing from the local database via RIPEstat</source>
@@ -6044,7 +6092,7 @@
     </unit>
     <unit id="settings.onlineAsnHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:130,131</note>
+        <note category="location">src/app/pages/settings.ts:144,145</note>
       </notes>
       <segment>
         <source>Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</source>
@@ -6052,7 +6100,7 @@
     </unit>
     <unit id="settings.dataSourcesHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:133</note>
+        <note category="location">src/app/pages/settings.ts:147</note>
       </notes>
       <segment>
         <source>GeoIP, ASN and MAC vendor databases are chosen under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/data-sources&quot;&gt;" dispEnd="&lt;/a&gt;">Data Sources</pc>.</source>
@@ -6060,7 +6108,7 @@
     </unit>
     <unit id="settings.hostnameCache">
       <notes>
-        <note category="location">src/app/pages/settings.ts:135,136</note>
+        <note category="location">src/app/pages/settings.ts:149,150</note>
       </notes>
       <segment>
         <source>Hostname cache: <ph id="0" equiv="INTERPOLATION" disp="{{ g.rdnsCache }}"/> entries.</source>
@@ -6068,7 +6116,7 @@
     </unit>
     <unit id="settings.saveSettings">
       <notes>
-        <note category="location">src/app/pages/settings.ts:142,143</note>
+        <note category="location">src/app/pages/settings.ts:156,157</note>
       </notes>
       <segment>
         <source>Save settings</source>
@@ -6076,7 +6124,7 @@
     </unit>
     <unit id="system.subtitle">
       <notes>
-        <note category="location">src/app/pages/system.ts:15,18</note>
+        <note category="location">src/app/pages/system.ts:16,19</note>
       </notes>
       <segment>
         <source>Collector, storage and host status · refreshes every 5 seconds</source>
@@ -6084,7 +6132,7 @@
     </unit>
     <unit id="system.kpi.flowsReceived">
       <notes>
-        <note category="location">src/app/pages/system.ts:32</note>
+        <note category="location">src/app/pages/system.ts:33</note>
       </notes>
       <segment>
         <source>Flows received</source>
@@ -6092,7 +6140,7 @@
     </unit>
     <unit id="system.kpi.sinceStart">
       <notes>
-        <note category="location">src/app/pages/system.ts:32,33</note>
+        <note category="location">src/app/pages/system.ts:33,34</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtCount(s.collector.flows) }}"/> since start</source>
@@ -6100,7 +6148,7 @@
     </unit>
     <unit id="system.kpi.datagrams">
       <notes>
-        <note category="location">src/app/pages/system.ts:33</note>
+        <note category="location">src/app/pages/system.ts:34</note>
       </notes>
       <segment>
         <source>Datagrams</source>
@@ -6108,7 +6156,7 @@
     </unit>
     <unit id="system.kpi.exportTraffic">
       <notes>
-        <note category="location">src/app/pages/system.ts:33,34</note>
+        <note category="location">src/app/pages/system.ts:34,35</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtBits(s.collector.bitsPerSec) }}"/> export traffic</source>
@@ -6116,7 +6164,7 @@
     </unit>
     <unit id="system.kpi.rowsStored">
       <notes>
-        <note category="location">src/app/pages/system.ts:34</note>
+        <note category="location">src/app/pages/system.ts:35</note>
       </notes>
       <segment>
         <source>Rows stored</source>
@@ -6124,7 +6172,7 @@
     </unit>
     <unit id="system.kpi.batches">
       <notes>
-        <note category="location">src/app/pages/system.ts:34,35</note>
+        <note category="location">src/app/pages/system.ts:35,36</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtCount(s.writer.batches) }}"/> batches · last <ph id="1" equiv="INTERPOLATION_1" disp="{{ ago(s.writer.lastFlush) }}"/></source>
@@ -6132,7 +6180,7 @@
     </unit>
     <unit id="system.kpi.dropped">
       <notes>
-        <note category="location">src/app/pages/system.ts:35</note>
+        <note category="location">src/app/pages/system.ts:36</note>
       </notes>
       <segment>
         <source>Dropped</source>
@@ -6140,7 +6188,7 @@
     </unit>
     <unit id="system.kpi.decodeErrors">
       <notes>
-        <note category="location">src/app/pages/system.ts:35,36</note>
+        <note category="location">src/app/pages/system.ts:36,37</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ s.collector.errors }}"/> decode errors</source>
@@ -6148,7 +6196,7 @@
     </unit>
     <unit id="system.kpi.serviceUptime">
       <notes>
-        <note category="location">src/app/pages/system.ts:36</note>
+        <note category="location">src/app/pages/system.ts:37</note>
       </notes>
       <segment>
         <source>Service uptime</source>
@@ -6156,7 +6204,7 @@
     </unit>
     <unit id="system.kpi.version">
       <notes>
-        <note category="location">src/app/pages/system.ts:36,37</note>
+        <note category="location">src/app/pages/system.ts:37,38</note>
       </notes>
       <segment>
         <source>version <ph id="0" equiv="INTERPOLATION" disp="{{ s.version }}"/></source>
@@ -6164,7 +6212,7 @@
     </unit>
     <unit id="system.collector">
       <notes>
-        <note category="location">src/app/pages/system.ts:41,42</note>
+        <note category="location">src/app/pages/system.ts:42,43</note>
       </notes>
       <segment>
         <source>Collector</source>
@@ -6172,7 +6220,7 @@
     </unit>
     <unit id="system.netflowListener">
       <notes>
-        <note category="location">src/app/pages/system.ts:45</note>
+        <note category="location">src/app/pages/system.ts:46</note>
       </notes>
       <segment>
         <source>NetFlow v5/v9 listener</source>
@@ -6180,7 +6228,7 @@
     </unit>
     <unit id="system.ipfixListener">
       <notes>
-        <note category="location">src/app/pages/system.ts:46</note>
+        <note category="location">src/app/pages/system.ts:47</note>
       </notes>
       <segment>
         <source>IPFIX listener</source>
@@ -6188,7 +6236,7 @@
     </unit>
     <unit id="system.sflowListener">
       <notes>
-        <note category="location">src/app/pages/system.ts:47</note>
+        <note category="location">src/app/pages/system.ts:48</note>
       </notes>
       <segment>
         <source>sFlow listener</source>
@@ -6196,7 +6244,7 @@
     </unit>
     <unit id="system.receiveWorkers">
       <notes>
-        <note category="location">src/app/pages/system.ts:48</note>
+        <note category="location">src/app/pages/system.ts:49</note>
       </notes>
       <segment>
         <source>Receive workers</source>
@@ -6204,7 +6252,7 @@
     </unit>
     <unit id="system.datagramsReceived">
       <notes>
-        <note category="location">src/app/pages/system.ts:49</note>
+        <note category="location">src/app/pages/system.ts:50</note>
       </notes>
       <segment>
         <source>Datagrams received</source>
@@ -6212,15 +6260,71 @@
     </unit>
     <unit id="system.decodeErrors">
       <notes>
-        <note category="location">src/app/pages/system.ts:50</note>
+        <note category="location">src/app/pages/system.ts:51</note>
       </notes>
       <segment>
         <source>Decode errors</source>
       </segment>
     </unit>
+    <unit id="system.rejected">
+      <notes>
+        <note category="location">src/app/pages/system.ts:53,55</note>
+      </notes>
+      <segment>
+        <source>Rejected by allowlist</source>
+      </segment>
+    </unit>
+    <unit id="system.allowlistOff">
+      <notes>
+        <note category="location">src/app/pages/system.ts:58,59</note>
+      </notes>
+      <segment>
+        <source>no allowlist · every source accepted</source>
+      </segment>
+    </unit>
+    <unit id="system.rejectedSenders">
+      <notes>
+        <note category="location">src/app/pages/system.ts:68,69</note>
+      </notes>
+      <segment>
+        <source>Rejected senders</source>
+      </segment>
+    </unit>
+    <unit id="system.rejectedHint">
+      <notes>
+        <note category="location">src/app/pages/system.ts:70,71</note>
+      </notes>
+      <segment>
+        <source>Sources whose flows were dropped because they aren&apos;t in the exporter allowlist (most recent first).</source>
+      </segment>
+    </unit>
+    <unit id="system.rejectedLine">
+      <notes>
+        <note category="location">src/app/pages/system.ts:77,78</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtCount(r.datagrams) }}"/> datagrams · last <ph id="1" equiv="INTERPOLATION_1" disp="{{ ago(r.lastSeen) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="system.allow">
+      <notes>
+        <note category="location">src/app/pages/system.ts:79,80</note>
+      </notes>
+      <segment>
+        <source>Allow</source>
+      </segment>
+    </unit>
+    <unit id="system.allowedNow">
+      <notes>
+        <note category="location">src/app/pages/system.ts:81,82</note>
+      </notes>
+      <segment>
+        <source>allowed</source>
+      </segment>
+    </unit>
     <unit id="system.writerQueue">
       <notes>
-        <note category="location">src/app/pages/system.ts:56,57</note>
+        <note category="location">src/app/pages/system.ts:92,93</note>
       </notes>
       <segment>
         <source>Writer queue</source>
@@ -6228,7 +6332,7 @@
     </unit>
     <unit id="system.queue">
       <notes>
-        <note category="location">src/app/pages/system.ts:58</note>
+        <note category="location">src/app/pages/system.ts:94</note>
       </notes>
       <segment>
         <source>Queue</source>
@@ -6236,7 +6340,7 @@
     </unit>
     <unit id="system.insertErrors">
       <notes>
-        <note category="location">src/app/pages/system.ts:61</note>
+        <note category="location">src/app/pages/system.ts:97</note>
       </notes>
       <segment>
         <source>Insert errors</source>
@@ -6244,7 +6348,7 @@
     </unit>
     <unit id="system.lastError">
       <notes>
-        <note category="location">src/app/pages/system.ts:62</note>
+        <note category="location">src/app/pages/system.ts:98</note>
       </notes>
       <segment>
         <source>Last error</source>
@@ -6252,7 +6356,7 @@
     </unit>
     <unit id="system.none">
       <notes>
-        <note category="location">src/app/pages/system.ts:62,63</note>
+        <note category="location">src/app/pages/system.ts:98,99</note>
         <note category="description">No error</note>
       </notes>
       <segment>
@@ -6261,7 +6365,7 @@
     </unit>
     <unit id="system.host">
       <notes>
-        <note category="location">src/app/pages/system.ts:68</note>
+        <note category="location">src/app/pages/system.ts:104</note>
       </notes>
       <segment>
         <source>Host · <ph id="0" equiv="INTERPOLATION" disp="{{ s.host.hostname }}"/></source>
@@ -6269,7 +6373,7 @@
     </unit>
     <unit id="system.memory">
       <notes>
-        <note category="location">src/app/pages/system.ts:70</note>
+        <note category="location">src/app/pages/system.ts:106</note>
       </notes>
       <segment>
         <source>Memory</source>
@@ -6277,7 +6381,7 @@
     </unit>
     <unit id="system.cpus">
       <notes>
-        <note category="location">src/app/pages/system.ts:73</note>
+        <note category="location">src/app/pages/system.ts:109</note>
       </notes>
       <segment>
         <source>CPUs</source>
@@ -6285,7 +6389,7 @@
     </unit>
     <unit id="system.loadAverage">
       <notes>
-        <note category="location">src/app/pages/system.ts:74</note>
+        <note category="location">src/app/pages/system.ts:110</note>
       </notes>
       <segment>
         <source>Load average</source>
@@ -6293,7 +6397,7 @@
     </unit>
     <unit id="system.hostUptime">
       <notes>
-        <note category="location">src/app/pages/system.ts:75</note>
+        <note category="location">src/app/pages/system.ts:111</note>
       </notes>
       <segment>
         <source>Host uptime</source>
@@ -6301,7 +6405,7 @@
     </unit>
     <unit id="system.serviceHeap">
       <notes>
-        <note category="location">src/app/pages/system.ts:76</note>
+        <note category="location">src/app/pages/system.ts:112</note>
       </notes>
       <segment>
         <source>Service heap</source>
@@ -6309,7 +6413,7 @@
     </unit>
     <unit id="system.heapGoroutines">
       <notes>
-        <note category="location">src/app/pages/system.ts:76,77</note>
+        <note category="location">src/app/pages/system.ts:112,113</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtBytes(s.process.heapAlloc) }}"/> · <ph id="1" equiv="INTERPOLATION_1" disp="{{ s.process.goroutines }}"/> goroutines</source>
@@ -6317,7 +6421,7 @@
     </unit>
     <unit id="system.storage">
       <notes>
-        <note category="location">src/app/pages/system.ts:83</note>
+        <note category="location">src/app/pages/system.ts:119</note>
       </notes>
       <segment>
         <source>Storage · ClickHouse <ph id="0" equiv="INTERPOLATION" disp="{{ db.version }}"/></source>
@@ -6325,7 +6429,7 @@
     </unit>
     <unit id="system.databaseUptime">
       <notes>
-        <note category="location">src/app/pages/system.ts:90</note>
+        <note category="location">src/app/pages/system.ts:126</note>
       </notes>
       <segment>
         <source>Database uptime</source>
@@ -6333,7 +6437,7 @@
     </unit>
     <unit id="system.geoipCountry">
       <notes>
-        <note category="location">src/app/pages/system.ts:91</note>
+        <note category="location">src/app/pages/system.ts:127</note>
       </notes>
       <segment>
         <source>GeoIP country</source>
@@ -6341,8 +6445,8 @@
     </unit>
     <unit id="system.notInstalled">
       <notes>
-        <note category="location">src/app/pages/system.ts:91,92</note>
-        <note category="location">src/app/pages/system.ts:92,93</note>
+        <note category="location">src/app/pages/system.ts:127,128</note>
+        <note category="location">src/app/pages/system.ts:128,129</note>
       </notes>
       <segment>
         <source>not installed</source>
@@ -6350,7 +6454,7 @@
     </unit>
     <unit id="system.geoipAsn">
       <notes>
-        <note category="location">src/app/pages/system.ts:92</note>
+        <note category="location">src/app/pages/system.ts:128</note>
       </notes>
       <segment>
         <source>GeoIP ASN</source>
@@ -6358,7 +6462,7 @@
     </unit>
     <unit id="system.dataTables">
       <notes>
-        <note category="location">src/app/pages/system.ts:101,102</note>
+        <note category="location">src/app/pages/system.ts:137,138</note>
       </notes>
       <segment>
         <source>Data tables</source>
@@ -6366,7 +6470,7 @@
     </unit>
     <unit id="system.col.table">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>Table</source>
@@ -6374,7 +6478,7 @@
     </unit>
     <unit id="system.col.rows">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>Rows</source>
@@ -6382,7 +6486,7 @@
     </unit>
     <unit id="system.col.onDisk">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>On disk</source>
@@ -6390,7 +6494,7 @@
     </unit>
     <unit id="system.col.uncompressed">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>Uncompressed</source>
@@ -6398,7 +6502,7 @@
     </unit>
     <unit id="system.col.ratio">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>Ratio</source>
@@ -6406,7 +6510,7 @@
     </unit>
     <unit id="system.col.parts">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>Parts</source>
@@ -6414,7 +6518,7 @@
     </unit>
     <unit id="system.col.oldest">
       <notes>
-        <note category="location">src/app/pages/system.ts:103</note>
+        <note category="location">src/app/pages/system.ts:139</note>
       </notes>
       <segment>
         <source>Oldest</source>
@@ -6422,7 +6526,7 @@
     </unit>
     <unit id="system.col.newest">
       <notes>
-        <note category="location">src/app/pages/system.ts:103,104</note>
+        <note category="location">src/app/pages/system.ts:139,140</note>
       </notes>
       <segment>
         <source>Newest</source>
@@ -6430,7 +6534,7 @@
     </unit>
     <unit id="system.loading">
       <notes>
-        <note category="location">src/app/pages/system.ts:121,124</note>
+        <note category="location">src/app/pages/system.ts:157,160</note>
       </notes>
       <segment>
         <source>Loading…</source>
@@ -6438,7 +6542,7 @@
     </unit>
     <unit id="system.alertListener">
       <notes>
-        <note category="location">src/app/pages/system.ts:151</note>
+        <note category="location">src/app/pages/system.ts:203</note>
       </notes>
       <segment>
         <source>The <ph id="0" equiv="listener" disp="k"/> listener could not start: <ph id="1" equiv="error" disp="v"/></source>
@@ -6446,7 +6550,7 @@
     </unit>
     <unit id="system.alertDatabase">
       <notes>
-        <note category="location">src/app/pages/system.ts:152</note>
+        <note category="location">src/app/pages/system.ts:204</note>
       </notes>
       <segment>
         <source>Database unavailable: <ph id="0" equiv="error" disp="s.databaseError"/></source>
@@ -6454,7 +6558,7 @@
     </unit>
     <unit id="system.alertDropped">
       <notes>
-        <note category="location">src/app/pages/system.ts:153</note>
+        <note category="location">src/app/pages/system.ts:205</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="count" disp="count(s.writer.dropped)"/> flows were dropped because the database could not keep up or was unavailable.</source>
@@ -6462,7 +6566,7 @@
     </unit>
     <unit id="system.alertDisk">
       <notes>
-        <note category="location">src/app/pages/system.ts:154</note>
+        <note category="location">src/app/pages/system.ts:206</note>
       </notes>
       <segment>
         <source>Disk <ph id="0" equiv="path" disp="d.path"/> is over 90% full — reduce retention in Settings.</source>
@@ -6470,7 +6574,7 @@
     </unit>
     <unit id="system.portDisabled">
       <notes>
-        <note category="location">src/app/pages/system.ts:175</note>
+        <note category="location">src/app/pages/system.ts:227</note>
         <note category="description">Listener state</note>
       </notes>
       <segment>
@@ -6479,7 +6583,7 @@
     </unit>
     <unit id="system.portError">
       <notes>
-        <note category="location">src/app/pages/system.ts:176</note>
+        <note category="location">src/app/pages/system.ts:228</note>
       </notes>
       <segment>
         <source>UDP <ph id="0" equiv="port" disp="p"/> — error</source>
@@ -6487,7 +6591,7 @@
     </unit>
     <unit id="system.portListening">
       <notes>
-        <note category="location">src/app/pages/system.ts:176</note>
+        <note category="location">src/app/pages/system.ts:228</note>
       </notes>
       <segment>
         <source>UDP <ph id="0" equiv="port" disp="p"/> — listening</source>
@@ -6495,7 +6599,7 @@
     </unit>
     <unit id="system.ofValue">
       <notes>
-        <note category="location">src/app/pages/system.ts:180</note>
+        <note category="location">src/app/pages/system.ts:232</note>
         <note category="description">Meter value, e.g. 3 GB of 8 GB</note>
       </notes>
       <segment>
@@ -6504,7 +6608,7 @@
     </unit>
     <unit id="system.queueValue">
       <notes>
-        <note category="location">src/app/pages/system.ts:184</note>
+        <note category="location">src/app/pages/system.ts:236</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="queue" disp="queue"/> of <ph id="1" equiv="cap" disp="cap"/> batches</source>
@@ -6512,7 +6616,7 @@
     </unit>
     <unit id="system.diskLabel">
       <notes>
-        <note category="location">src/app/pages/system.ts:188</note>
+        <note category="location">src/app/pages/system.ts:240</note>
       </notes>
       <segment>
         <source>Disk <ph id="0" equiv="path" disp="path"/></source>
@@ -6520,7 +6624,7 @@
     </unit>
     <unit id="system.tableRawFlows">
       <notes>
-        <note category="location">src/app/pages/system.ts:192</note>
+        <note category="location">src/app/pages/system.ts:244</note>
       </notes>
       <segment>
         <source>Raw flows</source>
@@ -6528,7 +6632,7 @@
     </unit>
     <unit id="system.tableRollup">
       <notes>
-        <note category="location">src/app/pages/system.ts:193</note>
+        <note category="location">src/app/pages/system.ts:245</note>
       </notes>
       <segment>
         <source>1-minute rollup</source>
@@ -7509,9 +7613,17 @@
         <source>{VAR_PLURAL, plural, =1 {<ph id="0" equiv="INTERPOLATION"/> has stopped sending flows.} other {<ph id="1" equiv="INTERPOLATION_1"/> exporters have stopped sending flows: <ph id="2" equiv="INTERPOLATION"/>.}}</source>
       </segment>
     </unit>
+    <unit id="notice.exportersRejected">
+      <notes>
+        <note category="location">src/app/shared/notice-text.ts:30,31</note>
+      </notes>
+      <segment>
+        <source>Flows from sources not in the exporter allowlist are being dropped: <ph id="0" equiv="INTERPOLATION" disp="{{ p[&apos;addrs&apos;] }}"/>.</source>
+      </segment>
+    </unit>
     <unit id="notice.updatesSecurity">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:31,32</note>
+        <note category="location">src/app/shared/notice-text.ts:34,35</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 operating system update available, including <ph id="0" equiv="INTERPOLATION"/> security update.} other {<ph id="1" equiv="INTERPOLATION_1"/> operating system updates available, including <ph id="2" equiv="INTERPOLATION"/> security updates.}}</source>
@@ -7519,7 +7631,7 @@
     </unit>
     <unit id="notice.updates">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:33,35</note>
+        <note category="location">src/app/shared/notice-text.ts:36,38</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 operating system update available.} other {<ph id="0" equiv="INTERPOLATION"/> operating system updates available.}}</source>
@@ -7527,7 +7639,7 @@
     </unit>
     <unit id="notice.rebootRequired">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:37,39</note>
+        <note category="location">src/app/shared/notice-text.ts:40,42</note>
       </notes>
       <segment>
         <source>A restart is required to finish installing updates.</source>
@@ -7535,7 +7647,7 @@
     </unit>
     <unit id="notice.certExpired">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:40,42</note>
+        <note category="location">src/app/shared/notice-text.ts:43,45</note>
       </notes>
       <segment>
         <source>The appliance&apos;s TLS certificate has expired; browsers will refuse to connect.</source>
@@ -7543,7 +7655,7 @@
     </unit>
     <unit id="notice.certExpiring">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:43,45</note>
+        <note category="location">src/app/shared/notice-text.ts:46,48</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {The appliance&apos;s TLS certificate expires in 1 day.} other {The appliance&apos;s TLS certificate expires in <ph id="0" equiv="INTERPOLATION"/> days.}}</source>
@@ -7551,7 +7663,7 @@
     </unit>
     <unit id="notice.initialPassword">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:46,48</note>
+        <note category="location">src/app/shared/notice-text.ts:49,51</note>
       </notes>
       <segment>
         <source>The admin account still uses its generated initial password. Change it, or create your own administrator and remove this one.</source>
@@ -7559,7 +7671,7 @@
     </unit>
     <unit id="notice.timeUnsynced">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:49,51</note>
+        <note category="location">src/app/shared/notice-text.ts:52,54</note>
       </notes>
       <segment>
         <source>The clock is not synchronized with a time server; flow timestamps may drift.</source>
@@ -7567,7 +7679,7 @@
     </unit>
     <unit id="notice.geoipFailed">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:53,54</note>
+        <note category="location">src/app/shared/notice-text.ts:56,57</note>
       </notes>
       <segment>
         <source>The GeoIP database could not be updated: <ph id="0" equiv="INTERPOLATION" disp="{{ p[&apos;error&apos;] }}"/></source>
@@ -7575,7 +7687,7 @@
     </unit>
     <unit id="notice.vendorsFailed">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:55,56</note>
+        <note category="location">src/app/shared/notice-text.ts:58,59</note>
       </notes>
       <segment>
         <source>The MAC vendor database could not be updated: <ph id="0" equiv="INTERPOLATION" disp="{{ p[&apos;error&apos;] }}"/></source>
@@ -7583,7 +7695,8 @@
     </unit>
     <unit id="notice.action.systemHealth">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:78</note>
+        <note category="location">src/app/shared/notice-text.ts:81</note>
+        <note category="location">src/app/shared/notice-text.ts:89</note>
       </notes>
       <segment>
         <source>System health</source>
@@ -7591,7 +7704,7 @@
     </unit>
     <unit id="notice.action.retention">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:80</note>
+        <note category="location">src/app/shared/notice-text.ts:83</note>
       </notes>
       <segment>
         <source>Retention settings</source>
@@ -7599,7 +7712,7 @@
     </unit>
     <unit id="notice.action.ports">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:82</note>
+        <note category="location">src/app/shared/notice-text.ts:85</note>
       </notes>
       <segment>
         <source>Collector ports</source>
@@ -7607,7 +7720,7 @@
     </unit>
     <unit id="notice.action.viewUpdates">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:86</note>
+        <note category="location">src/app/shared/notice-text.ts:91</note>
       </notes>
       <segment>
         <source>View updates</source>
@@ -7615,7 +7728,7 @@
     </unit>
     <unit id="notice.action.restart">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:88</note>
+        <note category="location">src/app/shared/notice-text.ts:93</note>
       </notes>
       <segment>
         <source>Restart</source>
@@ -7623,7 +7736,7 @@
     </unit>
     <unit id="notice.action.time">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:95</note>
+        <note category="location">src/app/shared/notice-text.ts:100</note>
       </notes>
       <segment>
         <source>Time settings</source>

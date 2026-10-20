@@ -191,6 +191,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		LearnedSampling: cfg.SetLearnedSampling,
 		SeedSampling:    cfg.LearnedSampling,
 	})
+	col.SetAllowedSources(settings.AllowedExporterPrefixes()) // before listening, so nothing slips through
 	if err := col.Start(collector.Ports{NetFlow: settings.NetFlowPort, IPFIX: settings.IPFIXPort, SFlow: settings.SFlowPort}); err != nil {
 		log.Error("collector listener failed", "err", err)
 	}
@@ -204,6 +205,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 			geo.Online.Enabled.Store(ns.OnlineASNLookup)
 			geo.SetLocalNetworks(ns.LocalPrefixes())
 			store.SetLocalNetworks(ns.LocalPrefixes())
+			col.SetAllowedSources(ns.AllowedExporterPrefixes())
 			if old.NetFlowPort != ns.NetFlowPort || old.IPFIXPort != ns.IPFIXPort || old.SFlowPort != ns.SFlowPort {
 				errs = append(errs, col.Start(collector.Ports{NetFlow: ns.NetFlowPort, IPFIX: ns.IPFIXPort, SFlow: ns.SFlowPort}))
 			}

@@ -114,6 +114,33 @@ type Settings struct {
 	OnlineASNLookup     bool     `json:"onlineAsnLookup"`
 	LocalNetworks       []string `json:"localNetworks"`
 	DNSServers          []string `json:"dnsServers"` // empty = system resolvers
+	// ExporterAllowlist limits which source addresses may send flows (IPs or
+	// CIDR prefixes); empty accepts every source.
+	ExporterAllowlist []string `json:"exporterAllowlist"`
+}
+
+// AllowedExporterPrefixes parses ExporterAllowlist (validated by Validate);
+// single addresses become /32 or /128 prefixes.
+func (s Settings) AllowedExporterPrefixes() []netip.Prefix {
+	var out []netip.Prefix
+	for _, n := range s.ExporterAllowlist {
+		if p, ok := parseAddrOrPrefix(n); ok {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+func parseAddrOrPrefix(s string) (netip.Prefix, bool) {
+	s = strings.TrimSpace(s)
+	if p, err := netip.ParsePrefix(s); err == nil {
+		return p.Masked(), true
+	}
+	if a, err := netip.ParseAddr(s); err == nil {
+		a = a.Unmap()
+		return netip.PrefixFrom(a, a.BitLen()), true
+	}
+	return netip.Prefix{}, false
 }
 
 // LocalPrefixes parses LocalNetworks (validated by Validate).
@@ -128,7 +155,7 @@ func (s Settings) LocalPrefixes() []netip.Prefix {
 }
 
 func DefaultSettings() Settings {
-	return Settings{RawRetentionDays: 7, RollupRetentionDays: 365, NetFlowPort: 2055, IPFIXPort: 4739, SFlowPort: 6343, ApplianceName: "Tributary", SessionHours: 12, ReverseDNS: true, OnlineASNLookup: true, LocalNetworks: []string{}, DNSServers: []string{}}
+	return Settings{RawRetentionDays: 7, RollupRetentionDays: 365, NetFlowPort: 2055, IPFIXPort: 4739, SFlowPort: 6343, ApplianceName: "Tributary", SessionHours: 12, ReverseDNS: true, OnlineASNLookup: true, LocalNetworks: []string{}, DNSServers: []string{}, ExporterAllowlist: []string{}}
 }
 
 func (s Settings) Validate() error {
@@ -162,6 +189,14 @@ func (s Settings) Validate() error {
 	for _, n := range s.LocalNetworks {
 		if _, err := netip.ParsePrefix(strings.TrimSpace(n)); err != nil {
 			return fmt.Errorf("local network %q is not a valid CIDR prefix", n)
+		}
+	}
+	if len(s.ExporterAllowlist) > 256 {
+		return errors.New("at most 256 allowed exporter entries")
+	}
+	for _, n := range s.ExporterAllowlist {
+		if _, ok := parseAddrOrPrefix(n); !ok {
+			return fmt.Errorf("allowed exporter %q is not an IP address or CIDR prefix", n)
 		}
 	}
 	if strings.TrimSpace(s.ApplianceName) == "" {

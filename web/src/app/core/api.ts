@@ -236,6 +236,7 @@ export interface Settings {
   onlineAsnLookup: boolean;
   localNetworks: string[];
   dnsServers: string[];
+  exporterAllowlist: string[];
 }
 
 /** An appliance-wide condition shown as a banner above the header. */

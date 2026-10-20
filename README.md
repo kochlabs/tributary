@@ -63,6 +63,8 @@ Screenshots show simulated traffic from `cmd/flowgen`.
 - **Notices**: banners above the header for conditions that need attention, such
   as low disk space, OS updates, an expiring certificate, exporters that stopped
   sending, or a database outage.
+- **Exporter allowlist**: accept flows only from listed addresses or prefixes;
+  rejected senders are counted and shown on System Health.
 - **Appliance**: HTTPS by default (plain HTTP on port 80 redirects to it) (self-signed on first boot), bcrypt + hashed
   session tokens, admin/viewer roles, login rate limiting, audit log, strict CSP,
   retention controls, health page.
