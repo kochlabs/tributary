@@ -4,7 +4,7 @@
     <unit id="login.title">
       <notes>
         <note category="location">src/app/app.routes.ts:7</note>
-        <note category="location">src/app/pages/login.ts:41,42</note>
+        <note category="location">src/app/pages/login.ts:76,77</note>
       </notes>
       <segment>
         <source>Sign in</source>
@@ -14,7 +14,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:14</note>
         <note category="location">src/app/pages/dashboard.ts:49,50</note>
-        <note category="location">src/app/shell.ts:82,83</note>
+        <note category="location">src/app/shell.ts:84,85</note>
       </notes>
       <segment>
         <source>Dashboard</source>
@@ -24,7 +24,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:15</note>
         <note category="location">src/app/pages/explorer.ts:31,32</note>
-        <note category="location">src/app/shell.ts:83,84</note>
+        <note category="location">src/app/shell.ts:85,86</note>
       </notes>
       <segment>
         <source>Traffic Explorer</source>
@@ -34,7 +34,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:16</note>
         <note category="location">src/app/pages/flows.ts:20,21</note>
-        <note category="location">src/app/shell.ts:84,85</note>
+        <note category="location">src/app/shell.ts:86,87</note>
       </notes>
       <segment>
         <source>Flow Search</source>
@@ -44,7 +44,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:17</note>
         <note category="location">src/app/pages/devices.ts:26,27</note>
-        <note category="location">src/app/shell.ts:85,86</note>
+        <note category="location">src/app/shell.ts:87,88</note>
       </notes>
       <segment>
         <source>Devices</source>
@@ -56,7 +56,7 @@
         <note category="location">src/app/pages/exporter-detail.ts:19</note>
         <note category="location">src/app/pages/exporters.ts:18,19</note>
         <note category="location">src/app/shared/notice-text.ts:87</note>
-        <note category="location">src/app/shell.ts:86,87</note>
+        <note category="location">src/app/shell.ts:88,89</note>
       </notes>
       <segment>
         <source>Exporters</source>
@@ -74,7 +74,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:20</note>
         <note category="location">src/app/pages/system.ts:15,16</note>
-        <note category="location">src/app/shell.ts:87,88</note>
+        <note category="location">src/app/shell.ts:89,90</note>
       </notes>
       <segment>
         <source>System Health</source>
@@ -84,7 +84,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:25</note>
         <note category="location">src/app/pages/settings.ts:16,17</note>
-        <note category="location">src/app/shell.ts:93,94</note>
+        <note category="location">src/app/shell.ts:95,96</note>
       </notes>
       <segment>
         <source>Settings</source>
@@ -95,7 +95,7 @@
         <note category="location">src/app/app.routes.ts:26</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
         <note category="location">src/app/shared/notice-text.ts:98</note>
-        <note category="location">src/app/shell.ts:94,95</note>
+        <note category="location">src/app/shell.ts:96,97</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -106,7 +106,7 @@
         <note category="location">src/app/app.routes.ts:27</note>
         <note category="location">src/app/pages/data-sources.ts:26,27</note>
         <note category="location">src/app/shared/notice-text.ts:102</note>
-        <note category="location">src/app/shell.ts:96,97</note>
+        <note category="location">src/app/shell.ts:98,99</note>
       </notes>
       <segment>
         <source>Data Sources</source>
@@ -116,7 +116,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:28</note>
         <note category="location">src/app/pages/backup.ts:15,16</note>
-        <note category="location">src/app/shell.ts:97,98</note>
+        <note category="location">src/app/shell.ts:99,100</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -127,7 +127,7 @@
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:96</note>
-        <note category="location">src/app/shell.ts:98,99</note>
+        <note category="location">src/app/shell.ts:100,101</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -136,8 +136,8 @@
     <unit id="nav.identitySources">
       <notes>
         <note category="location">src/app/app.routes.ts:30</note>
-        <note category="location">src/app/pages/identity-sources.ts:39,40</note>
-        <note category="location">src/app/shell.ts:95,96</note>
+        <note category="location">src/app/pages/identity-sources.ts:51,52</note>
+        <note category="location">src/app/shell.ts:97,98</note>
       </notes>
       <segment>
         <source>Identity Sources</source>
@@ -147,7 +147,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:31</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:101,102</note>
+        <note category="location">src/app/shell.ts:103,104</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -157,7 +157,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:32</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:101</note>
+        <note category="location">src/app/shell.ts:103</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -167,7 +167,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:33</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:99,100</note>
+        <note category="location">src/app/shell.ts:101,102</note>
       </notes>
       <segment>
         <source>Services</source>
@@ -176,7 +176,7 @@
     <unit id="nav.audit">
       <notes>
         <note category="location">src/app/app.routes.ts:34</note>
-        <note category="location">src/app/shell.ts:102,103</note>
+        <note category="location">src/app/shell.ts:104,105</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -184,7 +184,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:545</note>
+        <note category="location">src/app/core/api.ts:580</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1895,7 +1895,7 @@
     <unit id="common.refresh">
       <notes>
         <note category="location">src/app/pages/audit.ts:17,18</note>
-        <note category="location">src/app/pages/identity-sources.ts:50</note>
+        <note category="location">src/app/pages/identity-sources.ts:62</note>
         <note category="location">src/app/pages/services.ts:26,27</note>
         <note category="location">src/app/pages/time.ts:20,21</note>
         <note category="location">src/app/shared/time-range.ts:33</note>
@@ -1944,10 +1944,10 @@
         <note category="location">src/app/pages/explorer.ts:188,189</note>
         <note category="location">src/app/pages/exporter-detail.ts:105,106</note>
         <note category="location">src/app/pages/exporters.ts:94,95</note>
-        <note category="location">src/app/pages/identity-sources.ts:77,78</note>
+        <note category="location">src/app/pages/identity-sources.ts:89,90</note>
         <note category="location">src/app/pages/services.ts:68,69</note>
         <note category="location">src/app/pages/updates.ts:92,93</note>
-        <note category="location">src/app/pages/users.ts:47,48</note>
+        <note category="location">src/app/pages/users.ts:52,53</note>
       </notes>
       <segment>
         <source>Rows per page</source>
@@ -2170,10 +2170,10 @@
         <note category="location">src/app/pages/backup.ts:99,100</note>
         <note category="location">src/app/pages/backup.ts:177,179</note>
         <note category="location">src/app/pages/certificates.ts:137,138</note>
-        <note category="location">src/app/pages/identity-sources.ts:48,49</note>
-        <note category="location">src/app/pages/identity-sources.ts:262,264</note>
-        <note category="location">src/app/pages/users.ts:35,36</note>
-        <note category="location">src/app/pages/users.ts:107,109</note>
+        <note category="location">src/app/pages/identity-sources.ts:60,61</note>
+        <note category="location">src/app/pages/identity-sources.ts:396,398</note>
+        <note category="location">src/app/pages/users.ts:39,40</note>
+        <note category="location">src/app/pages/users.ts:123,125</note>
       </notes>
       <segment>
         <source>Delete</source>
@@ -2291,16 +2291,17 @@
         <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
         <note category="location">src/app/pages/exporters.ts:131,132</note>
         <note category="location">src/app/pages/exporters.ts:142,143</note>
-        <note category="location">src/app/pages/identity-sources.ts:117,119</note>
-        <note category="location">src/app/pages/identity-sources.ts:250,251</note>
-        <note category="location">src/app/pages/identity-sources.ts:261,262</note>
+        <note category="location">src/app/pages/identity-sources.ts:137,139</note>
+        <note category="location">src/app/pages/identity-sources.ts:384,385</note>
+        <note category="location">src/app/pages/identity-sources.ts:395,396</note>
         <note category="location">src/app/pages/services.ts:84,85</note>
         <note category="location">src/app/pages/updates.ts:121,122</note>
-        <note category="location">src/app/pages/users.ts:97,98</note>
-        <note category="location">src/app/pages/users.ts:106,107</note>
+        <note category="location">src/app/pages/users.ts:102,103</note>
+        <note category="location">src/app/pages/users.ts:113,114</note>
+        <note category="location">src/app/pages/users.ts:122,123</note>
         <note category="location">src/app/shared/filter-bar.ts:37,39</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:136,137</note>
+        <note category="location">src/app/shell.ts:138,139</note>
       </notes>
       <segment>
         <source>Cancel</source>
@@ -2653,8 +2654,8 @@
         <note category="location">src/app/pages/devices.ts:110,111</note>
         <note category="location">src/app/pages/exporter-detail.ts:71,72</note>
         <note category="location">src/app/pages/exporter-detail.ts:120,121</note>
-        <note category="location">src/app/pages/identity-sources.ts:58,59</note>
-        <note category="location">src/app/pages/identity-sources.ts:129,130</note>
+        <note category="location">src/app/pages/identity-sources.ts:70,71</note>
+        <note category="location">src/app/pages/identity-sources.ts:149,150</note>
         <note category="location">src/app/shared/top-table.ts:77</note>
       </notes>
       <segment>
@@ -3930,10 +3931,10 @@
         <note category="location">src/app/pages/devices.ts:118,120</note>
         <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
         <note category="location">src/app/pages/exporters.ts:132,134</note>
-        <note category="location">src/app/pages/identity-sources.ts:251,253</note>
+        <note category="location">src/app/pages/identity-sources.ts:385,387</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
-        <note category="location">src/app/pages/users.ts:98</note>
+        <note category="location">src/app/pages/users.ts:103</note>
         <note category="location">src/app/shared/snmp-settings.ts:88,89</note>
       </notes>
       <segment>
@@ -3943,7 +3944,7 @@
     <unit id="common.revert">
       <notes>
         <note category="location">src/app/pages/data-sources.ts:190,191</note>
-        <note category="location">src/app/pages/settings.ts:167,169</note>
+        <note category="location">src/app/pages/settings.ts:175,177</note>
       </notes>
       <segment>
         <source>Revert</source>
@@ -4765,8 +4766,8 @@
       <notes>
         <note category="location">src/app/pages/exporter-detail.ts:82,84</note>
         <note category="location">src/app/pages/exporters.ts:45,46</note>
-        <note category="location">src/app/pages/identity-sources.ts:47,48</note>
-        <note category="location">src/app/pages/users.ts:33,34</note>
+        <note category="location">src/app/pages/identity-sources.ts:59,60</note>
+        <note category="location">src/app/pages/users.ts:34,35</note>
       </notes>
       <segment>
         <source>Edit</source>
@@ -5380,7 +5381,7 @@
     </unit>
     <unit id="identitySources.subtitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:40,44</note>
+        <note category="location">src/app/pages/identity-sources.ts:52,56</note>
       </notes>
       <segment>
         <source>Single sign-on providers for console sign-in</source>
@@ -5388,7 +5389,7 @@
     </unit>
     <unit id="identitySources.addSource">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:46,47</note>
+        <note category="location">src/app/pages/identity-sources.ts:58,59</note>
       </notes>
       <segment>
         <source>Add source</source>
@@ -5396,7 +5397,7 @@
     </unit>
     <unit id="identitySources.col.type">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:59,60</note>
+        <note category="location">src/app/pages/identity-sources.ts:71,72</note>
       </notes>
       <segment>
         <source>Type</source>
@@ -5404,7 +5405,7 @@
     </unit>
     <unit id="identitySources.col.status">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:60,61</note>
+        <note category="location">src/app/pages/identity-sources.ts:72,73</note>
       </notes>
       <segment>
         <source>Status</source>
@@ -5412,7 +5413,7 @@
     </unit>
     <unit id="identitySources.col.usedFor">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:61,62</note>
+        <note category="location">src/app/pages/identity-sources.ts:73,74</note>
       </notes>
       <segment>
         <source>Used for</source>
@@ -5420,7 +5421,7 @@
     </unit>
     <unit id="identitySources.col.priority">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:62,63</note>
+        <note category="location">src/app/pages/identity-sources.ts:74,75</note>
       </notes>
       <segment>
         <source>Priority</source>
@@ -5428,7 +5429,7 @@
     </unit>
     <unit id="identitySources.col.roleMappings">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:63,64</note>
+        <note category="location">src/app/pages/identity-sources.ts:75,76</note>
       </notes>
       <segment>
         <source>Role mappings</source>
@@ -5436,7 +5437,7 @@
     </unit>
     <unit id="identitySources.col.users">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:64,65</note>
+        <note category="location">src/app/pages/identity-sources.ts:76,77</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -5444,8 +5445,8 @@
     </unit>
     <unit id="identitySources.enabled">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:68</note>
-        <note category="location">src/app/pages/identity-sources.ts:134,135</note>
+        <note category="location">src/app/pages/identity-sources.ts:80</note>
+        <note category="location">src/app/pages/identity-sources.ts:158,159</note>
       </notes>
       <segment>
         <source>Enabled</source>
@@ -5453,7 +5454,7 @@
     </unit>
     <unit id="identitySources.disabled">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:68,69</note>
+        <note category="location">src/app/pages/identity-sources.ts:80,81</note>
       </notes>
       <segment>
         <source>Disabled</source>
@@ -5461,7 +5462,7 @@
     </unit>
     <unit id="identitySources.console">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:69,70</note>
+        <note category="location">src/app/pages/identity-sources.ts:81,82</note>
       </notes>
       <segment>
         <source>Console</source>
@@ -5469,7 +5470,7 @@
     </unit>
     <unit id="identitySources.mappingCount">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:71</note>
+        <note category="location">src/app/pages/identity-sources.ts:83</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 mapping} other {<ph id="0" equiv="INTERPOLATION"/> mappings}}</source>
@@ -5477,7 +5478,7 @@
     </unit>
     <unit id="identitySources.othersRole">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:71</note>
+        <note category="location">src/app/pages/identity-sources.ts:83</note>
       </notes>
       <segment>
         <source> · others: <ph id="0" equiv="INTERPOLATION" disp="{{ roleLabel(s.defaultRole) }}"/></source>
@@ -5485,7 +5486,7 @@
     </unit>
     <unit id="identitySources.placeholder">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:74,75</note>
+        <note category="location">src/app/pages/identity-sources.ts:86,87</note>
       </notes>
       <segment>
         <source>No identity sources. Everyone signs in with local accounts.</source>
@@ -5493,7 +5494,7 @@
     </unit>
     <unit id="identitySources.footer">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:79,80</note>
+        <note category="location">src/app/pages/identity-sources.ts:91,92</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -5502,7 +5503,7 @@
     </unit>
     <unit id="identitySources.empty">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:81,83</note>
+        <note category="location">src/app/pages/identity-sources.ts:93,95</note>
       </notes>
       <segment>
         <source>No sources</source>
@@ -5510,7 +5511,7 @@
     </unit>
     <unit id="identitySources.howTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:89,91</note>
+        <note category="location">src/app/pages/identity-sources.ts:101,103</note>
       </notes>
       <segment>
         <source>How sign-in works</source>
@@ -5518,7 +5519,7 @@
     </unit>
     <unit id="identitySources.howLocal">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:91,92</note>
+        <note category="location">src/app/pages/identity-sources.ts:103,104</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Local accounts</pc> always authenticate locally with their password and are never passed to a provider.</source>
@@ -5526,7 +5527,7 @@
     </unit>
     <unit id="identitySources.howOidc">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:92,93</note>
+        <note category="location">src/app/pages/identity-sources.ts:104,105</note>
       </notes>
       <segment>
         <source>Enabled <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">OpenID Connect</pc> sources appear as buttons on the sign-in page, in priority order (lowest first).</source>
@@ -5534,7 +5535,7 @@
     </unit>
     <unit id="identitySources.howRole">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:93,94</note>
+        <note category="location">src/app/pages/identity-sources.ts:105,106</note>
       </notes>
       <segment>
         <source>The role comes from the highest matching group mapping, otherwise the &quot;everyone else&quot; role. With neither, access is denied. Roles are re-evaluated at every sign-in.</source>
@@ -5542,7 +5543,7 @@
     </unit>
     <unit id="identitySources.howIsolation">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:94,97</note>
+        <note category="location">src/app/pages/identity-sources.ts:106,109</note>
       </notes>
       <segment>
         <source>A provider can never sign in to a local account, or to an account created by another source, even with the same username.</source>
@@ -5550,7 +5551,7 @@
     </unit>
     <unit id="identitySources.addTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:101,103</note>
+        <note category="location">src/app/pages/identity-sources.ts:113,115</note>
       </notes>
       <segment>
         <source>Add identity source</source>
@@ -5558,39 +5559,55 @@
     </unit>
     <unit id="identitySources.oidcDescription">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:106,108</note>
+        <note category="location">src/app/pages/identity-sources.ts:118,120</note>
       </notes>
       <segment>
         <source>Single sign-on with Authentik, Entra ID, Okta, Keycloak, Google and other OIDC providers.</source>
       </segment>
     </unit>
+    <unit id="identitySources.ldapDescription">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:122,124</note>
+      </notes>
+      <segment>
+        <source>Bind to a directory and map groups to roles.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.radiusDescription">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:126,128</note>
+      </notes>
+      <segment>
+        <source>PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).</source>
+      </segment>
+    </unit>
     <unit id="identitySources.comingSoon">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:110,111</note>
+        <note category="location">src/app/pages/identity-sources.ts:130,131</note>
       </notes>
       <segment>
         <source>Coming soon</source>
       </segment>
     </unit>
-    <unit id="identitySources.editOidcTitle">
+    <unit id="identitySources.editTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:123</note>
+        <note category="location">src/app/pages/identity-sources.ts:143</note>
       </notes>
       <segment>
-        <source>Edit OpenID Connect source</source>
+        <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(form.type) }}"/> source</source>
       </segment>
     </unit>
-    <unit id="identitySources.addOidcTitle">
+    <unit id="identitySources.addTypeTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:123,124</note>
+        <note category="location">src/app/pages/identity-sources.ts:143</note>
       </notes>
       <segment>
-        <source>Add OpenID Connect source</source>
+        <source>Add <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(form.type) }}"/> source</source>
       </segment>
     </unit>
     <unit id="identitySources.general">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:127,128</note>
+        <note category="location">src/app/pages/identity-sources.ts:147,148</note>
       </notes>
       <segment>
         <source>General</source>
@@ -5598,15 +5615,23 @@
     </unit>
     <unit id="identitySources.nameHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:131,132</note>
+        <note category="location">src/app/pages/identity-sources.ts:152,153</note>
       </notes>
       <segment>
         <source>Shown on the sign-in button</source>
       </segment>
     </unit>
+    <unit id="identitySources.namePasswordHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:154,156</note>
+      </notes>
+      <segment>
+        <source>Users sign in with the regular username and password form</source>
+      </segment>
+    </unit>
     <unit id="identitySources.enabledToggle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:137,138</note>
+        <note category="location">src/app/pages/identity-sources.ts:161,162</note>
       </notes>
       <segment>
         <source>Accept sign-ins from this source</source>
@@ -5614,23 +5639,223 @@
     </unit>
     <unit id="identitySources.priority">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:141,142</note>
+        <note category="location">src/app/pages/identity-sources.ts:165,166</note>
       </notes>
       <segment>
         <source>Priority</source>
       </segment>
     </unit>
-    <unit id="identitySources.priorityHelp">
+    <unit id="identitySources.priorityHelp2">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:143,144</note>
+        <note category="location">src/app/pages/identity-sources.ts:167,168</note>
       </notes>
       <segment>
-        <source>Order of sign-in buttons (lowest first)</source>
+        <source>Lowest first: the order of sign-in buttons, and of directories tried for a password sign-in</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.directory">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:171,172</note>
+      </notes>
+      <segment>
+        <source>Directory</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.ldapUrl">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:173,174</note>
+      </notes>
+      <segment>
+        <source>Server URL</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.ldapUrlHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:175,176</note>
+      </notes>
+      <segment>
+        <source>ldaps:// (port 636) or ldap:// with StartTLS. Certificates are checked against the trusted CAs on the Certificates page.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.startTls">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:181,182</note>
+      </notes>
+      <segment>
+        <source>Use StartTLS (for ldap:// URLs)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.ldapPlainWarning">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:185,187</note>
+      </notes>
+      <segment>
+        <source>Without TLS, passwords cross the network unencrypted.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.bindDn">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:188,189</note>
+      </notes>
+      <segment>
+        <source>Bind DN</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.bindDnHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:190,191</note>
+      </notes>
+      <segment>
+        <source>A read-only service account used to find users</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.bindPassword">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:193,194</note>
+      </notes>
+      <segment>
+        <source>Bind password</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.baseDn">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:197,198</note>
+      </notes>
+      <segment>
+        <source>Base DN</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.schema">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:201,202</note>
+      </notes>
+      <segment>
+        <source>Directory type</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.userFilter">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:208,209</note>
+      </notes>
+      <segment>
+        <source>User filter</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.userFilterHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:210</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ &apos;{&apos; }}"/>username<ph id="1" equiv="INTERPOLATION_1" disp="{{ &apos;}&apos; }}"/> is replaced with the name typed on the sign-in page</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.usernameAttr">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:213,214</note>
+      </notes>
+      <segment>
+        <source>Username attribute</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.nameAttr">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:217,218</note>
+      </notes>
+      <segment>
+        <source>Display name attribute</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.groupAttr">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:221,222</note>
+      </notes>
+      <segment>
+        <source>Group attribute</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.nestedGroups">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:228,229</note>
+      </notes>
+      <segment>
+        <source>Include nested groups (Active Directory)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.radiusServers">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:233,234</note>
+      </notes>
+      <segment>
+        <source>RADIUS</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.servers">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:235,236</note>
+      </notes>
+      <segment>
+        <source>Servers</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.radiusServer">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:237</note>
+      </notes>
+      <segment>
+        <source>RADIUS server</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.serversHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:238,240</note>
+      </notes>
+      <segment>
+        <source>Tried in order when one doesn&apos;t answer; default port 1812. Add this appliance as a client on each server.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.sharedSecret">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:242,243</note>
+      </notes>
+      <segment>
+        <source>Shared secret</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.nasId">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:246,247</note>
+      </notes>
+      <segment>
+        <source>NAS-Identifier</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.timeout">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:250,251</note>
+      </notes>
+      <segment>
+        <source>Timeout (seconds)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.roleAttribute">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:254,255</note>
+      </notes>
+      <segment>
+        <source>Role attribute</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.roleAttributeHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:259,260</note>
+      </notes>
+      <segment>
+        <source>Values of this reply attribute are matched against the role mappings below</source>
       </segment>
     </unit>
     <unit id="identitySources.provider">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:146,147</note>
+        <note category="location">src/app/pages/identity-sources.ts:263,264</note>
       </notes>
       <segment>
         <source>Provider</source>
@@ -5638,7 +5863,7 @@
     </unit>
     <unit id="identitySources.issuerUrl">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:148,149</note>
+        <note category="location">src/app/pages/identity-sources.ts:265,266</note>
       </notes>
       <segment>
         <source>Issuer URL</source>
@@ -5646,7 +5871,7 @@
     </unit>
     <unit id="identitySources.clientId">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:152,153</note>
+        <note category="location">src/app/pages/identity-sources.ts:269,270</note>
       </notes>
       <segment>
         <source>Client ID</source>
@@ -5654,7 +5879,7 @@
     </unit>
     <unit id="identitySources.clientSecret">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:156,157</note>
+        <note category="location">src/app/pages/identity-sources.ts:273,274</note>
       </notes>
       <segment>
         <source>Client secret</source>
@@ -5662,7 +5887,7 @@
     </unit>
     <unit id="identitySources.scopes">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:161,162</note>
+        <note category="location">src/app/pages/identity-sources.ts:278,279</note>
       </notes>
       <segment>
         <source>Scopes</source>
@@ -5670,7 +5895,7 @@
     </unit>
     <unit id="identitySources.removeScope">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:167</note>
+        <note category="location">src/app/pages/identity-sources.ts:284</note>
       </notes>
       <segment>
         <source>Remove scope</source>
@@ -5678,7 +5903,7 @@
     </unit>
     <unit id="identitySources.addScope">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:171,172</note>
+        <note category="location">src/app/pages/identity-sources.ts:288,289</note>
       </notes>
       <segment>
         <source>Add scope</source>
@@ -5686,7 +5911,7 @@
     </unit>
     <unit id="identitySources.usernameClaim">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:175,176</note>
+        <note category="location">src/app/pages/identity-sources.ts:292,293</note>
       </notes>
       <segment>
         <source>Username claim</source>
@@ -5694,7 +5919,7 @@
     </unit>
     <unit id="identitySources.groupsClaim">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:179,180</note>
+        <note category="location">src/app/pages/identity-sources.ts:296,297</note>
       </notes>
       <segment>
         <source>Groups claim</source>
@@ -5702,7 +5927,7 @@
     </unit>
     <unit id="identitySources.groupsClaimHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:181,182</note>
+        <note category="location">src/app/pages/identity-sources.ts:298,299</note>
       </notes>
       <segment>
         <source>Read from the ID token, or from userinfo if absent</source>
@@ -5710,7 +5935,7 @@
     </unit>
     <unit id="identitySources.redirectUri">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:185,187</note>
+        <note category="location">src/app/pages/identity-sources.ts:302,304</note>
       </notes>
       <segment>
         <source>Redirect URI</source>
@@ -5718,7 +5943,7 @@
     </unit>
     <unit id="identitySources.redirectUriRegister">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:187,188</note>
+        <note category="location">src/app/pages/identity-sources.ts:304,305</note>
       </notes>
       <segment>
         <source>Register this redirect URI in the provider&apos;s application settings:</source>
@@ -5726,7 +5951,7 @@
     </unit>
     <unit id="identitySources.copied">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:188</note>
+        <note category="location">src/app/pages/identity-sources.ts:305</note>
       </notes>
       <segment>
         <source>Copied</source>
@@ -5734,7 +5959,7 @@
     </unit>
     <unit id="identitySources.copy">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:188,189</note>
+        <note category="location">src/app/pages/identity-sources.ts:305,306</note>
       </notes>
       <segment>
         <source>Copy</source>
@@ -5742,7 +5967,7 @@
     </unit>
     <unit id="identitySources.redirectUriSaveFirst">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:190,194</note>
+        <note category="location">src/app/pages/identity-sources.ts:307,310</note>
       </notes>
       <segment>
         <source>Save the source first; its redirect URI appears here, ready to copy into the provider.</source>
@@ -5750,7 +5975,7 @@
     </unit>
     <unit id="identitySources.roleMapping">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:194,196</note>
+        <note category="location">src/app/pages/identity-sources.ts:312,314</note>
       </notes>
       <segment>
         <source>Role mapping</source>
@@ -5758,7 +5983,7 @@
     </unit>
     <unit id="identitySources.group">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:196</note>
+        <note category="location">src/app/pages/identity-sources.ts:314</note>
       </notes>
       <segment>
         <source>Group</source>
@@ -5766,7 +5991,8 @@
     </unit>
     <unit id="identitySources.role">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:196,197</note>
+        <note category="location">src/app/pages/identity-sources.ts:314,315</note>
+        <note category="location">src/app/pages/identity-sources.ts:360</note>
       </notes>
       <segment>
         <source>Role</source>
@@ -5774,9 +6000,9 @@
     </unit>
     <unit id="identitySources.roleAdministrator">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:202,203</note>
-        <note category="location">src/app/pages/identity-sources.ts:216,218</note>
-        <note category="location">src/app/pages/identity-sources.ts:348</note>
+        <note category="location">src/app/pages/identity-sources.ts:320,321</note>
+        <note category="location">src/app/pages/identity-sources.ts:334,336</note>
+        <note category="location">src/app/pages/identity-sources.ts:486</note>
       </notes>
       <segment>
         <source>Administrator</source>
@@ -5784,9 +6010,9 @@
     </unit>
     <unit id="identitySources.roleViewer">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:203,205</note>
-        <note category="location">src/app/pages/identity-sources.ts:215,216</note>
-        <note category="location">src/app/pages/identity-sources.ts:348</note>
+        <note category="location">src/app/pages/identity-sources.ts:321,323</note>
+        <note category="location">src/app/pages/identity-sources.ts:333,334</note>
+        <note category="location">src/app/pages/identity-sources.ts:486</note>
       </notes>
       <segment>
         <source>Viewer</source>
@@ -5794,7 +6020,7 @@
     </unit>
     <unit id="identitySources.removeMapping">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:206</note>
+        <note category="location">src/app/pages/identity-sources.ts:324</note>
       </notes>
       <segment>
         <source>Remove mapping</source>
@@ -5802,7 +6028,7 @@
     </unit>
     <unit id="identitySources.addMapping">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:209,210</note>
+        <note category="location">src/app/pages/identity-sources.ts:327,328</note>
       </notes>
       <segment>
         <source>Add mapping</source>
@@ -5810,7 +6036,7 @@
     </unit>
     <unit id="identitySources.everyoneElse">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:212,213</note>
+        <note category="location">src/app/pages/identity-sources.ts:330,331</note>
       </notes>
       <segment>
         <source>Everyone else</source>
@@ -5818,7 +6044,7 @@
     </unit>
     <unit id="identitySources.denyAccess">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:214,215</note>
+        <note category="location">src/app/pages/identity-sources.ts:332,333</note>
       </notes>
       <segment>
         <source>Deny console access</source>
@@ -5826,7 +6052,7 @@
     </unit>
     <unit id="identitySources.everyoneElseHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:218,219</note>
+        <note category="location">src/app/pages/identity-sources.ts:336,337</note>
       </notes>
       <segment>
         <source>Role for authenticated users matching no mapping</source>
@@ -5834,7 +6060,7 @@
     </unit>
     <unit id="identitySources.testConnection">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:223,224</note>
+        <note category="location">src/app/pages/identity-sources.ts:341,342</note>
       </notes>
       <segment>
         <source>Test connection</source>
@@ -5842,23 +6068,71 @@
     </unit>
     <unit id="identitySources.testHelp">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:224,225</note>
+        <note category="location">src/app/pages/identity-sources.ts:343,344</note>
       </notes>
       <segment>
         <source>Checks that the provider&apos;s metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</source>
       </segment>
     </unit>
+    <unit id="identitySources.testLdapHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:345,346</note>
+      </notes>
+      <segment>
+        <source>Connects and signs in with the service account. Enter a username to also see their entry, groups and the role they would get.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.testUserOptional">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:346</note>
+      </notes>
+      <segment>
+        <source>Username (optional)</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.testRadiusHelp">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:348,349</note>
+      </notes>
+      <segment>
+        <source>RADIUS can only be tested with a sign-in attempt. Even a rejection shows the server is reachable and the shared secret is right.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.testUser">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:349</note>
+      </notes>
+      <segment>
+        <source>Username</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.testPass">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:350</note>
+      </notes>
+      <segment>
+        <source>Password</source>
+      </segment>
+    </unit>
     <unit id="identitySources.runTest">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:225,226</note>
+        <note category="location">src/app/pages/identity-sources.ts:352,353</note>
       </notes>
       <segment>
         <source>Run test</source>
       </segment>
     </unit>
+    <unit id="identitySources.groupsFound">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:359</note>
+      </notes>
+      <segment>
+        <source>Groups</source>
+      </segment>
+    </unit>
     <unit id="identitySources.authorization">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:231,232</note>
+        <note category="location">src/app/pages/identity-sources.ts:365,366</note>
         <note category="description">OIDC authorization endpoint</note>
       </notes>
       <segment>
@@ -5867,7 +6141,7 @@
     </unit>
     <unit id="identitySources.token">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:232,233</note>
+        <note category="location">src/app/pages/identity-sources.ts:366,367</note>
         <note category="description">OIDC token endpoint</note>
       </notes>
       <segment>
@@ -5876,7 +6150,7 @@
     </unit>
     <unit id="identitySources.pkceSupported">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:234</note>
+        <note category="location">src/app/pages/identity-sources.ts:368</note>
       </notes>
       <segment>
         <source>S256 supported</source>
@@ -5884,7 +6158,7 @@
     </unit>
     <unit id="identitySources.pkceNotAdvertised">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:234,235</note>
+        <note category="location">src/app/pages/identity-sources.ts:368,369</note>
       </notes>
       <segment>
         <source>not advertised (sign-in still sends S256)</source>
@@ -5892,7 +6166,7 @@
     </unit>
     <unit id="identitySources.claims">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:235,236</note>
+        <note category="location">src/app/pages/identity-sources.ts:369,370</note>
       </notes>
       <segment>
         <source>Claims</source>
@@ -5900,8 +6174,9 @@
     </unit>
     <unit id="common.close">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:250</note>
-        <note category="location">src/app/shell.ts:167,169</note>
+        <note category="location">src/app/pages/identity-sources.ts:384</note>
+        <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
+        <note category="location">src/app/shell.ts:171,173</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -5909,7 +6184,7 @@
     </unit>
     <unit id="identitySources.deleteTitle">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:256,257</note>
+        <note category="location">src/app/pages/identity-sources.ts:390,391</note>
       </notes>
       <segment>
         <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>?</source>
@@ -5917,7 +6192,7 @@
     </unit>
     <unit id="identitySources.deleteConfirm">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:258,259</note>
+        <note category="location">src/app/pages/identity-sources.ts:392,393</note>
       </notes>
       <segment>
         <source>The sign-in button disappears and the <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.users }}"/> account(s) created by this source are deleted and signed out. Local accounts are not affected.</source>
@@ -5925,7 +6200,7 @@
     </unit>
     <unit id="identitySources.secretUnchanged">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:334</note>
+        <note category="location">src/app/pages/identity-sources.ts:474</note>
       </notes>
       <segment>
         <source>Unchanged (stored securely)</source>
@@ -5933,31 +6208,15 @@
     </unit>
     <unit id="identitySources.secretRequired">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:335</note>
+        <note category="location">src/app/pages/identity-sources.ts:475</note>
       </notes>
       <segment>
         <source>Required for confidential clients</source>
       </segment>
     </unit>
-    <unit id="identitySources.ldapDescription">
-      <notes>
-        <note category="location">src/app/pages/identity-sources.ts:338</note>
-      </notes>
-      <segment>
-        <source>Bind to a directory and map groups to roles.</source>
-      </segment>
-    </unit>
-    <unit id="identitySources.radiusDescription">
-      <notes>
-        <note category="location">src/app/pages/identity-sources.ts:339</note>
-      </notes>
-      <segment>
-        <source>PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).</source>
-      </segment>
-    </unit>
     <unit id="identitySources.samlDescription">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:340</note>
+        <note category="location">src/app/pages/identity-sources.ts:478</note>
       </notes>
       <segment>
         <source>Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.</source>
@@ -5965,15 +6224,23 @@
     </unit>
     <unit id="identitySources.roleDenied">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:348</note>
+        <note category="location">src/app/pages/identity-sources.ts:486</note>
       </notes>
       <segment>
         <source>denied</source>
       </segment>
     </unit>
+    <unit id="identitySources.badServer">
+      <notes>
+        <note category="location">src/app/pages/identity-sources.ts:496</note>
+      </notes>
+      <segment>
+        <source>Not a host name or address</source>
+      </segment>
+    </unit>
     <unit id="identitySources.savedNote">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:403</note>
+        <note category="location">src/app/pages/identity-sources.ts:551</note>
       </notes>
       <segment>
         <source>Saved. Register the redirect URI above in your provider, then sign in with the new button on the sign-in page.</source>
@@ -5981,7 +6248,7 @@
     </unit>
     <unit id="identitySources.claimsMissing">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:430</note>
+        <note category="location">src/app/pages/identity-sources.ts:592</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="claims" disp="missing.join(&apos;, &apos;)"/> not advertised (may still be sent)</source>
@@ -5989,7 +6256,7 @@
     </unit>
     <unit id="identitySources.claimsAdvertised">
       <notes>
-        <note category="location">src/app/pages/identity-sources.ts:431</note>
+        <note category="location">src/app/pages/identity-sources.ts:593</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="claims" disp="want.join(&apos;, &apos;)"/> advertised</source>
@@ -6003,10 +6270,85 @@
         <source>Network Flow Analytics</source>
       </segment>
     </unit>
-    <unit id="login.username">
+    <unit id="login.codePrompt">
       <notes>
         <note category="location">src/app/pages/login.ts:31,32</note>
-        <note category="location">src/app/pages/login.ts:32</note>
+      </notes>
+      <segment>
+        <source>Enter the 6-digit code from your authenticator app, or one of your recovery codes.</source>
+      </segment>
+    </unit>
+    <unit id="login.verify">
+      <notes>
+        <note category="location">src/app/pages/login.ts:36,37</note>
+      </notes>
+      <segment>
+        <source>Verify</source>
+      </segment>
+    </unit>
+    <unit id="login.back">
+      <notes>
+        <note category="location">src/app/pages/login.ts:37,38</note>
+        <note category="location">src/app/pages/login.ts:51,52</note>
+      </notes>
+      <segment>
+        <source>Back</source>
+      </segment>
+    </unit>
+    <unit id="login.enrollPrompt">
+      <notes>
+        <note category="location">src/app/pages/login.ts:41,42</note>
+      </notes>
+      <segment>
+        <source>Administrators must use two-factor authentication. Scan this code with an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, Bitwarden…), then enter the code it shows.</source>
+      </segment>
+    </unit>
+    <unit id="login.qrAlt">
+      <notes>
+        <note category="location">src/app/pages/login.ts:43</note>
+        <note category="location">src/app/shared/mfa-dialog.ts:27</note>
+      </notes>
+      <segment>
+        <source>QR code for your authenticator app</source>
+      </segment>
+    </unit>
+    <unit id="login.manualEntry">
+      <notes>
+        <note category="location">src/app/pages/login.ts:44</note>
+        <note category="location">src/app/shared/mfa-dialog.ts:28</note>
+      </notes>
+      <segment>
+        <source>Can&apos;t scan? Enter this key instead</source>
+      </segment>
+    </unit>
+    <unit id="login.turnOn">
+      <notes>
+        <note category="location">src/app/pages/login.ts:50,51</note>
+      </notes>
+      <segment>
+        <source>Turn on and sign in</source>
+      </segment>
+    </unit>
+    <unit id="login.recoveryPrompt">
+      <notes>
+        <note category="location">src/app/pages/login.ts:55,56</note>
+      </notes>
+      <segment>
+        <source>Two-factor authentication is on. Save these recovery codes somewhere safe: each one signs you in once if you lose your device. They won&apos;t be shown again.</source>
+      </segment>
+    </unit>
+    <unit id="login.savedContinue">
+      <notes>
+        <note category="location">src/app/pages/login.ts:61,63</note>
+      </notes>
+      <segment>
+        <source>I&apos;ve saved them, continue</source>
+      </segment>
+    </unit>
+    <unit id="login.username">
+      <notes>
+        <note category="location">src/app/pages/login.ts:66,67</note>
+        <note category="location">src/app/pages/login.ts:67</note>
       </notes>
       <segment>
         <source>Username</source>
@@ -6014,8 +6356,8 @@
     </unit>
     <unit id="login.password">
       <notes>
-        <note category="location">src/app/pages/login.ts:35,36</note>
-        <note category="location">src/app/pages/login.ts:36</note>
+        <note category="location">src/app/pages/login.ts:70,71</note>
+        <note category="location">src/app/pages/login.ts:71</note>
       </notes>
       <segment>
         <source>Password</source>
@@ -6023,7 +6365,7 @@
     </unit>
     <unit id="login.or">
       <notes>
-        <note category="location">src/app/pages/login.ts:43,45</note>
+        <note category="location">src/app/pages/login.ts:78,80</note>
         <note category="description">Separator between password sign-in and SSO buttons</note>
       </notes>
       <segment>
@@ -6032,7 +6374,7 @@
     </unit>
     <unit id="login.signInWith">
       <notes>
-        <note category="location">src/app/pages/login.ts:45</note>
+        <note category="location">src/app/pages/login.ts:80</note>
       </notes>
       <segment>
         <source>Sign in with <ph id="0" equiv="INTERPOLATION" disp="{{ s.name }}"/></source>
@@ -6040,7 +6382,7 @@
     </unit>
     <unit id="login.version">
       <notes>
-        <note category="location">src/app/pages/login.ts:49,50</note>
+        <note category="location">src/app/pages/login.ts:85,86</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -6048,11 +6390,19 @@
     </unit>
     <unit id="shell.language">
       <notes>
-        <note category="location">src/app/pages/login.ts:53</note>
-        <note category="location">src/app/shell.ts:67,68</note>
+        <note category="location">src/app/pages/login.ts:89</note>
+        <note category="location">src/app/shell.ts:69,70</note>
       </notes>
       <segment>
         <source>Language</source>
+      </segment>
+    </unit>
+    <unit id="login.recoveryLow">
+      <notes>
+        <note category="location">src/app/pages/login.ts:178</note>
+      </notes>
+      <segment>
+        <source>You have <ph id="0" equiv="count" disp="r.recoveryLeft"/> recovery codes left. Set up two-factor authentication again from the user menu to get new ones.</source>
       </segment>
     </unit>
     <unit id="services.op.restart">
@@ -6273,9 +6623,33 @@
         <source>Session lifetime (hours)</source>
       </segment>
     </unit>
-    <unit id="settings.flowCollection">
+    <unit id="settings.requireMfa">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:43,44</note>
+      </notes>
+      <segment>
+        <source>Two-factor for administrators</source>
+      </segment>
+    </unit>
+    <unit id="settings.requireMfaToggle">
       <notes>
         <note category="location">src/app/pages/settings.ts:46,47</note>
+      </notes>
+      <segment>
+        <source>Require it</source>
+      </segment>
+    </unit>
+    <unit id="settings.requireMfaHelp">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:48,49</note>
+      </notes>
+      <segment>
+        <source>Administrators who sign in with a password must set up an authenticator app at their next sign-in, and can&apos;t turn it off. Single sign-on administrators use their identity provider&apos;s two-factor authentication.</source>
+      </segment>
+    </unit>
+    <unit id="settings.flowCollection">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:54,55</note>
       </notes>
       <segment>
         <source>Flow collection</source>
@@ -6283,7 +6657,7 @@
     </unit>
     <unit id="settings.flowCollectionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:48,50</note>
+        <note category="location">src/app/pages/settings.ts:56,58</note>
       </notes>
       <segment>
         <source>Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener.</source>
@@ -6291,7 +6665,7 @@
     </unit>
     <unit id="settings.netflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:50,51</note>
+        <note category="location">src/app/pages/settings.ts:58,59</note>
       </notes>
       <segment>
         <source>NetFlow UDP port</source>
@@ -6299,7 +6673,7 @@
     </unit>
     <unit id="settings.ipfixPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:54,55</note>
+        <note category="location">src/app/pages/settings.ts:62,63</note>
       </notes>
       <segment>
         <source>IPFIX UDP port</source>
@@ -6307,7 +6681,7 @@
     </unit>
     <unit id="settings.sflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:58,59</note>
+        <note category="location">src/app/pages/settings.ts:66,67</note>
       </notes>
       <segment>
         <source>sFlow UDP port</source>
@@ -6315,7 +6689,7 @@
     </unit>
     <unit id="settings.exporterAllowlist">
       <notes>
-        <note category="location">src/app/pages/settings.ts:62,63</note>
+        <note category="location">src/app/pages/settings.ts:70,71</note>
       </notes>
       <segment>
         <source>Allowed exporters</source>
@@ -6323,7 +6697,7 @@
     </unit>
     <unit id="settings.allowlistEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:65,67</note>
+        <note category="location">src/app/pages/settings.ts:73,75</note>
       </notes>
       <segment>
         <source>No entries: flows are accepted from any source.</source>
@@ -6331,7 +6705,7 @@
     </unit>
     <unit id="settings.allowedExporterLabel">
       <notes>
-        <note category="location">src/app/pages/settings.ts:67</note>
+        <note category="location">src/app/pages/settings.ts:75</note>
       </notes>
       <segment>
         <source>Allowed exporter</source>
@@ -6339,7 +6713,7 @@
     </unit>
     <unit id="settings.addActiveExporters">
       <notes>
-        <note category="location">src/app/pages/settings.ts:69,70</note>
+        <note category="location">src/app/pages/settings.ts:77,78</note>
       </notes>
       <segment>
         <source>Add active exporters</source>
@@ -6347,7 +6721,7 @@
     </unit>
     <unit id="settings.allowlistLockout">
       <notes>
-        <note category="location">src/app/pages/settings.ts:71,72</note>
+        <note category="location">src/app/pages/settings.ts:79,80</note>
       </notes>
       <segment>
         <source>These exporters sent flows in the last hour and would be dropped: <ph id="0" equiv="INTERPOLATION" disp="{{ lockedOut().join(&apos;, &apos;) }}"/></source>
@@ -6355,7 +6729,7 @@
     </unit>
     <unit id="settings.allowlistHelp2">
       <notes>
-        <note category="location">src/app/pages/settings.ts:74,76</note>
+        <note category="location">src/app/pages/settings.ts:82,84</note>
       </notes>
       <segment>
         <source>IP addresses or CIDR prefixes. When set, datagrams from any other source are dropped before decoding and listed on System Health.</source>
@@ -6363,7 +6737,7 @@
     </unit>
     <unit id="settings.dataRetention">
       <notes>
-        <note category="location">src/app/pages/settings.ts:81,82</note>
+        <note category="location">src/app/pages/settings.ts:89,90</note>
       </notes>
       <segment>
         <source>Data retention</source>
@@ -6371,7 +6745,7 @@
     </unit>
     <unit id="settings.dataRetentionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:83,85</note>
+        <note category="location">src/app/pages/settings.ts:91,93</note>
       </notes>
       <segment>
         <source>Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size.</source>
@@ -6379,7 +6753,7 @@
     </unit>
     <unit id="settings.rawFlowsDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:85,86</note>
+        <note category="location">src/app/pages/settings.ts:93,94</note>
       </notes>
       <segment>
         <source>Raw flows (days)</source>
@@ -6387,7 +6761,7 @@
     </unit>
     <unit id="settings.rawFlowsEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:88</note>
+        <note category="location">src/app/pages/settings.ts:96</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rawRetentionDays) }}"/> at the current rate (<ph id="1" equiv="INTERPOLATION_1" disp="{{ count(r.rowsPerDay) }}"/> flows/day)</source>
@@ -6395,7 +6769,7 @@
     </unit>
     <unit id="settings.rollupDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:92,93</note>
+        <note category="location">src/app/pages/settings.ts:100,101</note>
       </notes>
       <segment>
         <source>1-minute rollup (days)</source>
@@ -6403,7 +6777,7 @@
     </unit>
     <unit id="settings.rollupEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:95</note>
+        <note category="location">src/app/pages/settings.ts:103</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rollupRetentionDays) }}"/> at the current rate</source>
@@ -6411,7 +6785,7 @@
     </unit>
     <unit id="settings.totalEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:102,104</note>
+        <note category="location">src/app/pages/settings.ts:110,112</note>
       </notes>
       <segment>
         <source>Estimated total <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ fmtBytes(total) }}"/></pc> of <ph id="2" equiv="INTERPOLATION_1" disp="{{ fmtBytes(budget) }}"/> available for flow data (<ph id="3" equiv="INTERPOLATION_2" disp="{{ fmtBytes(st.diskFree) }}"/> free on a <ph id="4" equiv="INTERPOLATION_3" disp="{{ fmtBytes(st.diskTotal) }}"/> disk).</source>
@@ -6419,7 +6793,7 @@
     </unit>
     <unit id="settings.tooLittleSpace">
       <notes>
-        <note category="location">src/app/pages/settings.ts:105,107</note>
+        <note category="location">src/app/pages/settings.ts:113,115</note>
       </notes>
       <segment>
         <source>That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.</source>
@@ -6427,7 +6801,7 @@
     </unit>
     <unit id="settings.estimateSample">
       <notes>
-        <note category="location">src/app/pages/settings.ts:108,109</note>
+        <note category="location">src/app/pages/settings.ts:116,117</note>
       </notes>
       <segment>
         <source>Based on <ph id="0" equiv="INTERPOLATION" disp="{{ sampleHours().toFixed(1) }}"/> hours of data; the estimate firms up after a full day.</source>
@@ -6435,7 +6809,7 @@
     </unit>
     <unit id="settings.enrichment">
       <notes>
-        <note category="location">src/app/pages/settings.ts:116,117</note>
+        <note category="location">src/app/pages/settings.ts:124,125</note>
       </notes>
       <segment>
         <source>Enrichment</source>
@@ -6443,7 +6817,7 @@
     </unit>
     <unit id="settings.reverseDns">
       <notes>
-        <note category="location">src/app/pages/settings.ts:119,120</note>
+        <note category="location">src/app/pages/settings.ts:127,128</note>
       </notes>
       <segment>
         <source>Reverse DNS</source>
@@ -6451,7 +6825,7 @@
     </unit>
     <unit id="settings.reverseDnsToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:122,123</note>
+        <note category="location">src/app/pages/settings.ts:130,131</note>
       </notes>
       <segment>
         <source>Resolve hostnames for addresses in reports</source>
@@ -6459,7 +6833,7 @@
     </unit>
     <unit id="settings.reverseDnsHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:124,125</note>
+        <note category="location">src/app/pages/settings.ts:132,133</note>
       </notes>
       <segment>
         <source>Lookups use the appliance&apos;s system resolver and are cached for 6 hours. Disable on isolated networks.</source>
@@ -6467,7 +6841,7 @@
     </unit>
     <unit id="settings.localNetworks">
       <notes>
-        <note category="location">src/app/pages/settings.ts:127,128</note>
+        <note category="location">src/app/pages/settings.ts:135,136</note>
       </notes>
       <segment>
         <source>Local networks</source>
@@ -6475,7 +6849,7 @@
     </unit>
     <unit id="settings.localNetworksEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:130,132</note>
+        <note category="location">src/app/pages/settings.ts:138,140</note>
       </notes>
       <segment>
         <source>None added: only private ranges are local.</source>
@@ -6483,7 +6857,7 @@
     </unit>
     <unit id="settings.localNetworkLabel">
       <notes>
-        <note category="location">src/app/pages/settings.ts:132</note>
+        <note category="location">src/app/pages/settings.ts:140</note>
       </notes>
       <segment>
         <source>Local network</source>
@@ -6491,7 +6865,7 @@
     </unit>
     <unit id="settings.localNetworksHelp2">
       <notes>
-        <note category="location">src/app/pages/settings.ts:133,135</note>
+        <note category="location">src/app/pages/settings.ts:141,143</note>
       </notes>
       <segment>
         <source>CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</source>
@@ -6499,7 +6873,7 @@
     </unit>
     <unit id="settings.dnsResolvers">
       <notes>
-        <note category="location">src/app/pages/settings.ts:137,138</note>
+        <note category="location">src/app/pages/settings.ts:145,146</note>
       </notes>
       <segment>
         <source>DNS resolvers</source>
@@ -6507,7 +6881,7 @@
     </unit>
     <unit id="settings.dnsEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:141</note>
+        <note category="location">src/app/pages/settings.ts:149</note>
       </notes>
       <segment>
         <source>None added: using the system resolvers</source>
@@ -6515,7 +6889,7 @@
     </unit>
     <unit id="settings.dnsResolverLabel">
       <notes>
-        <note category="location">src/app/pages/settings.ts:144</note>
+        <note category="location">src/app/pages/settings.ts:152</note>
       </notes>
       <segment>
         <source>DNS resolver</source>
@@ -6523,7 +6897,7 @@
     </unit>
     <unit id="settings.dnsResolversHelp2">
       <notes>
-        <note category="location">src/app/pages/settings.ts:145,147</note>
+        <note category="location">src/app/pages/settings.ts:153,155</note>
       </notes>
       <segment>
         <source>IP addresses, optionally with a port, tried in order. Used for Tributary&apos;s own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</source>
@@ -6531,7 +6905,7 @@
     </unit>
     <unit id="settings.onlineAsn">
       <notes>
-        <note category="location">src/app/pages/settings.ts:149,150</note>
+        <note category="location">src/app/pages/settings.ts:157,158</note>
       </notes>
       <segment>
         <source>Online ASN lookup</source>
@@ -6539,7 +6913,7 @@
     </unit>
     <unit id="settings.onlineAsnToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:152,153</note>
+        <note category="location">src/app/pages/settings.ts:160,161</note>
       </notes>
       <segment>
         <source>Look up ASNs missing from the local database via RIPEstat</source>
@@ -6547,7 +6921,7 @@
     </unit>
     <unit id="settings.onlineAsnHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:154,155</note>
+        <note category="location">src/app/pages/settings.ts:162,163</note>
       </notes>
       <segment>
         <source>Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</source>
@@ -6555,7 +6929,7 @@
     </unit>
     <unit id="settings.dataSourcesHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:157</note>
+        <note category="location">src/app/pages/settings.ts:165</note>
       </notes>
       <segment>
         <source>GeoIP, ASN and MAC vendor databases are chosen under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/data-sources&quot;&gt;" dispEnd="&lt;/a&gt;">Data Sources</pc>.</source>
@@ -6563,7 +6937,7 @@
     </unit>
     <unit id="settings.hostnameCache">
       <notes>
-        <note category="location">src/app/pages/settings.ts:159,160</note>
+        <note category="location">src/app/pages/settings.ts:167,168</note>
       </notes>
       <segment>
         <source>Hostname cache: <ph id="0" equiv="INTERPOLATION" disp="{{ g.rdnsCache }}"/> entries.</source>
@@ -6571,7 +6945,7 @@
     </unit>
     <unit id="settings.saveSettings">
       <notes>
-        <note category="location">src/app/pages/settings.ts:166,167</note>
+        <note category="location">src/app/pages/settings.ts:174,175</note>
       </notes>
       <segment>
         <source>Save settings</source>
@@ -6579,7 +6953,7 @@
     </unit>
     <unit id="settings.notCidr">
       <notes>
-        <note category="location">src/app/pages/settings.ts:202</note>
+        <note category="location">src/app/pages/settings.ts:210</note>
       </notes>
       <segment>
         <source>Not a CIDR prefix, e.g. 2001:db8:1234::/56</source>
@@ -6587,7 +6961,7 @@
     </unit>
     <unit id="settings.notAddrOrPrefix">
       <notes>
-        <note category="location">src/app/pages/settings.ts:203</note>
+        <note category="location">src/app/pages/settings.ts:211</note>
       </notes>
       <segment>
         <source>Not an IP address or CIDR prefix</source>
@@ -6595,7 +6969,7 @@
     </unit>
     <unit id="settings.notAddrPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:204</note>
+        <note category="location">src/app/pages/settings.ts:212</note>
       </notes>
       <segment>
         <source>Not an IP address (optionally with :port)</source>
@@ -6603,7 +6977,7 @@
     </unit>
     <unit id="settings.fixEntries">
       <notes>
-        <note category="location">src/app/pages/settings.ts:247</note>
+        <note category="location">src/app/pages/settings.ts:255</note>
       </notes>
       <segment>
         <source>Fix the highlighted entries first: <ph id="0" equiv="entries" disp="bad.join(&apos;, &apos;)"/></source>
@@ -7820,7 +8194,7 @@
     <unit id="users.addUser">
       <notes>
         <note category="location">src/app/pages/users.ts:18,19</note>
-        <note category="location">src/app/pages/users.ts:58,59</note>
+        <note category="location">src/app/pages/users.ts:63,64</note>
       </notes>
       <segment>
         <source>Add user</source>
@@ -7858,9 +8232,17 @@
         <source>Source</source>
       </segment>
     </unit>
-    <unit id="users.col.lastLogin">
+    <unit id="users.col.mfa">
       <notes>
         <note category="location">src/app/pages/users.ts:29,30</note>
+      </notes>
+      <segment>
+        <source>Two-factor</source>
+      </segment>
+    </unit>
+    <unit id="users.col.lastLogin">
+      <notes>
+        <note category="location">src/app/pages/users.ts:30,31</note>
       </notes>
       <segment>
         <source>Last sign-in</source>
@@ -7868,15 +8250,24 @@
     </unit>
     <unit id="users.col.created">
       <notes>
-        <note category="location">src/app/pages/users.ts:30,31</note>
+        <note category="location">src/app/pages/users.ts:31,32</note>
       </notes>
       <segment>
         <source>Created</source>
       </segment>
     </unit>
+    <unit id="users.resetMfa">
+      <notes>
+        <note category="location">src/app/pages/users.ts:36,37</note>
+        <note category="location">src/app/pages/users.ts:114,116</note>
+      </notes>
+      <segment>
+        <source>Reset two-factor</source>
+      </segment>
+    </unit>
     <unit id="users.you">
       <notes>
-        <note category="location">src/app/pages/users.ts:38,39</note>
+        <note category="location">src/app/pages/users.ts:42,43</note>
         <note category="description">Marks the signed-in user&apos;s own row</note>
       </notes>
       <segment>
@@ -7885,7 +8276,7 @@
     </unit>
     <unit id="users.local">
       <notes>
-        <note category="location">src/app/pages/users.ts:41</note>
+        <note category="location">src/app/pages/users.ts:45</note>
       </notes>
       <segment>
         <source>Local</source>
@@ -7893,15 +8284,23 @@
     </unit>
     <unit id="users.identitySource">
       <notes>
-        <note category="location">src/app/pages/users.ts:41,42</note>
+        <note category="location">src/app/pages/users.ts:45,46</note>
       </notes>
       <segment>
         <source>Identity source</source>
       </segment>
     </unit>
+    <unit id="users.mfaOn">
+      <notes>
+        <note category="location">src/app/pages/users.ts:46</note>
+      </notes>
+      <segment>
+        <source>on</source>
+      </segment>
+    </unit>
     <unit id="users.footer">
       <notes>
-        <note category="location">src/app/pages/users.ts:49,50</note>
+        <note category="location">src/app/pages/users.ts:54,55</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -7910,7 +8309,7 @@
     </unit>
     <unit id="users.empty">
       <notes>
-        <note category="location">src/app/pages/users.ts:51,52</note>
+        <note category="location">src/app/pages/users.ts:56,57</note>
       </notes>
       <segment>
         <source>No users</source>
@@ -7918,7 +8317,7 @@
     </unit>
     <unit id="users.editTitle">
       <notes>
-        <note category="location">src/app/pages/users.ts:58</note>
+        <note category="location">src/app/pages/users.ts:63</note>
       </notes>
       <segment>
         <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ form.username }}"/></source>
@@ -7926,7 +8325,7 @@
     </unit>
     <unit id="users.username">
       <notes>
-        <note category="location">src/app/pages/users.ts:63,64</note>
+        <note category="location">src/app/pages/users.ts:68,69</note>
       </notes>
       <segment>
         <source>Username</source>
@@ -7934,7 +8333,7 @@
     </unit>
     <unit id="users.fullName">
       <notes>
-        <note category="location">src/app/pages/users.ts:68,69</note>
+        <note category="location">src/app/pages/users.ts:73,74</note>
       </notes>
       <segment>
         <source>Full name</source>
@@ -7942,7 +8341,7 @@
     </unit>
     <unit id="users.managedExternally">
       <notes>
-        <note category="location">src/app/pages/users.ts:72,73</note>
+        <note category="location">src/app/pages/users.ts:77,78</note>
       </notes>
       <segment>
         <source>Signs in with <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ externalSource }}"/></pc>. The role is set by that source&apos;s group mappings at every sign-in, and there is no local password.</source>
@@ -7950,7 +8349,7 @@
     </unit>
     <unit id="users.role">
       <notes>
-        <note category="location">src/app/pages/users.ts:75,76</note>
+        <note category="location">src/app/pages/users.ts:80,81</note>
       </notes>
       <segment>
         <source>Role</source>
@@ -7958,7 +8357,7 @@
     </unit>
     <unit id="users.roleViewer">
       <notes>
-        <note category="location">src/app/pages/users.ts:78,79</note>
+        <note category="location">src/app/pages/users.ts:83,84</note>
       </notes>
       <segment>
         <source>Viewer</source>
@@ -7966,7 +8365,7 @@
     </unit>
     <unit id="users.roleAdministrator">
       <notes>
-        <note category="location">src/app/pages/users.ts:82,83</note>
+        <note category="location">src/app/pages/users.ts:87,88</note>
       </notes>
       <segment>
         <source>Administrator</source>
@@ -7974,7 +8373,7 @@
     </unit>
     <unit id="users.newPassword">
       <notes>
-        <note category="location">src/app/pages/users.ts:86</note>
+        <note category="location">src/app/pages/users.ts:91</note>
       </notes>
       <segment>
         <source>New password (leave blank to keep)</source>
@@ -7982,7 +8381,7 @@
     </unit>
     <unit id="users.password">
       <notes>
-        <note category="location">src/app/pages/users.ts:86,87</note>
+        <note category="location">src/app/pages/users.ts:91,92</note>
       </notes>
       <segment>
         <source>Password</source>
@@ -7990,7 +8389,7 @@
     </unit>
     <unit id="users.passwordHelp">
       <notes>
-        <note category="location">src/app/pages/users.ts:88,89</note>
+        <note category="location">src/app/pages/users.ts:93,94</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -7998,15 +8397,31 @@
     </unit>
     <unit id="users.createUser">
       <notes>
-        <note category="location">src/app/pages/users.ts:98,99</note>
+        <note category="location">src/app/pages/users.ts:103,104</note>
       </notes>
       <segment>
         <source>Create user</source>
       </segment>
     </unit>
+    <unit id="users.resetMfaTitle">
+      <notes>
+        <note category="location">src/app/pages/users.ts:108,109</note>
+      </notes>
+      <segment>
+        <source>Reset two-factor authentication for <ph id="0" equiv="INTERPOLATION" disp="{{ confirmReset()?.username }}"/>?</source>
+      </segment>
+    </unit>
+    <unit id="users.resetMfaText">
+      <notes>
+        <note category="location">src/app/pages/users.ts:110,112</note>
+      </notes>
+      <segment>
+        <source>Use this when someone lost their authenticator device. Their two-factor authentication is turned off and they are signed out; they can set it up again after signing in with their password.</source>
+      </segment>
+    </unit>
     <unit id="users.deleteTitle">
       <notes>
-        <note category="location">src/app/pages/users.ts:103,104</note>
+        <note category="location">src/app/pages/users.ts:119,120</note>
       </notes>
       <segment>
         <source>Delete user?</source>
@@ -8014,7 +8429,7 @@
     </unit>
     <unit id="users.deleteConfirm">
       <notes>
-        <note category="location">src/app/pages/users.ts:104,105</note>
+        <note category="location">src/app/pages/users.ts:120,121</note>
       </notes>
       <segment>
         <source>Delete <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ confirmDelete()?.username }}"/></pc>? Their sessions end immediately.</source>
@@ -8022,7 +8437,7 @@
     </unit>
     <unit id="users.anIdentitySource">
       <notes>
-        <note category="location">src/app/pages/users.ts:141</note>
+        <note category="location">src/app/pages/users.ts:171</note>
       </notes>
       <segment>
         <source>an identity source</source>
@@ -8030,7 +8445,7 @@
     </unit>
     <unit id="users.roleAdmin">
       <notes>
-        <note category="location">src/app/pages/users.ts:165</note>
+        <note category="location">src/app/pages/users.ts:195</note>
       </notes>
       <segment>
         <source>admin</source>
@@ -8038,7 +8453,7 @@
     </unit>
     <unit id="users.roleViewerShort">
       <notes>
-        <note category="location">src/app/pages/users.ts:165</note>
+        <note category="location">src/app/pages/users.ts:195</note>
       </notes>
       <segment>
         <source>viewer</source>
@@ -8219,6 +8634,111 @@
       </notes>
       <segment>
         <source>Move down</source>
+      </segment>
+    </unit>
+    <unit id="mfa.title">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:13,14</note>
+        <note category="location">src/app/shell.ts:65</note>
+      </notes>
+      <segment>
+        <source>Two-factor authentication</source>
+      </segment>
+    </unit>
+    <unit id="mfa.ssoAccount">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:17,18</note>
+      </notes>
+      <segment>
+        <source>Your account signs in through single sign-on; two-factor authentication is handled by your identity provider.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.recoveryIntro">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:19,20</note>
+      </notes>
+      <segment>
+        <source>Two-factor authentication is on. Save these recovery codes somewhere safe: each one signs you in once if you lose your device. They won&apos;t be shown again.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.scan">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:26,27</note>
+      </notes>
+      <segment>
+        <source>Scan this code with an authenticator app, then enter the 6-digit code it shows.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.on">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:31,32</note>
+      </notes>
+      <segment>
+        <source>On. Sign-ins ask for a code from your authenticator app.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.recoveryLeft">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:32,33</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ st.recoveryLeft }}"/> recovery codes left.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.requiredNote">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:34,36</note>
+      </notes>
+      <segment>
+        <source>Required for administrators on this appliance, so it can&apos;t be turned off. To move to a new device, ask another administrator to reset it, then set it up again.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.offPrompt">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:36,37</note>
+      </notes>
+      <segment>
+        <source>To turn it off, enter a current code (or a recovery code):</source>
+      </segment>
+    </unit>
+    <unit id="mfa.offIntro">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:40,43</note>
+      </notes>
+      <segment>
+        <source>Protect your account with a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, Bitwarden…) in addition to your password.</source>
+      </segment>
+    </unit>
+    <unit id="mfa.turnOn">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:51,52</note>
+      </notes>
+      <segment>
+        <source>Turn on</source>
+      </segment>
+    </unit>
+    <unit id="mfa.setUp">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:53,54</note>
+      </notes>
+      <segment>
+        <source>Set up</source>
+      </segment>
+    </unit>
+    <unit id="mfa.turnOff">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:55,57</note>
+      </notes>
+      <segment>
+        <source>Turn off</source>
+      </segment>
+    </unit>
+    <unit id="mfa.saved">
+      <notes>
+        <note category="location">src/app/shared/mfa-dialog.ts:59</note>
+      </notes>
+      <segment>
+        <source>I&apos;ve saved them</source>
       </segment>
     </unit>
     <unit id="notice.dbDown">
@@ -8731,7 +9251,7 @@
     </unit>
     <unit id="shell.userMenu">
       <notes>
-        <note category="location">src/app/shell.ts:48</note>
+        <note category="location">src/app/shell.ts:49</note>
       </notes>
       <segment>
         <source>User menu</source>
@@ -8739,7 +9259,7 @@
     </unit>
     <unit id="shell.lightTheme">
       <notes>
-        <note category="location">src/app/shell.ts:58,59</note>
+        <note category="location">src/app/shell.ts:59,60</note>
       </notes>
       <segment>
         <source>Light theme</source>
@@ -8747,7 +9267,7 @@
     </unit>
     <unit id="shell.darkTheme">
       <notes>
-        <note category="location">src/app/shell.ts:60,61</note>
+        <note category="location">src/app/shell.ts:61,62</note>
       </notes>
       <segment>
         <source>Dark theme</source>
@@ -8755,9 +9275,9 @@
     </unit>
     <unit id="shell.changePassword">
       <notes>
-        <note category="location">src/app/shell.ts:63,64</note>
-        <note category="location">src/app/shell.ts:114,115</note>
-        <note category="location">src/app/shell.ts:137,139</note>
+        <note category="location">src/app/shell.ts:64,65</note>
+        <note category="location">src/app/shell.ts:116,117</note>
+        <note category="location">src/app/shell.ts:139,141</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -8765,7 +9285,7 @@
     </unit>
     <unit id="shell.about">
       <notes>
-        <note category="location">src/app/shell.ts:64,65</note>
+        <note category="location">src/app/shell.ts:66,67</note>
       </notes>
       <segment>
         <source>About</source>
@@ -8773,7 +9293,7 @@
     </unit>
     <unit id="shell.logout">
       <notes>
-        <note category="location">src/app/shell.ts:75,76</note>
+        <note category="location">src/app/shell.ts:77,78</note>
       </notes>
       <segment>
         <source>Log out</source>
@@ -8781,7 +9301,7 @@
     </unit>
     <unit id="shell.administration">
       <notes>
-        <note category="location">src/app/shell.ts:91,92</note>
+        <note category="location">src/app/shell.ts:93,94</note>
       </notes>
       <segment>
         <source>Administration</source>
@@ -8789,7 +9309,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:118,119</note>
+        <note category="location">src/app/shell.ts:120,121</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -8797,7 +9317,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:122,123</note>
+        <note category="location">src/app/shell.ts:124,125</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -8805,7 +9325,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:124,125</note>
+        <note category="location">src/app/shell.ts:126,127</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -8813,7 +9333,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:127,128</note>
+        <note category="location">src/app/shell.ts:129,130</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -8821,7 +9341,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:144,146</note>
+        <note category="location">src/app/shell.ts:148,150</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -8829,7 +9349,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:146,147</note>
+        <note category="location">src/app/shell.ts:150,151</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -8837,7 +9357,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:149</note>
+        <note category="location">src/app/shell.ts:153</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -8845,7 +9365,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:153,154</note>
+        <note category="location">src/app/shell.ts:157,158</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -8853,7 +9373,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:160,162</note>
+        <note category="location">src/app/shell.ts:164,166</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -8861,7 +9381,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:162,163</note>
+        <note category="location">src/app/shell.ts:166,167</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -8869,7 +9389,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:163,166</note>
+        <note category="location">src/app/shell.ts:167,170</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -8877,7 +9397,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:313</note>
+        <note category="location">src/app/shell.ts:324</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

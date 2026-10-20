@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
@@ -7,12 +7,13 @@ import { Auth } from './core/auth';
 import { readPref, writePref } from './core/time';
 import { Theme } from './core/util';
 import { languageName, setLanguageCookie } from './core/language';
+import { MfaDialog } from './shared/mfa-dialog';
 import { NoticeText, noticeActionLabel } from './shared/notice-text';
 import { TimeRangePicker } from './shared/time-range';
 
 @Component({
   selector: 'nfa-shell',
-  imports: [ClarityModule, RouterOutlet, RouterLink, RouterLinkActive, TimeRangePicker, FormsModule, NoticeText],
+  imports: [ClarityModule, RouterOutlet, RouterLink, RouterLinkActive, TimeRangePicker, FormsModule, NoticeText, MfaDialog],
   template: `
     <div class="main-container">
       @if (visibleNotices().length) {
@@ -61,6 +62,7 @@ import { TimeRangePicker } from './shared/time-range';
                 }
               </button>
               <button clrDropdownItem (click)="openPassword()"><cds-icon shape="lock"></cds-icon> <ng-container i18n="@@shell.changePassword">Change password</ng-container></button>
+              <button clrDropdownItem (click)="openMfa()"><cds-icon shape="shield"></cds-icon> <ng-container i18n="@@mfa.title">Two-factor authentication</ng-container></button>
               <button clrDropdownItem (click)="openAbout()"><cds-icon shape="info-circle"></cds-icon> <ng-container i18n="@@shell.about">About</ng-container></button>
               @if (languages().length > 1) {
                 <div class="dropdown-divider" role="separator"></div>
@@ -137,6 +139,8 @@ import { TimeRangePicker } from './shared/time-range';
         <button type="submit" form="pwform" class="btn btn-primary" [clrLoading]="pwBusy()" i18n="@@shell.changePassword">Change password</button>
       </div>
     </clr-modal>
+
+    <nfa-mfa-dialog #mfa [(open)]="mfaOpen" />
 
     <clr-modal [clrModalOpen]="aboutOpen()" (clrModalOpenChange)="aboutOpen.set($event)" clrModalSize="md">
       <h3 class="modal-title"><img class="about-logo" src="brand/mark.png" alt="" /> Tributary</h3>
@@ -227,6 +231,13 @@ export class Shell {
   readonly visibleNotices = computed(() => this.notices().filter((n) => !n.dismissible || !this.dismissed().includes(n.id)));
 
   readonly aboutOpen = signal(false);
+  readonly mfaOpen = signal(false);
+  private mfa = viewChild.required(MfaDialog);
+
+  openMfa() {
+    this.mfa().load();
+    this.mfaOpen.set(true);
+  }
   readonly version = signal('');
   readonly source = signal('');
   readonly attributions = signal<Attribution[]>([]);

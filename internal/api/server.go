@@ -61,6 +61,7 @@ type Server struct {
 	prevRejected atomic.Uint64
 	noticeRuns   atomic.Int64
 	limiter      loginLimiter
+	mfa          mfaState
 	sso          ssoState
 }
 
@@ -82,6 +83,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /healthz", s.healthz)
 	mux.HandleFunc("GET /api/public/info", s.publicInfo)
 	mux.HandleFunc("POST /api/auth/login", s.login)
+	mux.HandleFunc("POST /api/auth/mfa", s.mfaVerify)
+	mux.HandleFunc("POST /api/auth/mfa/enroll", s.mfaEnroll)
 	mux.HandleFunc("POST /api/auth/logout", s.logout)
 	mux.HandleFunc("GET /api/auth/sso/{id}/start", s.ssoStart)
 	mux.HandleFunc("GET /api/auth/sso/{id}/callback", s.ssoCallback)
@@ -91,6 +94,11 @@ func (s *Server) Handler() http.Handler {
 
 	auth("GET /api/auth/me", s.me)
 	auth("POST /api/auth/password", s.changePassword)
+	auth("GET /api/auth/mfa/status", s.mfaStatus)
+	auth("POST /api/auth/mfa/setup", s.mfaSetupStart)
+	auth("POST /api/auth/mfa/setup/confirm", s.mfaSetupFinish)
+	auth("POST /api/auth/mfa/disable", s.mfaDisable)
+	admin("POST /api/users/{username}/mfa/reset", s.mfaReset)
 	auth("GET /api/meta", s.meta)
 	auth("GET /api/summary", s.summary)
 	auth("GET /api/timeseries", s.timeseries)

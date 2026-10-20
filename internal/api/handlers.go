@@ -39,40 +39,6 @@ func (s *Server) publicInfo(w http.ResponseWriter, r *http.Request) {
 		"languages": append([]string{}, locales...), "language": pickLocale(r, locales)})
 }
 
-func (s *Server) login(w http.ResponseWriter, r *http.Request) {
-	ip := clientIP(r)
-	if s.limiter.blocked(ip) {
-		writeErr(w, http.StatusTooManyRequests, "too many failed attempts, try again in a few minutes")
-		return
-	}
-	var req struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-	if err := readJSON(r, &req); err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	u, err := s.Config.Authenticate(req.Username, req.Password)
-	if err != nil {
-		s.limiter.fail(ip)
-		s.Config.Audit(req.Username, "login.failed", ip)
-		writeErr(w, http.StatusUnauthorized, "invalid username or password")
-		return
-	}
-	s.limiter.reset(ip)
-	ttl := time.Duration(s.Config.Settings().SessionHours) * time.Hour
-	tok, err := s.Config.CreateSession(u.Username, ttl)
-	if err != nil {
-		writeErr(w, http.StatusInternalServerError, "could not create session")
-		return
-	}
-	http.SetCookie(w, &http.Cookie{Name: cookieName, Value: tok, Path: "/", HttpOnly: true, Secure: s.SecureCookies,
-		SameSite: http.SameSiteStrictMode, MaxAge: int(ttl.Seconds())})
-	s.Config.Audit(u.Username, "login", ip)
-	writeJSON(w, http.StatusOK, u)
-}
-
 func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
 	if c, err := r.Cookie(cookieName); err == nil {
 		_ = s.Config.DeleteSession(c.Value)

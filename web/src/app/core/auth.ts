@@ -20,8 +20,17 @@ export class Auth {
     return this.user();
   }
 
-  async login(username: string, password: string) {
-    this.user.set(await this.api.login(username, password));
+  /** Password step; returns a pending second factor instead of signing in when one is needed. */
+  async login(username: string, password: string): Promise<{ kind: 'code' | 'enroll'; token: string } | null> {
+    const r = await this.api.login(username, password);
+    if (r.mfaRequired) return { kind: 'code', token: r.token! };
+    if (r.mfaSetupRequired) return { kind: 'enroll', token: r.token! };
+    this.signedIn(r);
+    return null;
+  }
+
+  signedIn(u: User) {
+    this.user.set(u);
     this.checked = true;
   }
 

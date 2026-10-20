@@ -39,6 +39,14 @@ import { ListEditor, listValues } from '../shared/list-editor';
               <label i18n="@@settings.sessionLifetime">Session lifetime (hours)</label>
               <input clrInput type="number" name="session" [(ngModel)]="s.sessionHours" min="1" max="720" required />
             </clr-input-container>
+            <clr-toggle-container>
+              <label i18n="@@settings.requireMfa">Two-factor for administrators</label>
+              <clr-toggle-wrapper>
+                <input type="checkbox" clrToggle name="requireMfa" [(ngModel)]="s.requireMfaAdmins" />
+                <label i18n="@@settings.requireMfaToggle">Require it</label>
+              </clr-toggle-wrapper>
+              <clr-control-helper i18n="@@settings.requireMfaHelp">Administrators who sign in with a password must set up an authenticator app at their next sign-in, and can't turn it off. Single sign-on administrators use their identity provider's two-factor authentication.</clr-control-helper>
+            </clr-toggle-container>
           </div>
         </div>
 

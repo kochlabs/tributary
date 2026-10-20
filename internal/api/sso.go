@@ -17,6 +17,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"nfa/internal/config"
+	"nfa/internal/dirauth"
 )
 
 // OpenID Connect sign-in: Authorization Code flow with PKCE, state and nonce.
@@ -342,13 +343,30 @@ func (s *Server) identitySourceDelete(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 }
 
-// identitySourceTest loads the provider's discovery document.
+// identitySourceTest checks a source's settings before saving: OIDC loads
+// the discovery document; LDAP binds the service account (and optionally
+// looks up a user); RADIUS sends a request with test credentials.
 func (s *Server) identitySourceTest(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		Issuer string `json:"issuer"`
+		Type     string               `json:"type"`
+		ID       int64                `json:"id"` // reuse the stored secret when the form leaves it empty
+		Issuer   string               `json:"issuer"`
+		LDAP     *config.LDAPConfig   `json:"ldap"`
+		RADIUS   *config.RADIUSConfig `json:"radius"`
+		Username string               `json:"username"`
+		Password string               `json:"password"`
+		// The form's role mappings, so the test shows the role a user would get.
+		Mappings    []config.RoleMapping `json:"mappings"`
+		DefaultRole string               `json:"defaultRole"`
 	}
 	if err := readJSON(r, &req); err != nil {
 		writeErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	switch req.Type {
+	case "ldap", "radius":
+		s.directoryTest(w, r, config.IdentitySource{Type: req.Type, Name: "test", LDAP: req.LDAP, RADIUS: req.RADIUS, Mappings: req.Mappings, DefaultRole: req.DefaultRole},
+			req.ID, req.Username, req.Password)
 		return
 	}
 	issuer := strings.TrimSpace(req.Issuer)
@@ -377,6 +395,57 @@ func (s *Server) identitySourceTest(w http.ResponseWriter, r *http.Request) {
 		"tokenEndpoint": meta.Token, "userinfoEndpoint": meta.UserInfo, "scopes": meta.Scopes, "claims": meta.Claims, "pkce": meta.PKCE})
 }
 
+func (s *Server) directoryTest(w http.ResponseWriter, r *http.Request, src config.IdentitySource, id int64, username, password string) {
+	typ := src.Type
+	if err := src.Validate(); err != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "message": err.Error()})
+		return
+	}
+	// An empty secret in the form means "keep the stored one".
+	if id > 0 {
+		if stored, err := s.Config.IdentitySource(id, true); err == nil && stored.Type == typ {
+			if typ == "ldap" && src.LDAP.BindPassword == "" {
+				src.LDAP.BindPassword = stored.LDAP.BindPassword
+			}
+			if typ == "radius" && src.RADIUS.Secret == "" {
+				src.RADIUS.Secret = stored.RADIUS.Secret
+			}
+		}
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+	defer cancel()
+	if typ == "ldap" {
+		dn, groups, err := dirauth.TestLDAP(ctx, src.LDAP, s.trustPool(), strings.TrimSpace(username))
+		if err != nil {
+			writeJSON(w, http.StatusOK, map[string]any{"ok": false, "message": err.Error()})
+			return
+		}
+		msg := "Connected, and the service account signed in."
+		if src.LDAP.Insecure() {
+			msg += " Warning: ldap:// without StartTLS sends passwords unencrypted."
+		}
+		out := map[string]any{"ok": true, "message": msg}
+		if username != "" {
+			out["dn"], out["groups"], out["role"] = dn, groups, src.ResolveRole(groups)
+		}
+		writeJSON(w, http.StatusOK, out)
+		return
+	}
+	if username == "" || password == "" {
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "message": "Enter a test username and password: RADIUS can only be tested with a sign-in attempt."})
+		return
+	}
+	res, err := dirauth.RADIUS(ctx, src.RADIUS, username, password)
+	switch {
+	case errors.Is(err, dirauth.ErrInvalid):
+		writeJSON(w, http.StatusOK, map[string]any{"ok": true, "message": "The server answered and rejected these credentials, so it is reachable and the shared secret is correct."})
+	case err != nil:
+		writeJSON(w, http.StatusOK, map[string]any{"ok": false, "message": err.Error()})
+	default:
+		writeJSON(w, http.StatusOK, map[string]any{"ok": true, "message": "Accepted.", "groups": res.Groups, "role": src.ResolveRole(res.Groups)})
+	}
+}
+
 // ssoOptions lists enabled sources for the sign-in page.
 func (s *Server) ssoOptions() []map[string]any {
 	list, err := s.Config.IdentitySources()
@@ -385,7 +454,7 @@ func (s *Server) ssoOptions() []map[string]any {
 	}
 	out := []map[string]any{}
 	for _, src := range list {
-		if src.Enabled {
+		if src.Enabled && src.Type == "oidc" { // LDAP/RADIUS use the regular sign-in form
 			out = append(out, map[string]any{"id": src.ID, "name": src.Name})
 		}
 	}

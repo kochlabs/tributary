@@ -15,9 +15,9 @@ import (
 	"time"
 )
 
-// Identity sources let users sign in through an external provider. Only
-// OpenID Connect is implemented; the type field leaves room for LDAP,
-// RADIUS and SAML.
+// Identity sources let users sign in through an external provider: OpenID
+// Connect (redirect-based single sign-on), or LDAP/Active Directory and
+// RADIUS (username and password checked against the directory or server).
 
 const identitySchema = `
 CREATE TABLE IF NOT EXISTS identity_sources (
@@ -52,13 +52,42 @@ type OIDCConfig struct {
 	GroupsClaim   string   `json:"groupsClaim"`
 }
 
+// LDAPConfig authenticates against an LDAP directory or Active Directory:
+// bind as the service account, find the user, bind as the user to check the
+// password, then read the user's groups.
+type LDAPConfig struct {
+	URL          string `json:"url"`      // ldap://host[:port] or ldaps://host[:port]
+	StartTLS     bool   `json:"startTls"` // upgrade ldap:// connections
+	BindDN       string `json:"bindDn"`
+	BindPassword string `json:"bindPassword,omitempty"` // write-only
+	BaseDN       string `json:"baseDn"`
+	UserFilter   string `json:"userFilter"` // {username} is replaced (escaped)
+	UsernameAttr string `json:"usernameAttr"`
+	NameAttr     string `json:"nameAttr"`
+	GroupAttr    string `json:"groupAttr"`    // attribute on the user listing its groups (memberOf)
+	NestedGroups bool   `json:"nestedGroups"` // Active Directory: include groups of groups
+}
+
+// RADIUSConfig authenticates with PAP against RADIUS servers, tried in order.
+type RADIUSConfig struct {
+	Servers       []string `json:"servers"` // host[:port], default port 1812
+	Secret        string   `json:"secret,omitempty"`
+	NASIdentifier string   `json:"nasIdentifier"`
+	TimeoutSec    int      `json:"timeoutSec"`
+	// RoleAttribute names the reply attribute whose values are matched
+	// against the role mappings: Class or Filter-Id.
+	RoleAttribute string `json:"roleAttribute"`
+}
+
 type IdentitySource struct {
 	ID          int64         `json:"id"`
-	Type        string        `json:"type"` // oidc
+	Type        string        `json:"type"` // oidc | ldap | radius
 	Name        string        `json:"name"`
 	Enabled     bool          `json:"enabled"`
 	Priority    int           `json:"priority"`
 	OIDC        *OIDCConfig   `json:"oidc,omitempty"`
+	LDAP        *LDAPConfig   `json:"ldap,omitempty"`
+	RADIUS      *RADIUSConfig `json:"radius,omitempty"`
 	Mappings    []RoleMapping `json:"mappings"`
 	DefaultRole string        `json:"defaultRole"` // "" denies users matching no mapping
 	HasSecret   bool          `json:"hasSecret"`
@@ -162,7 +191,9 @@ func (s *IdentitySource) normalize() error {
 	if s.Name == "" || len(s.Name) > 64 {
 		return errors.New("name is required (up to 64 characters)")
 	}
-	if s.Type != "oidc" {
+	switch s.Type {
+	case "oidc", "ldap", "radius":
+	default:
 		return ErrUnsupportedSource
 	}
 	if s.Priority < 0 || s.Priority > 1000 {
@@ -186,6 +217,15 @@ func (s *IdentitySource) normalize() error {
 	if s.Mappings == nil {
 		s.Mappings = []RoleMapping{}
 	}
+	switch s.Type {
+	case "ldap":
+		s.OIDC, s.RADIUS = nil, nil
+		return s.LDAP.normalize()
+	case "radius":
+		s.OIDC, s.LDAP = nil, nil
+		return s.RADIUS.normalize()
+	}
+	s.LDAP, s.RADIUS = nil, nil
 	o := s.OIDC
 	if o == nil {
 		return errors.New("OpenID Connect settings are required")
@@ -232,21 +272,33 @@ func (c *DB) scanSource(row interface{ Scan(...any) error }, withSecret bool) (*
 	if err := json.Unmarshal([]byte(maps), &s.Mappings); err != nil {
 		return nil, err
 	}
-	if s.Type == "oidc" {
+	var target any
+	switch s.Type {
+	case "oidc":
 		s.OIDC = &OIDCConfig{}
-		if err := json.Unmarshal([]byte(cfg), s.OIDC); err != nil {
-			return nil, err
+		target = s.OIDC
+	case "ldap":
+		s.LDAP = &LDAPConfig{}
+		target = s.LDAP
+	case "radius":
+		s.RADIUS = &RADIUSConfig{}
+		target = s.RADIUS
+	default:
+		return &s, nil
+	}
+	if err := json.Unmarshal([]byte(cfg), target); err != nil {
+		return nil, err
+	}
+	sec := s.secret()
+	s.HasSecret = *sec != ""
+	if withSecret {
+		plain, err := c.decrypt(*sec)
+		if err != nil {
+			return nil, fmt.Errorf("decrypt secret: %w", err)
 		}
-		s.HasSecret = s.OIDC.ClientSecret != ""
-		if withSecret {
-			plain, err := c.decrypt(s.OIDC.ClientSecret)
-			if err != nil {
-				return nil, fmt.Errorf("decrypt client secret: %w", err)
-			}
-			s.OIDC.ClientSecret = plain
-		} else {
-			s.OIDC.ClientSecret = ""
-		}
+		*sec = plain
+	} else {
+		*sec = ""
 	}
 	return &s, nil
 }
@@ -288,29 +340,35 @@ func (c *DB) SaveIdentitySource(s IdentitySource) (int64, error) {
 	if err := s.normalize(); err != nil {
 		return 0, err
 	}
-	secret := s.OIDC.ClientSecret
-	if s.ID != 0 && secret == "" {
-		var stored OIDCConfig
+	sec := s.secret()
+	if s.ID != 0 && *sec == "" {
+		stored, err := c.IdentitySource(s.ID, false)
+		if err != nil {
+			return 0, err
+		}
+		if stored.Type != s.Type {
+			return 0, errors.New("the type of an identity source can't be changed")
+		}
 		var cfg string
-		err := c.db.QueryRow("SELECT config FROM identity_sources WHERE id = ?", s.ID).Scan(&cfg)
-		if errors.Is(err, sql.ErrNoRows) {
-			return 0, ErrNotFound
+		if err := c.db.QueryRow("SELECT config FROM identity_sources WHERE id = ?", s.ID).Scan(&cfg); err != nil {
+			return 0, err
 		}
+		var raw map[string]any
+		if err := json.Unmarshal([]byte(cfg), &raw); err != nil {
+			return 0, err
+		}
+		*sec, _ = raw[secretField[s.Type]].(string) // already encrypted
+	} else if *sec != "" {
+		enc, err := c.encrypt(*sec)
 		if err != nil {
 			return 0, err
 		}
-		if err := json.Unmarshal([]byte(cfg), &stored); err != nil {
-			return 0, err
-		}
-		s.OIDC.ClientSecret = stored.ClientSecret // already encrypted
-	} else if secret != "" {
-		enc, err := c.encrypt(secret)
-		if err != nil {
-			return 0, err
-		}
-		s.OIDC.ClientSecret = enc
+		*sec = enc
 	}
-	cfg, _ := json.Marshal(s.OIDC)
+	if s.Type != "oidc" && *sec == "" {
+		return 0, fmt.Errorf("the %s is required", secretLabel[s.Type])
+	}
+	cfg, _ := json.Marshal(s.config())
 	maps, _ := json.Marshal(s.Mappings)
 	enabled := 0
 	if s.Enabled {
@@ -355,12 +413,70 @@ func (c *DB) DeleteIdentitySource(id int64) error {
 	return nil
 }
 
+// Validate checks and normalises the settings (as saving would).
+func (s *IdentitySource) Validate() error { return s.normalize() }
+
+// secretField names each type's secret in the stored JSON.
+var secretField = map[string]string{"oidc": "clientSecret", "ldap": "bindPassword", "radius": "secret"}
+var secretLabel = map[string]string{"oidc": "client secret", "ldap": "bind password", "radius": "shared secret"}
+
+// secret points at the type's write-only secret.
+func (s *IdentitySource) secret() *string {
+	switch {
+	case s.LDAP != nil:
+		return &s.LDAP.BindPassword
+	case s.RADIUS != nil:
+		return &s.RADIUS.Secret
+	case s.OIDC != nil:
+		return &s.OIDC.ClientSecret
+	}
+	var none string
+	return &none
+}
+
+func (s *IdentitySource) config() any {
+	switch s.Type {
+	case "ldap":
+		return s.LDAP
+	case "radius":
+		return s.RADIUS
+	}
+	return s.OIDC
+}
+
+// PasswordBased reports whether users of this source sign in with the
+// regular username/password form.
+func (s *IdentitySource) PasswordBased() bool { return s.Type == "ldap" || s.Type == "radius" }
+
+// ExternalUserSource returns the identity source that owns username (0 for
+// a local account), and whether the account exists.
+func (c *DB) ExternalUserSource(username string) (int64, bool) {
+	var id int64
+	if err := c.db.QueryRow("SELECT source_id FROM users WHERE username = ?", username).Scan(&id); err != nil {
+		return 0, false
+	}
+	return id, true
+}
+
 // ResolveRole applies a source's mappings to a user's groups: the highest
 // matching role wins, else the default role ("" = deny).
 func (s *IdentitySource) ResolveRole(groups []string) string {
 	have := map[string]bool{}
 	for _, g := range groups {
 		have[g] = true
+		if s.Type == "ldap" || s.Type == "radius" {
+			// Directory names compare case-insensitively, and an LDAP group
+			// can be mapped by its full DN or just its CN.
+			have[strings.ToLower(g)] = true
+			if cn := groupCN(g); cn != "" {
+				have[strings.ToLower(cn)] = true
+			}
+		}
+	}
+	if s.Type == "ldap" || s.Type == "radius" {
+		for i := range s.Mappings {
+			s.Mappings[i].Group = strings.ToLower(s.Mappings[i].Group)
+		}
 	}
 	role := ""
 	for _, m := range s.Mappings {
@@ -400,4 +516,14 @@ func (c *DB) UpsertExternalUser(sourceID int64, username, fullName, role string)
 		return nil, err
 	}
 	return &User{Username: username, Role: role, FullName: fullName, CreatedAt: now, LastLogin: now, SourceID: sourceID}, nil
+}
+
+// groupCN returns the CN of an LDAP DN ("CN=Net Admins,OU=Groups,DC=corp,DC=example" -> "Net Admins").
+func groupCN(dn string) string {
+	first, _, _ := strings.Cut(dn, ",")
+	k, v, ok := strings.Cut(first, "=")
+	if !ok || !strings.EqualFold(strings.TrimSpace(k), "cn") {
+		return ""
+	}
+	return strings.TrimSpace(v)
 }

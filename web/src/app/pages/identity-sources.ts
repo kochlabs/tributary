@@ -1,13 +1,15 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage, IdentitySource, ProviderTest, RoleMapping } from '../core/api';
+import { Api, errorMessage, IdentitySource, LDAPConfig, ProviderTest, RADIUSConfig, RoleMapping } from '../core/api';
 import { loader, trackByKey } from '../core/util';
+import { ListEditor, listValues } from '../shared/list-editor';
 
 const TYPE_LABELS: Record<string, string> = { oidc: 'OpenID Connect', ldap: 'LDAP / Active Directory', radius: 'RADIUS', saml: 'SAML 2.0' };
 
 interface Form {
   id: number;
+  type: 'oidc' | 'ldap' | 'radius';
   name: string;
   enabled: boolean;
   priority: number;
@@ -20,19 +22,29 @@ interface Form {
   groupsClaim: string;
   mappings: RoleMapping[];
   defaultRole: '' | 'viewer' | 'admin';
+  ldap: LDAPConfig;
+  radius: RADIUSConfig;
+  testUser: string;
+  testPass: string;
 }
 
-function blankForm(): Form {
+const AD_PRESET = { userFilter: '(&(objectClass=user)(sAMAccountName={username}))', usernameAttr: 'sAMAccountName', nameAttr: 'displayName', groupAttr: 'memberOf' };
+const OPENLDAP_PRESET = { userFilter: '(&(objectClass=inetOrgPerson)(uid={username}))', usernameAttr: 'uid', nameAttr: 'cn', groupAttr: 'memberOf' };
+
+function blankForm(type: Form['type'] = 'oidc'): Form {
   return {
-    id: 0, name: '', enabled: true, priority: 10, issuer: '', clientId: '', clientSecret: '', hasSecret: false,
+    id: 0, type, name: '', enabled: true, priority: 10, issuer: '', clientId: '', clientSecret: '', hasSecret: false,
     scopes: ['openid', 'profile', 'email'], usernameClaim: 'preferred_username', groupsClaim: 'groups',
     mappings: [{ group: '', role: 'admin' }], defaultRole: '',
+    ldap: { url: '', startTls: false, bindDn: '', baseDn: '', nestedGroups: false, ...AD_PRESET },
+    radius: { servers: [''], nasIdentifier: 'tributary', timeoutSec: 5, roleAttribute: 'Class' },
+    testUser: '', testPass: '',
   };
 }
 
 @Component({
   selector: 'nfa-identity-sources',
-  imports: [ClarityModule, FormsModule],
+  imports: [ClarityModule, FormsModule, ListEditor],
   template: `
     <div class="page-header">
       <div>
@@ -101,9 +113,17 @@ function blankForm(): Form {
       <h3 class="modal-title" i18n="@@identitySources.addTitle">Add identity source</h3>
       <div class="modal-body">
         <div class="types">
-          <button class="type-card" (click)="openNew()">
+          <button class="type-card" (click)="openNew('oidc')">
             <h4>OpenID Connect</h4>
             <p i18n="@@identitySources.oidcDescription">Single sign-on with Authentik, Entra ID, Okta, Keycloak, Google and other OIDC providers.</p>
+          </button>
+          <button class="type-card" (click)="openNew('ldap')">
+            <h4>LDAP / Active Directory</h4>
+            <p i18n="@@identitySources.ldapDescription">Bind to a directory and map groups to roles.</p>
+          </button>
+          <button class="type-card" (click)="openNew('radius')">
+            <h4>RADIUS</h4>
+            <p i18n="@@identitySources.radiusDescription">PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).</p>
           </button>
           @for (t of later; track t.title) {
             <div class="type-card disabled" aria-disabled="true">
@@ -120,15 +140,19 @@ function blankForm(): Form {
 
     <!-- OpenID Connect editor -->
     <clr-modal [clrModalOpen]="editOpen()" (clrModalOpenChange)="editOpen.set($event)" clrModalSize="xl" [clrModalStaticBackdrop]="true">
-      <h3 class="modal-title">@if (form.id) {<ng-container i18n="@@identitySources.editOidcTitle">Edit OpenID Connect source</ng-container>} @else {<ng-container i18n="@@identitySources.addOidcTitle">Add OpenID Connect source</ng-container>}</h3>
+      <h3 class="modal-title">@if (form.id) {<ng-container i18n="@@identitySources.editTitle">Edit {{ typeLabel(form.type) }} source</ng-container>} @else {<ng-container i18n="@@identitySources.addTypeTitle">Add {{ typeLabel(form.type) }} source</ng-container>}</h3>
       <div class="modal-body">
         <div class="editor">
           <form clrForm clrLayout="horizontal" clrLabelSize="4" class="editor-form" id="srcform" (ngSubmit)="save()">
             <h5 class="section" i18n="@@identitySources.general">General</h5>
             <clr-input-container>
               <label i18n="@@common.name">Name</label>
-              <input clrInput name="name" [(ngModel)]="form.name" required maxlength="64" placeholder="Authentik" />
-              <clr-control-helper i18n="@@identitySources.nameHelp">Shown on the sign-in button</clr-control-helper>
+              <input clrInput name="name" [(ngModel)]="form.name" required maxlength="64" [placeholder]="form.type === 'oidc' ? 'Authentik' : form.type === 'ldap' ? 'Corporate AD' : 'NPS'" />
+              @if (form.type === 'oidc') {
+                <clr-control-helper i18n="@@identitySources.nameHelp">Shown on the sign-in button</clr-control-helper>
+              } @else {
+                <clr-control-helper i18n="@@identitySources.namePasswordHelp">Users sign in with the regular username and password form</clr-control-helper>
+              }
             </clr-input-container>
             <clr-toggle-container>
               <label i18n="@@identitySources.enabled">Enabled</label>
@@ -140,9 +164,102 @@ function blankForm(): Form {
             <clr-input-container>
               <label i18n="@@identitySources.priority">Priority</label>
               <input clrInput type="number" name="priority" [(ngModel)]="form.priority" min="0" max="1000" />
-              <clr-control-helper i18n="@@identitySources.priorityHelp">Order of sign-in buttons (lowest first)</clr-control-helper>
+              <clr-control-helper i18n="@@identitySources.priorityHelp2">Lowest first: the order of sign-in buttons, and of directories tried for a password sign-in</clr-control-helper>
             </clr-input-container>
 
+            @if (form.type === 'ldap') {
+              <h5 class="section" i18n="@@identitySources.directory">Directory</h5>
+              <clr-input-container>
+                <label i18n="@@identitySources.ldapUrl">Server URL</label>
+                <input clrInput name="ldapUrl" [(ngModel)]="form.ldap.url" required placeholder="ldaps://dc1.corp.example.com" class="wide" />
+                <clr-control-helper i18n="@@identitySources.ldapUrlHelp">ldaps:// (port 636) or ldap:// with StartTLS. Certificates are checked against the trusted CAs on the Certificates page.</clr-control-helper>
+              </clr-input-container>
+              <clr-checkbox-container>
+                <label></label>
+                <clr-checkbox-wrapper>
+                  <input type="checkbox" clrCheckbox name="startTls" [(ngModel)]="form.ldap.startTls" [disabled]="form.ldap.url.startsWith('ldaps:')" />
+                  <label i18n="@@identitySources.startTls">Use StartTLS (for ldap:// URLs)</label>
+                </clr-checkbox-wrapper>
+              </clr-checkbox-container>
+              @if (form.ldap.url.startsWith('ldap://') && !form.ldap.startTls) {
+                <p class="warn-text" i18n="@@identitySources.ldapPlainWarning">Without TLS, passwords cross the network unencrypted.</p>
+              }
+              <clr-input-container>
+                <label i18n="@@identitySources.bindDn">Bind DN</label>
+                <input clrInput name="bindDn" [(ngModel)]="form.ldap.bindDn" required placeholder="CN=svc-tributary,OU=Service Accounts,DC=corp,DC=example,DC=com" class="wide" />
+                <clr-control-helper i18n="@@identitySources.bindDnHelp">A read-only service account used to find users</clr-control-helper>
+              </clr-input-container>
+              <clr-password-container>
+                <label i18n="@@identitySources.bindPassword">Bind password</label>
+                <input clrPassword name="bindPassword" [(ngModel)]="form.clientSecret" autocomplete="new-password" [placeholder]="form.hasSecret ? secretUnchanged : ''" />
+              </clr-password-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.baseDn">Base DN</label>
+                <input clrInput name="baseDn" [(ngModel)]="form.ldap.baseDn" required placeholder="DC=corp,DC=example,DC=com" class="wide" />
+              </clr-input-container>
+              <div class="clr-form-control clr-row">
+                <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@identitySources.schema">Directory type</label>
+                <div class="clr-col-12 clr-col-md-8 presets">
+                  <button type="button" class="btn btn-sm btn-outline" (click)="preset('ad')">Active Directory</button>
+                  <button type="button" class="btn btn-sm btn-outline" (click)="preset('openldap')">OpenLDAP</button>
+                </div>
+              </div>
+              <clr-input-container>
+                <label i18n="@@identitySources.userFilter">User filter</label>
+                <input clrInput name="userFilter" [(ngModel)]="form.ldap.userFilter" class="wide mono" />
+                <clr-control-helper i18n="@@identitySources.userFilterHelp">{{ '{' }}username{{ '}' }} is replaced with the name typed on the sign-in page</clr-control-helper>
+              </clr-input-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.usernameAttr">Username attribute</label>
+                <input clrInput name="usernameAttr" [(ngModel)]="form.ldap.usernameAttr" />
+              </clr-input-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.nameAttr">Display name attribute</label>
+                <input clrInput name="nameAttr" [(ngModel)]="form.ldap.nameAttr" />
+              </clr-input-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.groupAttr">Group attribute</label>
+                <input clrInput name="groupAttr" [(ngModel)]="form.ldap.groupAttr" />
+              </clr-input-container>
+              <clr-checkbox-container>
+                <label></label>
+                <clr-checkbox-wrapper>
+                  <input type="checkbox" clrCheckbox name="nested" [(ngModel)]="form.ldap.nestedGroups" />
+                  <label i18n="@@identitySources.nestedGroups">Include nested groups (Active Directory)</label>
+                </clr-checkbox-wrapper>
+              </clr-checkbox-container>
+            }
+            @if (form.type === 'radius') {
+              <h5 class="section" i18n="@@identitySources.radiusServers">RADIUS</h5>
+              <div class="clr-form-control clr-row">
+                <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@identitySources.servers">Servers</label>
+                <div class="clr-control-container clr-col-12 clr-col-md-8">
+                  <nfa-list-editor [(items)]="form.radius.servers" [ordered]="true" placeholder="nps1.corp.example.com or 10.0.0.5:1812" label="RADIUS server" i18n-label="@@identitySources.radiusServer" [validate]="serverError" />
+                  <span class="clr-subtext" i18n="@@identitySources.serversHelp">Tried in order when one doesn't answer; default port 1812. Add this appliance as a client on each server.</span>
+                </div>
+              </div>
+              <clr-password-container>
+                <label i18n="@@identitySources.sharedSecret">Shared secret</label>
+                <input clrPassword name="radiusSecret" [(ngModel)]="form.clientSecret" autocomplete="new-password" [placeholder]="form.hasSecret ? secretUnchanged : ''" />
+              </clr-password-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.nasId">NAS-Identifier</label>
+                <input clrInput name="nasId" [(ngModel)]="form.radius.nasIdentifier" />
+              </clr-input-container>
+              <clr-input-container>
+                <label i18n="@@identitySources.timeout">Timeout (seconds)</label>
+                <input clrInput type="number" name="timeout" [(ngModel)]="form.radius.timeoutSec" min="1" max="30" />
+              </clr-input-container>
+              <clr-select-container>
+                <label i18n="@@identitySources.roleAttribute">Role attribute</label>
+                <select clrSelect name="roleAttr" [(ngModel)]="form.radius.roleAttribute">
+                  <option value="Class">Class</option>
+                  <option value="Filter-Id">Filter-Id</option>
+                </select>
+                <clr-control-helper i18n="@@identitySources.roleAttributeHelp">Values of this reply attribute are matched against the role mappings below</clr-control-helper>
+              </clr-select-container>
+            }
+            @if (form.type === 'oidc') {
             <h5 class="section" i18n="@@identitySources.provider">Provider</h5>
             <clr-input-container>
               <label i18n="@@identitySources.issuerUrl">Issuer URL</label>
@@ -190,13 +307,14 @@ function blankForm(): Form {
                 <p i18n="@@identitySources.redirectUriSaveFirst">Save the source first; its redirect URI appears here, ready to copy into the provider.</p>
               }
             </div>
+            }
 
             <h5 class="section" i18n="@@identitySources.roleMapping">Role mapping</h5>
             <div class="mappings">
               <div class="map-head"><span i18n="@@identitySources.group">Group</span><span i18n="@@identitySources.role">Role</span><span></span></div>
               @for (m of form.mappings; track $index; let i = $index) {
                 <div class="map-row">
-                  <input class="clr-input" [name]="'group' + i" [(ngModel)]="m.group" placeholder="tributary-admins" />
+                  <input class="clr-input" [name]="'group' + i" [(ngModel)]="m.group" [placeholder]="form.type === 'ldap' ? 'Net Admins (CN or full DN)' : form.type === 'radius' ? 'Class or Filter-Id value' : 'tributary-admins'" />
                   <div class="clr-select-wrapper">
                     <select class="clr-select" [name]="'role' + i" [(ngModel)]="m.role">
                       <option value="admin" i18n="@@identitySources.roleAdministrator">Administrator</option>
@@ -221,12 +339,28 @@ function blankForm(): Form {
 
           <aside class="test">
             <h5 i18n="@@identitySources.testConnection">Test connection</h5>
-            <p i18n="@@identitySources.testHelp">Checks that the provider's metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</p>
-            <button type="button" class="btn btn-outline btn-sm" (click)="runTest()" [clrLoading]="testing()" [disabled]="!form.issuer"><cds-icon shape="play"></cds-icon> <ng-container i18n="@@identitySources.runTest">Run test</ng-container></button>
+            @if (form.type === 'oidc') {
+              <p i18n="@@identitySources.testHelp">Checks that the provider's metadata can be loaded. Complete a full sign-in with the button on the sign-in page.</p>
+            } @else if (form.type === 'ldap') {
+              <p i18n="@@identitySources.testLdapHelp">Connects and signs in with the service account. Enter a username to also see their entry, groups and the role they would get.</p>
+              <input class="clr-input test-input" name="testUser" [(ngModel)]="form.testUser" placeholder="Username (optional)" i18n-placeholder="@@identitySources.testUserOptional" autocomplete="off" />
+            } @else {
+              <p i18n="@@identitySources.testRadiusHelp">RADIUS can only be tested with a sign-in attempt. Even a rejection shows the server is reachable and the shared secret is right.</p>
+              <input class="clr-input test-input" name="testUser" [(ngModel)]="form.testUser" placeholder="Username" i18n-placeholder="@@identitySources.testUser" autocomplete="off" />
+              <input class="clr-input test-input" type="password" name="testPass" [(ngModel)]="form.testPass" placeholder="Password" i18n-placeholder="@@identitySources.testPass" autocomplete="new-password" />
+            }
+            <button type="button" class="btn btn-outline btn-sm" (click)="runTest()" [clrLoading]="testing()"><cds-icon shape="play"></cds-icon> <ng-container i18n="@@identitySources.runTest">Run test</ng-container></button>
             @if (test(); as t) {
               <div class="result" [class.bad]="!t.ok">
                 <div><span class="dot" [class.ok]="t.ok" [class.bad]="!t.ok"></span> {{ t.message }}</div>
-                @if (t.ok) {
+                @if (t.ok && form.type !== 'oidc' && (t.dn || t.groups)) {
+                  <dl>
+                    @if (t.dn) {<dt>DN</dt><dd>{{ t.dn }}</dd>}
+                    <dt i18n="@@identitySources.groupsFound">Groups</dt><dd>{{ t.groups?.length ? t.groups!.join('; ') : '–' }}</dd>
+                    <dt i18n="@@identitySources.role">Role</dt><dd>{{ roleLabel(t.role ?? '') }}</dd>
+                  </dl>
+                }
+                @if (t.ok && form.type === 'oidc') {
                   <dl>
                     <dt i18n="OIDC authorization endpoint@@identitySources.authorization">Authorization</dt><dd>{{ t.authorizationEndpoint }}</dd>
                     <dt i18n="OIDC token endpoint@@identitySources.token">Token</dt><dd>{{ t.tokenEndpoint }}</dd>
@@ -264,6 +398,12 @@ function blankForm(): Form {
     </clr-modal>
   `,
   styles: `
+    .presets { display: flex; gap: 6px; padding-top: 4px; }
+    .presets .btn { margin: 0; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .warn-text { font-size: 12px; color: var(--cds-alias-status-danger); margin: 2px 0 0; }
+    .test-input { display: block; width: 100%; margin: 0 0 8px; }
+    .clr-subtext { display: block; margin-top: 6px; }
     .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .toolbar .btn { margin: 0 6px 0 0; }
     .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; }
@@ -335,8 +475,6 @@ export class IdentitySources {
   readonly secretRequired = $localize`:@@identitySources.secretRequired:Required for confidential clients`;
 
   readonly later = [
-    { title: 'LDAP / Active Directory', text: $localize`:@@identitySources.ldapDescription:Bind to a directory and map groups to roles.` },
-    { title: 'RADIUS', text: $localize`:@@identitySources.radiusDescription:PAP authentication against a RADIUS server (NPS, FreeRADIUS, MFA proxies).` },
     { title: 'SAML 2.0', text: $localize`:@@identitySources.samlDescription:Single sign-on with ADFS, Entra ID, Okta, Shibboleth and other SAML providers.` },
   ];
 
@@ -355,9 +493,15 @@ export class IdentitySources {
     this.copied.set(false);
   }
 
-  openNew() {
+  readonly serverError = (v: string) => (/^[^\s/\\]+$/.test(v) ? null : $localize`:@@identitySources.badServer:Not a host name or address`);
+
+  preset(kind: 'ad' | 'openldap') {
+    Object.assign(this.form.ldap, kind === 'ad' ? AD_PRESET : OPENLDAP_PRESET);
+  }
+
+  openNew(type: Form['type'] = 'oidc') {
     this.chooserOpen.set(false);
-    this.form = blankForm();
+    this.form = blankForm(type);
     this.redirectUri.set('');
     this.reset();
     this.editOpen.set(true);
@@ -368,12 +512,16 @@ export class IdentitySources {
     try {
       const r = await this.api.identitySource(s.id);
       const src = r.source;
-      const o = src.oidc!;
-      this.form = {
-        id: src.id, name: src.name, enabled: src.enabled, priority: src.priority, issuer: o.issuer, clientId: o.clientId,
-        clientSecret: '', hasSecret: src.hasSecret, scopes: [...o.scopes], usernameClaim: o.usernameClaim, groupsClaim: o.groupsClaim,
-        mappings: src.mappings.map((m) => ({ ...m })), defaultRole: src.defaultRole,
-      };
+      const f = blankForm(src.type as Form['type']);
+      Object.assign(f, { id: src.id, name: src.name, enabled: src.enabled, priority: src.priority, hasSecret: src.hasSecret,
+        mappings: src.mappings.map((m) => ({ ...m })), defaultRole: src.defaultRole });
+      if (src.oidc) {
+        const o = src.oidc;
+        Object.assign(f, { issuer: o.issuer, clientId: o.clientId, scopes: [...o.scopes], usernameClaim: o.usernameClaim, groupsClaim: o.groupsClaim });
+      }
+      if (src.ldap) f.ldap = { ...src.ldap, bindPassword: undefined };
+      if (src.radius) f.radius = { ...src.radius, secret: undefined, servers: [...src.radius.servers] };
+      this.form = f;
       this.redirectUri.set(r.redirectUri);
       this.editOpen.set(true);
     } catch (e) {
@@ -388,8 +536,8 @@ export class IdentitySources {
     const f = this.form;
     try {
       const r = await this.api.saveIdentitySource({
-        id: f.id || undefined, type: 'oidc', name: f.name, enabled: f.enabled, priority: Number(f.priority) || 0,
-        oidc: { issuer: f.issuer, clientId: f.clientId, clientSecret: f.clientSecret, scopes: f.scopes, usernameClaim: f.usernameClaim, groupsClaim: f.groupsClaim },
+        id: f.id || undefined, type: f.type, name: f.name, enabled: f.enabled, priority: Number(f.priority) || 0,
+        ...this.typeConfig(),
         mappings: f.mappings.filter((m) => m.group.trim()), defaultRole: f.defaultRole,
       });
       const created = !f.id;
@@ -398,7 +546,7 @@ export class IdentitySources {
       f.clientSecret = '';
       this.redirectUri.set(r.redirectUri);
       this.list.reload();
-      if (created) {
+      if (created && f.type === 'oidc') {
         // Keep the dialog open so the redirect URI can be copied into the provider.
         this.savedNote.set($localize`:@@identitySources.savedNote:Saved. Register the redirect URI above in your provider, then sign in with the new button on the sign-in page.`);
       } else {
@@ -411,10 +559,24 @@ export class IdentitySources {
     }
   }
 
+  /** The type-specific settings, with the secret typed in the form. */
+  private typeConfig(): { oidc?: IdentitySource['oidc']; ldap?: LDAPConfig; radius?: RADIUSConfig } {
+    const f = this.form;
+    switch (f.type) {
+      case 'ldap':
+        return { ldap: { ...f.ldap, bindPassword: f.clientSecret } };
+      case 'radius':
+        return { radius: { ...f.radius, servers: listValues(f.radius.servers), timeoutSec: Number(f.radius.timeoutSec) || 5, secret: f.clientSecret } };
+    }
+    return { oidc: { issuer: f.issuer, clientId: f.clientId, clientSecret: f.clientSecret, scopes: f.scopes, usernameClaim: f.usernameClaim, groupsClaim: f.groupsClaim } };
+  }
+
   async runTest() {
     this.testing.set(true);
+    const f = this.form;
     try {
-      this.test.set(await this.api.testIdentitySource(this.form.issuer));
+      this.test.set(await this.api.testIdentitySource({ type: f.type, id: f.id || undefined, issuer: f.issuer, ...this.typeConfig(), username: f.testUser, password: f.testPass,
+        mappings: f.mappings.filter((m) => m.group.trim()), defaultRole: f.defaultRole }));
     } catch (e) {
       this.test.set({ ok: false, message: errorMessage(e) });
     } finally {

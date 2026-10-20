@@ -95,6 +95,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateSNMP(); err != nil {
 		return nil, err
 	}
+	if err := c.migrateMFA(); err != nil {
+		return nil, err
+	}
 	if err := c.migrateIdentity(); err != nil {
 		return nil, fmt.Errorf("identity schema: %w", err)
 	}
@@ -110,17 +113,20 @@ func (c *DB) Close() error { return c.db.Close() }
 
 // Settings are the user-tunable appliance settings.
 type Settings struct {
-	RawRetentionDays    int      `json:"rawRetentionDays"`
-	RollupRetentionDays int      `json:"rollupRetentionDays"`
-	NetFlowPort         int      `json:"netflowPort"`
-	IPFIXPort           int      `json:"ipfixPort"`
-	SFlowPort           int      `json:"sflowPort"`
-	ApplianceName       string   `json:"applianceName"`
-	SessionHours        int      `json:"sessionHours"`
-	ReverseDNS          bool     `json:"reverseDns"`
-	OnlineASNLookup     bool     `json:"onlineAsnLookup"`
-	LocalNetworks       []string `json:"localNetworks"`
-	DNSServers          []string `json:"dnsServers"` // empty = system resolvers
+	RawRetentionDays    int    `json:"rawRetentionDays"`
+	RollupRetentionDays int    `json:"rollupRetentionDays"`
+	NetFlowPort         int    `json:"netflowPort"`
+	IPFIXPort           int    `json:"ipfixPort"`
+	SFlowPort           int    `json:"sflowPort"`
+	ApplianceName       string `json:"applianceName"`
+	SessionHours        int    `json:"sessionHours"`
+	// RequireMFAAdmins makes administrators who sign in with a password set
+	// up two-factor authentication before they can continue.
+	RequireMFAAdmins bool     `json:"requireMfaAdmins"`
+	ReverseDNS       bool     `json:"reverseDns"`
+	OnlineASNLookup  bool     `json:"onlineAsnLookup"`
+	LocalNetworks    []string `json:"localNetworks"`
+	DNSServers       []string `json:"dnsServers"` // empty = system resolvers
 	// ExporterAllowlist limits which source addresses may send flows (IPs or
 	// CIDR prefixes); empty accepts every source.
 	ExporterAllowlist []string `json:"exporterAllowlist"`
@@ -240,6 +246,7 @@ type User struct {
 	LastLogin int64  `json:"lastLogin"`
 	SourceID  int64  `json:"sourceId"`         // 0 = local account
 	Source    string `json:"source,omitempty"` // identity source name
+	MFA       bool   `json:"mfa"`              // two-factor authentication on
 }
 
 func validRole(r string) bool { return r == "admin" || r == "viewer" }
@@ -351,7 +358,7 @@ func (c *DB) DeleteUser(username string) error {
 }
 
 func (c *DB) Users() ([]User, error) {
-	rows, err := c.db.Query(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login, u.source_id, coalesce(s.name, '')
+	rows, err := c.db.Query(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login, u.source_id, coalesce(s.name, ''), u.totp_enabled
 		FROM users u LEFT JOIN identity_sources s ON s.id = u.source_id ORDER BY u.username`)
 	if err != nil {
 		return nil, err
@@ -360,7 +367,7 @@ func (c *DB) Users() ([]User, error) {
 	out := []User{}
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID, &u.Source); err != nil {
+		if err := rows.Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID, &u.Source, &u.MFA); err != nil {
 			return nil, err
 		}
 		out = append(out, u)
@@ -418,13 +425,30 @@ func (c *DB) CreateSession(username string, ttl time.Duration) (string, error) {
 
 func (c *DB) SessionUser(token string) (*User, error) {
 	var u User
-	err := c.db.QueryRow(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login, u.source_id FROM sessions s
+	err := c.db.QueryRow(`SELECT u.username, u.role, u.full_name, u.created_at, u.last_login, u.source_id, u.totp_enabled FROM sessions s
 		JOIN users u ON u.username = s.username WHERE s.token_hash = ? AND s.expires_at > ?`, hashToken(token), time.Now().UnixMilli()).
-		Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID)
+		Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID, &u.MFA)
 	if err != nil {
 		return nil, ErrNotFound
 	}
 	return &u, nil
+}
+
+// SessionUserByName loads an account as SessionUser would (after sign-in).
+func (c *DB) SessionUserByName(username string) (*User, error) {
+	var u User
+	err := c.db.QueryRow(`SELECT username, role, full_name, created_at, last_login, source_id, totp_enabled FROM users WHERE username = ?`, username).
+		Scan(&u.Username, &u.Role, &u.FullName, &u.CreatedAt, &u.LastLogin, &u.SourceID, &u.MFA)
+	if err != nil {
+		return nil, ErrNotFound
+	}
+	return &u, nil
+}
+
+// DeleteUserSessions signs a user out everywhere.
+func (c *DB) DeleteUserSessions(username string) error {
+	_, err := c.db.Exec("DELETE FROM sessions WHERE username = ?", username)
+	return err
 }
 
 func (c *DB) DeleteSession(token string) error {

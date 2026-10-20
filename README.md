@@ -69,6 +69,15 @@ Screenshots show simulated traffic from `cmd/flowgen`.
   or a new appliance.
 - **Exporter allowlist**: accept flows only from listed addresses or prefixes;
   rejected senders are counted and shown on System Health.
+- **SNMP polling**: per exporter (v2c or v3), interface names, descriptions and
+  speeds from IF-MIB every 15 minutes, for routers that don't send names in their
+  flow data and for accurate utilization. Values you set yourself take precedence.
+- **Sign-in**: local accounts, OpenID Connect SSO, LDAP / Active Directory
+  (StartTLS or LDAPS, nested groups) and RADIUS (Message-Authenticator, failover),
+  with roles mapped from groups; TOTP two-factor authentication with recovery
+  codes, optionally required for administrators.
+- **Audit forwarding**: the audit log sent to syslog servers over UDP, TCP or
+  TLS (RFC 5424 or 3164).
 - **Appliance**: HTTPS by default (plain HTTP on port 80 redirects to it) (self-signed on first boot), bcrypt + hashed
   session tokens, admin/viewer roles, login rate limiting, audit log, strict CSP,
   retention controls, health page.

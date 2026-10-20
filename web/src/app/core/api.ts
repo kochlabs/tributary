@@ -6,6 +6,13 @@ import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 export type Filters = Record<string, string>;
 export type Metric = 'bps' | 'pps' | 'fps';
 
+/** Authenticator app setup: the secret, its otpauth URI and a QR code image. */
+export interface MfaSetup {
+  secret: string;
+  uri: string;
+  qr: string;
+}
+
 export interface User {
   username: string;
   role: 'admin' | 'viewer';
@@ -14,6 +21,7 @@ export interface User {
   lastLogin: number;
   sourceId: number; // 0 = local account
   source?: string;
+  mfa?: boolean;
 }
 
 export interface RoleMapping {
@@ -30,6 +38,27 @@ export interface OIDCConfig {
   groupsClaim: string;
 }
 
+export interface LDAPConfig {
+  url: string;
+  startTls: boolean;
+  bindDn: string;
+  bindPassword?: string; // write-only
+  baseDn: string;
+  userFilter: string;
+  usernameAttr: string;
+  nameAttr: string;
+  groupAttr: string;
+  nestedGroups: boolean;
+}
+
+export interface RADIUSConfig {
+  servers: string[];
+  secret?: string; // write-only
+  nasIdentifier: string;
+  timeoutSec: number;
+  roleAttribute: 'Class' | 'Filter-Id';
+}
+
 export interface IdentitySource {
   id: number;
   type: 'oidc' | 'ldap' | 'radius' | 'saml';
@@ -37,6 +66,8 @@ export interface IdentitySource {
   enabled: boolean;
   priority: number;
   oidc?: OIDCConfig;
+  ldap?: LDAPConfig;
+  radius?: RADIUSConfig;
   mappings: RoleMapping[];
   defaultRole: '' | 'viewer' | 'admin';
   hasSecret: boolean;
@@ -47,6 +78,9 @@ export interface IdentitySource {
 export interface ProviderTest {
   ok: boolean;
   message: string;
+  dn?: string;
+  groups?: string[];
+  role?: string;
   authorizationEndpoint?: string;
   tokenEndpoint?: string;
   userinfoEndpoint?: string;
@@ -260,6 +294,7 @@ export interface Settings {
   localNetworks: string[];
   dnsServers: string[];
   exporterAllowlist: string[];
+  requireMfaAdmins: boolean;
 }
 
 /** An appliance-wide condition shown as a banner above the header. */
@@ -569,8 +604,31 @@ export class Api {
   me() {
     return this.get<User>('/api/auth/me');
   }
+  /** First sign-in step: the account, or a request for a second factor. */
   login(username: string, password: string) {
-    return firstValueFrom(this.http.post<User>('/api/auth/login', { username, password }));
+    return firstValueFrom(this.http.post<User & { mfaRequired?: boolean; mfaSetupRequired?: boolean; token?: string }>('/api/auth/login', { username, password }));
+  }
+  mfaVerify(token: string, code: string) {
+    return firstValueFrom(this.http.post<{ user: User; recoveryUsed: boolean; recoveryLeft: number }>('/api/auth/mfa', { token, code }));
+  }
+  /** Setup required at sign-in: without a code returns the QR, with one finishes. */
+  mfaEnroll(token: string, code = '') {
+    return firstValueFrom(this.http.post<MfaSetup & { user?: User; recoveryCodes?: string[] }>('/api/auth/mfa/enroll', { token, code }));
+  }
+  mfaStatus() {
+    return this.get<{ available: boolean; enabled: boolean; recoveryLeft: number; required: boolean }>('/api/auth/mfa/status');
+  }
+  mfaSetup() {
+    return firstValueFrom(this.http.post<MfaSetup>('/api/auth/mfa/setup', {}));
+  }
+  mfaSetupConfirm(code: string) {
+    return firstValueFrom(this.http.post<{ recoveryCodes: string[] }>('/api/auth/mfa/setup/confirm', { code }));
+  }
+  mfaDisable(code: string) {
+    return firstValueFrom(this.http.post('/api/auth/mfa/disable', { code }));
+  }
+  resetUserMfa(username: string) {
+    return firstValueFrom(this.http.post(`/api/users/${encodeURIComponent(username)}/mfa/reset`, {}));
   }
   logout() {
     return firstValueFrom(this.http.post('/api/auth/logout', {}));
@@ -748,8 +806,8 @@ export class Api {
   deleteIdentitySource(id: number) {
     return firstValueFrom(this.http.delete(`/api/identity-sources/${id}`));
   }
-  testIdentitySource(issuer: string) {
-    return firstValueFrom(this.http.post<ProviderTest>('/api/identity-sources/test', { issuer }));
+  testIdentitySource(body: { type: string; id?: number; issuer?: string; ldap?: LDAPConfig; radius?: RADIUSConfig; username?: string; password?: string; mappings?: RoleMapping[]; defaultRole?: string }) {
+    return firstValueFrom(this.http.post<ProviderTest>('/api/identity-sources/test', body));
   }
   certificate() {
     return this.get<CertStatus>('/api/certificates/appliance');

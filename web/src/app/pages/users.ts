@@ -26,11 +26,15 @@ import { loader, trackByKey } from '../core/util';
       <clr-dg-column [clrDgField]="'fullName'" i18n="@@users.col.fullName">Full name</clr-dg-column>
       <clr-dg-column [clrDgField]="'role'" i18n="@@users.col.role">Role</clr-dg-column>
       <clr-dg-column [clrDgField]="'source'" i18n="@@users.col.source">Source</clr-dg-column>
+      <clr-dg-column [clrDgField]="'mfa'" i18n="@@users.col.mfa">Two-factor</clr-dg-column>
       <clr-dg-column [clrDgField]="'lastLogin'" i18n="@@users.col.lastLogin">Last sign-in</clr-dg-column>
       <clr-dg-column [clrDgField]="'createdAt'" i18n="@@users.col.created">Created</clr-dg-column>
       <clr-dg-row *clrDgItems="let u of users.value() ?? []; trackBy: byUsername" [clrDgItem]="u">
         <clr-dg-action-overflow>
           <button class="action-item" (click)="openEdit(u)"><cds-icon shape="pencil"></cds-icon> <ng-container i18n="@@common.edit">Edit</ng-container></button>
+          @if (u.mfa && u.username !== auth.user()?.username) {
+            <button class="action-item" (click)="confirmReset.set(u)"><cds-icon shape="shield"></cds-icon> <ng-container i18n="@@users.resetMfa">Reset two-factor</ng-container></button>
+          }
           @if (u.username !== auth.user()?.username) {
             <button class="action-item" (click)="confirmDelete.set(u)"><cds-icon shape="trash"></cds-icon> <ng-container i18n="@@common.delete">Delete</ng-container></button>
           }
@@ -39,6 +43,7 @@ import { loader, trackByKey } from '../core/util';
         <clr-dg-cell>{{ u.fullName }}</clr-dg-cell>
         <clr-dg-cell><span class="label" [class.label-purple]="u.role === 'admin'" [class.label-blue]="u.role === 'viewer'">{{ roleLabel(u.role) }}</span></clr-dg-cell>
         <clr-dg-cell>@if (!u.sourceId) {<ng-container i18n="@@users.local">Local</ng-container>} @else if (u.source) {<ng-container>{{ u.source }}</ng-container>} @else {<ng-container i18n="@@users.identitySource">Identity source</ng-container>}</clr-dg-cell>
+        <clr-dg-cell>@if (u.mfa) {<span class="label label-success" i18n="@@users.mfaOn">on</span>} @else {<span class="muted">–</span>}</clr-dg-cell>
         <clr-dg-cell>{{ dt(u.lastLogin) }}</clr-dg-cell>
         <clr-dg-cell>{{ dt(u.createdAt) }}</clr-dg-cell>
       </clr-dg-row>
@@ -99,6 +104,17 @@ import { loader, trackByKey } from '../core/util';
       </div>
     </clr-modal>
 
+    <clr-modal [clrModalOpen]="!!confirmReset()" (clrModalOpenChange)="!$event && confirmReset.set(null)" clrModalSize="md">
+      <h3 class="modal-title" i18n="@@users.resetMfaTitle">Reset two-factor authentication for {{ confirmReset()?.username }}?</h3>
+      <div class="modal-body">
+        <p i18n="@@users.resetMfaText">Use this when someone lost their authenticator device. Their two-factor authentication is turned off and they are signed out; they can set it up again after signing in with their password.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="confirmReset.set(null)" i18n="@@common.cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="resetMfa()" i18n="@@users.resetMfa">Reset two-factor</button>
+      </div>
+    </clr-modal>
+
     <clr-modal [clrModalOpen]="!!confirmDelete()" (clrModalOpenChange)="!$event && confirmDelete.set(null)" clrModalSize="sm">
       <h3 class="modal-title" i18n="@@users.deleteTitle">Delete user?</h3>
       <div class="modal-body"><p i18n="@@users.deleteConfirm">Delete <b>{{ confirmDelete()?.username }}</b>? Their sessions end immediately.</p></div>
@@ -108,7 +124,8 @@ import { loader, trackByKey } from '../core/util';
       </div>
     </clr-modal>
   `,
-  styles: `.label { margin-left: 6px; } .managed { font-size: 13px; margin-top: 18px; }`,
+  styles: `
+    .muted { color: var(--cds-alias-typography-color-300); }.label { margin-left: 6px; } .managed { font-size: 13px; margin-top: 18px; }`,
 })
 export class Users {
   readonly byUsername = trackByKey<{ username: string }>((u) => u.username);
@@ -120,6 +137,19 @@ export class Users {
   readonly formOpen = signal(false);
   editing = false;
   readonly confirmDelete = signal<User | null>(null);
+  readonly confirmReset = signal<User | null>(null);
+
+  async resetMfa() {
+    const u = this.confirmReset();
+    this.confirmReset.set(null);
+    if (!u) return;
+    try {
+      await this.api.resetUserMfa(u.username);
+      this.users.reload();
+    } catch (e) {
+      alert(errorMessage(e));
+    }
+  }
   form = { username: '', fullName: '', role: 'viewer', password: '' };
   external = false;
   externalSource = '';
