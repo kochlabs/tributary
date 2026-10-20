@@ -363,7 +363,7 @@ type Identity struct {
 // can't be used in URLs without a zone and don't belong in certificates).
 func DefaultIdentity() Identity {
 	host, _ := os.Hostname()
-	id := Identity{CommonName: host, Organization: "Tributary"}
+	id := Identity{Organization: "Tributary"}
 	seenDNS := map[string]bool{}
 	addDNS := func(n string) {
 		n = strings.ToLower(strings.TrimSuffix(strings.TrimSpace(n), "."))
@@ -382,10 +382,9 @@ func DefaultIdentity() Identity {
 	}
 
 	addDNS(host)
-	if fqdn := lookupFQDN(host); fqdn != "" {
-		addDNS(fqdn)
-		id.CommonName = fqdn
-	}
+	fqdn := lookupFQDN(host)
+	addDNS(fqdn)
+	id.CommonName = commonName(host, fqdn)
 	ts := tailscaleSelf()
 	if ts.DNSName != "" {
 		addDNS(ts.DNSName)
@@ -402,6 +401,22 @@ func DefaultIdentity() Identity {
 		addIP(net.ParseIP(s))
 	}
 	return id
+}
+
+// maxCommonName is the X.509 upper bound for a common name (RFC 5280).
+const maxCommonName = 64
+
+// commonName picks the certificate's common name: the fully qualified name
+// when it fits, else the host name. Long names (cloud VMs often have FQDNs
+// over 64 characters) still go in the DNS names, which have no such limit
+// and are what clients check.
+func commonName(host, fqdn string) string {
+	for _, n := range []string{fqdn, host} {
+		if n != "" && len(n) <= maxCommonName {
+			return n
+		}
+	}
+	return "tributary"
 }
 
 // lookupFQDN returns the fully qualified name of host using the resolver's
@@ -463,7 +478,7 @@ func tailscaleSelf() tailscaleInfo {
 
 func (id *Identity) validate() error {
 	id.CommonName = strings.TrimSpace(id.CommonName)
-	if id.CommonName == "" || len(id.CommonName) > 64 {
+	if id.CommonName == "" || len(id.CommonName) > maxCommonName {
 		return errors.New("common name is required (up to 64 characters)")
 	}
 	var dns []string

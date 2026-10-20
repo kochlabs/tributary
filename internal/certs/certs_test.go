@@ -76,6 +76,21 @@ func served(t *testing.T, m *Manager) *x509.Certificate {
 
 var appliance = Identity{CommonName: "flows.example.com", DNSNames: []string{"flows.example.com"}, IPAddresses: []string{"192.0.2.10"}}
 
+func TestCommonName(t *testing.T) {
+	long := "runnervmabcdefgh.abcdefghijklmnopqrstuvwxyz0123456789.bx.internal.cloudapp.net" // an Azure VM's FQDN
+	for _, c := range []struct{ host, fqdn, want string }{
+		{"flows", "flows.example.com", "flows.example.com"},
+		{"flows", "", "flows"},
+		{"runnervmabcdefgh", long, "runnervmabcdefgh"},
+		{"", "", "tributary"},
+		{strings.Repeat("h", 65), "", "tributary"},
+	} {
+		if got := commonName(c.host, c.fqdn); got != c.want {
+			t.Errorf("commonName(%q, %q) = %q, want %q", c.host, c.fqdn, got, c.want)
+		}
+	}
+}
+
 func TestFirstStartCreatesSelfSigned(t *testing.T) {
 	m := NewManager(t.TempDir())
 	created, err := m.Load()
@@ -93,7 +108,9 @@ func TestFirstStartCreatesSelfSigned(t *testing.T) {
 
 func TestCSRRoundTripHotSwap(t *testing.T) {
 	m := NewManager(t.TempDir())
-	m.Load()
+	if _, err := m.Load(); err != nil {
+		t.Fatal(err)
+	}
 	ca := newTestCA(t)
 	info, err := m.GenerateCSR(appliance, "rsa-2048")
 	if err != nil {
