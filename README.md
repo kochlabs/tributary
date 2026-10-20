@@ -63,7 +63,7 @@ Screenshots show simulated traffic from `cmd/flowgen`.
 - **Notices**: banners above the header for conditions that need attention, such
   as low disk space, OS updates, an expiring certificate, exporters that stopped
   sending, or a database outage.
-- **Appliance**: HTTPS by default (self-signed on first boot), bcrypt + hashed
+- **Appliance**: HTTPS by default (plain HTTP on port 80 redirects to it) (self-signed on first boot), bcrypt + hashed
   session tokens, admin/viewer roles, login rate limiting, audit log, strict CSP,
   retention controls, health page.
 

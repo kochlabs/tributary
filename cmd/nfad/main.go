@@ -41,6 +41,7 @@ func main() {
 	var (
 		listen     = flag.String("listen", ":8443", "HTTPS listen address for UI and API")
 		plainHTTP  = flag.Bool("http", false, "serve plain HTTP instead of HTTPS (only behind a TLS-terminating proxy)")
+		redirect   = flag.String("redirect-http", "", "also listen on this address (e.g. :80) and redirect plain HTTP to HTTPS")
 		dataDir    = flag.String("data", "/var/lib/nfa", "directory for configuration database and TLS material")
 		chAddr     = flag.String("ch-addr", "127.0.0.1:9000", "ClickHouse native protocol address")
 		chUser     = flag.String("ch-user", "netflow", "ClickHouse user")
@@ -56,13 +57,13 @@ func main() {
 	var lvl slog.Level
 	_ = lvl.UnmarshalText([]byte(*logLevel))
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: lvl}))
-	if err := run(log, *listen, *plainHTTP, *dataDir, *chAddr, *chUser, *chPassFile); err != nil {
+	if err := run(log, *listen, *plainHTTP, *redirect, *dataDir, *chAddr, *chUser, *chPassFile); err != nil {
 		log.Error("fatal", "err", err)
 		os.Exit(1)
 	}
 }
 
-func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUser, chPassFile string) error {
+func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chAddr, chUser, chPassFile string) error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
@@ -249,6 +250,17 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 		log.Info("web UI listening (HTTPS)", "addr", listen)
 		errc <- httpSrv.ListenAndServeTLS("", "") // certificate comes from TLSConfig.GetCertificate
 	}()
+	var redirectSrv *http.Server
+	if redirect != "" && !plainHTTP {
+		redirectSrv = &http.Server{Addr: redirect, Handler: api.RedirectToHTTPS(listen), ReadHeaderTimeout: 5 * time.Second, IdleTimeout: 30 * time.Second}
+		go func() {
+			log.Info("redirecting plain HTTP to HTTPS", "addr", redirect)
+			if err := redirectSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+				// Not fatal: the UI still works over HTTPS.
+				log.Warn("HTTP redirect listener failed", "addr", redirect, "err", err)
+			}
+		}()
+	}
 
 	select {
 	case <-ctx.Done():
@@ -264,6 +276,9 @@ func run(log *slog.Logger, listen string, plainHTTP bool, dataDir, chAddr, chUse
 	sctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	_ = httpSrv.Shutdown(sctx)
+	if redirectSrv != nil {
+		_ = redirectSrv.Shutdown(sctx)
+	}
 	col.Stop()
 	wcancel()
 	<-writerDone
