@@ -11,6 +11,7 @@ chmod 755 "$ROOT" # becomes the mode of "./" in the archive
 install -D -m 755 bin/nfad                              "$ROOT/usr/bin/nfad"
 install -D -m 755 bin/flowgen                           "$ROOT/usr/bin/tributary-flowgen"
 install -D -m 755 deploy/admin/tributary-admin.sh       "$ROOT/usr/lib/tributary/tributary-admin.sh"
+install -D -m 755 deploy/clickhouse/users.sh           "$ROOT/usr/lib/tributary/clickhouse-users.sh"
 install -D -m 644 deploy/admin/services.conf            "$ROOT/etc/tributary/services.conf"
 install -D -m 644 deploy/clickhouse/tributary.xml       "$ROOT/etc/clickhouse-server/config.d/tributary.xml"
 install -D -m 644 deploy/99-tributary.conf              "$ROOT/usr/lib/sysctl.d/99-tributary.conf"

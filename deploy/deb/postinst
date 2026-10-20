@@ -17,32 +17,41 @@ install -d -o root -g nfa -m 750 /var/lib/tributary-admin
 # ClickHouse user for Tributary, with a generated password kept in /etc/netflow.
 install -d -m 755 /etc/netflow
 if [ ! -s /etc/netflow/clickhouse.pw ]; then
-  umask 077
-  openssl rand -hex 16 > /etc/netflow/clickhouse.pw
+  (umask 077; openssl rand -hex 16 > /etc/netflow/clickhouse.pw)
 fi
 chgrp nfa /etc/netflow/clickhouse.pw
 chmod 640 /etc/netflow/clickhouse.pw
 HASH=$(tr -d '\n' < /etc/netflow/clickhouse.pw | sha256sum | cut -d' ' -f1)
 USERS=/etc/clickhouse-server/users.d/netflow.xml
-NEW=$(cat <<XML
-<clickhouse>
-  <profiles><default><max_memory_usage>1000000000</max_memory_usage><max_threads>2</max_threads></default></profiles>
-  <users>
-    <netflow>
-      <password_sha256_hex>$HASH</password_sha256_hex>
-      <networks><ip>127.0.0.1</ip><ip>::1</ip></networks>
-      <profile>default</profile><quota>default</quota>
-      <access_management>0</access_management>
-    </netflow>
-  </users>
-</clickhouse>
-XML
-)
-if [ ! -f "$USERS" ] || [ "$(cat "$USERS")" != "$NEW" ]; then
-  install -d -m 755 /etc/clickhouse-server/users.d
-  printf '%s\n' "$NEW" > "$USERS"
-  chmod 640 "$USERS"; chgrp clickhouse "$USERS" 2>/dev/null || true
-  CH_RESTART=yes
+# write_ch_users FILE CONTENT: installs a users.d file if it changed.
+write_ch_users() {
+  if [ ! -f "$1" ] || [ "$(cat "$1")" != "$2" ]; then
+    install -d -m 755 /etc/clickhouse-server/users.d
+    printf '%s\n' "$2" > "$1"
+    chmod 640 "$1"; chgrp clickhouse "$1" 2>/dev/null || true
+    CH_RESTART=yes
+  fi
+}
+write_ch_users "$USERS" "$(/usr/lib/tributary/clickhouse-users.sh netflow "$HASH")"
+
+# ClickHouse's built-in "default" user is an administrator with no password
+# unless one was chosen when ClickHouse was installed (users.d/
+# default-password.xml). Give it a random password, kept for root in
+# /etc/tributary/clickhouse-default.pw, so local accounts can't use the
+# database as an administrator. To choose your own, write it to that file and
+# run dpkg-reconfigure tributary.
+DEFAULT_USERS=/etc/clickhouse-server/users.d/tributary-default.xml
+DEFAULT_PW=/etc/tributary/clickhouse-default.pw
+if [ -f /etc/clickhouse-server/users.d/default-password.xml ]; then
+  if [ -f "$DEFAULT_USERS" ]; then rm -f "$DEFAULT_USERS"; CH_RESTART=yes; fi
+else
+  install -d -m 755 /etc/tributary
+  if [ ! -s "$DEFAULT_PW" ]; then
+    (umask 077; openssl rand -hex 16 > "$DEFAULT_PW")
+  fi
+  chown root:root "$DEFAULT_PW"; chmod 600 "$DEFAULT_PW"
+  DHASH=$(tr -d '\n' < "$DEFAULT_PW" | sha256sum | cut -d' ' -f1)
+  write_ch_users "$DEFAULT_USERS" "$(/usr/lib/tributary/clickhouse-users.sh default "$DHASH")"
 fi
 
 # Migrate from the pre-package layout (deploy/install.sh into /usr/local).
@@ -73,7 +82,7 @@ fi
 
 # Restart ClickHouse only when its configuration changed (or on first install).
 STAMP=/var/lib/tributary-admin/.clickhouse-config
-SUM=$(cat /etc/clickhouse-server/config.d/tributary.xml "$USERS" | sha256sum | cut -d' ' -f1)
+SUM=$(cat /etc/clickhouse-server/config.d/tributary.xml "$USERS" "$DEFAULT_USERS" 2>/dev/null | sha256sum | cut -d' ' -f1)
 [ "$(cat "$STAMP" 2>/dev/null)" = "$SUM" ] || CH_RESTART=yes
 
 sysctl -q --load /usr/lib/sysctl.d/99-tributary.conf || true

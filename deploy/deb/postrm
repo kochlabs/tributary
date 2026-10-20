@@ -13,12 +13,14 @@ case "$1" in
     done
     [ -d /run/systemd/system ] && systemctl --system daemon-reload >/dev/null || true
     rm -rf /var/lib/nfa /var/lib/tributary-admin /etc/netflow
-    rm -f /etc/clickhouse-server/users.d/netflow.xml
+    rm -f /etc/clickhouse-server/users.d/netflow.xml /etc/clickhouse-server/users.d/tributary-default.xml
+    rm -f /etc/tributary/clickhouse-default.pw
     if getent passwd nfa >/dev/null; then deluser --system nfa >/dev/null 2>&1 || true; fi
     if getent group nfa >/dev/null; then delgroup --system nfa >/dev/null 2>&1 || true; fi
     [ -d /run/systemd/system ] && deb-systemd-invoke try-restart clickhouse-server.service >/dev/null 2>&1 || true
     echo "tributary: purged. Flow data remains in ClickHouse database 'netflow';"
     echo "  remove it with: clickhouse-client -q 'DROP DATABASE netflow'"
+    echo "  ClickHouse's default user is back to ClickHouse's own setting (no password)."
     ;;
 esac
 exit 0
