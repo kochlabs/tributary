@@ -5,7 +5,7 @@ import (
 	"net/netip"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 // sFlow v5 (sflow.org/sflow_version_5.txt). Only flow samples are turned into

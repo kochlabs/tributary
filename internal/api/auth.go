@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"nfa/internal/config"
-	"nfa/internal/dirauth"
-	"nfa/internal/totp"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/dirauth"
+	"github.com/kochlabs/tributary/internal/totp"
 )
 
 // Password sign-in: local accounts first, then LDAP/RADIUS identity sources,

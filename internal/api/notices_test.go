@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 func TestNoticesFilteredByRole(t *testing.T) {

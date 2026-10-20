@@ -17,16 +17,16 @@ import (
 	"sync/atomic"
 	"time"
 
-	"nfa/internal/backup"
-	"nfa/internal/certs"
-	"nfa/internal/collector"
-	"nfa/internal/config"
-	"nfa/internal/enrich"
-	"nfa/internal/offsite"
-	"nfa/internal/snmp"
-	"nfa/internal/store"
-	"nfa/internal/syslog"
-	"nfa/internal/system"
+	"github.com/kochlabs/tributary/internal/backup"
+	"github.com/kochlabs/tributary/internal/certs"
+	"github.com/kochlabs/tributary/internal/collector"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/enrich"
+	"github.com/kochlabs/tributary/internal/offsite"
+	"github.com/kochlabs/tributary/internal/snmp"
+	"github.com/kochlabs/tributary/internal/store"
+	"github.com/kochlabs/tributary/internal/syslog"
+	"github.com/kochlabs/tributary/internal/system"
 )
 
 type Server struct {

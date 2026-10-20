@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 // Writer batches flow records and inserts them into ClickHouse. Submit never

@@ -1,4 +1,4 @@
-module nfa
+module github.com/kochlabs/tributary
 
 go 1.27.2
 

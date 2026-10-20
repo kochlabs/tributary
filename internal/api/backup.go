@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"nfa/internal/backup"
+	"github.com/kochlabs/tributary/internal/backup"
 )
 
 // uploadPath accepts a raw backup file instead of JSON (still CSRF-safe: it

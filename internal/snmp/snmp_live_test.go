@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // Runs against a real agent: NFA_TEST_SNMP=127.0.0.1:16161 with community

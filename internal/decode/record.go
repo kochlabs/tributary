@@ -5,7 +5,7 @@ import (
 	"net/netip"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 // recState collects values that need post-processing once every field of a

@@ -20,7 +20,7 @@ import (
 	"github.com/crewjam/saml/samlsp"
 	dsig "github.com/russellhaering/goxmldsig"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // SAML 2.0 sign-in (Web Browser SSO profile). The appliance is the service

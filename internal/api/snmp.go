@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 func (s *Server) snmpGet(w http.ResponseWriter, r *http.Request) {

@@ -7,7 +7,7 @@ import (
 	"net/netip"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 type buf struct{ b []byte }

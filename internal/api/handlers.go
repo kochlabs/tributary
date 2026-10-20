@@ -14,11 +14,11 @@ import (
 	"strings"
 	"time"
 
-	"nfa/internal/config"
-	"nfa/internal/enrich"
-	"nfa/internal/names"
-	"nfa/internal/store"
-	"nfa/internal/system"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/enrich"
+	"github.com/kochlabs/tributary/internal/names"
+	"github.com/kochlabs/tributary/internal/store"
+	"github.com/kochlabs/tributary/internal/system"
 )
 
 // ---- auth ----

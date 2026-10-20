@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // Runs against a test OpenLDAP: NFA_TEST_LDAP=<dir with ca.crt>, serving

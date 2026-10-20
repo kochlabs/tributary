@@ -21,7 +21,7 @@ import (
 	jose "github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // fakeIdP is a minimal OpenID provider: discovery, JWKS, authorize (which

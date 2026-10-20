@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 // DeviceTracker identifies the local device behind each flow by MAC address.

@@ -21,8 +21,8 @@ import (
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 
-	"nfa/internal/backup"
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/backup"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 func TestSchedule(t *testing.T) {

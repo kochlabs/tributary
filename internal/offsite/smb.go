@@ -13,7 +13,7 @@ import (
 
 	smb2 "github.com/cloudsoda/go-smb2"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // smbTarget writes to a folder on an SMB 2/3 share. Message signing is

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 func local(a netip.Addr) bool {

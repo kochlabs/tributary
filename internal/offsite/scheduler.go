@@ -13,8 +13,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"nfa/internal/backup"
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/backup"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // ErrRunning means a scheduled backup is already in progress.

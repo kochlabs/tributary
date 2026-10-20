@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"nfa/internal/certs"
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/certs"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 func (s *Server) certStatus(w http.ResponseWriter, r *http.Request) {

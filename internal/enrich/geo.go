@@ -17,8 +17,8 @@ import (
 
 	"github.com/oschwald/maxminddb-golang/v2"
 
-	"nfa/internal/config"
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 type dbs struct {

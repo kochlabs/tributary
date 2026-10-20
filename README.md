@@ -116,6 +116,7 @@ make deb                 # dist/tributary_<version>_amd64.deb
 sudo deploy/install.sh   # adds the ClickHouse apt repo (asks first), installs the newest .deb
 ```
 
+Packages are published on the [releases page](https://github.com/kochlabs/tributary/releases).
 On another Debian/Ubuntu box, copy the `.deb` and `deploy/install.sh`. The
 installer checks ClickHouse's signing key against a pinned fingerprint and
 restricts ClickHouse's repository to its own packages.

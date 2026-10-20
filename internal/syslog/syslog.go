@@ -17,7 +17,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // Message is one audit entry to forward.

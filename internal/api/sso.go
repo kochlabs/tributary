@@ -16,8 +16,8 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 
-	"nfa/internal/config"
-	"nfa/internal/dirauth"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/dirauth"
 )
 
 // Single sign-on. OpenID Connect uses the Authorization Code flow with PKCE,

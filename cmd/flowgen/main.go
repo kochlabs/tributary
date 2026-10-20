@@ -19,10 +19,10 @@ import (
 	"strings"
 	"time"
 
-	"nfa/internal/enrich"
-	"nfa/internal/flow"
-	"nfa/internal/flowgen"
-	"nfa/internal/store"
+	"github.com/kochlabs/tributary/internal/enrich"
+	"github.com/kochlabs/tributary/internal/flow"
+	"github.com/kochlabs/tributary/internal/flowgen"
+	"github.com/kochlabs/tributary/internal/store"
 )
 
 type device struct {

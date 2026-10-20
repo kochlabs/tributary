@@ -16,9 +16,9 @@ import (
 	"syscall"
 	"time"
 
-	"nfa/internal/config"
-	"nfa/internal/decode"
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/decode"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 // Ports configures the UDP listeners; 0 disables a listener. All listeners

@@ -5,7 +5,7 @@ import (
 	"net/netip"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 const v9HeaderLen = 20

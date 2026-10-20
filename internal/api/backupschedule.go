@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"nfa/internal/backup"
-	"nfa/internal/config"
-	"nfa/internal/offsite"
+	"github.com/kochlabs/tributary/internal/backup"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/offsite"
 )
 
 func (s *Server) backupSchedule(w http.ResponseWriter, r *http.Request) {

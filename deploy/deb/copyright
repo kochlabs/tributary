@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: tributary
-Source: https://git.kochlabs.io/dkoch/tributary
+Source: https://github.com/kochlabs/tributary
 
 Files: *
 Copyright: 2026 dkoch

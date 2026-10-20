@@ -20,7 +20,7 @@ import (
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // ErrInvalid means the server rejected the credentials (or the user doesn't

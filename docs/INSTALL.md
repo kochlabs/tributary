@@ -18,8 +18,12 @@ It is developed and tested on Debian 13 (trixie). Give the machine at least
 
 ## Quick install
 
+Download `tributary_<version>_amd64.deb` and `install.sh` from the
+[releases page](https://github.com/kochlabs/tributary/releases) (or build the
+package with `make deb`), then:
+
 ```bash
-sudo deploy/install.sh tributary_<version>_amd64.deb
+sudo ./install.sh tributary_<version>_amd64.deb
 ```
 
 The script does exactly the steps in [Manual install](#manual-install). It

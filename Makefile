@@ -7,7 +7,7 @@ SHA      := $(shell git rev-parse --short HEAD 2>/dev/null || echo 0)
 COUNT    := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
 DIRTY    := $(shell git diff --quiet HEAD 2>/dev/null || echo .dirty)
 VERSION  ?= $(BASE)+git$(COUNT).$(SHA)$(DIRTY)
-SOURCE_URL ?= https://git.kochlabs.io/dkoch/tributary
+SOURCE_URL ?= https://github.com/kochlabs/tributary
 LDFLAGS  := -s -w -X main.version=$(VERSION) -X main.sourceURL=$(SOURCE_URL)
 DEB      := dist/tributary_$(VERSION)_amd64.deb
 URL      ?= https://localhost

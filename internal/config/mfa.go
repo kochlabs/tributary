@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"nfa/internal/totp"
+	"github.com/kochlabs/tributary/internal/totp"
 )
 
 // Two-factor authentication (authenticator app codes) for accounts that sign

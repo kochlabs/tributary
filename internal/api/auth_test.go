@@ -17,8 +17,8 @@ import (
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
 
-	"nfa/internal/config"
-	"nfa/internal/totp"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/totp"
 )
 
 // A RADIUS server accepting carol/Radius-pass-1 (Class "noc") and dave/Radius-pass-2 (no class).

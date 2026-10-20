@@ -14,7 +14,7 @@ import (
 
 	"github.com/gosnmp/gosnmp"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 const (

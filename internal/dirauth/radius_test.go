@@ -12,7 +12,7 @@ import (
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // radiusServer answers PAP requests for alice/Secret-123 with Class "netadmins",

@@ -17,7 +17,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"nfa/internal/config"
+	"github.com/kochlabs/tributary/internal/config"
 )
 
 // No vendor data ships with Tributary: the table is downloaded from the IEEE

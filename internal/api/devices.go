@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"nfa/internal/config"
-	"nfa/internal/enrich"
-	"nfa/internal/store"
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/enrich"
+	"github.com/kochlabs/tributary/internal/store"
 )
 
 // deviceName picks the best available name for a MAC: the administrator's

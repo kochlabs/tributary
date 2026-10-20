@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"nfa/internal/flow"
+	"github.com/kochlabs/tributary/internal/flow"
 )
 
 var (

@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"nfa/internal/decode"
-	"nfa/internal/flow"
-	"nfa/internal/flowgen"
+	"github.com/kochlabs/tributary/internal/decode"
+	"github.com/kochlabs/tributary/internal/flow"
+	"github.com/kochlabs/tributary/internal/flowgen"
 )
 
 func sample(now time.Time) []flow.Record {

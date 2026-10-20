@@ -31,12 +31,12 @@ def classify(text):
 
 
 def go_modules():
-    out = subprocess.run(['go', 'list', '-deps', '-f', '{{if not .Standard}}{{with .Module}}{{.Path}}\t{{.Version}}\t{{.Dir}}{{end}}{{end}}', './cmd/nfad'],
+    out = subprocess.run(['go', 'list', '-deps', '-f', '{{if not .Standard}}{{with .Module}}{{if not .Main}}{{.Path}}\t{{.Version}}\t{{.Dir}}{{end}}{{end}}{{end}}', './cmd/nfad'],
                          cwd=ROOT, check=True, capture_output=True, text=True).stdout
     mods = {}
     for line in out.splitlines():
         path, version, d = line.split('\t')
-        if path != 'nfa' and d:
+        if d:  # Tributary's own module is excluded by the template
             mods[path] = (version, d)
     result = []
     for path in sorted(mods):

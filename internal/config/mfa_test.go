@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"nfa/internal/totp"
+	"github.com/kochlabs/tributary/internal/totp"
 )
 
 func TestMFA(t *testing.T) {
