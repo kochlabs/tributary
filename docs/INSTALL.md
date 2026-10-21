@@ -115,7 +115,9 @@ also in `/var/lib/nfa/initial-admin-password`. Sign in, change the password,
 then delete that file.
 
 Point flow exporters at UDP 2055 (NetFlow), 4739 (IPFIX) or 6343 (sFlow); the
-ports can be changed under Settings.
+ports can be changed under Settings. Set the exporters' active timeout to about
+60 seconds so long-lived flows are reported promptly: traffic is counted when a
+record arrives.
 
 ## How ClickHouse is set up for Tributary
 
@@ -217,6 +219,17 @@ dropped a whole partition at a time. Times are stored in UTC.
 - `tributary-admin` is a small root helper, started through a systemd path unit,
   that performs the operating system tasks the web interface offers (updates,
   time, restarting services) from a fixed list of commands.
+
+### Files
+
+| Path | Contents |
+|---|---|
+| `/usr/bin/nfad`, `/usr/bin/tributary-flowgen` | daemon and traffic simulator |
+| `/usr/lib/systemd/system/` | `nfad.service`, `tributary-admin.path`/`.service`, `tributary-update-check.timer` |
+| `/usr/lib/tributary/` | root helper for the Updates, Time and Services pages; ClickHouse user generator |
+| `/etc/tributary/services.conf` | services the UI may restart (conffile) |
+| `/etc/clickhouse-server/config.d/tributary.xml` | ClickHouse settings (conffile) |
+| `/var/lib/nfa` | configuration database, TLS certificate, GeoIP and MAC vendor data |
 
 ## Inspecting the database
 
