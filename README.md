@@ -17,6 +17,7 @@ single Go binary with a web UI.
 - Sign-in with local accounts, OIDC, SAML, LDAP/AD or RADIUS, plus TOTP
 - Encrypted backups, scheduled to SMB, S3 or SFTP
 - Audit log with syslog forwarding
+- Read-only [MCP](docs/MCP.md) endpoint for AI assistants
 
 More in [docs/FEATURES.md](docs/FEATURES.md) and
 [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md).
@@ -39,6 +40,7 @@ how ClickHouse is configured.
 - [Installation](docs/INSTALL.md)
 - [Features](docs/FEATURES.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [MCP](docs/MCP.md)
 - [Development](docs/DEVELOPMENT.md)
 - [Translating](docs/TRANSLATING.md)
 

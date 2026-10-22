@@ -99,6 +99,10 @@ func (s *Server) Handler() http.Handler {
 
 	auth("GET /api/auth/me", s.me)
 	auth("POST /api/auth/password", s.changePassword)
+	admin("GET /api/tokens", s.tokensList)
+	admin("POST /api/tokens", s.tokenCreate)
+	admin("DELETE /api/tokens/{id}", s.tokenDelete)
+	mux.Handle(mcpPath, s.mcpHandler())
 	auth("GET /api/auth/mfa/status", s.mfaStatus)
 	auth("POST /api/auth/mfa/setup", s.mfaSetupStart)
 	auth("POST /api/auth/mfa/setup/confirm", s.mfaSetupFinish)
@@ -201,6 +205,7 @@ func (s *Server) middleware(next http.Handler) http.Handler {
 		// The exception is the SAML assertion consumer service: identity
 		// providers post a form to it, and the response is checked by its
 		// signature, its single-use request ID and the browser-bound cookie.
+		// (The MCP endpoint is outside /api/ and uses bearer tokens.)
 		if strings.HasPrefix(r.URL.Path, "/api/") && r.Method != http.MethodGet && r.Method != http.MethodHead && !isSAMLACS(r.URL.Path) {
 			raw := r.URL.Path == uploadPath && r.Header.Get("Content-Type") == "application/octet-stream"
 			if r.ContentLength != 0 && !raw && !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {

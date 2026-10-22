@@ -41,6 +41,8 @@
 - TOTP two-factor authentication with recovery codes, optionally required for
   administrators.
 - Audit log, forwarded to syslog over UDP, TCP or TLS (RFC 5424 or 3164).
+- Read-only MCP endpoint for AI assistants, with per-user API tokens
+  ([MCP.md](MCP.md)).
 
 ## Appliance
 

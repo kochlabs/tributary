@@ -319,6 +319,18 @@ export interface Settings {
   dnsServers: string[];
   exporterAllowlist: string[];
   requireMfaAdmins: boolean;
+  mcpEnabled: boolean;
+}
+
+/** An API token for MCP clients (the secret is shown only when created). */
+export interface APIToken {
+  id: number;
+  username: string;
+  name: string;
+  prefix: string;
+  createdAt: number;
+  expiresAt: number;
+  lastUsed: number;
 }
 
 /** An appliance-wide condition shown as a banner above the header. */
@@ -848,6 +860,15 @@ export class Api {
   }
   testBackupDestination(s: BackupSchedule) {
     return firstValueFrom(this.http.post<DestinationTest>('/api/backup-schedule/test', s));
+  }
+  apiTokens() {
+    return this.get<{ tokens: APIToken[]; mcpEnabled: boolean; endpoint: string }>('/api/tokens');
+  }
+  createApiToken(username: string, name: string, days: number) {
+    return firstValueFrom(this.http.post<{ token: string; info: APIToken }>('/api/tokens', { username, name, days }));
+  }
+  deleteApiToken(id: number) {
+    return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
   }
   regenerateBackupSSHKey() {
     return firstValueFrom(this.http.post<SSHKeyInfo>('/api/backup-schedule/ssh-key/regenerate', {}));

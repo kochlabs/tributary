@@ -101,6 +101,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateIdentity(); err != nil {
 		return nil, fmt.Errorf("identity schema: %w", err)
 	}
+	if err := c.migrateAPITokens(); err != nil {
+		return nil, fmt.Errorf("API token schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}
@@ -130,6 +133,9 @@ type Settings struct {
 	// ExporterAllowlist limits which source addresses may send flows (IPs or
 	// CIDR prefixes); empty accepts every source.
 	ExporterAllowlist []string `json:"exporterAllowlist"`
+	// MCPEnabled lets MCP clients (AI assistants) query flow data with API
+	// tokens. Off by default: their results go to the assistant's provider.
+	MCPEnabled bool `json:"mcpEnabled"`
 }
 
 // AllowedExporterPrefixes parses ExporterAllowlist (validated by Validate);

@@ -111,6 +111,20 @@ import { ListEditor, listValues } from '../shared/list-editor';
           </div>
         </div>
 
+        <div class="card">
+          <div class="card-header" i18n="@@settings.mcp">MCP</div>
+          <div class="card-block">
+            <clr-toggle-container>
+              <label i18n="@@settings.mcpClients">AI assistants</label>
+              <clr-toggle-wrapper>
+                <input type="checkbox" clrToggle name="mcp" [(ngModel)]="s.mcpEnabled" />
+                <label i18n="@@settings.mcpToggle">Allow MCP clients to query flow data</label>
+              </clr-toggle-wrapper>
+              <clr-control-helper i18n="@@settings.mcpHelp">Read-only, at {{ mcpEndpoint }}, with an API token (Access → API Tokens) and its owner's permissions. Every query is in the audit log. Results are sent to the assistant's provider.</clr-control-helper>
+            </clr-toggle-container>
+          </div>
+        </div>
+
         <div class="actions">
           <button type="submit" class="btn btn-primary" [clrLoading]="busy()" i18n="@@settings.saveSettings">Save settings</button>
           <button type="button" class="btn btn-outline" (click)="load()" i18n="@@common.revert">Revert</button>
@@ -144,6 +158,7 @@ export class SettingsPage {
   fmtBytes = bytes;
   count = count;
   readonly allowList = signal<string[]>([]);
+  readonly mcpEndpoint = location.origin + '/mcp';
   readonly prefixError = (v: string) => (validAddrOrPrefix(v) ? null : $localize`:@@settings.notAddrOrPrefix:Not an IP address or CIDR prefix`);
   /** Exporters that sent flows in the last hour, to warn before locking them out. */
   readonly activeExporters = signal<string[]>([]);
@@ -199,6 +214,7 @@ export class SettingsPage {
           sflowPort: n(cur.sflowPort),
           rawRetentionDays: n(cur.rawRetentionDays),
           rollupRetentionDays: n(cur.rollupRetentionDays),
+          mcpEnabled: cur.mcpEnabled,
         }),
       );
       this.saved.set(true);

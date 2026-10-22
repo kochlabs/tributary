@@ -32,6 +32,7 @@ export const routes: Routes = [
           { path: 'updates', loadComponent: () => import('./pages/updates').then((m) => m.Updates), title: $localize`:@@nav.updates:Updates` },
           { path: 'time', loadComponent: () => import('./pages/time').then((m) => m.Time), title: $localize`:@@nav.time:Time` },
           { path: 'services', loadComponent: () => import('./pages/services').then((m) => m.Services), title: $localize`:@@nav.services:Services` },
+          { path: 'api-tokens', loadComponent: () => import('./pages/api-tokens').then((m) => m.ApiTokens), title: $localize`:@@nav.apiTokens:API Tokens` },
           { path: 'audit', loadComponent: () => import('./pages/audit').then((m) => m.Audit), title: $localize`:@@nav.audit:Audit Log` },
         ],
       },

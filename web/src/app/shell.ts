@@ -14,7 +14,7 @@ import { TimeRangePicker } from './shared/time-range';
 /** Admin pages (/admin/<page>) in each sidebar group. */
 const NAV_GROUPS: Record<string, string[]> = {
   config: ['settings', 'enrichment'],
-  access: ['users', 'identity-sources', 'audit'],
+  access: ['users', 'identity-sources', 'api-tokens', 'audit'],
   appliance: ['updates', 'backup', 'certificates', 'time', 'services'],
 };
 
@@ -111,6 +111,7 @@ const NAV_GROUPS: Record<string, string[]> = {
               <clr-vertical-nav-group-children>
                 <a clrVerticalNavLink routerLink="/admin/users" routerLinkActive="active" i18n="@@nav.users">Users</a>
                 <a clrVerticalNavLink routerLink="/admin/identity-sources" routerLinkActive="active" i18n="@@nav.identitySources">Identity Sources</a>
+                <a clrVerticalNavLink routerLink="/admin/api-tokens" routerLinkActive="active" i18n="@@nav.apiTokens">API Tokens</a>
                 <a clrVerticalNavLink routerLink="/admin/audit" routerLinkActive="active" i18n="@@nav.audit">Audit Log</a>
               </clr-vertical-nav-group-children>
             </clr-vertical-nav-group>

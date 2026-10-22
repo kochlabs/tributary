@@ -117,7 +117,7 @@
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
         <note category="location">src/app/shared/notice-text.ts:111</note>
-        <note category="location">src/app/shell.ts:122,123</note>
+        <note category="location">src/app/shell.ts:123,124</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -128,7 +128,7 @@
         <note category="location">src/app/app.routes.ts:30</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:102</note>
-        <note category="location">src/app/shell.ts:123,124</note>
+        <note category="location">src/app/shell.ts:124,125</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -148,7 +148,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:32</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:121,122</note>
+        <note category="location">src/app/shell.ts:122,123</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -158,7 +158,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:33</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:125</note>
+        <note category="location">src/app/shell.ts:126</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -168,16 +168,26 @@
       <notes>
         <note category="location">src/app/app.routes.ts:34</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:125,126</note>
+        <note category="location">src/app/shell.ts:126,127</note>
       </notes>
       <segment>
         <source>Services</source>
       </segment>
     </unit>
-    <unit id="nav.audit">
+    <unit id="nav.apiTokens">
       <notes>
         <note category="location">src/app/app.routes.ts:35</note>
+        <note category="location">src/app/pages/api-tokens.ts:17,18</note>
         <note category="location">src/app/shell.ts:114,115</note>
+      </notes>
+      <segment>
+        <source>API Tokens</source>
+      </segment>
+    </unit>
+    <unit id="nav.audit">
+      <notes>
+        <note category="location">src/app/app.routes.ts:36</note>
+        <note category="location">src/app/shell.ts:115,116</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -185,7 +195,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:681</note>
+        <note category="location">src/app/core/api.ts:693</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1877,6 +1887,293 @@
         <source>Last 30 days</source>
       </segment>
     </unit>
+    <unit id="tokens.subtitle">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:18,22</note>
+      </notes>
+      <segment>
+        <source>Tokens for MCP clients, such as Claude. A token acts as its owner, read-only.</source>
+      </segment>
+    </unit>
+    <unit id="tokens.mcpOff">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:25</note>
+      </notes>
+      <segment>
+        <source>MCP is turned off, so tokens can&apos;t be used yet. Turn it on under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/settings&quot;&gt;" dispEnd="&lt;/a&gt;">Configuration → Settings</pc>.</source>
+      </segment>
+    </unit>
+    <unit id="tokens.create">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:35,36</note>
+        <note category="location">src/app/pages/api-tokens.ts:104,106</note>
+      </notes>
+      <segment>
+        <source>Create token</source>
+      </segment>
+    </unit>
+    <unit id="tokens.revoke">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:36,37</note>
+        <note category="location">src/app/pages/api-tokens.ts:114,116</note>
+      </notes>
+      <segment>
+        <source>Revoke</source>
+      </segment>
+    </unit>
+    <unit id="common.refresh">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:38</note>
+        <note category="location">src/app/pages/audit.ts:17,18</note>
+        <note category="location">src/app/pages/identity-sources.ts:88</note>
+        <note category="location">src/app/pages/services.ts:26,27</note>
+        <note category="location">src/app/pages/time.ts:20,21</note>
+        <note category="location">src/app/shared/time-range.ts:33</note>
+      </notes>
+      <segment>
+        <source>Refresh</source>
+      </segment>
+    </unit>
+    <unit id="tokens.name">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:42,43</note>
+        <note category="location">src/app/pages/api-tokens.ts:72,73</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="tokens.owner">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:43,44</note>
+        <note category="location">src/app/pages/api-tokens.ts:76,77</note>
+      </notes>
+      <segment>
+        <source>Owner</source>
+      </segment>
+    </unit>
+    <unit id="tokens.token">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:44,45</note>
+      </notes>
+      <segment>
+        <source>Token</source>
+      </segment>
+    </unit>
+    <unit id="tokens.created">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:45,46</note>
+      </notes>
+      <segment>
+        <source>Created</source>
+      </segment>
+    </unit>
+    <unit id="tokens.lastUsed">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:46,47</note>
+      </notes>
+      <segment>
+        <source>Last used</source>
+      </segment>
+    </unit>
+    <unit id="tokens.expires">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:47,48</note>
+        <note category="location">src/app/pages/api-tokens.ts:85,86</note>
+      </notes>
+      <segment>
+        <source>Expires</source>
+      </segment>
+    </unit>
+    <unit id="tokens.never">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:53,54</note>
+      </notes>
+      <segment>
+        <source>never</source>
+      </segment>
+    </unit>
+    <unit id="tokens.noExpiry">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:54,55</note>
+      </notes>
+      <segment>
+        <source>no expiry</source>
+      </segment>
+    </unit>
+    <unit id="tokens.placeholder">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:56,57</note>
+      </notes>
+      <segment>
+        <source>No API tokens.</source>
+      </segment>
+    </unit>
+    <unit id="tokens.count">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:57,58</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 token} other {<ph id="0" equiv="INTERPOLATION"/> tokens}}</source>
+      </segment>
+    </unit>
+    <unit id="tokens.createTitle">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:61,62</note>
+      </notes>
+      <segment>
+        <source>Create API token</source>
+      </segment>
+    </unit>
+    <unit id="tokens.copyNow">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:64,65</note>
+      </notes>
+      <segment>
+        <source>Copy the token now: it won&apos;t be shown again.</source>
+      </segment>
+    </unit>
+    <unit id="tokens.claudeCode">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:66,67</note>
+      </notes>
+      <segment>
+        <source>For Claude Code:</source>
+      </segment>
+    </unit>
+    <unit id="tokens.otherClients">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:68,69</note>
+      </notes>
+      <segment>
+        <source>Other clients: the endpoint is <ph id="0" equiv="INTERPOLATION" disp="{{ list.value()?.endpoint }}"/>, with the header <pc id="1" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">Authorization: Bearer</pc> and the token.</source>
+      </segment>
+    </unit>
+    <unit id="tokens.namePlaceholder2">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:73</note>
+      </notes>
+      <segment>
+        <source>Claude on my laptop</source>
+      </segment>
+    </unit>
+    <unit id="tokens.ownerHelp">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:82,83</note>
+      </notes>
+      <segment>
+        <source>The token has this user&apos;s role. Choose a viewer account to keep an assistant to viewing.</source>
+      </segment>
+    </unit>
+    <unit id="tokens.days30">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:87,88</note>
+      </notes>
+      <segment>
+        <source>In 30 days</source>
+      </segment>
+    </unit>
+    <unit id="tokens.days90">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:88,89</note>
+      </notes>
+      <segment>
+        <source>In 90 days</source>
+      </segment>
+    </unit>
+    <unit id="tokens.days365">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:89,90</note>
+      </notes>
+      <segment>
+        <source>In a year</source>
+      </segment>
+    </unit>
+    <unit id="tokens.noExpiryOption">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:90,92</note>
+      </notes>
+      <segment>
+        <source>Never</source>
+      </segment>
+    </unit>
+    <unit id="tokens.done">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:101,102</note>
+      </notes>
+      <segment>
+        <source>Done</source>
+      </segment>
+    </unit>
+    <unit id="common.cancel">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:103,104</note>
+        <note category="location">src/app/pages/api-tokens.ts:113,114</note>
+        <note category="location">src/app/pages/backup-schedule.ts:311,312</note>
+        <note category="location">src/app/pages/backup-schedule.ts:334,335</note>
+        <note category="location">src/app/pages/backup.ts:186,187</note>
+        <note category="location">src/app/pages/backup.ts:200,201</note>
+        <note category="location">src/app/pages/certificates.ts:185,186</note>
+        <note category="location">src/app/pages/certificates.ts:243,244</note>
+        <note category="location">src/app/pages/certificates.ts:269,270</note>
+        <note category="location">src/app/pages/certificates.ts:289,290</note>
+        <note category="location">src/app/pages/certificates.ts:298,299</note>
+        <note category="location">src/app/pages/devices.ts:117,118</note>
+        <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
+        <note category="location">src/app/pages/exporters.ts:131,132</note>
+        <note category="location">src/app/pages/exporters.ts:142,143</note>
+        <note category="location">src/app/pages/identity-sources.ts:162,164</note>
+        <note category="location">src/app/pages/identity-sources.ts:507,508</note>
+        <note category="location">src/app/pages/identity-sources.ts:518,519</note>
+        <note category="location">src/app/pages/services.ts:84,85</note>
+        <note category="location">src/app/pages/updates.ts:121,122</note>
+        <note category="location">src/app/pages/users.ts:118,119</note>
+        <note category="location">src/app/pages/users.ts:129,130</note>
+        <note category="location">src/app/pages/users.ts:138,139</note>
+        <note category="location">src/app/shared/filter-bar.ts:37,39</note>
+        <note category="location">src/app/shared/time-range.ts:55,56</note>
+        <note category="location">src/app/shell.ts:160,161</note>
+      </notes>
+      <segment>
+        <source>Cancel</source>
+      </segment>
+    </unit>
+    <unit id="tokens.revokeTitle">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:110,111</note>
+      </notes>
+      <segment>
+        <source>Revoke <ph id="0" equiv="INTERPOLATION" disp="{{ confirmRevoke()?.name }}"/>?</source>
+      </segment>
+    </unit>
+    <unit id="tokens.revokeText">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:111,112</note>
+      </notes>
+      <segment>
+        <source>Clients using it stop working at once.</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.copy">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:148</note>
+        <note category="location">src/app/pages/backup-schedule.ts:412</note>
+        <note category="location">src/app/pages/identity-sources.ts:602</note>
+      </notes>
+      <segment>
+        <source>Copy</source>
+      </segment>
+    </unit>
+    <unit id="identitySources.copied">
+      <notes>
+        <note category="location">src/app/pages/api-tokens.ts:149</note>
+        <note category="location">src/app/pages/backup-schedule.ts:413</note>
+        <note category="location">src/app/pages/identity-sources.ts:603</note>
+      </notes>
+      <segment>
+        <source>Copied</source>
+      </segment>
+    </unit>
     <unit id="audit.title">
       <notes>
         <note category="location">src/app/pages/audit.ts:14,15</note>
@@ -1891,18 +2188,6 @@
       </notes>
       <segment>
         <source>Sign-ins and configuration changes (most recent 500)</source>
-      </segment>
-    </unit>
-    <unit id="common.refresh">
-      <notes>
-        <note category="location">src/app/pages/audit.ts:17,18</note>
-        <note category="location">src/app/pages/identity-sources.ts:88</note>
-        <note category="location">src/app/pages/services.ts:26,27</note>
-        <note category="location">src/app/pages/time.ts:20,21</note>
-        <note category="location">src/app/shared/time-range.ts:33</note>
-      </notes>
-      <segment>
-        <source>Refresh</source>
       </segment>
     </unit>
     <unit id="audit.col.time">
@@ -2546,37 +2831,6 @@
         <source>A new Ed25519 key replaces the current one (<ph id="0" equiv="INTERPOLATION" disp="{{ st()?.sshKey?.fingerprint }}"/>), which is deleted. SFTP servers will reject the appliance until you add the new public key to authorized_keys; remove the old line there too. Do this if the key may have been exposed, or after restoring this appliance&apos;s backup onto another one.</source>
       </segment>
     </unit>
-    <unit id="common.cancel">
-      <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:311,312</note>
-        <note category="location">src/app/pages/backup-schedule.ts:334,335</note>
-        <note category="location">src/app/pages/backup.ts:186,187</note>
-        <note category="location">src/app/pages/backup.ts:200,201</note>
-        <note category="location">src/app/pages/certificates.ts:185,186</note>
-        <note category="location">src/app/pages/certificates.ts:243,244</note>
-        <note category="location">src/app/pages/certificates.ts:269,270</note>
-        <note category="location">src/app/pages/certificates.ts:289,290</note>
-        <note category="location">src/app/pages/certificates.ts:298,299</note>
-        <note category="location">src/app/pages/devices.ts:117,118</note>
-        <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
-        <note category="location">src/app/pages/exporters.ts:131,132</note>
-        <note category="location">src/app/pages/exporters.ts:142,143</note>
-        <note category="location">src/app/pages/identity-sources.ts:162,164</note>
-        <note category="location">src/app/pages/identity-sources.ts:507,508</note>
-        <note category="location">src/app/pages/identity-sources.ts:518,519</note>
-        <note category="location">src/app/pages/services.ts:84,85</note>
-        <note category="location">src/app/pages/updates.ts:121,122</note>
-        <note category="location">src/app/pages/users.ts:118,119</note>
-        <note category="location">src/app/pages/users.ts:129,130</note>
-        <note category="location">src/app/pages/users.ts:138,139</note>
-        <note category="location">src/app/shared/filter-bar.ts:37,39</note>
-        <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:159,160</note>
-      </notes>
-      <segment>
-        <source>Cancel</source>
-      </segment>
-    </unit>
     <unit id="sched.regenerateButton">
       <notes>
         <note category="location">src/app/pages/backup-schedule.ts:312,314</note>
@@ -2640,24 +2894,6 @@
       </notes>
       <segment>
         <source>Stored · leave empty to keep</source>
-      </segment>
-    </unit>
-    <unit id="identitySources.copy">
-      <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:412</note>
-        <note category="location">src/app/pages/identity-sources.ts:602</note>
-      </notes>
-      <segment>
-        <source>Copy</source>
-      </segment>
-    </unit>
-    <unit id="identitySources.copied">
-      <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:413</note>
-        <note category="location">src/app/pages/identity-sources.ts:603</note>
-      </notes>
-      <segment>
-        <source>Copied</source>
       </segment>
     </unit>
     <unit id="sched.keyChangedNote">
@@ -4990,7 +5226,7 @@
     <unit id="common.revert">
       <notes>
         <note category="location">src/app/pages/enrichment.ts:250,251</note>
-        <note category="location">src/app/pages/settings.ts:116,118</note>
+        <note category="location">src/app/pages/settings.ts:130,132</note>
       </notes>
       <segment>
         <source>Revert</source>
@@ -5055,7 +5291,7 @@
     <unit id="settings.fixEntries">
       <notes>
         <note category="location">src/app/pages/enrichment.ts:376</note>
-        <note category="location">src/app/pages/settings.ts:183</note>
+        <note category="location">src/app/pages/settings.ts:198</note>
       </notes>
       <segment>
         <source>Fix the highlighted entries first: <ph id="0" equiv="entries" disp="bad.join(&apos;, &apos;)"/></source>
@@ -7273,7 +7509,7 @@
       <notes>
         <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
-        <note category="location">src/app/shell.ts:192,194</note>
+        <note category="location">src/app/shell.ts:193,195</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -7888,9 +8124,41 @@
         <source>Based on <ph id="0" equiv="INTERPOLATION" disp="{{ sampleHours().toFixed(1) }}"/> hours of data; the estimate firms up after a full day.</source>
       </segment>
     </unit>
-    <unit id="settings.saveSettings">
+    <unit id="settings.mcp">
       <notes>
         <note category="location">src/app/pages/settings.ts:115,116</note>
+      </notes>
+      <segment>
+        <source>MCP</source>
+      </segment>
+    </unit>
+    <unit id="settings.mcpClients">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:118,119</note>
+      </notes>
+      <segment>
+        <source>AI assistants</source>
+      </segment>
+    </unit>
+    <unit id="settings.mcpToggle">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:121,122</note>
+      </notes>
+      <segment>
+        <source>Allow MCP clients to query flow data</source>
+      </segment>
+    </unit>
+    <unit id="settings.mcpHelp">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:123</note>
+      </notes>
+      <segment>
+        <source>Read-only, at <ph id="0" equiv="INTERPOLATION" disp="{{ mcpEndpoint }}"/>, with an API token (Access → API Tokens) and its owner&apos;s permissions. Every query is in the audit log. Results are sent to the assistant&apos;s provider.</source>
+      </segment>
+    </unit>
+    <unit id="settings.saveSettings">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:129,130</note>
       </notes>
       <segment>
         <source>Save settings</source>
@@ -7898,7 +8166,7 @@
     </unit>
     <unit id="settings.notAddrOrPrefix">
       <notes>
-        <note category="location">src/app/pages/settings.ts:147</note>
+        <note category="location">src/app/pages/settings.ts:162</note>
       </notes>
       <segment>
         <source>Not an IP address or CIDR prefix</source>
@@ -10229,8 +10497,8 @@
     <unit id="shell.changePassword">
       <notes>
         <note category="location">src/app/shell.ts:71,72</note>
-        <note category="location">src/app/shell.ts:137,138</note>
-        <note category="location">src/app/shell.ts:160,162</note>
+        <note category="location">src/app/shell.ts:138,139</note>
+        <note category="location">src/app/shell.ts:161,163</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -10270,7 +10538,7 @@
     </unit>
     <unit id="nav.groupAppliance">
       <notes>
-        <note category="location">src/app/shell.ts:119,120</note>
+        <note category="location">src/app/shell.ts:120,121</note>
       </notes>
       <segment>
         <source>Appliance</source>
@@ -10278,7 +10546,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:141,142</note>
+        <note category="location">src/app/shell.ts:142,143</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -10286,7 +10554,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:145,146</note>
+        <note category="location">src/app/shell.ts:146,147</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -10294,7 +10562,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:147,148</note>
+        <note category="location">src/app/shell.ts:148,149</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -10302,7 +10570,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:150,151</note>
+        <note category="location">src/app/shell.ts:151,152</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -10310,7 +10578,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:169,171</note>
+        <note category="location">src/app/shell.ts:170,172</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -10318,7 +10586,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:171,172</note>
+        <note category="location">src/app/shell.ts:172,173</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -10326,7 +10594,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:174</note>
+        <note category="location">src/app/shell.ts:175</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -10334,7 +10602,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:178,179</note>
+        <note category="location">src/app/shell.ts:179,180</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -10342,7 +10610,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:185,187</note>
+        <note category="location">src/app/shell.ts:186,188</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -10350,7 +10618,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:187,188</note>
+        <note category="location">src/app/shell.ts:188,189</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -10358,7 +10626,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:188,191</note>
+        <note category="location">src/app/shell.ts:189,192</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -10366,7 +10634,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:357</note>
+        <note category="location">src/app/shell.ts:358</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

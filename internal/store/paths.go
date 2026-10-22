@@ -42,6 +42,12 @@ type PathResult struct {
 	Source     string     `json:"source"`
 }
 
+// PathDimension reports whether d can be a column of a traffic path.
+func PathDimension(d string) bool {
+	_, ok := LookupDimension(d)
+	return ok && !pathExcluded[d]
+}
+
 // ValidPathDimensions checks a list of 2 or 3 distinct path dimensions.
 func ValidPathDimensions(dims []string) error {
 	if len(dims) < 2 || len(dims) > 3 {

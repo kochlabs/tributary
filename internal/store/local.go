@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/netip"
+	"slices"
 	"strings"
 	"sync/atomic"
 )
@@ -97,6 +98,21 @@ func directionCond(v string) (string, error) {
 func LookupDimensionExpr(name string) (string, bool) {
 	d, ok := LookupDimension(name)
 	return d.expr, ok
+}
+
+// localDimensionNames are the dimensions localDimension resolves.
+var localDimensionNames = []string{"local_host", "remote_host", "remote_as", "remote_country", "direction", "device", "conversation"}
+
+// DimensionNames lists every dimension LookupDimension accepts, sorted.
+func DimensionNames() []string {
+	names := slices.Clone(localDimensionNames)
+	for n := range Dimensions {
+		if !slices.Contains(names, n) {
+			names = append(names, n)
+		}
+	}
+	slices.Sort(names)
+	return names
 }
 
 // LookupDimension returns a static or local-aware dimension.
