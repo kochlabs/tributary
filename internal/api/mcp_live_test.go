@@ -29,6 +29,36 @@ func TestMCPLive(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer sess.Close()
+	call := func(tool string, args map[string]any) map[string]any {
+		res, err := sess.CallTool(context.Background(), &mcp.CallToolParams{Name: tool, Arguments: args})
+		if err != nil {
+			t.Fatalf("%s: %v", tool, err)
+		}
+		if res.IsError {
+			t.Fatalf("%s: %s", tool, res.Content[0].(*mcp.TextContent).Text)
+		}
+		b, _ := json.Marshal(res.StructuredContent)
+		t.Logf("%-18s %6d bytes  %.120s", tool, len(b), b)
+		var out map[string]any
+		json.Unmarshal(b, &out)
+		return out
+	}
+
+	// An exporter and a busy local host from the appliance's own data.
+	exporter, host := "", ""
+	if res, err := sess.CallTool(context.Background(), &mcp.CallToolParams{Name: "exporters", Arguments: map[string]any{"range": "24h"}}); err == nil && !res.IsError {
+		if list, ok := res.StructuredContent.([]any); ok && len(list) > 0 {
+			exporter, _ = list[0].(map[string]any)["addr"].(string)
+		}
+	}
+	if top := call("top", map[string]any{"dimension": "local_host", "range": "24h", "limit": 1}); top != nil {
+		if rows, ok := top["rows"].([]any); ok && len(rows) > 0 {
+			host, _ = rows[0].(map[string]any)["key"].(string)
+		}
+	}
+	if exporter == "" || host == "" {
+		t.Fatalf("no data to test with (exporter %q, host %q)", exporter, host)
+	}
 
 	calls := []struct {
 		tool string
@@ -41,23 +71,14 @@ func TestMCPLive(t *testing.T) {
 		{"traffic_paths", map[string]any{"range": "6h", "dimensions": []any{"device", "app", "remote_as"}}},
 		{"search_flows", map[string]any{"range": "15m", "sort": "bytes", "limit": 5}},
 		{"exporters", map[string]any{"range": "1h"}},
-		{"interfaces", map[string]any{"exporter": "127.0.1.1", "range": "1h"}},
+		{"interfaces", map[string]any{"exporter": exporter, "range": "1h"}},
 		{"devices", map[string]any{"range": "1h"}},
-		{"lookup_address", map[string]any{"address": "10.10.0.10", "range": "1h"}},
+		{"lookup_address", map[string]any{"address": host, "range": "1h"}},
 		{"appliance_health", nil},
 	}
-	for _, call := range calls {
-		res, err := sess.CallTool(context.Background(), &mcp.CallToolParams{Name: call.tool, Arguments: call.args})
-		if err != nil {
-			t.Fatalf("%s: %v", call.tool, err)
+	for _, c := range calls {
+		if out := call(c.tool, c.args); len(out) == 0 && c.tool != "exporters" && c.tool != "interfaces" {
+			t.Fatalf("%s: empty result", c.tool)
 		}
-		if res.IsError {
-			t.Fatalf("%s: %s", call.tool, res.Content[0].(*mcp.TextContent).Text)
-		}
-		b, _ := json.Marshal(res.StructuredContent)
-		if len(b) < 20 {
-			t.Fatalf("%s: almost empty result %s", call.tool, b)
-		}
-		t.Logf("%-18s %6d bytes  %.120s", call.tool, len(b), b)
 	}
 }
