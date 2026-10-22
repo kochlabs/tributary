@@ -1,6 +1,6 @@
 import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, Attribution, errorMessage, Notice } from './core/api';
 import { Auth } from './core/auth';
@@ -10,6 +10,13 @@ import { languageName, setLanguageCookie } from './core/language';
 import { MfaDialog } from './shared/mfa-dialog';
 import { NoticeText, noticeActionLabel } from './shared/notice-text';
 import { TimeRangePicker } from './shared/time-range';
+
+/** Admin pages (/admin/<page>) in each sidebar group. */
+const NAV_GROUPS: Record<string, string[]> = {
+  config: ['settings', 'enrichment'],
+  access: ['users', 'identity-sources', 'audit'],
+  appliance: ['updates', 'backup', 'certificates', 'time', 'services'],
+};
 
 @Component({
   selector: 'nfa-shell',
@@ -84,24 +91,38 @@ import { TimeRangePicker } from './shared/time-range';
           <a clrVerticalNavLink routerLink="/dashboard" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="dashboard"></cds-icon><ng-container i18n="@@nav.dashboard">Dashboard</ng-container></a>
           <a clrVerticalNavLink routerLink="/explorer" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="line-chart"></cds-icon><ng-container i18n="@@nav.explorer">Traffic Explorer</ng-container></a>
           <a clrVerticalNavLink routerLink="/flows" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="table"></cds-icon><ng-container i18n="@@nav.flows">Flow Search</ng-container></a>
-          <a clrVerticalNavLink routerLink="/devices" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="devices"></cds-icon><ng-container i18n="@@nav.devices">Devices</ng-container></a>
+          <div class="nav-divider"></div>
           <a clrVerticalNavLink routerLink="/exporters" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="router"></cds-icon><ng-container i18n="@@nav.exporters">Exporters</ng-container></a>
+          <a clrVerticalNavLink routerLink="/devices" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="devices"></cds-icon><ng-container i18n="@@nav.devices">Devices</ng-container></a>
           <a clrVerticalNavLink routerLink="/system" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="host"></cds-icon><ng-container i18n="@@nav.system">System Health</ng-container></a>
           @if (auth.isAdmin()) {
-            <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('admin')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('admin', $event)">
+            <div class="nav-divider"></div>
+            <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('config')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('config', $event)">
               <cds-icon clrVerticalNavIcon shape="cog"></cds-icon>
-              <ng-container i18n="@@shell.administration">Administration</ng-container>
+              <ng-container i18n="@@nav.groupConfiguration">Configuration</ng-container>
               <clr-vertical-nav-group-children>
                 <a clrVerticalNavLink routerLink="/admin/settings" routerLinkActive="active" i18n="@@nav.settings">Settings</a>
+                <a clrVerticalNavLink routerLink="/admin/enrichment" routerLinkActive="active" i18n="@@nav.enrichment">Enrichment</a>
+              </clr-vertical-nav-group-children>
+            </clr-vertical-nav-group>
+            <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('access')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('access', $event)">
+              <cds-icon clrVerticalNavIcon shape="users"></cds-icon>
+              <ng-container i18n="@@nav.groupAccess">Access</ng-container>
+              <clr-vertical-nav-group-children>
                 <a clrVerticalNavLink routerLink="/admin/users" routerLinkActive="active" i18n="@@nav.users">Users</a>
                 <a clrVerticalNavLink routerLink="/admin/identity-sources" routerLinkActive="active" i18n="@@nav.identitySources">Identity Sources</a>
-                <a clrVerticalNavLink routerLink="/admin/data-sources" routerLinkActive="active" i18n="@@nav.dataSources">Data Sources</a>
+                <a clrVerticalNavLink routerLink="/admin/audit" routerLinkActive="active" i18n="@@nav.audit">Audit Log</a>
+              </clr-vertical-nav-group-children>
+            </clr-vertical-nav-group>
+            <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('appliance')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('appliance', $event)">
+              <cds-icon clrVerticalNavIcon shape="rack-server"></cds-icon>
+              <ng-container i18n="@@nav.groupAppliance">Appliance</ng-container>
+              <clr-vertical-nav-group-children>
+                <a clrVerticalNavLink routerLink="/admin/updates" routerLinkActive="active" i18n="@@nav.updates">Updates</a>
                 <a clrVerticalNavLink routerLink="/admin/backup" routerLinkActive="active" i18n="@@nav.backup">Backup &amp; Restore</a>
                 <a clrVerticalNavLink routerLink="/admin/certificates" routerLinkActive="active" i18n="@@nav.certificates">Certificates</a>
-                <a clrVerticalNavLink routerLink="/admin/services" routerLinkActive="active" i18n="@@nav.services">Services</a>
                 <a clrVerticalNavLink routerLink="/admin/time" routerLinkActive="active" i18n="@@nav.time">Time</a>
-                <a clrVerticalNavLink routerLink="/admin/updates" routerLinkActive="active" i18n="@@nav.updates">Updates</a>
-                <a clrVerticalNavLink routerLink="/admin/audit" routerLinkActive="active" i18n="@@nav.audit">Audit Log</a>
+                <a clrVerticalNavLink routerLink="/admin/services" routerLinkActive="active" i18n="@@nav.services">Services</a>
               </clr-vertical-nav-group-children>
             </clr-vertical-nav-group>
           }
@@ -173,6 +194,7 @@ import { TimeRangePicker } from './shared/time-range';
     </clr-modal>
   `,
   styles: `
+    .nav-divider { margin: 6px 0; }
     .about-logo { height: 24px; vertical-align: -4px; margin-right: 6px; }
     .about h4 { margin-top: 16px; font-size: 14px; }
     .about .ver { color: var(--cds-alias-typography-color-300); margin-top: 0; }
@@ -214,6 +236,13 @@ export class Shell {
     writePref('nfa.navGroups', JSON.stringify(this.navGroups()));
   }
 
+  /** Opens the group holding the current page, e.g. after following a notice. */
+  private openGroupFor(url: string) {
+    const page = url.split(/[?#]/)[0].split('/')[2] ?? '';
+    const group = Object.entries(NAV_GROUPS).find(([, pages]) => pages.includes(page))?.[0];
+    if (group) this.setGroupOpen(group, true);
+  }
+
   setNavCollapsed(collapsed: boolean) {
     this.navCollapsed.set(collapsed);
     writePref('nfa.navCollapsed', String(collapsed));
@@ -245,7 +274,11 @@ export class Shell {
   constructor() {
     this.loadNotices();
     const id = setInterval(() => this.loadNotices(), 60_000);
-    inject(DestroyRef).onDestroy(() => clearInterval(id));
+    const destroy = inject(DestroyRef);
+    destroy.onDestroy(() => clearInterval(id));
+    this.openGroupFor(this.router.url);
+    const nav = this.router.events.subscribe((e) => e instanceof NavigationEnd && this.openGroupFor(e.urlAfterRedirects));
+    destroy.onDestroy(() => nav.unsubscribe());
     this.api.publicInfo().then((i) => {
       this.languages.set((i.languages ?? []).map((code) => ({ code, name: languageName(code) })));
       this.language.set(i.language ?? '');

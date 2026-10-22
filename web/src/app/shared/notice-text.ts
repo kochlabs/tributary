@@ -105,7 +105,7 @@ export function noticeActionLabel(n: Notice): string {
     case 'time-unsynced':
       return $localize`:@@notice.action.time:Time settings`;
     case 'datasource-failed':
-      return $localize`:@@nav.dataSources:Data Sources`;
+      return $localize`:@@nav.enrichment:Enrichment`;
     case 'backup-failed':
     case 'backup-overdue':
       return $localize`:@@nav.backup:Backup & Restore`;

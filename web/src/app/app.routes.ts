@@ -24,7 +24,8 @@ export const routes: Routes = [
         children: [
           { path: 'settings', loadComponent: () => import('./pages/settings').then((m) => m.SettingsPage), title: $localize`:@@nav.settings:Settings` },
           { path: 'users', loadComponent: () => import('./pages/users').then((m) => m.Users), title: $localize`:@@nav.users:Users` },
-          { path: 'data-sources', loadComponent: () => import('./pages/data-sources').then((m) => m.DataSources), title: $localize`:@@nav.dataSources:Data Sources` },
+          { path: 'enrichment', loadComponent: () => import('./pages/enrichment').then((m) => m.EnrichmentPage), title: $localize`:@@nav.enrichment:Enrichment` },
+          { path: 'data-sources', redirectTo: 'enrichment' },
           { path: 'backup', loadComponent: () => import('./pages/backup').then((m) => m.Backup), title: $localize`:@@nav.backup:Backup & Restore` },
           { path: 'certificates', loadComponent: () => import('./pages/certificates').then((m) => m.Certificates), title: $localize`:@@nav.certificates:Certificates` },
           { path: 'identity-sources', loadComponent: () => import('./pages/identity-sources').then((m) => m.IdentitySources), title: $localize`:@@nav.identitySources:Identity Sources` },

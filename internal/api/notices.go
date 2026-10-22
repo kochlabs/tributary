@@ -214,7 +214,7 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 		if when, msg, ok := strings.Cut(f.status, ": failed: "); ok {
 			add(Notice{ID: "datasource:" + f.what + ":" + when, Kind: "datasource-failed", Params: map[string]string{"database": f.db, "error": firstLine(msg)}, Level: "info", adminOnly: true,
 				Message: fmt.Sprintf("The %s database could not be updated: %s", f.what, firstLine(msg)),
-				Action:  &NoticeAction{Label: "Data sources", Route: "/admin/data-sources", admin: true}})
+				Action:  &NoticeAction{Label: "Enrichment", Route: "/admin/enrichment", admin: true}})
 		}
 	}
 

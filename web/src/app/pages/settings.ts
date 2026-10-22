@@ -1,15 +1,14 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage, GeoStatus, Settings, StorageEstimate, StorageRate } from '../core/api';
-import { prefixContains, validAddrOrPrefix, validAddrPort } from '../core/cidr';
+import { Api, errorMessage, Settings, StorageEstimate, StorageRate } from '../core/api';
+import { prefixContains, validAddrOrPrefix } from '../core/cidr';
 import { bytes, count, dateTime } from '../core/format';
 import { ListEditor, listValues } from '../shared/list-editor';
 
 @Component({
   selector: 'nfa-settings',
-  imports: [ClarityModule, FormsModule, RouterLink, ListEditor],
+  imports: [ClarityModule, FormsModule, ListEditor],
   template: `
     <div class="page-header">
       <div>
@@ -39,14 +38,6 @@ import { ListEditor, listValues } from '../shared/list-editor';
               <label i18n="@@settings.sessionLifetime">Session lifetime (hours)</label>
               <input clrInput type="number" name="session" [(ngModel)]="s.sessionHours" min="1" max="720" required />
             </clr-input-container>
-            <clr-toggle-container>
-              <label i18n="@@settings.requireMfa">Two-factor for administrators</label>
-              <clr-toggle-wrapper>
-                <input type="checkbox" clrToggle name="requireMfa" [(ngModel)]="s.requireMfaAdmins" />
-                <label i18n="@@settings.requireMfaToggle">Require it</label>
-              </clr-toggle-wrapper>
-              <clr-control-helper i18n="@@settings.requireMfaHelp">Administrators who sign in with a password must set up an authenticator app at their next sign-in, and can't turn it off. Single sign-on administrators use their identity provider's two-factor authentication.</clr-control-helper>
-            </clr-toggle-container>
           </div>
         </div>
 
@@ -120,56 +111,6 @@ import { ListEditor, listValues } from '../shared/list-editor';
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-header" i18n="@@settings.enrichment">Enrichment</div>
-          <div class="card-block">
-            <clr-toggle-container>
-              <label i18n="@@settings.reverseDns">Reverse DNS</label>
-              <clr-toggle-wrapper>
-                <input type="checkbox" clrToggle name="rdns" [(ngModel)]="s.reverseDns" />
-                <label i18n="@@settings.reverseDnsToggle">Resolve hostnames for addresses in reports</label>
-              </clr-toggle-wrapper>
-              <clr-control-helper i18n="@@settings.reverseDnsHelp">Lookups use the appliance's system resolver and are cached for 6 hours. Disable on isolated networks.</clr-control-helper>
-            </clr-toggle-container>
-            <div class="clr-form-control clr-row">
-              <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@settings.localNetworks">Local networks</label>
-              <div class="clr-control-container clr-col-12 clr-col-md-8">
-                @if (!localList().length) {
-                  <p class="empty" i18n="@@settings.localNetworksEmpty">None added: only private ranges are local.</p>
-                }
-                <nfa-list-editor [(items)]="localList" placeholder="2001:db8:1234::/56" label="Local network" i18n-label="@@settings.localNetworkLabel" [validate]="cidrError" />
-                <span class="clr-subtext" i18n="@@settings.localNetworksHelp2">CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</span>
-              </div>
-            </div>
-            <div class="clr-form-control clr-row">
-              <label class="clr-control-label clr-col-12 clr-col-md-4" i18n="@@settings.dnsResolvers">DNS resolvers</label>
-              <div class="clr-control-container clr-col-12 clr-col-md-8">
-                @if (!dnsList().length) {
-                  <p class="empty">
-                    <ng-container i18n="@@settings.dnsEmpty">None added: using the system resolvers</ng-container>@if (geo()?.systemDnsServers?.length) { ({{ geo()!.systemDnsServers.join(', ') }})}.
-                  </p>
-                }
-                <nfa-list-editor [(items)]="dnsList" [ordered]="true" placeholder="192.168.1.1 or [2001:db8::53]:53" label="DNS resolver" i18n-label="@@settings.dnsResolverLabel" [validate]="dnsError" />
-                <span class="clr-subtext" i18n="@@settings.dnsResolversHelp2">IP addresses, optionally with a port, tried in order. Used for Tributary's own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</span>
-              </div>
-            </div>
-            <clr-toggle-container>
-              <label i18n="@@settings.onlineAsn">Online ASN lookup</label>
-              <clr-toggle-wrapper>
-                <input type="checkbox" clrToggle name="onlineasn" [(ngModel)]="s.onlineAsnLookup" />
-                <label i18n="@@settings.onlineAsnToggle">Look up ASNs missing from the local database via RIPEstat</label>
-              </clr-toggle-wrapper>
-              <clr-control-helper i18n="@@settings.onlineAsnHelp">Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</clr-control-helper>
-            </clr-toggle-container>
-            <p class="hint sources">
-              <ng-container i18n="@@settings.dataSourcesHint">GeoIP, ASN and MAC vendor databases are chosen under <a routerLink="/admin/data-sources">Data Sources</a>.</ng-container>
-              @if (geo(); as g) {
-                &nbsp;<ng-container i18n="@@settings.hostnameCache">Hostname cache: {{ g.rdnsCache }} entries.</ng-container>
-              }
-            </p>
-          </div>
-        </div>
-
         <div class="actions">
           <button type="submit" class="btn btn-primary" [clrLoading]="busy()" i18n="@@settings.saveSettings">Save settings</button>
           <button type="button" class="btn btn-outline" (click)="load()" i18n="@@common.revert">Revert</button>
@@ -191,7 +132,6 @@ import { ListEditor, listValues } from '../shared/list-editor';
     .estimate.over { border-color: var(--cds-alias-status-danger); }
     .muted { color: var(--cds-alias-typography-color-300); font-size: 12px; }
 
-    .sources { margin-top: 18px; }
   `,
 })
 export class SettingsPage {
@@ -200,16 +140,11 @@ export class SettingsPage {
   readonly busy = signal(false);
   readonly saved = signal(false);
   readonly error = signal('');
-  readonly geo = signal<GeoStatus | null>(null);
   readonly storage = signal<StorageEstimate | null>(null);
   fmtBytes = bytes;
   count = count;
-  readonly localList = signal<string[]>([]);
-  readonly dnsList = signal<string[]>([]);
   readonly allowList = signal<string[]>([]);
-  readonly cidrError = (v: string) => (validAddrOrPrefix(v) && v.includes('/') ? null : $localize`:@@settings.notCidr:Not a CIDR prefix, e.g. 2001:db8:1234::/56`);
   readonly prefixError = (v: string) => (validAddrOrPrefix(v) ? null : $localize`:@@settings.notAddrOrPrefix:Not an IP address or CIDR prefix`);
-  readonly dnsError = (v: string) => (validAddrPort(v) ? null : $localize`:@@settings.notAddrPort:Not an IP address (optionally with :port)`);
   /** Exporters that sent flows in the last hour, to warn before locking them out. */
   readonly activeExporters = signal<string[]>([]);
   private allowEntries = computed(() => listValues(this.allowList()).filter((e) => validAddrOrPrefix(e)));
@@ -230,12 +165,9 @@ export class SettingsPage {
     try {
       const st = await this.api.settings();
       this.s.set(st);
-      this.localList.set(st.localNetworks ?? []);
-      this.dnsList.set(st.dnsServers ?? []);
       this.allowList.set(st.exporterAllowlist ?? []);
       const now = Date.now();
       this.api.exporters({ from: now - 3600e3, to: now }).then((list) => this.activeExporters.set(list.filter((e) => e.flows > 0).map((e) => e.addr)), () => {});
-      this.geo.set(await this.api.geo());
       this.storage.set(await this.api.storageEstimate());
     } catch (e) {
       this.error.set(errorMessage(e));
@@ -245,11 +177,7 @@ export class SettingsPage {
   async save() {
     const cur = this.s();
     if (!cur) return;
-    const bad = [
-      ...listValues(this.allowList()).filter((v) => this.prefixError(v)),
-      ...listValues(this.localList()).filter((v) => this.cidrError(v)),
-      ...listValues(this.dnsList()).filter((v) => this.dnsError(v)),
-    ];
+    const bad = listValues(this.allowList()).filter((v) => this.prefixError(v));
     if (bad.length) {
       this.saved.set(false);
       this.error.set($localize`:@@settings.fixEntries:Fix the highlighted entries first: ${bad.join(', ')}:entries:`);
@@ -260,11 +188,10 @@ export class SettingsPage {
     this.error.set('');
     const n = (v: unknown) => Number(v) || 0;
     try {
+      // Only this page's settings: Enrichment and Users save the others.
       this.s.set(
-        await this.api.saveSettings({
-          ...cur,
-          dnsServers: listValues(this.dnsList()),
-          localNetworks: listValues(this.localList()),
+        await this.api.updateSettings({
+          applianceName: cur.applianceName,
           exporterAllowlist: listValues(this.allowList()),
           sessionHours: n(cur.sessionHours),
           netflowPort: n(cur.netflowPort),

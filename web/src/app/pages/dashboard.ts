@@ -76,7 +76,7 @@ const SERIES_BY = [
                         <button class="btn btn-sm btn-link" (click)="addLocal(widen(p.prefix, 56))" title="ISPs commonly delegate a /56 and routers assign one /64 per VLAN" i18n-title="@@dashboard.widenHint" i18n="@@dashboard.addWiderPrefix">Add {{ widen(p.prefix, 56) }}</button>
                       }
                     } @else {
-                      <ng-container i18n="@@dashboard.askAdmin">Ask an administrator to add it under Settings → Local networks.</ng-container>
+                      <ng-container i18n="@@dashboard.askAdminEnrichment">Ask an administrator to add it under Configuration → Enrichment.</ng-container>
                     }
                   </div>
                 }

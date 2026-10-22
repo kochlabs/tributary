@@ -260,7 +260,7 @@ ClickHouse.
   new.deb`, or `sudo apt install ./new.deb`). The configuration and flow data
   are kept, and the schema is migrated when Tributary starts.
 - **ClickHouse**: updated with the operating system (`apt upgrade`, or
-  Administration → Updates in the web interface), following ClickHouse's LTS
+  Appliance → Updates in the web interface), following ClickHouse's LTS
   releases.
 
 ## Removing Tributary

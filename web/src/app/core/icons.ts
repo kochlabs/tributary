@@ -54,10 +54,14 @@ import {
   warningStandardIcon,
   pieChartIcon,
   treeViewIcon,
+  calendarIcon,
+  infoStandardIcon,
 } from '@clr/angular';
 
 export function registerIcons() {
   ClarityIcons.addIcons(
+    calendarIcon,
+    infoStandardIcon,
     angleIcon,
     devicesIcon,
     certificateIcon,

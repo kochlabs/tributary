@@ -1,8 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { Api, Enrichment, errorMessage, GeoStatus } from '../core/api';
+import { Api, Enrichment, errorMessage, GeoStatus, Settings } from '../core/api';
+import { validAddrOrPrefix, validAddrPort } from '../core/cidr';
 import { count, dateTime } from '../core/format';
+import { ListEditor, listValues } from '../shared/list-editor';
+
+/** The settings this page edits (the rest are on the Settings page). */
+type Lookups = Pick<Settings, 'reverseDns' | 'onlineAsnLookup' | 'localNetworks' | 'dnsServers'>;
 
 const GEO_SOURCES = [
   { id: 'dbip-lite', label: $localize`:@@dataSources.geo.dbipLabel:DB-IP Lite (free)`, help: $localize`:@@dataSources.geo.dbipHelp:Country and ASN databases from db-ip.com, downloaded monthly. Free under CC BY 4.0, which requires the attribution shown below.` },
@@ -18,18 +23,20 @@ const OUI_SOURCES = [
 ] as const;
 
 @Component({
-  selector: 'nfa-data-sources',
-  imports: [ClarityModule, FormsModule],
+  selector: 'nfa-enrichment',
+  imports: [ClarityModule, FormsModule, ListEditor],
   template: `
     <div class="page-header">
       <div>
-        <h2 i18n="@@nav.dataSources">Data Sources</h2>
-        <p class="subtitle" i18n="@@dataSources.subtitle">Where IP geolocation, AS and MAC vendor data comes from</p>
+        <h2 i18n="@@nav.enrichment">Enrichment</h2>
+        <p class="subtitle" i18n="@@enrichment.subtitle">Local networks, geolocation, AS numbers, hostnames and MAC vendors</p>
       </div>
     </div>
 
     @if (saved()) {
-      <div class="alert alert-success" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text" i18n="@@dataSources.saved">Saved. New sources are loaded in the background.</span></div></div></div>
+      <div class="alert alert-success" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">
+        @if (saved() === 'sources') {<ng-container i18n="@@dataSources.saved">Saved. New sources are loaded in the background.</ng-container>} @else {<ng-container i18n="@@enrichment.saved">Saved and applied.</ng-container>}
+      </span></div></div></div>
     }
     @if (error()) {
       <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ error() }}</span></div></div></div>
@@ -37,6 +44,22 @@ const OUI_SOURCES = [
 
     @if (e(); as e) {
       <form clrForm clrLayout="horizontal" clrLabelSize="3" (ngSubmit)="save()" class="ds-form">
+        <div class="card">
+          <div class="card-header" i18n="@@settings.localNetworks">Local networks</div>
+          <div class="card-block">
+            <div class="clr-form-control clr-row">
+              <label class="clr-control-label clr-col-12 clr-col-md-3" i18n="@@enrichment.prefixes">Prefixes</label>
+              <div class="clr-control-container clr-col-12 clr-col-md-9">
+                @if (!localList().length) {
+                  <p class="empty" i18n="@@settings.localNetworksEmpty">None added: only private ranges are local.</p>
+                }
+                <nfa-list-editor [(items)]="localList" placeholder="2001:db8:1234::/56" label="Local network" i18n-label="@@settings.localNetworkLabel" [validate]="cidrError" />
+                <span class="clr-subtext" i18n="@@settings.localNetworksHelp2">CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-header" i18n="@@dataSources.geoTitle">IP geolocation and AS numbers</div>
           <div class="card-block">
@@ -126,7 +149,44 @@ const OUI_SOURCES = [
                 }
               </p>
             }
+            <clr-toggle-container>
+              <label i18n="@@settings.onlineAsn">Online ASN lookup</label>
+              <clr-toggle-wrapper>
+                <input type="checkbox" clrToggle name="onlineasn" [(ngModel)]="lk.onlineAsnLookup" />
+                <label i18n="@@settings.onlineAsnToggle">Look up ASNs missing from the local database via RIPEstat</label>
+              </clr-toggle-wrapper>
+              <clr-control-helper i18n="@@settings.onlineAsnHelp">Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</clr-control-helper>
+            </clr-toggle-container>
             <button type="button" class="btn btn-sm btn-outline" (click)="update('geo')" [clrLoading]="busyGeo()" [disabled]="dirty()" [title]="dirty() ? saveFirst : ''">@if (e.geoSource === 'files') {<ng-container i18n="@@dataSources.reloadNow">Reload now</ng-container>} @else {<ng-container i18n="@@dataSources.updateNow">Update now</ng-container>}</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" i18n="@@settings.reverseDns">Reverse DNS</div>
+          <div class="card-block">
+            <clr-toggle-container>
+              <label i18n="@@enrichment.hostnames">Hostnames</label>
+              <clr-toggle-wrapper>
+                <input type="checkbox" clrToggle name="rdns" [(ngModel)]="lk.reverseDns" />
+                <label i18n="@@settings.reverseDnsToggle">Resolve hostnames for addresses in reports</label>
+              </clr-toggle-wrapper>
+              <clr-control-helper>
+                <ng-container i18n="@@enrichment.reverseDnsHelp">Cached for 6 hours. Disable on isolated networks.</ng-container>
+                @if (st(); as g) { <ng-container i18n="@@settings.hostnameCache">Hostname cache: {{ g.rdnsCache }} entries.</ng-container> }
+              </clr-control-helper>
+            </clr-toggle-container>
+            <div class="clr-form-control clr-row">
+              <label class="clr-control-label clr-col-12 clr-col-md-3" i18n="@@settings.dnsResolvers">DNS resolvers</label>
+              <div class="clr-control-container clr-col-12 clr-col-md-9">
+                @if (!dnsList().length) {
+                  <p class="empty">
+                    <ng-container i18n="@@settings.dnsEmpty">None added: using the system resolvers</ng-container>@if (st()?.systemDnsServers?.length) { ({{ st()!.systemDnsServers.join(', ') }})}.
+                  </p>
+                }
+                <nfa-list-editor [(items)]="dnsList" [ordered]="true" placeholder="192.168.1.1 or [2001:db8::53]:53" label="DNS resolver" i18n-label="@@settings.dnsResolverLabel" [validate]="dnsError" />
+                <span class="clr-subtext" i18n="@@settings.dnsResolversHelp2">IP addresses, optionally with a port, tried in order. Used for Tributary's own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -191,7 +251,7 @@ const OUI_SOURCES = [
           @if (error()) {
             <span class="save-error"><cds-icon shape="error-standard"></cds-icon> {{ error() }}</span>
           } @else if (dirty()) {
-            <span class="unsaved"><cds-icon shape="exclamation-triangle"></cds-icon> <ng-container i18n="@@dataSources.unsaved">Unsaved changes. Saving switches to the selected sources and downloads them right away.</ng-container></span>
+            <span class="unsaved"><cds-icon shape="exclamation-triangle"></cds-icon> <ng-container i18n="@@enrichment.unsaved">Unsaved changes.</ng-container></span>
           }
         </div>
       </form>
@@ -199,6 +259,8 @@ const OUI_SOURCES = [
   `,
   styles: `
     .ds-form { max-width: 880px; }
+    .empty { margin: 6px 0 4px; font-size: 13px; color: var(--cds-alias-typography-color-300); }
+    .clr-subtext { display: block; margin-top: 6px; }
     .ds-form .card:first-child { margin-top: 0; }
     .status { max-width: 760px; margin: 0 0 8px; }
     .status td { text-align: left; padding: 2px 0; border: 0; }
@@ -212,15 +274,22 @@ const OUI_SOURCES = [
     .unsaved { font-size: 13px; color: var(--cds-alias-status-warning-shade, #8c5c00); margin-left: 8px; }
   `,
 })
-export class DataSources {
+export class EnrichmentPage {
   private api = inject(Api);
   readonly e = signal<Enrichment | null>(null);
   readonly st = signal<GeoStatus | null>(null);
   readonly busy = signal(false);
   readonly busyGeo = signal(false);
   readonly busyOui = signal(false);
-  readonly saved = signal(false);
+  readonly saved = signal<'' | 'lookups' | 'sources'>('');
   readonly error = signal('');
+  readonly localList = signal<string[]>([]);
+  readonly dnsList = signal<string[]>([]);
+  /** Settings edited here; saved with the rest of the page. */
+  lk: Pick<Lookups, 'reverseDns' | 'onlineAsnLookup'> = { reverseDns: false, onlineAsnLookup: false };
+  private savedLookups = '';
+  readonly cidrError = (v: string) => (validAddrOrPrefix(v) && v.includes('/') ? null : $localize`:@@settings.notCidr:Not a CIDR prefix, e.g. 2001:db8:1234::/56`);
+  readonly dnsError = (v: string) => (validAddrPort(v) ? null : $localize`:@@settings.notAddrPort:Not an IP address (optionally with :port)`);
   readonly geoSources = GEO_SOURCES;
   readonly ouiSources = OUI_SOURCES;
   readonly countryEditions = ['GeoLite2-Country', 'GeoLite2-City', 'GeoIP2-Country', 'GeoIP2-City', 'GeoIP2-Enterprise'];
@@ -242,9 +311,28 @@ export class DataSources {
   private savedJson = '';
   readonly savedOui = signal('');
 
-  dirty() {
+  private lookups(): Lookups {
+    return { ...this.lk, localNetworks: listValues(this.localList()), dnsServers: listValues(this.dnsList()) };
+  }
+
+  private sourcesDirty() {
     const e = this.e();
     return !!e && (JSON.stringify(e) !== this.savedJson || !!this.licenseKey || !!this.countryUrl || !!this.asnUrl || this.clearAsnUrl);
+  }
+
+  private lookupsDirty() {
+    return JSON.stringify(this.lookups()) !== this.savedLookups;
+  }
+
+  dirty() {
+    return this.sourcesDirty() || this.lookupsDirty();
+  }
+
+  private setLookups(s: Lookups) {
+    this.lk = { reverseDns: s.reverseDns, onlineAsnLookup: s.onlineAsnLookup };
+    this.localList.set(s.localNetworks ?? []);
+    this.dnsList.set(s.dnsServers ?? []);
+    this.savedLookups = JSON.stringify(this.lookups());
   }
 
   private setSaved(e: Enrichment) {
@@ -266,13 +354,14 @@ export class DataSources {
   }
 
   async load() {
-    this.saved.set(false);
+    this.saved.set('');
     this.error.set('');
     this.licenseKey = this.countryUrl = this.asnUrl = '';
     this.clearAsnUrl = false;
     try {
-      const [e, st] = await Promise.all([this.api.enrichment(), this.api.geo()]);
+      const [e, st, settings] = await Promise.all([this.api.enrichment(), this.api.geo(), this.api.settings()]);
       this.setSaved(e);
+      this.setLookups(settings);
       this.st.set(st);
     } catch (err) {
       this.error.set(errorMessage(err));
@@ -282,11 +371,23 @@ export class DataSources {
   async save() {
     const e = this.e();
     if (!e) return;
+    const bad = [...listValues(this.localList()).filter((v) => this.cidrError(v)), ...listValues(this.dnsList()).filter((v) => this.dnsError(v))];
+    if (bad.length) {
+      this.error.set($localize`:@@settings.fixEntries:Fix the highlighted entries first: ${bad.join(', ')}:entries:`);
+      return;
+    }
     this.busy.set(true);
-    this.saved.set(false);
+    this.saved.set('');
     this.error.set('');
     const before = this.st();
     try {
+      if (this.lookupsDirty()) {
+        this.setLookups(await this.api.updateSettings(this.lookups()));
+      }
+      if (!this.sourcesDirty()) {
+        this.saved.set('lookups');
+        return;
+      }
       // hasLicenseKey and the URL hosts are read-only; the API rejects them.
       const { hasLicenseKey, geoCountryHost, geoAsnHost, ...stored } = e;
       const out = await this.api.saveEnrichment({
@@ -299,7 +400,7 @@ export class DataSources {
       this.setSaved(out);
       this.licenseKey = this.countryUrl = this.asnUrl = '';
       this.clearAsnUrl = false;
-      this.saved.set(true);
+      this.saved.set('sources');
       await this.waitForChange(before, 30);
     } catch (err) {
       this.error.set(errorMessage(err));

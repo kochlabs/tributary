@@ -13,7 +13,7 @@
 ## Enrichment
 
 - Country and ASN (with organization names) at ingest. Sources, chosen under
-  Administration → Data Sources: DB-IP Lite (default), MaxMind GeoLite2 or
+  Configuration → Enrichment: DB-IP Lite (default), MaxMind GeoLite2 or
   GeoIP2, custom URLs, or files kept up to date by `geoipupdate`.
 - MAC vendors from the IEEE registry (default, refreshed weekly), a URL or a file.
 - Reverse DNS at query time, cached.

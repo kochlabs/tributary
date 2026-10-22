@@ -798,6 +798,11 @@ export class Api {
   saveSettings(s: Settings) {
     return firstValueFrom(this.http.put<Settings>('/api/settings', s));
   }
+  /** Changes some settings, on top of the current ones, so pages that edit
+   * different settings don't overwrite each other's changes. */
+  async updateSettings(patch: Partial<Settings>) {
+    return this.saveSettings({ ...(await this.settings()), ...patch });
+  }
 
   users() {
     return this.get<User[]>('/api/users');

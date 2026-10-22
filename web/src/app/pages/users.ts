@@ -59,6 +59,22 @@ import { loader, trackByKey } from '../core/util';
       </clr-dg-footer>
     </clr-datagrid>
 
+    @if (policy(); as p) {
+      <div class="card policy">
+        <div class="card-header" i18n="@@users.signInPolicy">Sign-in policy</div>
+        <div class="card-block">
+          <clr-toggle-wrapper>
+            <input type="checkbox" clrToggle name="requireMfa" [ngModel]="p.requireMfaAdmins" (ngModelChange)="setRequireMfa($event)" [disabled]="policyBusy()" />
+            <label i18n="@@users.requireMfa">Require two-factor authentication for administrators</label>
+          </clr-toggle-wrapper>
+          <p class="hint" i18n="@@settings.requireMfaHelp">Administrators who sign in with a password must set up an authenticator app at their next sign-in, and can't turn it off. Single sign-on administrators use their identity provider's two-factor authentication.</p>
+          @if (policyError()) {
+            <p class="bad">{{ policyError() }}</p>
+          }
+        </div>
+      </div>
+    }
+
     <clr-modal [(clrModalOpen)]="formOpen" clrModalSize="md">
       <h3 class="modal-title">@if (editing) {<ng-container i18n="@@users.editTitle">Edit {{ form.username }}</ng-container>} @else {<ng-container i18n="@@users.addUser">Add user</ng-container>}</h3>
       <div class="modal-body">
@@ -125,7 +141,10 @@ import { loader, trackByKey } from '../core/util';
     </clr-modal>
   `,
   styles: `
-    .muted { color: var(--cds-alias-typography-color-300); }.label { margin-left: 6px; } .managed { font-size: 13px; margin-top: 18px; }`,
+    .muted { color: var(--cds-alias-typography-color-300); }.label { margin-left: 6px; } .managed { font-size: 13px; margin-top: 18px; }
+    .policy { max-width: 820px; margin-top: 24px; }
+    .hint { font-size: 12px; color: var(--cds-alias-typography-color-300); margin: 6px 0 0; }
+    .bad { font-size: 13px; color: var(--cds-alias-status-danger); margin: 8px 0 0; }`,
 })
 export class Users {
   readonly byUsername = trackByKey<{ username: string }>((u) => u.username);
@@ -133,6 +152,28 @@ export class Users {
   readonly auth = inject(Auth);
   readonly users = loader(() => true, () => this.api.users());
   dt = dateTime;
+
+  readonly policy = signal<{ requireMfaAdmins: boolean } | null>(null);
+  readonly policyBusy = signal(false);
+  readonly policyError = signal('');
+
+  constructor() {
+    this.api.settings().then((s) => this.policy.set({ requireMfaAdmins: s.requireMfaAdmins }), (e) => this.policyError.set(errorMessage(e)));
+  }
+
+  async setRequireMfa(on: boolean) {
+    this.policyBusy.set(true);
+    this.policyError.set('');
+    try {
+      const s = await this.api.updateSettings({ requireMfaAdmins: on });
+      this.policy.set({ requireMfaAdmins: s.requireMfaAdmins });
+    } catch (e) {
+      this.policyError.set(errorMessage(e));
+      this.policy.set({ requireMfaAdmins: !on }); // the toggle goes back
+    } finally {
+      this.policyBusy.set(false);
+    }
+  }
 
   readonly formOpen = signal(false);
   editing = false;
