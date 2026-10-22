@@ -20,7 +20,7 @@ DEB      := dist/tributary_$(VERSION)_amd64.deb
 URL      ?= https://localhost
 
 .DEFAULT_GOAL := help
-.PHONY: help all web build brand notices i18n deb test check fmt fuzz bench serve dev install deploy status logs demo-start demo-stop clean
+.PHONY: help all web build brand notices i18n deb test check fmt screenshots fuzz bench serve dev install deploy status logs demo-start demo-stop clean
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -68,6 +68,9 @@ check: web/node_modules/.stamp ## Pre-commit check: gofmt, vet, tests and a web 
 	$(MAKE) --no-print-directory test
 	cd web && npx ng build
 	@touch internal/webui/dist/.gitkeep
+
+screenshots: web ## Retake docs/screenshots from an isolated demo instance
+	scripts/screenshots/run.sh
 
 fuzz: ## Fuzz the flow decoders for 60s
 	go test ./internal/decode -run XXX -fuzz FuzzDecode -fuzztime 60s

@@ -1,0 +1,9 @@
+{
+  "name": "tributary-screenshots",
+  "private": true,
+  "type": "module",
+  "description": "Retakes docs/screenshots; see run.sh",
+  "devDependencies": {
+    "puppeteer-core": "24.43.1"
+  }
+}

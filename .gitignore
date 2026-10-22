@@ -1,6 +1,7 @@
 /bin/
 .devdata/
 web/node_modules/
+scripts/screenshots/node_modules/
 web/.angular/
 internal/webui/dist/*
 !internal/webui/dist/.gitkeep

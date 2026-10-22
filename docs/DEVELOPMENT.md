@@ -14,7 +14,9 @@ bin/flowgen -backfill 72h -geoip-dir /var/lib/nfa/geoip   # simulated history
 
 Other targets: `make i18n` extracts UI text for translation
 ([TRANSLATING.md](TRANSLATING.md)), `make notices` regenerates
-`THIRD_PARTY_NOTICES.md`, `make fuzz` and `make bench` exercise the decoders.
+`THIRD_PARTY_NOTICES.md`, `make screenshots` retakes `docs/screenshots` from an
+isolated demo instance (needs ClickHouse and Chromium), and `make fuzz` and
+`make bench` exercise the decoders.
 
 Tests that need a live service run only when their variable is set:
 `NFA_TEST_CH_PW` (ClickHouse), `NFA_TEST_LDAP`, `NFA_TEST_SNMP`,
