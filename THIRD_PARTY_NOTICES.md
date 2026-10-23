@@ -44,6 +44,7 @@ Modules compiled into the `nfad` binary.
 | Module | Version | License |
 |---|---|---|
 | Go standard library and runtime | go1.27.2 | BSD-3-Clause |
+| codeberg.org/go-pdf/fpdf | v0.12.0 | MIT |
 | filippo.io/age | v1.3.2 | BSD-3-Clause |
 | filippo.io/hpke | v0.4.0 | BSD-3-Clause |
 | github.com/Azure/go-ntlmssp | v0.1.1 | MIT |
@@ -58,12 +59,15 @@ Modules compiled into the `nfad` binary.
 | github.com/crewjam/saml | v0.5.1 | BSD-2-Clause |
 | github.com/dustin/go-humanize | v1.0.1 | MIT |
 | github.com/geoffgarside/ber | v1.1.0 | BSD-3-Clause |
+| github.com/go-analyze/bulk | v0.1.6 | MIT |
+| github.com/go-analyze/charts | v0.6.4 | MIT |
 | github.com/go-asn1-ber/asn1-ber | v1.5.8 | MIT |
 | github.com/go-faster/city | v1.0.1 | MIT |
 | github.com/go-faster/errors | v0.7.1 | BSD-3-Clause |
 | github.com/go-jose/go-jose/v4 | v4.1.4 | Apache-2.0 |
 | github.com/go-ldap/ldap/v3 | v3.4.15 | MIT |
 | github.com/golang-jwt/jwt/v4 | v4.5.2 | MIT |
+| github.com/golang/freetype | v0.0.0-20170609003504-e2365dfdc4a0 | see text |
 | github.com/google/jsonschema-go | v0.4.3 | MIT |
 | github.com/google/uuid | v1.6.0 | BSD-3-Clause |
 | github.com/gosnmp/gosnmp | v1.45.0 | BSD-3-Clause |
@@ -102,6 +106,7 @@ Modules compiled into the `nfad` binary.
 | go.opentelemetry.io/otel/trace | v1.46.0 | Apache-2.0 |
 | go.yaml.in/yaml/v3 | v3.0.5 | Apache-2.0 |
 | golang.org/x/crypto | v0.58.0 | BSD-3-Clause |
+| golang.org/x/image | v0.45.0 | BSD-3-Clause |
 | golang.org/x/net | v0.60.0 | BSD-3-Clause |
 | golang.org/x/oauth2 | v0.37.0 | BSD-3-Clause |
 | golang.org/x/sync | v0.24.0 | BSD-3-Clause |
@@ -150,6 +155,36 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+#### codeberg.org/go-pdf/fpdf v0.12.0
+
+`LICENSE`:
+
+```text
+MIT License
+
+Copyright (c) 2021 The Go-PDF authors
+Copyright (c) 2020 David Barnes
+Copyright (c) 2017 Kurt Jung and contributors acknowledged in the documentation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
 #### filippo.io/age v1.3.2
@@ -1268,6 +1303,64 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
+#### github.com/go-analyze/bulk v0.1.6
+
+`LICENSE`:
+
+```text
+MIT License
+
+Copyright (c) 2025 Mike Jensen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+#### github.com/go-analyze/charts v0.6.4
+
+`LICENSE`:
+
+```text
+MIT License
+
+Copyright (c) 2016 William Charczuk
+Copyright (c) 2021 Tree Xie
+Copyright (c) 2024 Mike Jensen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
 #### github.com/go-asn1-ber/asn1-ber v1.5.8
 
 `LICENSE`:
@@ -1609,6 +1702,25 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+#### github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+
+`LICENSE`:
+
+```text
+Use of the Freetype-Go software is subject to your choice of exactly one of
+the following two licenses:
+  * The FreeType License, which is similar to the original BSD license with
+    an advertising clause, or
+  * The GNU General Public License (GPL), version 2 or later.
+
+The text of these licenses are available in the licenses/ftl.txt and the
+licenses/gpl.txt files respectively. They are also available at
+http://freetype.sourceforge.net/license.html
+
+The Luxi fonts in the testdata directory are licensed separately. See the
+testdata/COPYING file for details.
 ```
 
 #### github.com/google/jsonschema-go v0.4.3
@@ -5988,6 +6100,67 @@ limitations under the License.
 ```
 
 #### golang.org/x/crypto v0.58.0
+
+`LICENSE`:
+
+```text
+Copyright 2009 The Go Authors.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google LLC nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+`PATENTS`:
+
+```text
+Additional IP Rights Grant (Patents)
+
+"This implementation" means the copyrightable works distributed by
+Google as part of the Go project.
+
+Google hereby grants to You a perpetual, worldwide, non-exclusive,
+no-charge, royalty-free, irrevocable (except as stated in this section)
+patent license to make, have made, use, offer to sell, sell, import,
+transfer and otherwise run, modify and propagate the contents of this
+implementation of Go, where such license applies only to those patent
+claims, both currently owned or controlled by Google and acquired in
+the future, licensable by Google that are necessarily infringed by this
+implementation of Go.  This grant does not include claims that would be
+infringed only as a consequence of further modification of this
+implementation.  If you or your agent or exclusive licensee institute or
+order or agree to the institution of patent litigation against any
+entity (including a cross-claim or counterclaim in a lawsuit) alleging
+that this implementation of Go or any code incorporated within this
+implementation of Go constitutes direct or contributory patent
+infringement, or inducement of patent infringement, then any patent
+rights granted to you under this License for this implementation of Go
+shall terminate as of the date such litigation is filed.
+```
+
+#### golang.org/x/image v0.45.0
 
 `LICENSE`:
 

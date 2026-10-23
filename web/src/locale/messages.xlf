@@ -73,7 +73,7 @@
     <unit id="nav.reports">
       <notes>
         <note category="location">src/app/app.routes.ts:20</note>
-        <note category="location">src/app/pages/reports.ts:11,12</note>
+        <note category="location">src/app/pages/reports.ts:19,20</note>
         <note category="location">src/app/shell.ts:95,96</note>
       </notes>
       <segment>
@@ -246,7 +246,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:743</note>
+        <note category="location">src/app/core/api.ts:778</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -8306,20 +8306,61 @@
         <source>You have <ph id="0" equiv="count" disp="r.recoveryLeft"/> recovery codes left. Set up two-factor authentication again from the user menu to get new ones.</source>
       </segment>
     </unit>
-    <unit id="reports.subtitle">
+    <unit id="reports.range.day">
       <notes>
-        <note category="location">src/app/pages/reports.ts:12,15</note>
+        <note category="location">src/app/pages/reports.ts:7</note>
       </notes>
       <segment>
-        <source>Saved and scheduled reports.</source>
+        <source>Last 24 hours</source>
       </segment>
     </unit>
-    <unit id="reports.empty">
+    <unit id="reports.range.week">
       <notes>
-        <note category="location">src/app/pages/reports.ts:17,20</note>
+        <note category="location">src/app/pages/reports.ts:8</note>
       </notes>
       <segment>
-        <source>No reports yet. This is where saved and scheduled reports will live.</source>
+        <source>Last 7 days</source>
+      </segment>
+    </unit>
+    <unit id="reports.range.month">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:9</note>
+      </notes>
+      <segment>
+        <source>Last 30 days</source>
+      </segment>
+    </unit>
+    <unit id="reports.subtitle2">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:20,24</note>
+      </notes>
+      <segment>
+        <source>PDF reports, generated on the appliance.</source>
+      </segment>
+    </unit>
+    <unit id="reports.summary">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:26,27</note>
+        <note category="location">src/app/pages/reports.ts:57</note>
+      </notes>
+      <segment>
+        <source>Network summary</source>
+      </segment>
+    </unit>
+    <unit id="reports.download">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:42,43</note>
+      </notes>
+      <segment>
+        <source>Download PDF</source>
+      </segment>
+    </unit>
+    <unit id="reports.generating">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:51,53</note>
+      </notes>
+      <segment>
+        <source>Generating the report… longer ranges take a while.</source>
       </segment>
     </unit>
     <unit id="services.op.restart">

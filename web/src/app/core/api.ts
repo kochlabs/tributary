@@ -1,4 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpEvent,
+  HttpInterceptorFn,
+  HttpParams,
+} from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
@@ -273,7 +279,13 @@ export interface Exporter {
   bytes: number;
   flows: number;
   status: 'active' | 'idle' | 'stale';
-  snmp?: { version: string; sysName: string; sysDescr: string; lastPoll: number; lastError?: string };
+  snmp?: {
+    version: string;
+    sysName: string;
+    sysDescr: string;
+    lastPoll: number;
+    lastError?: string;
+  };
 }
 
 export interface Interface {
@@ -305,7 +317,13 @@ export interface SnmpSettings {
   hasCommunity?: boolean;
   hasAuthPass?: boolean;
   hasPrivPass?: boolean;
-  status?: { sysName: string; sysDescr: string; lastPoll: number; lastError: string; interfaces: number };
+  status?: {
+    sysName: string;
+    sysDescr: string;
+    lastPoll: number;
+    lastError: string;
+    interfaces: number;
+  };
 }
 
 export interface Settings {
@@ -377,7 +395,13 @@ export interface ThreatHit {
 }
 
 export interface ThreatStatus {
-  feeds: { name: string; notify: boolean; entries: number; lastSuccess: number; lastError: string }[];
+  feeds: {
+    name: string;
+    notify: boolean;
+    entries: number;
+    lastSuccess: number;
+    lastError: string;
+  }[];
   ranges: number;
   /** Matches in the last 24 hours, by feed. */
   hits: ThreatHit[];
@@ -415,7 +439,13 @@ export interface GeoStatus {
     lastUpdate: string;
     attributions: Attribution[];
   };
-  vendors: { source: string; location: string; entries: number; updated: number; lastUpdate: string };
+  vendors: {
+    source: string;
+    location: string;
+    entries: number;
+    updated: number;
+    lastUpdate: string;
+  };
   rdnsEnabled: boolean;
   rdnsCache: number;
   systemDnsServers: string[];
@@ -729,7 +759,11 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const r = req.clone({ setHeaders: { 'X-Requested-With': 'nfa' } });
   return next(r).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (err.status === 401 && !req.url.endsWith('/api/auth/login') && !req.url.endsWith('/api/auth/me')) {
+      if (
+        err.status === 401 &&
+        !req.url.endsWith('/api/auth/login') &&
+        !req.url.endsWith('/api/auth/me')
+      ) {
         router.navigate(['/login'], { queryParams: { next: router.url } });
       }
       return throwError(() => err);
@@ -739,10 +773,12 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 
 export function errorMessage(err: unknown): string {
   if (err instanceof HttpErrorResponse) {
-    if (err.error && typeof err.error === 'object' && 'error' in err.error) return String(err.error.error);
+    if (err.error && typeof err.error === 'object' && 'error' in err.error)
+      return String(err.error.error);
     if (err.status === 0) return $localize`:@@api.unreachable:Cannot reach the appliance.`;
     return `${err.status} ${err.statusText}`;
   }
+  if (err instanceof Error) return err.message;
   return String(err);
 }
 
@@ -750,10 +786,15 @@ export function errorMessage(err: unknown): string {
 export class Api {
   private http = inject(HttpClient);
 
-  private params(t: TimeQuery, filters: Filters = {}, extra: Record<string, string | number | boolean | undefined> = {}) {
+  private params(
+    t: TimeQuery,
+    filters: Filters = {},
+    extra: Record<string, string | number | boolean | undefined> = {},
+  ) {
     let p = new HttpParams().set('from', Math.round(t.from)).set('to', Math.round(t.to));
     for (const [k, v] of Object.entries(filters)) if (v) p = p.set(k, v);
-    for (const [k, v] of Object.entries(extra)) if (v !== undefined && v !== '') p = p.set(k, String(v));
+    for (const [k, v] of Object.entries(extra))
+      if (v !== undefined && v !== '') p = p.set(k, String(v));
     return p;
   }
 
@@ -762,36 +803,67 @@ export class Api {
   }
 
   publicInfo() {
-    return this.get<{ name: string; version: string; source: string; sso: { id: number; name: string }[]; languages?: string[]; language?: string }>('/api/public/info');
+    return this.get<{
+      name: string;
+      version: string;
+      source: string;
+      sso: { id: number; name: string }[];
+      languages?: string[];
+      language?: string;
+    }>('/api/public/info');
   }
   me() {
     return this.get<User>('/api/auth/me');
   }
   /** First sign-in step: the account, or a request for a second factor. */
   login(username: string, password: string) {
-    return firstValueFrom(this.http.post<User & { mfaRequired?: boolean; mfaSetupRequired?: boolean; token?: string }>('/api/auth/login', { username, password }));
+    return firstValueFrom(
+      this.http.post<User & { mfaRequired?: boolean; mfaSetupRequired?: boolean; token?: string }>(
+        '/api/auth/login',
+        { username, password },
+      ),
+    );
   }
   mfaVerify(token: string, code: string) {
-    return firstValueFrom(this.http.post<{ user: User; recoveryUsed: boolean; recoveryLeft: number }>('/api/auth/mfa', { token, code }));
+    return firstValueFrom(
+      this.http.post<{ user: User; recoveryUsed: boolean; recoveryLeft: number }>('/api/auth/mfa', {
+        token,
+        code,
+      }),
+    );
   }
   /** Setup required at sign-in: without a code returns the QR, with one finishes. */
   mfaEnroll(token: string, code = '') {
-    return firstValueFrom(this.http.post<MfaSetup & { user?: User; recoveryCodes?: string[] }>('/api/auth/mfa/enroll', { token, code }));
+    return firstValueFrom(
+      this.http.post<MfaSetup & { user?: User; recoveryCodes?: string[] }>('/api/auth/mfa/enroll', {
+        token,
+        code,
+      }),
+    );
   }
   mfaStatus() {
-    return this.get<{ available: boolean; enabled: boolean; recoveryLeft: number; required: boolean }>('/api/auth/mfa/status');
+    return this.get<{
+      available: boolean;
+      enabled: boolean;
+      recoveryLeft: number;
+      required: boolean;
+    }>('/api/auth/mfa/status');
   }
   mfaSetup() {
     return firstValueFrom(this.http.post<MfaSetup>('/api/auth/mfa/setup', {}));
   }
   mfaSetupConfirm(code: string) {
-    return firstValueFrom(this.http.post<{ recoveryCodes: string[] }>('/api/auth/mfa/setup/confirm', { code }));
+    return firstValueFrom(
+      this.http.post<{ recoveryCodes: string[] }>('/api/auth/mfa/setup/confirm', { code }),
+    );
   }
   mfaDisable(code: string) {
     return firstValueFrom(this.http.post('/api/auth/mfa/disable', { code }));
   }
   resetUserMfa(username: string) {
-    return firstValueFrom(this.http.post(`/api/users/${encodeURIComponent(username)}/mfa/reset`, {}));
+    return firstValueFrom(
+      this.http.post(`/api/users/${encodeURIComponent(username)}/mfa/reset`, {}),
+    );
   }
   logout() {
     return firstValueFrom(this.http.post('/api/auth/logout', {}));
@@ -810,9 +882,16 @@ export class Api {
     return this.get<TopResult>('/api/top', this.params(t, f, { dimension, metric, limit }));
   }
   paths(t: TimeQuery, f: Filters, dims: string[], metric: Metric, limit = 8) {
-    return this.get<PathResult>('/api/paths', this.params(t, f, { dims: dims.join(','), metric, limit }));
+    return this.get<PathResult>(
+      '/api/paths',
+      this.params(t, f, { dims: dims.join(','), metric, limit }),
+    );
   }
-  flows(t: TimeQuery, f: Filters, opts: { sort?: string; desc?: boolean; limit?: number; offset?: number }) {
+  flows(
+    t: TimeQuery,
+    f: Filters,
+    opts: { sort?: string; desc?: boolean; limit?: number; offset?: number },
+  ) {
     return this.get<FlowPage>('/api/flows', this.params(t, f, opts));
   }
   flowsCsvUrl(t: TimeQuery, f: Filters, sort?: string, desc?: boolean) {
@@ -824,7 +903,14 @@ export class Api {
   }
   updateExporter(e: Pick<Exporter, 'addr' | 'name' | 'description' | 'location' | 'sampling'>) {
     const { addr, name, description, location, sampling } = e;
-    return firstValueFrom(this.http.put(`/api/exporters/${encodeURIComponent(addr)}`, { name, description, location, sampling }));
+    return firstValueFrom(
+      this.http.put(`/api/exporters/${encodeURIComponent(addr)}`, {
+        name,
+        description,
+        location,
+        sampling,
+      }),
+    );
   }
   deleteExporter(addr: string) {
     return firstValueFrom(this.http.delete(`/api/exporters/${encodeURIComponent(addr)}`));
@@ -833,13 +919,20 @@ export class Api {
     return this.get<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp`);
   }
   saveSnmp(addr: string, s: SnmpSettings) {
-    return firstValueFrom(this.http.put<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp`, s));
+    return firstValueFrom(
+      this.http.put<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp`, s),
+    );
   }
   pollSnmp(addr: string) {
-    return firstValueFrom(this.http.post<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp/poll`, {}));
+    return firstValueFrom(
+      this.http.post<SnmpSettings>(`/api/exporters/${encodeURIComponent(addr)}/snmp/poll`, {}),
+    );
   }
   interfaces(addr: string, t: TimeQuery) {
-    return this.get<Interface[]>(`/api/exporters/${encodeURIComponent(addr)}/interfaces`, this.params(t));
+    return this.get<Interface[]>(
+      `/api/exporters/${encodeURIComponent(addr)}/interfaces`,
+      this.params(t),
+    );
   }
   updateInterface(i: Pick<Interface, 'exporter' | 'index' | 'name' | 'description' | 'speed'>) {
     return firstValueFrom(
@@ -891,10 +984,14 @@ export class Api {
     return this.get<{ config: SyslogConfig; status: SyslogStatus }>('/api/syslog');
   }
   saveSyslog(c: SyslogConfig) {
-    return firstValueFrom(this.http.put<{ config: SyslogConfig; status: SyslogStatus }>('/api/syslog', c));
+    return firstValueFrom(
+      this.http.put<{ config: SyslogConfig; status: SyslogStatus }>('/api/syslog', c),
+    );
   }
   testSyslog(c: SyslogConfig) {
-    return firstValueFrom(this.http.post<{ address: string; ok: boolean; error?: string }[]>('/api/syslog/test', c));
+    return firstValueFrom(
+      this.http.post<{ address: string; ok: boolean; error?: string }[]>('/api/syslog/test', c),
+    );
   }
   backups() {
     return this.get<BackupStatus>('/api/backups');
@@ -915,7 +1012,9 @@ export class Api {
     return this.get<{ tokens: APIToken[]; mcpEnabled: boolean; endpoint: string }>('/api/tokens');
   }
   createApiToken(username: string, name: string, days: number) {
-    return firstValueFrom(this.http.post<{ token: string; info: APIToken }>('/api/tokens', { username, name, days }));
+    return firstValueFrom(
+      this.http.post<{ token: string; info: APIToken }>('/api/tokens', { username, name, days }),
+    );
   }
   deleteApiToken(id: number) {
     return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
@@ -927,22 +1026,55 @@ export class Api {
     return firstValueFrom(this.http.put<EmailConfig>('/api/email', c));
   }
   testEmail(config: EmailConfig, to: string) {
-    return firstValueFrom(this.http.post<{ ok: boolean; error?: string }>('/api/email/test', { config, to }));
+    return firstValueFrom(
+      this.http.post<{ ok: boolean; error?: string }>('/api/email/test', { config, to }),
+    );
+  }
+  /** The network summary as a PDF. Errors arrive as JSON inside a Blob, so they are unwrapped here. */
+  async summaryReport(range: string): Promise<Blob> {
+    try {
+      return await firstValueFrom(
+        this.http.get('/api/reports/summary.pdf', { params: { range }, responseType: 'blob' }),
+      );
+    } catch (e) {
+      if (e instanceof HttpErrorResponse && e.error instanceof Blob) {
+        try {
+          throw new Error(JSON.parse(await e.error.text()).error);
+        } catch (inner) {
+          if (inner instanceof Error && !(inner instanceof SyntaxError)) throw inner;
+        }
+      }
+      throw e;
+    }
   }
   threatStatus() {
     return this.get<ThreatStatus>('/api/threats');
   }
   threatFeeds() {
-    return this.get<{ feeds: ThreatFeed[]; ranges: number; defaultsMissing: number }>('/api/threat-feeds');
+    return this.get<{ feeds: ThreatFeed[]; ranges: number; defaultsMissing: number }>(
+      '/api/threat-feeds',
+    );
   }
   saveThreatFeed(f: Partial<ThreatFeed>) {
-    return firstValueFrom(f.id ? this.http.put<ThreatFeed>(`/api/threat-feeds/${f.id}`, f) : this.http.post<ThreatFeed>('/api/threat-feeds', f));
+    return firstValueFrom(
+      f.id
+        ? this.http.put<ThreatFeed>(`/api/threat-feeds/${f.id}`, f)
+        : this.http.post<ThreatFeed>('/api/threat-feeds', f),
+    );
   }
   deleteThreatFeed(id: number) {
     return firstValueFrom(this.http.delete(`/api/threat-feeds/${id}`));
   }
   testThreatFeed(f: Partial<ThreatFeed>) {
-    return firstValueFrom(this.http.post<{ ok: boolean; error?: string; entries?: number; skipped?: number; sample?: string[] }>('/api/threat-feeds/test', f));
+    return firstValueFrom(
+      this.http.post<{
+        ok: boolean;
+        error?: string;
+        entries?: number;
+        skipped?: number;
+        sample?: string[];
+      }>('/api/threat-feeds/test', f),
+    );
   }
   moveThreatFeed(id: number, up: boolean) {
     return firstValueFrom(this.http.post(`/api/threat-feeds/${id}/move`, { up }));
@@ -954,10 +1086,14 @@ export class Api {
     return firstValueFrom(this.http.post<{ added: number }>('/api/threat-feeds/defaults', {}));
   }
   regenerateBackupSSHKey() {
-    return firstValueFrom(this.http.post<SSHKeyInfo>('/api/backup-schedule/ssh-key/regenerate', {}));
+    return firstValueFrom(
+      this.http.post<SSHKeyInfo>('/api/backup-schedule/ssh-key/regenerate', {}),
+    );
   }
   uploadBackupSSHKey(privateKey: string, passphrase: string) {
-    return firstValueFrom(this.http.put<SSHKeyInfo>('/api/backup-schedule/ssh-key', { privateKey, passphrase }));
+    return firstValueFrom(
+      this.http.put<SSHKeyInfo>('/api/backup-schedule/ssh-key', { privateKey, passphrase }),
+    );
   }
   runBackupSchedule() {
     return firstValueFrom(this.http.post('/api/backup-schedule/run', {}));
@@ -998,7 +1134,10 @@ export class Api {
     return this.get<UpdateStatus>('/api/updates');
   }
   updatesLog(offset: number) {
-    return this.get<{ text: string; offset: number }>('/api/updates/log', new HttpParams().set('offset', offset));
+    return this.get<{ text: string; offset: number }>(
+      '/api/updates/log',
+      new HttpParams().set('offset', offset),
+    );
   }
   requestUpdate(action: 'check' | 'upgrade' | 'reboot') {
     return firstValueFrom(this.http.post('/api/updates', { action }));
@@ -1016,7 +1155,9 @@ export class Api {
     return this.get<{ services: ServiceUnit[]; installed: boolean }>('/api/services');
   }
   serviceAction(unit: string, op: string) {
-    return firstValueFrom(this.http.post<AdminResult>(`/api/services/${encodeURIComponent(unit)}/${op}`, {}));
+    return firstValueFrom(
+      this.http.post<AdminResult>(`/api/services/${encodeURIComponent(unit)}/${op}`, {}),
+    );
   }
   storageEstimate() {
     return this.get<StorageEstimate>('/api/storage-estimate');
@@ -1025,33 +1166,61 @@ export class Api {
     return this.get<IdentitySource[]>('/api/identity-sources');
   }
   identitySource(id: number) {
-    return this.get<{ source: IdentitySource; redirectUri: string; saml?: SAMLInfo }>(`/api/identity-sources/${id}`);
+    return this.get<{ source: IdentitySource; redirectUri: string; saml?: SAMLInfo }>(
+      `/api/identity-sources/${id}`,
+    );
   }
   saveIdentitySource(s: Partial<IdentitySource>) {
     type Saved = { id: number; redirectUri: string; saml?: SAMLInfo };
-    const req = s.id ? this.http.put<Saved>(`/api/identity-sources/${s.id}`, s) : this.http.post<Saved>('/api/identity-sources', s);
+    const req = s.id
+      ? this.http.put<Saved>(`/api/identity-sources/${s.id}`, s)
+      : this.http.post<Saved>('/api/identity-sources', s);
     return firstValueFrom(req);
   }
   deleteIdentitySource(id: number) {
     return firstValueFrom(this.http.delete(`/api/identity-sources/${id}`));
   }
-  testIdentitySource(body: { type: string; id?: number; issuer?: string; saml?: SAMLConfig; ldap?: LDAPConfig; radius?: RADIUSConfig; username?: string; password?: string; mappings?: RoleMapping[]; defaultRole?: string }) {
+  testIdentitySource(body: {
+    type: string;
+    id?: number;
+    issuer?: string;
+    saml?: SAMLConfig;
+    ldap?: LDAPConfig;
+    radius?: RADIUSConfig;
+    username?: string;
+    password?: string;
+    mappings?: RoleMapping[];
+    defaultRole?: string;
+  }) {
     return firstValueFrom(this.http.post<ProviderTest>('/api/identity-sources/test', body));
   }
   certificate() {
     return this.get<CertStatus>('/api/certificates/appliance');
   }
   uploadCertificate(certificate: string, privateKey: string) {
-    return firstValueFrom(this.http.post<CertDetails>('/api/certificates/appliance/upload', { certificate, privateKey }));
+    return firstValueFrom(
+      this.http.post<CertDetails>('/api/certificates/appliance/upload', {
+        certificate,
+        privateKey,
+      }),
+    );
   }
   generateCSR(identity: CertIdentity, keyType: string) {
-    return firstValueFrom(this.http.post<CSRInfo>('/api/certificates/appliance/csr', { identity, keyType }));
+    return firstValueFrom(
+      this.http.post<CSRInfo>('/api/certificates/appliance/csr', { identity, keyType }),
+    );
   }
   discardCSR() {
     return firstValueFrom(this.http.delete('/api/certificates/appliance/csr'));
   }
   selfSigned(identity: CertIdentity, keyType: string, days: number) {
-    return firstValueFrom(this.http.post<CertDetails>('/api/certificates/appliance/self-signed', { identity, keyType, days }));
+    return firstValueFrom(
+      this.http.post<CertDetails>('/api/certificates/appliance/self-signed', {
+        identity,
+        keyType,
+        days,
+      }),
+    );
   }
   restoreCertificate() {
     return firstValueFrom(this.http.post<CertDetails>('/api/certificates/appliance/restore', {}));
@@ -1060,7 +1229,9 @@ export class Api {
     return this.get<TrustedCA[]>('/api/certificates/trusted');
   }
   addTrustedCA(name: string, pem: string) {
-    return firstValueFrom(this.http.post<{ added: string[] }>('/api/certificates/trusted', { name, pem }));
+    return firstValueFrom(
+      this.http.post<{ added: string[] }>('/api/certificates/trusted', { name, pem }),
+    );
   }
   deleteTrustedCA(id: number) {
     return firstValueFrom(this.http.delete(`/api/certificates/trusted/${id}`));

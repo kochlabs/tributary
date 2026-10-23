@@ -189,6 +189,7 @@ func (s *Server) Handler() http.Handler {
 	admin("PUT /api/email", s.emailPut)
 	admin("POST /api/email/test", s.emailTest)
 	auth("GET /api/threats", s.threatStatus)
+	auth("GET /api/reports/summary.pdf", s.reportSummary)
 	admin("GET /api/threat-feeds", s.threatFeeds)
 	admin("POST /api/threat-feeds", s.threatFeedSave)
 	admin("PUT /api/threat-feeds/{id}", s.threatFeedSave)
@@ -210,7 +211,7 @@ func (s *Server) middleware(next http.Handler) http.Handler {
 		h.Set("X-Content-Type-Options", "nosniff")
 		h.Set("X-Frame-Options", "DENY")
 		h.Set("Referrer-Policy", "same-origin")
-		h.Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'")
+		h.Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'self' blob:; frame-ancestors 'none'")
 		if s.SecureCookies {
 			h.Set("Strict-Transport-Security", "max-age=31536000")
 		}
