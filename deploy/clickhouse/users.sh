@@ -18,7 +18,7 @@ netflow)
   # named collections that happen to share the database's name.)
   cat <<XML
 <clickhouse>
-  <profiles><default><max_memory_usage>1000000000</max_memory_usage><max_threads>2</max_threads></default></profiles>
+  <profiles><default><max_memory_usage>1000000000</max_memory_usage></default></profiles>
   <users>
     <netflow>
       <password_sha256_hex>$2</password_sha256_hex>

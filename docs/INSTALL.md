@@ -138,7 +138,7 @@ upgrades, and apt asks before replacing it):
 | `memory_worker_dynamic_hard_limit` | `0` | keeps that cap fixed instead of adjusting it to the page cache |
 | `mark_cache_size` | 256 MB | smaller than the default 5 GB, sized for a small appliance |
 | `uncompressed_cache_size` | `0` | not useful for this workload |
-| `concurrent_threads_soft_limit_num` | `2` | limits CPU use by queries |
+| `concurrent_threads_soft_limit_ratio_to_cores` | `1` | queries together use at most one thread per core, leaving room for Tributary |
 | `background_schedule_pool_size` | `8` | fewer background threads |
 | `logger` | `warning`, 3 × 100 MB | quieter, bounded server logs in `/var/log/clickhouse-server/` |
 | `query_log` | kept 3 days | recent queries for troubleshooting, without growing forever |
@@ -151,8 +151,7 @@ upgrading Tributary doesn't usually interrupt the database.
 
 - **`netflow`**: the user Tributary connects as, defined in
   `/etc/clickhouse-server/users.d/netflow.xml`. It may connect only from
-  `127.0.0.1` and `::1`, has a per-query memory limit of 1 GB and at most 2
-  threads per query, and its rights are limited to what Tributary needs:
+  `127.0.0.1` and `::1`, has a per-query memory limit of 1 GB, and its rights are limited to what Tributary needs:
 
   ```sql
   GRANT SHOW, SELECT, INSERT, ALTER, CREATE, DROP, TRUNCATE, OPTIMIZE

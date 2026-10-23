@@ -9,7 +9,9 @@
   <memory_worker_dynamic_hard_limit>0</memory_worker_dynamic_hard_limit>
   <mark_cache_size>268435456</mark_cache_size>
   <uncompressed_cache_size>0</uncompressed_cache_size>
-  <concurrent_threads_soft_limit_num>2</concurrent_threads_soft_limit_num>
+  <!-- Query threads across all queries: one per core, leaving headroom for
+       nfad and ClickHouse's own background work. -->
+  <concurrent_threads_soft_limit_ratio_to_cores>1</concurrent_threads_soft_limit_ratio_to_cores>
   <background_schedule_pool_size>8</background_schedule_pool_size>
   <logger><level>warning</level><size>100M</size><count>3</count></logger>
   <query_log replace="1"><database>system</database><table>query_log</table><ttl>event_date + INTERVAL 3 DAY</ttl></query_log>
