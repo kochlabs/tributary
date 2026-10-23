@@ -220,6 +220,9 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 	if n := s.threatNotice(ctx, now); n != nil {
 		add(*n)
 	}
+	if n := s.reportNotice(); n != nil {
+		add(*n)
+	}
 
 	slices.SortStableFunc(out, func(a, b Notice) int { return levelOrder[a.Level] - levelOrder[b.Level] })
 	return out
@@ -305,6 +308,35 @@ func (s *Server) threatNotice(ctx context.Context, now time.Time) *Notice {
 		Params:  map[string]string{"count": fmt.Sprint(hosts), "feeds": list},
 		Message: fmt.Sprintf("Traffic with %d address%s on threat lists in the last hour (%s).", hosts, map[bool]string{true: "", false: "es"}[hosts == 1], list),
 		Action:  &NoticeAction{Label: "Detections", Route: "/security/detections"}}
+}
+
+// reportNotice reports scheduled reports whose last run failed.
+func (s *Server) reportNotice() *Notice {
+	list, err := s.Config.Reports()
+	if err != nil {
+		return nil
+	}
+	var names, ids []string
+	var first string
+	for _, r := range list {
+		runs, err := s.Config.ReportRuns(r.ID, 1)
+		if err != nil || len(runs) == 0 || runs[0].Status != "failed" || runs[0].Trigger != "schedule" {
+			continue
+		}
+		if first == "" {
+			first = runs[0].Error
+		}
+		names = append(names, r.Name)
+		ids = append(ids, fmt.Sprint(runs[0].ID))
+	}
+	if len(names) == 0 {
+		return nil
+	}
+	list2 := strings.Join(names, ", ")
+	return &Notice{ID: "report-failed:" + strings.Join(ids, ","), Kind: "report-failed", Level: "warning", adminOnly: true,
+		Params:  map[string]string{"reports": list2, "error": firstLine(first)},
+		Message: fmt.Sprintf("A scheduled report failed (%s): %s", list2, firstLine(first)),
+		Action:  &NoticeAction{Label: "Reports", Route: "/reports"}}
 }
 
 // initialPasswordNotice warns while the bootstrap admin password is still in

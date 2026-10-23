@@ -55,7 +55,7 @@
         <note category="location">src/app/app.routes.ts:18</note>
         <note category="location">src/app/pages/exporter-detail.ts:19</note>
         <note category="location">src/app/pages/exporters.ts:18,19</note>
-        <note category="location">src/app/shared/notice-text.ts:96</note>
+        <note category="location">src/app/shared/notice-text.ts:99</note>
         <note category="location">src/app/shell.ts:108,109</note>
       </notes>
       <segment>
@@ -73,7 +73,8 @@
     <unit id="nav.reports">
       <notes>
         <note category="location">src/app/app.routes.ts:20</note>
-        <note category="location">src/app/pages/reports.ts:19,20</note>
+        <note category="location">src/app/pages/reports.ts:76,77</note>
+        <note category="location">src/app/shared/notice-text.ts:121</note>
         <note category="location">src/app/shell.ts:95,96</note>
       </notes>
       <segment>
@@ -84,7 +85,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:21</note>
         <note category="location">src/app/pages/detections.ts:30,31</note>
-        <note category="location">src/app/shared/notice-text.ts:116</note>
+        <note category="location">src/app/shared/notice-text.ts:119</note>
         <note category="location">src/app/shell.ts:101,102</note>
       </notes>
       <segment>
@@ -125,7 +126,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
-        <note category="location">src/app/shared/notice-text.ts:107</note>
+        <note category="location">src/app/shared/notice-text.ts:110</note>
         <note category="location">src/app/shell.ts:127,128</note>
       </notes>
       <segment>
@@ -146,7 +147,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:31</note>
         <note category="location">src/app/pages/enrichment.ts:78,79</note>
-        <note category="location">src/app/shared/notice-text.ts:111</note>
+        <note category="location">src/app/shared/notice-text.ts:114</note>
         <note category="location">src/app/shell.ts:119,120</note>
       </notes>
       <segment>
@@ -167,7 +168,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:34</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
-        <note category="location">src/app/shared/notice-text.ts:114</note>
+        <note category="location">src/app/shared/notice-text.ts:117</note>
         <note category="location">src/app/shell.ts:138,139</note>
       </notes>
       <segment>
@@ -178,7 +179,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:35</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
-        <note category="location">src/app/shared/notice-text.ts:105</note>
+        <note category="location">src/app/shared/notice-text.ts:108</note>
         <note category="location">src/app/shell.ts:139,140</note>
       </notes>
       <segment>
@@ -246,7 +247,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:778</note>
+        <note category="location">src/app/core/api.ts:820</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -2003,6 +2004,7 @@
         <note category="location">src/app/pages/api-tokens.ts:38</note>
         <note category="location">src/app/pages/audit.ts:17,18</note>
         <note category="location">src/app/pages/identity-sources.ts:88</note>
+        <note category="location">src/app/pages/reports.ts:169</note>
         <note category="location">src/app/pages/services.ts:26,27</note>
         <note category="location">src/app/pages/threat-feeds.ts:45</note>
         <note category="location">src/app/pages/time.ts:20,21</note>
@@ -2203,6 +2205,9 @@
         <note category="location">src/app/pages/identity-sources.ts:162,164</note>
         <note category="location">src/app/pages/identity-sources.ts:507,508</note>
         <note category="location">src/app/pages/identity-sources.ts:518,519</note>
+        <note category="location">src/app/pages/reports.ts:550,552</note>
+        <note category="location">src/app/pages/reports.ts:591,593</note>
+        <note category="location">src/app/pages/reports.ts:615,617</note>
         <note category="location">src/app/pages/services.ts:84,85</note>
         <note category="location">src/app/pages/threat-feeds.ts:170,171</note>
         <note category="location">src/app/pages/threat-feeds.ts:179,180</note>
@@ -2873,6 +2878,7 @@
         <note category="location">src/app/pages/exporters.ts:132,134</note>
         <note category="location">src/app/pages/identity-sources.ts:508,510</note>
         <note category="location">src/app/pages/local-networks.ts:107,109</note>
+        <note category="location">src/app/pages/reports.ts:560,561</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/threat-feeds.ts:171,173</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
@@ -8306,61 +8312,706 @@
         <source>You have <ph id="0" equiv="count" disp="r.recoveryLeft"/> recovery codes left. Set up two-factor authentication again from the user menu to get new ones.</source>
       </segment>
     </unit>
-    <unit id="reports.range.day">
+    <unit id="reports.template.summary">
       <notes>
-        <note category="location">src/app/pages/reports.ts:7</note>
-      </notes>
-      <segment>
-        <source>Last 24 hours</source>
-      </segment>
-    </unit>
-    <unit id="reports.range.week">
-      <notes>
-        <note category="location">src/app/pages/reports.ts:8</note>
-      </notes>
-      <segment>
-        <source>Last 7 days</source>
-      </segment>
-    </unit>
-    <unit id="reports.range.month">
-      <notes>
-        <note category="location">src/app/pages/reports.ts:9</note>
-      </notes>
-      <segment>
-        <source>Last 30 days</source>
-      </segment>
-    </unit>
-    <unit id="reports.subtitle2">
-      <notes>
-        <note category="location">src/app/pages/reports.ts:20,24</note>
-      </notes>
-      <segment>
-        <source>PDF reports, generated on the appliance.</source>
-      </segment>
-    </unit>
-    <unit id="reports.summary">
-      <notes>
-        <note category="location">src/app/pages/reports.ts:26,27</note>
-        <note category="location">src/app/pages/reports.ts:57</note>
+        <note category="location">src/app/pages/reports.ts:13</note>
       </notes>
       <segment>
         <source>Network summary</source>
       </segment>
     </unit>
+    <unit id="reports.template.security">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:14</note>
+      </notes>
+      <segment>
+        <source>Security digest</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.kpis">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:17</note>
+      </notes>
+      <segment>
+        <source>Headline figures</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.traffic">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:18</note>
+      </notes>
+      <segment>
+        <source>Traffic over time</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.services">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:19</note>
+      </notes>
+      <segment>
+        <source>Top services</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.devices">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:20</note>
+      </notes>
+      <segment>
+        <source>Top devices</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.apps">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:21</note>
+      </notes>
+      <segment>
+        <source>Applications</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.countries">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:22</note>
+      </notes>
+      <segment>
+        <source>Remote countries</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.threats">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:23</note>
+      </notes>
+      <segment>
+        <source>Threat feed matches</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.exposure">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:24</note>
+      </notes>
+      <segment>
+        <source>Exposed services</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.newDevices">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:25</note>
+      </notes>
+      <segment>
+        <source>New devices</source>
+      </segment>
+    </unit>
+    <unit id="reports.section.exporters">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:26</note>
+      </notes>
+      <segment>
+        <source>Exporters</source>
+      </segment>
+    </unit>
+    <unit id="reports.period.yesterday">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:29</note>
+      </notes>
+      <segment>
+        <source>Yesterday</source>
+      </segment>
+    </unit>
+    <unit id="reports.period.lastWeek">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:30</note>
+      </notes>
+      <segment>
+        <source>Last week (Monday to Sunday)</source>
+      </segment>
+    </unit>
+    <unit id="reports.period.lastMonth">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:31</note>
+      </notes>
+      <segment>
+        <source>Last month</source>
+      </segment>
+    </unit>
+    <unit id="reports.period.24h">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:32</note>
+      </notes>
+      <segment>
+        <source>Last 24 hours</source>
+      </segment>
+    </unit>
+    <unit id="reports.period.7d">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:33</note>
+      </notes>
+      <segment>
+        <source>Last 7 days</source>
+      </segment>
+    </unit>
+    <unit id="reports.period.30d">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:34</note>
+      </notes>
+      <segment>
+        <source>Last 30 days</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.sun">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:37</note>
+      </notes>
+      <segment>
+        <source>Sunday</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.mon">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:38</note>
+      </notes>
+      <segment>
+        <source>Monday</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.tue">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:39</note>
+      </notes>
+      <segment>
+        <source>Tuesday</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.wed">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:40</note>
+      </notes>
+      <segment>
+        <source>Wednesday</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.thu">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:41</note>
+      </notes>
+      <segment>
+        <source>Thursday</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.fri">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:42</note>
+      </notes>
+      <segment>
+        <source>Friday</source>
+      </segment>
+    </unit>
+    <unit id="reports.day.sat">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:43</note>
+      </notes>
+      <segment>
+        <source>Saturday</source>
+      </segment>
+    </unit>
+    <unit id="reports.subtitle3">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:78,80</note>
+      </notes>
+      <segment>
+        <source> PDF reports generated on the appliance, on demand or on a schedule. </source>
+      </segment>
+    </unit>
+    <unit id="reports.none">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:107,108</note>
+      </notes>
+      <segment>
+        <source>No reports yet.</source>
+      </segment>
+    </unit>
+    <unit id="reports.createSummary">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:115,116</note>
+      </notes>
+      <segment>
+        <source> Create a network summary </source>
+      </segment>
+    </unit>
+    <unit id="reports.createSecurity">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:122,123</note>
+      </notes>
+      <segment>
+        <source> Create a security digest </source>
+      </segment>
+    </unit>
+    <unit id="reports.askAdmin">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:126,128</note>
+      </notes>
+      <segment>
+        <source>An administrator can set reports up.</source>
+      </segment>
+    </unit>
+    <unit id="reports.new">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:136,137</note>
+      </notes>
+      <segment>
+        <source>New report</source>
+      </segment>
+    </unit>
+    <unit id="reports.edit">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:144,145</note>
+      </notes>
+      <segment>
+        <source>Edit</source>
+      </segment>
+    </unit>
+    <unit id="reports.runNow">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:153,154</note>
+        <note category="location">src/app/pages/reports.ts:594,596</note>
+      </notes>
+      <segment>
+        <source>Run now</source>
+      </segment>
+    </unit>
+    <unit id="reports.delete">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:161,162</note>
+        <note category="location">src/app/pages/reports.ts:618,620</note>
+      </notes>
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="reports.col.name">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:181,182</note>
+        <note category="location">src/app/pages/reports.ts:368,370</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="reports.col.period">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:182,183</note>
+        <note category="location">src/app/pages/reports.ts:407,409</note>
+      </notes>
+      <segment>
+        <source>Period</source>
+      </segment>
+    </unit>
+    <unit id="reports.col.schedule">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:183,184</note>
+        <note category="location">src/app/pages/reports.ts:431,433</note>
+      </notes>
+      <segment>
+        <source>Schedule</source>
+      </segment>
+    </unit>
+    <unit id="reports.col.recipients">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:184,185</note>
+        <note category="location">src/app/pages/reports.ts:493,495</note>
+      </notes>
+      <segment>
+        <source>Email to</source>
+      </segment>
+    </unit>
+    <unit id="reports.col.lastRun">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:185,186</note>
+      </notes>
+      <segment>
+        <source>Last run</source>
+      </segment>
+    </unit>
+    <unit id="reports.filtered">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:192,193</note>
+      </notes>
+      <segment>
+        <source>filtered</source>
+      </segment>
+    </unit>
+    <unit id="reports.next">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:200,201</note>
+      </notes>
+      <segment>
+        <source>next <ph id="0" equiv="INTERPOLATION" disp="{{ dt(r.nextRun) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="reports.recipients">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:206,209</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 recipient} other {<ph id="0" equiv="INTERPOLATION"/> recipients}}</source>
+      </segment>
+    </unit>
+    <unit id="reports.never">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:228,230</note>
+      </notes>
+      <segment>
+        <source>never</source>
+      </segment>
+    </unit>
+    <unit id="reports.placeholder">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:232,233</note>
+      </notes>
+      <segment>
+        <source>No reports.</source>
+      </segment>
+    </unit>
+    <unit id="reports.emailOff">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:238,239</note>
+      </notes>
+      <segment>
+        <source>Email is turned off, so reports aren&apos;t sent; they are still kept here. Set it up under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/email&quot;&gt;" dispEnd="&lt;/a&gt;">Configuration → Email</pc>.</source>
+      </segment>
+    </unit>
+    <unit id="reports.preview">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:256,257</note>
+      </notes>
+      <segment>
+        <source> Preview </source>
+      </segment>
+    </unit>
+    <unit id="reports.history">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:265,266</note>
+      </notes>
+      <segment>
+        <source> History </source>
+      </segment>
+    </unit>
+    <unit id="reports.generating">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:275,277</note>
+      </notes>
+      <segment>
+        <source>Generating the report… longer periods take a while.</source>
+      </segment>
+    </unit>
+    <unit id="reports.previewHint">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:288,290</note>
+      </notes>
+      <segment>
+        <source>The period as of now; nothing is kept or sent.</source>
+      </segment>
+    </unit>
     <unit id="reports.download">
       <notes>
-        <note category="location">src/app/pages/reports.ts:42,43</note>
+        <note category="location">src/app/pages/reports.ts:296,297</note>
       </notes>
       <segment>
         <source>Download PDF</source>
       </segment>
     </unit>
-    <unit id="reports.generating">
+    <unit id="reports.run.when">
       <notes>
-        <note category="location">src/app/pages/reports.ts:51,53</note>
+        <note category="location">src/app/pages/reports.ts:305</note>
       </notes>
       <segment>
-        <source>Generating the report… longer ranges take a while.</source>
+        <source>Run</source>
+      </segment>
+    </unit>
+    <unit id="reports.run.period">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:305,306</note>
+      </notes>
+      <segment>
+        <source>Period</source>
+      </segment>
+    </unit>
+    <unit id="reports.run.result">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:306,307</note>
+      </notes>
+      <segment>
+        <source>Result</source>
+      </segment>
+    </unit>
+    <unit id="reports.run.emailed">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:307,308</note>
+      </notes>
+      <segment>
+        <source>Emailed</source>
+      </segment>
+    </unit>
+    <unit id="reports.noRuns">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:344,345</note>
+      </notes>
+      <segment>
+        <source> Not run yet. Scheduled runs and Run now are kept here. </source>
+      </segment>
+    </unit>
+    <unit id="reports.template">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:379,381</note>
+      </notes>
+      <segment>
+        <source>Template</source>
+      </segment>
+    </unit>
+    <unit id="reports.sections">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:392,393</note>
+      </notes>
+      <segment>
+        <source>Sections</source>
+      </segment>
+    </unit>
+    <unit id="reports.filters">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:421,423</note>
+      </notes>
+      <segment>
+        <source>Filters</source>
+      </segment>
+    </unit>
+    <unit id="reports.filtersHelp">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:426,428</note>
+      </notes>
+      <segment>
+        <source>Optional: limit the whole report to matching traffic, e.g. one exporter.</source>
+      </segment>
+    </unit>
+    <unit id="reports.schedule.off">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:438,439</note>
+      </notes>
+      <segment>
+        <source>Off: run on demand</source>
+      </segment>
+    </unit>
+    <unit id="reports.schedule.daily">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:439,440</note>
+      </notes>
+      <segment>
+        <source>Daily</source>
+      </segment>
+    </unit>
+    <unit id="reports.schedule.weekly">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:440,441</note>
+      </notes>
+      <segment>
+        <source>Weekly</source>
+      </segment>
+    </unit>
+    <unit id="reports.schedule.monthly">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:441,443</note>
+      </notes>
+      <segment>
+        <source>Monthly</source>
+      </segment>
+    </unit>
+    <unit id="reports.at">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:447,448</note>
+      </notes>
+      <segment>
+        <source>At</source>
+      </segment>
+    </unit>
+    <unit id="reports.weekday">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:455,456</note>
+      </notes>
+      <segment>
+        <source>Day of the week</source>
+      </segment>
+    </unit>
+    <unit id="reports.dayOfMonth">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:464,465</note>
+      </notes>
+      <segment>
+        <source>day</source>
+      </segment>
+    </unit>
+    <unit id="reports.monthday">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:469,470</note>
+      </notes>
+      <segment>
+        <source>Day of the month</source>
+      </segment>
+    </unit>
+    <unit id="reports.hour">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:482</note>
+      </notes>
+      <segment>
+        <source>Hour</source>
+      </segment>
+    </unit>
+    <unit id="reports.recipientsHelp">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:505,507</note>
+      </notes>
+      <segment>
+        <source>Scheduled runs are emailed here as a PDF attachment. Leave empty to only keep them on the appliance.</source>
+      </segment>
+    </unit>
+    <unit id="reports.recipientsEmailOff">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:510,512</note>
+      </notes>
+      <segment>
+        <source>Email is turned off (Configuration → Email): runs are kept on the appliance only.</source>
+      </segment>
+    </unit>
+    <unit id="reports.keep">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:517,518</note>
+      </notes>
+      <segment>
+        <source>Keep</source>
+      </segment>
+    </unit>
+    <unit id="reports.keepHelp">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:528,529</note>
+      </notes>
+      <segment>
+        <source>Runs kept on the appliance; older ones are deleted.</source>
+      </segment>
+    </unit>
+    <unit id="reports.runTitle">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:570,571</note>
+      </notes>
+      <segment>
+        <source>Run <ph id="0" equiv="INTERPOLATION" disp="{{ confirmRun()?.name }}"/> now?</source>
+      </segment>
+    </unit>
+    <unit id="reports.runText">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:573,575</note>
+      </notes>
+      <segment>
+        <source> The report is generated for its period as of now and kept in its history. </source>
+      </segment>
+    </unit>
+    <unit id="reports.runEmail">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:579,580</note>
+      </notes>
+      <segment>
+        <source>Also email it to <ph id="0" equiv="INTERPOLATION" disp="{{ confirmRun()?.recipients }}"/></source>
+      </segment>
+    </unit>
+    <unit id="reports.deleteTitle">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:604,605</note>
+      </notes>
+      <segment>
+        <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>?</source>
+      </segment>
+    </unit>
+    <unit id="reports.deleteText">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:606,608</note>
+      </notes>
+      <segment>
+        <source>Its schedule stops and its kept runs are deleted.</source>
+      </segment>
+    </unit>
+    <unit id="reports.newTitle">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:759</note>
+      </notes>
+      <segment>
+        <source>New report</source>
+      </segment>
+    </unit>
+    <unit id="reports.editTitle">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:760</note>
+      </notes>
+      <segment>
+        <source>Edit report</source>
+      </segment>
+    </unit>
+    <unit id="reports.trigger.schedule">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:761</note>
+      </notes>
+      <segment>
+        <source>scheduled</source>
+      </segment>
+    </unit>
+    <unit id="reports.trigger.manual">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:762</note>
+      </notes>
+      <segment>
+        <source>run now</source>
+      </segment>
+    </unit>
+    <unit id="reports.when.daily">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:788</note>
+      </notes>
+      <segment>
+        <source>Daily at <ph id="0" equiv="time" disp="at"/></source>
+      </segment>
+    </unit>
+    <unit id="reports.when.weekly">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:790</note>
+      </notes>
+      <segment>
+        <source>Weekly on <ph id="0" equiv="day" disp="day"/> at <ph id="1" equiv="time" disp="at"/></source>
+      </segment>
+    </unit>
+    <unit id="reports.when.monthly">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:792</note>
+      </notes>
+      <segment>
+        <source>Monthly on day <ph id="0" equiv="day" disp="r.monthday"/> at <ph id="1" equiv="time" disp="at"/></source>
+      </segment>
+    </unit>
+    <unit id="reports.when.off">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:794</note>
+      </notes>
+      <segment>
+        <source>On demand</source>
+      </segment>
+    </unit>
+    <unit id="reports.ranEmailed">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:872</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="name" disp="r.name"/> was generated and emailed.</source>
+      </segment>
+    </unit>
+    <unit id="reports.ran">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:873</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="name" disp="r.name"/> was generated; it&apos;s in its history.</source>
       </segment>
     </unit>
     <unit id="services.op.restart">
@@ -11128,10 +11779,18 @@
         <source>{VAR_PLURAL, plural, =1 {Traffic with 1 address on threat lists in the last hour (<ph id="0" equiv="INTERPOLATION"/>).} other {Traffic with <ph id="1" equiv="INTERPOLATION_1"/> addresses on threat lists in the last hour (<ph id="2" equiv="INTERPOLATION"/>).}}</source>
       </segment>
     </unit>
+    <unit id="notice.reportFailed">
+      <notes>
+        <note category="location">src/app/shared/notice-text.ts:71,72</note>
+      </notes>
+      <segment>
+        <source>A scheduled report failed (<ph id="0" equiv="INTERPOLATION" disp="{{ p[&apos;reports&apos;] }}"/>): <ph id="1" equiv="INTERPOLATION_1" disp="{{ p[&apos;error&apos;] }}"/></source>
+      </segment>
+    </unit>
     <unit id="notice.action.systemHealth">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:90</note>
-        <note category="location">src/app/shared/notice-text.ts:98</note>
+        <note category="location">src/app/shared/notice-text.ts:93</note>
+        <note category="location">src/app/shared/notice-text.ts:101</note>
       </notes>
       <segment>
         <source>System health</source>
@@ -11139,7 +11798,7 @@
     </unit>
     <unit id="notice.action.retention">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:92</note>
+        <note category="location">src/app/shared/notice-text.ts:95</note>
       </notes>
       <segment>
         <source>Retention settings</source>
@@ -11147,7 +11806,7 @@
     </unit>
     <unit id="notice.action.ports">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:94</note>
+        <note category="location">src/app/shared/notice-text.ts:97</note>
       </notes>
       <segment>
         <source>Collector ports</source>
@@ -11155,7 +11814,7 @@
     </unit>
     <unit id="notice.action.viewUpdates">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:100</note>
+        <note category="location">src/app/shared/notice-text.ts:103</note>
       </notes>
       <segment>
         <source>View updates</source>
@@ -11163,7 +11822,7 @@
     </unit>
     <unit id="notice.action.restart">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:102</note>
+        <note category="location">src/app/shared/notice-text.ts:105</note>
       </notes>
       <segment>
         <source>Restart</source>
@@ -11171,7 +11830,7 @@
     </unit>
     <unit id="notice.action.time">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:109</note>
+        <note category="location">src/app/shared/notice-text.ts:112</note>
       </notes>
       <segment>
         <source>Time settings</source>

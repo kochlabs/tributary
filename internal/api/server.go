@@ -65,6 +65,7 @@ type Server struct {
 	prevDropped  atomic.Uint64
 	prevRejected atomic.Uint64
 	noticeRuns   atomic.Int64
+	reportMu     sync.Mutex // one report run at a time
 	limiter      loginLimiter
 	mfa          mfaState
 	sso          ssoState
@@ -189,7 +190,14 @@ func (s *Server) Handler() http.Handler {
 	admin("PUT /api/email", s.emailPut)
 	admin("POST /api/email/test", s.emailTest)
 	auth("GET /api/threats", s.threatStatus)
-	auth("GET /api/reports/summary.pdf", s.reportSummary)
+	auth("GET /api/reports", s.reportsList)
+	admin("POST /api/reports", s.reportSave)
+	admin("PUT /api/reports/{id}", s.reportSave)
+	admin("DELETE /api/reports/{id}", s.reportDelete)
+	admin("POST /api/reports/{id}/run", s.reportRun)
+	auth("POST /api/reports/preview", s.reportPreview)
+	auth("GET /api/reports/{id}/runs", s.reportRuns)
+	auth("GET /api/reports/runs/{run}/pdf", s.reportRunPDF)
 	admin("GET /api/threat-feeds", s.threatFeeds)
 	admin("POST /api/threat-feeds", s.threatFeedSave)
 	admin("PUT /api/threat-feeds/{id}", s.threatFeedSave)

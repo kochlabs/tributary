@@ -354,6 +354,48 @@ export interface APIToken {
   lastUsed: number;
 }
 
+/** A saved report: a template's sections over a period, optionally scheduled and emailed. */
+export interface Report {
+  id: number;
+  name: string;
+  template: 'summary' | 'security';
+  sections: string[];
+  period: 'yesterday' | 'last_week' | 'last_month' | 'last_24h' | 'last_7d' | 'last_30d';
+  filters: Record<string, string>;
+  schedule: 'off' | 'daily' | 'weekly' | 'monthly';
+  hour: number;
+  weekday: number;
+  monthday: number;
+  recipients: string;
+  keep: number;
+  createdBy: string;
+  createdAt: number;
+  updatedAt: number;
+  nextRun: number;
+  lastRun?: ReportRun;
+}
+
+export interface ReportRun {
+  id: number;
+  reportId: number;
+  startedAt: number;
+  from: number;
+  to: number;
+  trigger: 'schedule' | 'manual';
+  status: 'ok' | 'failed';
+  error?: string;
+  size: number;
+  emailed?: string;
+}
+
+export interface ReportsList {
+  reports: Report[];
+  emailEnabled: boolean;
+  templates: Record<string, string[]>;
+  sections: string[];
+  timezone: string;
+}
+
 /** The SMTP server the appliance sends mail through. */
 export interface EmailConfig {
   enabled: boolean;
@@ -782,6 +824,31 @@ export function errorMessage(err: unknown): string {
   return String(err);
 }
 
+/** A report without its run status, as the API accepts it. */
+function reportDefinition(r: Partial<Report>): Partial<Report> {
+  const def = { ...r };
+  delete def.lastRun;
+  return def;
+}
+
+/** Awaits a PDF; errors arrive as JSON inside a Blob, so they are unwrapped. */
+async function pdfBlob(req: Observable<Blob>): Promise<Blob> {
+  try {
+    return await firstValueFrom(req);
+  } catch (e) {
+    if (e instanceof HttpErrorResponse && e.error instanceof Blob) {
+      let msg = '';
+      try {
+        msg = JSON.parse(await e.error.text()).error;
+      } catch {
+        /* not JSON */
+      }
+      if (msg) throw new Error(msg);
+    }
+    throw e;
+  }
+}
+
 @Injectable({ providedIn: 'root' })
 export class Api {
   private http = inject(HttpClient);
@@ -1030,22 +1097,31 @@ export class Api {
       this.http.post<{ ok: boolean; error?: string }>('/api/email/test', { config, to }),
     );
   }
-  /** The network summary as a PDF. Errors arrive as JSON inside a Blob, so they are unwrapped here. */
-  async summaryReport(range: string): Promise<Blob> {
-    try {
-      return await firstValueFrom(
-        this.http.get('/api/reports/summary.pdf', { params: { range }, responseType: 'blob' }),
-      );
-    } catch (e) {
-      if (e instanceof HttpErrorResponse && e.error instanceof Blob) {
-        try {
-          throw new Error(JSON.parse(await e.error.text()).error);
-        } catch (inner) {
-          if (inner instanceof Error && !(inner instanceof SyntaxError)) throw inner;
-        }
-      }
-      throw e;
-    }
+  reports() {
+    return this.get<ReportsList>('/api/reports');
+  }
+  saveReport(r: Partial<Report>) {
+    return firstValueFrom(
+      r.id
+        ? this.http.put<Report>(`/api/reports/${r.id}`, reportDefinition(r))
+        : this.http.post<Report>('/api/reports', reportDefinition(r)),
+    );
+  }
+  deleteReport(id: number) {
+    return firstValueFrom(this.http.delete(`/api/reports/${id}`));
+  }
+  runReport(id: number, email: boolean) {
+    return firstValueFrom(this.http.post<ReportRun>(`/api/reports/${id}/run`, { email }));
+  }
+  reportRuns(id: number) {
+    return this.get<ReportRun[]>(`/api/reports/${id}/runs`);
+  }
+  /** A report for its period ending now, without keeping it. */
+  previewReport(r: Partial<Report>) {
+    return pdfBlob(this.http.post('/api/reports/preview', reportDefinition(r), { responseType: 'blob' }));
+  }
+  reportRunPdf(runId: number) {
+    return pdfBlob(this.http.get(`/api/reports/runs/${runId}/pdf`, { responseType: 'blob' }));
   }
   threatStatus() {
     return this.get<ThreatStatus>('/api/threats');

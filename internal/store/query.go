@@ -711,3 +711,45 @@ func (s *Store) ThreatHits(ctx context.Context, from time.Time) ([]ThreatHit, er
 	}
 	return out, rows.Err()
 }
+
+// ExposedService is a local host and port that remote hosts connect to.
+type ExposedService struct {
+	Addr    string `json:"addr"`
+	Proto   uint8  `json:"proto"`
+	Port    uint16 `json:"port"`
+	Sources uint64 `json:"sources"` // distinct remote hosts
+	Flows   uint64 `json:"flows"`
+	Bytes   uint64 `json:"bytes"`
+}
+
+// Exposure lists local services that answered remote hosts in the query's
+// range, by distinct remote hosts. It counts replies, so scans of closed
+// ports don't: a local host sending from a service port to a remote one, for
+// TCP with SYN and ACK set (the handshake's answer; when the exporter reports
+// no flags, any reply), for UDP from a port below 1024 or one that answers
+// several remote hosts, so a local client's own conversations don't count.
+func (s *Store) Exposure(ctx context.Context, q Query, limit int) ([]ExposedService, error) {
+	where, args := q.where(rawSource)
+	ls, ld := isLocal("src_addr"), isLocal("dst_addr")
+	sql := fmt.Sprintf(`SELECT %s AS a, proto, src_port, uniq(dst_addr) AS remotes, count() AS f, sum(bytes) AS b
+		FROM netflow.flows
+		WHERE %s AND %s AND NOT %s AND src_port < dst_port AND (
+			(proto = 6 AND (tcp_flags = 0 OR bitAnd(tcp_flags, 18) = 18)) OR proto = 17)
+		GROUP BY a, proto, src_port
+		HAVING proto = 6 OR src_port < 1024 OR remotes >= 3
+		ORDER BY remotes DESC, f DESC LIMIT %d`, ipstr("src_addr"), where, ls, ld, max(limit, 1))
+	rows, err := s.conn.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []ExposedService{}
+	for rows.Next() {
+		var e ExposedService
+		if err := rows.Scan(&e.Addr, &e.Proto, &e.Port, &e.Sources, &e.Flows, &e.Bytes); err != nil {
+			return nil, err
+		}
+		out = append(out, e)
+	}
+	return out, rows.Err()
+}

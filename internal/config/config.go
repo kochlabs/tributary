@@ -107,6 +107,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateThreatFeeds(); err != nil {
 		return nil, fmt.Errorf("threat feed schema: %w", err)
 	}
+	if err := c.migrateReports(); err != nil {
+		return nil, fmt.Errorf("report schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}

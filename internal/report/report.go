@@ -8,6 +8,7 @@ import (
 	"embed"
 	"fmt"
 	"io"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -24,8 +25,11 @@ type Row struct {
 	Rate   float64 // bits per second over the range
 	Pct    float64 // share of the total
 
-	LastSeen time.Time // exporters
-	Status   string    // exporters: active | silent | idle
+	LastSeen  time.Time // exporters
+	Status    string    // exporters: active | silent | idle
+	Service   string    // exposure: protocol/port
+	Sources   uint64    // exposure: distinct remote hosts
+	FirstSeen time.Time // new devices
 }
 
 // Series is one layer of the traffic chart, in bits per second.
@@ -44,18 +48,23 @@ type Exporter struct {
 	Status   string // active | silent | idle
 }
 
-// Summary is the network summary report.
-type Summary struct {
+// Report is a report to render. Sections lists what to include, in page
+// order (see config.ReportSections); only their data needs filling in.
+type Report struct {
+	Title     string
 	Appliance string
 	Version   string
 	From, To  time.Time
 	Generated time.Time
+	Scope     string // the filters, described; empty for all traffic
+	Sections  []string
 
 	DownloadBytes, UploadBytes     uint64
 	DownloadBps, UploadBps         float64
 	PeakDownloadBps, PeakUploadBps float64
 	LocalHosts, RemoteHosts, Flows uint64
 	Packets                        uint64
+	ExporterCount                  int
 
 	// Traffic over time, by service (remote organization).
 	Times   []time.Time
@@ -68,6 +77,12 @@ type Summary struct {
 	ThreatFeeds        []Row
 	ThreatHosts        []Row
 	ThreatTalkers      []Row
+
+	// Exposure: local services reached from remote hosts (Label the host,
+	// Detail its address, Service the port, Sources the remote hosts).
+	Exposure []Row
+	// NewDevices: devices first seen in the range.
+	NewDevices []Row
 
 	Exporters []Exporter
 }
@@ -300,13 +315,30 @@ func labelCol(title string) column {
 	return column{title: title, align: "L", cell: func(r Row) (string, rgb) { return r.Label, ink }}
 }
 
-// RenderSummary renders the network summary as PDF.
-func RenderSummary(s *Summary) ([]byte, error) {
+var sectionTitles = map[string][2]string{
+	"traffic":     {"Traffic over time", "by service, bits per second"},
+	"services":    {"Top services", "remote networks by owner, both directions"},
+	"devices":     {"Top devices", "local hosts by MAC address, both directions"},
+	"apps":        {"Applications", "well-known port of the flow"},
+	"countries":   {"Remote countries", "where remote hosts are"},
+	"exposure":    {"Exposed services", "local hosts accepting connections from the internet"},
+	"new_devices": {"New devices", "first seen in this period"},
+	"exporters":   {"Exporters", "devices sending flow records"},
+}
+
+func (d *doc) note(s string) {
+	d.font("", 8.5)
+	d.color(muted)
+	d.CellFormat(0, rowH, s, "", 1, "L", false, 0, "")
+}
+
+// Render renders a report as PDF.
+func Render(s *Report) ([]byte, error) {
 	f, err := fonts()
 	if err != nil {
 		return nil, err
 	}
-	d := &doc{Fpdf: fpdf.New("P", "mm", "A4", ""), title: "Network summary"}
+	d := &doc{Fpdf: fpdf.New("P", "mm", "A4", ""), title: s.Title}
 	d.SetMargins(margin, margin, margin)
 	d.SetAutoPageBreak(false, 0) // breaks are placed by hand, so tables can repeat headers
 	d.AddUTF8FontFromBytes("noto", "", f[""])
@@ -319,149 +351,36 @@ func RenderSummary(s *Summary) ([]byte, error) {
 		d.SetY(-12)
 		d.font("", 7)
 		d.color(muted)
-		d.CellFormat(contentW/2, 5, d.fit(s.Appliance+" · "+d.title+" · "+Span(s.From, s.To), contentW/2), "", 0, "L", false, 0, "")
-		d.CellFormat(contentW/2, 5, fmt.Sprintf("Page %d of {nb}", d.PageNo()), "", 0, "R", false, 0, "")
+		d.CellFormat(contentW*0.75, 5, d.fit(s.Appliance+" · "+d.title+" · "+Span(s.From, s.To), contentW*0.75), "", 0, "L", false, 0, "")
+		d.CellFormat(contentW*0.25, 5, fmt.Sprintf("Page %d of {nb}", d.PageNo()), "", 0, "R", false, 0, "")
 	})
 	d.AddPage()
 
 	// Title block.
 	d.font("B", 20)
 	d.color(ink)
-	d.CellFormat(0, 10, d.title, "", 1, "L", false, 0, "")
+	d.MultiCell(0, 9, d.title, "", "L", false)
 	d.font("", 9.5)
 	d.color(muted)
 	d.CellFormat(0, 5.5, s.Appliance+" · "+Span(s.From, s.To), "", 1, "L", false, 0, "")
+	if s.Scope != "" {
+		d.font("B", 8.5)
+		d.color(ink)
+		d.CellFormat(0, 5, d.fit("Only traffic matching: "+s.Scope, contentW), "", 1, "L", false, 0, "")
+	}
 	d.font("", 7.5)
+	d.color(muted)
 	d.CellFormat(0, 4.5, "Generated "+s.Generated.Format("2 Jan 2006 15:04 MST")+" by Tributary "+s.Version, "", 1, "L", false, 0, "")
 	d.Ln(4)
 
-	// KPI tiles, three by two.
-	tiles := []struct{ label, value, sub string }{
-		{"Download", Bits(s.DownloadBps), "peak " + Bits(s.PeakDownloadBps) + " · " + Bytes(s.DownloadBytes)},
-		{"Upload", Bits(s.UploadBps), "peak " + Bits(s.PeakUploadBps) + " · " + Bytes(s.UploadBytes)},
-		{"Total volume", Bytes(s.DownloadBytes + s.UploadBytes), Count(float64(s.Packets)) + " packets"},
-		{"Local addresses", Count(float64(s.LocalHosts)), "active in range"},
-		{"Remote hosts", Count(float64(s.RemoteHosts)), "contacted"},
-		{"Flows", Count(float64(s.Flows)), fmt.Sprintf("%d exporter%s", len(s.Exporters), plural(len(s.Exporters)))},
-	}
-	const gap, tileH = 4.0, 19.0
-	tileW := (contentW - 2*gap) / 3
-	y0 := d.GetY()
-	for i, t := range tiles {
-		x := margin + float64(i%3)*(tileW+gap)
-		y := y0 + float64(i/3)*(tileH+gap)
-		d.fill(tileBg)
-		d.RoundedRect(x, y, tileW, tileH, 1.5, "1234", "F")
-		d.SetXY(x+3, y+2.2)
-		d.font("", 7.5)
-		d.color(muted)
-		d.CellFormat(tileW-6, 4, t.label, "", 2, "L", false, 0, "")
-		d.SetX(x + 3)
-		d.font("B", 14)
-		d.color(ink)
-		d.CellFormat(tileW-6, 7.5, t.value, "", 2, "L", false, 0, "")
-		d.SetX(x + 3)
-		d.font("", 7)
-		d.color(muted)
-		d.CellFormat(tileW-6, 4, d.fit(t.sub, tileW-6), "", 0, "L", false, 0, "")
-	}
-	d.SetXY(margin, y0+2*tileH+gap+2)
-
-	// Traffic over time.
-	d.heading("Traffic over time", "by service, bits per second")
-	const chartH = 72.0
-	png, err := trafficChart(s.Times, s.Traffic, contentW, chartH)
-	if err != nil {
-		return nil, fmt.Errorf("traffic chart: %w", err)
-	}
-	if png == nil {
-		d.font("", 8.5)
-		d.color(muted)
-		d.CellFormat(0, rowH, "No traffic in this range.", "", 1, "L", false, 0, "")
-	} else {
-		d.need(chartH)
-		d.image(png, margin, d.GetY(), contentW, chartH)
-		d.SetY(d.GetY() + chartH + 2)
-	}
-
-	// Services: doughnut beside the table.
-	d.heading("Top services", "remote networks by owner, both directions")
-	if len(s.Services) > 0 {
-		// The doughnut on the left; its legend is the table's swatches.
-		const dw = 50.0
-		d.need(dw)
-		y := d.GetY()
-		png, err := doughnut(s.Services, dw, dw)
-		if err != nil {
-			return nil, fmt.Errorf("services chart: %w", err)
+	for _, sec := range s.Sections {
+		if t, ok := sectionTitles[sec]; ok {
+			d.heading(t[0], t[1])
 		}
-		d.image(png, margin, y, dw, dw)
-		d.table(margin+dw+4, contentW-dw-4, []column{swatchCol(d, labelCol("Organization")), rateCol, volCol, shareCol(d)}, s.Services, true, "")
-		d.SetY(max(d.GetY(), y+dw) + 1)
-	} else {
-		d.table(margin, contentW, nil, nil, false, "No traffic in this range.")
-	}
-
-	d.heading("Top devices", "local hosts by MAC address, both directions")
-	d.table(margin, contentW, []column{labelCol("Device"), rateCol, volCol, shareCol(d)}, s.Devices, true, "No devices seen in this range.")
-
-	d.heading("Applications", "well-known port of the flow")
-	d.table(margin, contentW, []column{labelCol("Protocol / port"), rateCol, volCol, shareCol(d)}, s.Apps, false, "No traffic in this range.")
-
-	d.heading("Remote countries", "where remote hosts are")
-	d.table(margin, contentW, []column{labelCol("Country"), rateCol, volCol, shareCol(d)}, s.Countries, false, "No traffic in this range.")
-
-	// Security.
-	hint := fmt.Sprintf("%d threat feed%s enabled", s.ThreatFeedsEnabled, plural(s.ThreatFeedsEnabled))
-	d.heading("Threat feed matches", hint)
-	switch {
-	case s.ThreatFeedsEnabled == 0:
-		d.font("", 8.5)
-		d.color(muted)
-		d.CellFormat(0, rowH, "No threat feeds are enabled, so nothing was matched.", "", 1, "L", false, 0, "")
-	case len(s.ThreatFeeds) == 0:
-		d.font("", 8.5)
-		d.color(muted)
-		d.CellFormat(0, rowH, "No traffic with addresses on threat feeds in this range.", "", 1, "L", false, 0, "")
-	default:
-		d.table(margin, contentW, []column{labelCol("Feed"), flowCol, volCol}, s.ThreatFeeds, false, "")
-		d.Ln(3)
-		d.table(margin, contentW, []column{
-			{title: "Listed host", align: "L", cell: func(r Row) (string, rgb) { return r.Label, danger }},
-			flowCol, volCol,
-		}, s.ThreatHosts, true, "")
-		if len(s.ThreatTalkers) > 0 {
-			d.Ln(3)
-			d.table(margin, contentW, []column{labelCol("Local host talking to listed hosts"), flowCol, volCol}, s.ThreatTalkers, true, "")
+		if err := d.section(sec, s); err != nil {
+			return nil, err
 		}
 	}
-
-	// Exporters.
-	d.heading("Exporters", "devices sending flow records")
-	var exp []Row
-	for _, e := range s.Exporters {
-		name, detail := e.Name, e.Addr
-		if name == "" {
-			name, detail = e.Addr, ""
-		}
-		exp = append(exp, Row{Label: name, Detail: detail, Bytes: e.Bytes, Flows: e.Flows, LastSeen: e.LastSeen, Status: e.Status})
-	}
-	d.table(margin, contentW, []column{
-		labelCol("Exporter"),
-		flowCol, volCol,
-		{title: "Last seen", w: 30, align: "R", cell: func(r Row) (string, rgb) {
-			if r.LastSeen.IsZero() {
-				return "–", muted
-			}
-			return r.LastSeen.Format("2 Jan 15:04"), ink
-		}},
-		{title: "Status", w: 20, align: "R", cell: func(r Row) (string, rgb) {
-			if c, ok := map[string]rgb{"active": accent, "silent": warning}[r.Status]; ok {
-				return r.Status, c
-			}
-			return r.Status, muted
-		}},
-	}, exp, true, "No exporters.")
 
 	if err := d.Error(); err != nil {
 		return nil, err
@@ -477,6 +396,15 @@ func hex(s string) rgb {
 	var c rgb
 	fmt.Sscanf(strings.TrimPrefix(s, "#"), "%02x%02x%02x", &c.r, &c.g, &c.b)
 	return c
+}
+
+func sortedKeys(m map[string]string) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	return keys
 }
 
 func plural(n int) string {

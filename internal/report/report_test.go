@@ -10,10 +10,10 @@ import (
 )
 
 // fixture is a week of plausible data, including long and non-Latin names.
-func fixture() *Summary {
+func fixture() *Report {
 	to := time.Date(2026, 10, 23, 14, 0, 0, 0, time.Local)
 	from := to.Add(-7 * 24 * time.Hour)
-	s := &Summary{Appliance: "Tributary", Version: "0.2.0", From: from, To: to, Generated: to,
+	s := &Report{Title: "Network summary", Sections: []string{"kpis", "traffic", "services", "devices", "apps", "countries", "threats", "exposure", "new_devices", "exporters"}, ExporterCount: 2, Scope: "exporter = 192.168.20.1", Appliance: "Tributary", Version: "0.2.0", From: from, To: to, Generated: to,
 		DownloadBytes: 65 << 30, UploadBytes: 3 << 30, DownloadBps: 6.02e6, UploadBps: 2.9e5, PeakDownloadBps: 3.04e8, PeakUploadBps: 2.06e7,
 		LocalHosts: 169, RemoteHosts: 7992, Flows: 1162057, Packets: 61816877, ThreatFeedsEnabled: 5}
 	names := []string{"Valve Corporation", "Google LLC", "Fastly, Inc.", "Fortinet Inc.", "Cloudflare, Inc.", "Apple Inc.", "Akamai International B.V.", "Other"}
@@ -47,12 +47,14 @@ func fixture() *Summary {
 	s.ThreatFeeds = []Row{{Label: "Spamhaus DROP (IPv4)", Flows: 16, Bytes: 9000}, {Label: "FireHOL Level 1", Flows: 4, Bytes: 256}}
 	s.ThreatHosts = []Row{{Label: "94.154.43.7", Detail: "NL · AS219502 Storm Industries LLC", Flows: 6, Bytes: 3452}, {Label: "45.138.12.16", Detail: "HK · AS218785 TC DATACENTER LIMITED", Flows: 4, Bytes: 1873}}
 	s.ThreatTalkers = []Row{{Label: "proxy.kochlabs.io", Detail: "192.168.80.2", Flows: 14, Bytes: 8046}, {Label: "Fozzie", Detail: "192.168.80.51", Flows: 6, Bytes: 3452}}
+	s.Exposure = []Row{{Label: "proxy.kochlabs.io", Detail: "192.168.80.2", Service: "HTTPS (tcp/443)", Sources: 412, Flows: 1112, Bytes: 9 << 20}, {Label: "Fozzie", Detail: "192.168.80.51", Service: "tcp/32400", Sources: 3, Flows: 11, Bytes: 4 << 10}}
+	s.NewDevices = []Row{{Label: "Private device e0:40", Detail: "0a:0c:0f:fe:e0:40 · Private (randomized) address · 192.168.80.77", FirstSeen: to.Add(-30 * time.Hour)}}
 	s.Exporters = []Exporter{{Name: "", Addr: "192.168.20.1", Bytes: 68 << 30, Flows: 1161728, LastSeen: to, Status: "active"}, {Name: "branch-rtr-01", Addr: "10.9.0.1", Bytes: 1 << 20, Flows: 30, LastSeen: to.Add(-3 * time.Hour), Status: "silent"}}
 	return s
 }
 
-func TestRenderSummary(t *testing.T) {
-	pdf, err := RenderSummary(fixture())
+func TestRender(t *testing.T) {
+	pdf, err := Render(fixture())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,15 +65,15 @@ func TestRenderSummary(t *testing.T) {
 		os.WriteFile(out, pdf, 0o644)
 	}
 	// Empty data still renders.
-	if _, err := RenderSummary(&Summary{Appliance: "x", From: time.Now().Add(-time.Hour), To: time.Now(), Generated: time.Now()}); err != nil {
+	if _, err := Render(&Report{Title: "Empty", Sections: []string{"kpis", "traffic", "services", "devices", "threats", "exposure", "new_devices", "exporters"}, Appliance: "x", From: time.Now().Add(-time.Hour), To: time.Now(), Generated: time.Now()}); err != nil {
 		t.Fatal(err)
 	}
 }
 
-func BenchmarkRenderSummary(b *testing.B) {
+func BenchmarkRender(b *testing.B) {
 	s := fixture()
 	for b.Loop() {
-		if _, err := RenderSummary(s); err != nil {
+		if _, err := Render(s); err != nil {
 			b.Fatal(err)
 		}
 	}

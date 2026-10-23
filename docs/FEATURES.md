@@ -36,6 +36,12 @@
 - Filters: IP/CIDR (v4 and v6), ports and ranges, protocols, AS, country,
   interface, VLAN, DSCP, threat feed, `proto/port`; `,` for OR, `!` for NOT.
 
+## Reports
+
+- PDF reports (network summary, security digest) with selectable sections,
+  periods and filters; on demand or scheduled daily, weekly or monthly,
+  emailed as attachments and kept on the appliance ([REPORTS.md](REPORTS.md)).
+
 ## Security
 
 - Threat feeds: flows to or from addresses on lists of known-bad addresses are
@@ -64,7 +70,7 @@
   retention at both ends; encryption to an age public key lets the appliance
   write backups it cannot read.
 - Email through your SMTP server (STARTTLS, TLS or a plain relay; trusted CAs
-  apply), with a test send. Used by reports and alerts as they arrive.
+  apply), with a test send; used by scheduled reports.
 - Notices for low disk space, OS updates, expiring certificates, silent
   exporters, failed backups and database problems.
 - OS updates, time and NTP, and service restarts from the UI.

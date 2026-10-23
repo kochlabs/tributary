@@ -266,6 +266,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	}
 	go srv.RunNotices(ctx)
 	go threats.Run(ctx)
+	go srv.RunReports(ctx)
 	srv.Scheduler = &offsite.Scheduler{Cfg: cfg, Backups: srv.Backups, Log: log, RootCAs: trust.Pool}
 	go srv.Scheduler.Run(ctx)
 

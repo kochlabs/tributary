@@ -4,82 +4,78 @@ import (
 	"cmp"
 	"context"
 	"fmt"
-	"net/http"
+	"maps"
+	"net/netip"
 	"slices"
 	"sync"
 	"time"
 
 	"golang.org/x/sync/errgroup"
 
+	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/enrich"
 	"github.com/kochlabs/tributary/internal/report"
 	"github.com/kochlabs/tributary/internal/store"
 )
 
-// reportSummary renders the network summary for a range as PDF. The Reports
-// page fetches it and shows it from a blob: URL in the browser's PDF viewer.
-func (s *Server) reportSummary(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	ctx, cancel := queryCtx(r)
-	defer cancel()
-	data, err := s.summaryReport(ctx, q.From, q.To)
-	if err != nil {
-		s.dbErr(w, err)
-		return
-	}
-	pdf, err := report.RenderSummary(data)
-	if err != nil {
-		writeErr(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	h := w.Header()
-	h.Set("Content-Type", "application/pdf")
-	h.Set("Content-Disposition", fmt.Sprintf(`inline; filename="tributary-summary-%s.pdf"`, q.To.Format("2006-01-02")))
-	h.Set("Cache-Control", "no-store")
-	w.Write(pdf)
-}
+var templateTitles = map[string]string{"summary": "Network summary", "security": "Security digest"}
 
-// summaryReport gathers the network summary with the web UI's labels.
-func (s *Server) summaryReport(ctx context.Context, from, to time.Time) (*report.Summary, error) {
-	out := &report.Summary{Appliance: s.Config.Settings().ApplianceName, Version: s.Version, From: from, To: to, Generated: time.Now()}
-	q := store.Query{From: from, To: to, Metric: "bps"}
-	// The queries are independent: run them together (they take seconds
-	// each over long ranges).
+// buildReport gathers the data for def's sections over [from, to), with the
+// web UI's labels. The queries are independent and run together.
+func (s *Server) buildReport(ctx context.Context, def config.Report, from, to time.Time) (*report.Report, error) {
+	title := def.Name
+	if title == "" {
+		title = templateTitles[def.Template]
+	}
+	out := &report.Report{Title: title, Appliance: s.Config.Settings().ApplianceName, Version: s.Version, From: from, To: to,
+		Generated: time.Now(), Sections: def.Sections}
+	filter, err := store.ParseFilter(def.Filters)
+	if err != nil {
+		return nil, fmt.Errorf("filters: %w", err)
+	}
+	if len(def.Filters) > 0 {
+		out.Scope = report.Describe(def.Filters, func(k string) string { return k })
+	}
+	q := store.Query{From: from, To: to, Metric: "bps", Filter: filter}
+	want := func(sec string) bool { return slices.Contains(def.Sections, sec) }
+
 	g, ctx := errgroup.WithContext(ctx)
-	var mu sync.Mutex // guards out
-	g.Go(func() error {
-		sum, err := s.Store.Summary(ctx, q)
-		if err != nil {
-			return err
-		}
-		mu.Lock()
-		defer mu.Unlock()
-		out.DownloadBytes, out.UploadBytes = sum.DownloadBytes, sum.UploadBytes
-		out.DownloadBps, out.UploadBps = sum.DownloadBps, sum.UploadBps
-		out.PeakDownloadBps, out.PeakUploadBps = sum.PeakDownBps, sum.PeakUpBps
-		out.LocalHosts, out.RemoteHosts, out.Flows, out.Packets = sum.LocalHosts, sum.RemoteHosts, sum.Flows, sum.Packets
-		return nil
-	})
-	g.Go(func() error {
-		tq := q
-		tq.GroupBy, tq.Limit = "remote_as", 8
-		ts, err := s.Store.TimeSeries(ctx, tq)
-		if err != nil {
-			return err
-		}
-		mu.Lock()
-		defer mu.Unlock()
-		for _, t := range ts.Times {
-			out.Times = append(out.Times, time.UnixMilli(t))
-		}
-		for _, sr := range ts.Series {
-			out.Traffic = append(out.Traffic, report.Series{Label: s.label(tq.GroupBy, sr.Key), Values: sr.Values})
-		}
-		return nil
-	})
+	var mu sync.Mutex // guards out's shared fields
+	if want("kpis") {
+		g.Go(func() error {
+			sum, err := s.Store.Summary(ctx, q)
+			if err != nil {
+				return err
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			out.DownloadBytes, out.UploadBytes = sum.DownloadBytes, sum.UploadBytes
+			out.DownloadBps, out.UploadBps = sum.DownloadBps, sum.UploadBps
+			out.PeakDownloadBps, out.PeakUploadBps = sum.PeakDownBps, sum.PeakUpBps
+			out.LocalHosts, out.RemoteHosts, out.Flows, out.Packets = sum.LocalHosts, sum.RemoteHosts, sum.Flows, sum.Packets
+			out.ExporterCount = int(sum.Exporters)
+			return nil
+		})
+	}
+	if want("traffic") {
+		g.Go(func() error {
+			tq := q
+			tq.GroupBy, tq.Limit = "remote_as", 8
+			ts, err := s.Store.TimeSeries(ctx, tq)
+			if err != nil {
+				return err
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			for _, t := range ts.Times {
+				out.Times = append(out.Times, time.UnixMilli(t))
+			}
+			for _, sr := range ts.Series {
+				out.Traffic = append(out.Traffic, report.Series{Label: s.label(tq.GroupBy, sr.Key), Values: sr.Values})
+			}
+			return nil
+		})
+	}
 
 	top := func(q store.Query, dim string, limit int) ([]report.Row, error) {
 		q.GroupBy, q.Limit = dim, limit
@@ -105,61 +101,154 @@ func (s *Server) summaryReport(ctx context.Context, from, to time.Time) (*report
 			return err
 		})
 	}
-	topInto(q, "remote_as", 8, &out.Services)
-	topInto(q, "device", 10, &out.Devices)
-	topInto(q, "app", 8, &out.Apps)
-	topInto(q, "remote_country", 8, &out.Countries)
-
-	// Threat feed matches, ranked by flows.
-	feeds, err := s.Config.ThreatFeeds()
-	if err != nil {
-		return nil, err
-	}
-	for _, f := range feeds {
-		if f.Enabled {
-			out.ThreatFeedsEnabled++
+	for _, t := range []struct {
+		sec, dim string
+		limit    int
+		dst      *[]report.Row
+	}{{"services", "remote_as", 8, &out.Services}, {"devices", "device", 10, &out.Devices}, {"apps", "app", 8, &out.Apps}, {"countries", "remote_country", 8, &out.Countries}} {
+		if want(t.sec) {
+			topInto(q, t.dim, t.limit, t.dst)
 		}
 	}
-	if out.ThreatFeedsEnabled > 0 {
-		fq := q
-		fq.Metric = "fps"
-		if fq.Filter, err = store.ParseFilter(map[string]string{"threat": "*"}); err != nil {
+
+	if want("threats") {
+		feeds, err := s.Config.ThreatFeeds()
+		if err != nil {
 			return nil, err
 		}
-		topInto(fq, "threat", 10, &out.ThreatFeeds)
-		topInto(fq, "threat_host", 10, &out.ThreatHosts)
-		topInto(fq, "local_host", 10, &out.ThreatTalkers)
+		for _, f := range feeds {
+			if f.Enabled {
+				out.ThreatFeedsEnabled++
+			}
+		}
+		if out.ThreatFeedsEnabled > 0 {
+			params := maps.Clone(def.Filters)
+			if params == nil {
+				params = map[string]string{}
+			}
+			if _, ok := params["threat"]; !ok {
+				params["threat"] = "*"
+			}
+			fq := q
+			fq.Metric = "fps" // ranked by flows: matches are usually small
+			if fq.Filter, err = store.ParseFilter(params); err != nil {
+				return nil, err
+			}
+			topInto(fq, "threat", 10, &out.ThreatFeeds)
+			topInto(fq, "threat_host", 10, &out.ThreatHosts)
+			topInto(fq, "local_host", 10, &out.ThreatTalkers)
+		}
 	}
 
-	// Exporters: those named or seen, with traffic in the range.
+	if want("exposure") {
+		g.Go(func() error {
+			list, err := s.Store.Exposure(ctx, q, 15)
+			if err != nil {
+				return err
+			}
+			var addrs []netip.Addr
+			for _, e := range list {
+				if a, err := netip.ParseAddr(e.Addr); err == nil {
+					addrs = append(addrs, a)
+				}
+			}
+			names := s.RDNS.Names(ctx, addrs, 800*time.Millisecond)
+			rows := make([]report.Row, 0, len(list))
+			for _, e := range list {
+				label, detail := e.Addr, ""
+				if a, err := netip.ParseAddr(e.Addr); err == nil {
+					if n := names[a]; n != "" {
+						label, detail = n, e.Addr
+					}
+				}
+				rows = append(rows, report.Row{Label: label, Detail: detail, Service: s.label("app", fmt.Sprintf("%d/%d", e.Proto, e.Port)),
+					Sources: e.Sources, Flows: e.Flows, Bytes: e.Bytes})
+			}
+			out.Exposure = rows
+			return nil
+		})
+	}
+
+	if want("new_devices") {
+		list, err := s.Config.Devices()
+		if err != nil {
+			return nil, err
+		}
+		for _, d := range list {
+			first := time.UnixMilli(d.FirstSeen)
+			if first.Before(from) || !first.Before(to) {
+				continue
+			}
+			name, _ := s.deviceName(ctx, d.MAC, nil)
+			detail := enrich.FormatMAC(d.MAC)
+			if v := enrich.Vendor(d.MAC); v != "" {
+				detail += " · " + v
+			}
+			if len(d.IPs) > 0 {
+				detail += " · " + d.IPs[0].IP
+			}
+			out.NewDevices = append(out.NewDevices, report.Row{Label: name, Detail: detail, FirstSeen: first})
+		}
+		slices.SortFunc(out.NewDevices, func(a, b report.Row) int { return a.FirstSeen.Compare(b.FirstSeen) })
+	}
+
 	var traffic map[string]store.ExporterTraffic
-	g.Go(func() (err error) {
-		traffic, err = s.Store.ExporterTraffic(ctx, from, to)
-		return err
-	})
+	if want("exporters") {
+		g.Go(func() (err error) {
+			traffic, err = s.Store.ExporterTraffic(ctx, from, to)
+			return err
+		})
+	}
 	if err := g.Wait(); err != nil {
 		return nil, err
 	}
-	live := map[string]int64{}
-	for _, e := range s.Collector.Exporters() {
-		live[e.Addr] = e.LastSeen
-	}
-	for _, e := range s.Config.Exporters() {
-		t := traffic[e.Addr]
-		last := max(live[e.Addr], t.LastSeen)
-		status := "idle"
-		switch {
-		case last > 0 && time.Since(time.UnixMilli(last)) < 15*time.Minute:
-			status = "active"
-		case t.Bytes > 0 || t.Flows > 0:
-			status = "silent"
+
+	if want("exporters") {
+		live := map[string]int64{}
+		for _, e := range s.Collector.Exporters() {
+			live[e.Addr] = e.LastSeen
 		}
-		row := report.Exporter{Name: e.Name, Addr: e.Addr, Bytes: t.Bytes, Flows: t.Flows, Status: status}
-		if last > 0 {
-			row.LastSeen = time.UnixMilli(last)
+		for _, e := range s.Config.Exporters() {
+			t := traffic[e.Addr]
+			last := max(live[e.Addr], t.LastSeen)
+			status := "idle"
+			switch {
+			case last > 0 && time.Since(time.UnixMilli(last)) < 15*time.Minute:
+				status = "active"
+			case t.Bytes > 0 || t.Flows > 0:
+				status = "silent"
+			}
+			row := report.Exporter{Name: e.Name, Addr: e.Addr, Bytes: t.Bytes, Flows: t.Flows, Status: status}
+			if last > 0 {
+				row.LastSeen = time.UnixMilli(last)
+			}
+			out.Exporters = append(out.Exporters, row)
 		}
-		out.Exporters = append(out.Exporters, row)
+		slices.SortFunc(out.Exporters, func(a, b report.Exporter) int { return cmp.Compare(b.Bytes, a.Bytes) })
+		if out.ExporterCount == 0 {
+			out.ExporterCount = len(out.Exporters)
+		}
 	}
-	slices.SortFunc(out.Exporters, func(a, b report.Exporter) int { return cmp.Compare(b.Bytes, a.Bytes) })
 	return out, nil
+}
+
+// periodLabel names a run's period for subjects and file names.
+func periodLabel(from, to time.Time) string {
+	if to.Sub(from) <= 25*time.Hour && from.Hour() == 0 {
+		return from.Format("2 Jan 2006")
+	}
+	return from.Format("2 Jan") + " – " + to.Add(-time.Second).Format("2 Jan 2006")
+}
+
+func reportFileName(name string, from time.Time) string {
+	clean := make([]rune, 0, len(name))
+	for _, r := range name {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+			clean = append(clean, r)
+		case len(clean) > 0 && clean[len(clean)-1] != '-':
+			clean = append(clean, '-')
+		}
+	}
+	return string(clean) + "-" + from.Format("2006-01-02") + ".pdf"
 }

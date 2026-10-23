@@ -67,6 +67,9 @@ import { Notice } from '../core/api';
       @case ('threat-traffic') {
         <ng-container i18n="@@notice.threatTraffic">{num('count'), plural, =1 {Traffic with 1 address on threat lists in the last hour ({{ p['feeds'] }}).} other {Traffic with {{ p['count'] }} addresses on threat lists in the last hour ({{ p['feeds'] }}).}}</ng-container>
       }
+      @case ('report-failed') {
+        <ng-container i18n="@@notice.reportFailed">A scheduled report failed ({{ p['reports'] }}): {{ p['error'] }}</ng-container>
+      }
       @default {
         {{ notice().message }}
       }
@@ -114,6 +117,8 @@ export function noticeActionLabel(n: Notice): string {
       return $localize`:@@nav.backup:Backup & Restore`;
     case 'threat-traffic':
       return $localize`:@@nav.detections:Detections`;
+    case 'report-failed':
+      return $localize`:@@nav.reports:Reports`;
   }
   return n.action?.label ?? '';
 }
