@@ -14,7 +14,7 @@ import { TimeRangePicker } from './shared/time-range';
 /** Admin pages (/admin/<page>) in each sidebar group. */
 const NAV_GROUPS: Record<string, string[]> = {
   security: ['detections', 'threat-feeds'],
-  config: ['settings', 'enrichment'],
+  config: ['settings', 'local-networks', 'enrichment'],
   access: ['users', 'identity-sources', 'api-tokens', 'audit'],
   appliance: ['updates', 'backup', 'certificates', 'time', 'services'],
 };
@@ -115,6 +115,7 @@ const NAV_GROUPS: Record<string, string[]> = {
               <ng-container i18n="@@nav.groupConfiguration">Configuration</ng-container>
               <clr-vertical-nav-group-children>
                 <a clrVerticalNavLink routerLink="/admin/settings" routerLinkActive="active" i18n="@@nav.settings">Settings</a>
+                <a clrVerticalNavLink routerLink="/admin/local-networks" routerLinkActive="active" i18n="@@nav.localNetworks">Local Networks</a>
                 <a clrVerticalNavLink routerLink="/admin/enrichment" routerLinkActive="active" i18n="@@nav.enrichment">Enrichment</a>
               </clr-vertical-nav-group-children>
             </clr-vertical-nav-group>

@@ -126,18 +126,28 @@
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
         <note category="location">src/app/shared/notice-text.ts:107</note>
-        <note category="location">src/app/shell.ts:125,126</note>
+        <note category="location">src/app/shell.ts:126,127</note>
       </notes>
       <segment>
         <source>Users</source>
       </segment>
     </unit>
-    <unit id="nav.enrichment">
+    <unit id="nav.localNetworks">
       <notes>
         <note category="location">src/app/app.routes.ts:30</note>
-        <note category="location">src/app/pages/enrichment.ts:31,32</note>
-        <note category="location">src/app/shared/notice-text.ts:111</note>
+        <note category="location">src/app/pages/local-networks.ts:16,17</note>
         <note category="location">src/app/shell.ts:118,119</note>
+      </notes>
+      <segment>
+        <source>Local Networks</source>
+      </segment>
+    </unit>
+    <unit id="nav.enrichment">
+      <notes>
+        <note category="location">src/app/app.routes.ts:31</note>
+        <note category="location">src/app/pages/enrichment.ts:78,79</note>
+        <note category="location">src/app/shared/notice-text.ts:111</note>
+        <note category="location">src/app/shell.ts:119,120</note>
       </notes>
       <segment>
         <source>Enrichment</source>
@@ -145,10 +155,10 @@
     </unit>
     <unit id="nav.backup">
       <notes>
-        <note category="location">src/app/app.routes.ts:32</note>
+        <note category="location">src/app/app.routes.ts:33</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
         <note category="location">src/app/shared/notice-text.ts:114</note>
-        <note category="location">src/app/shell.ts:136,137</note>
+        <note category="location">src/app/shell.ts:137,138</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -156,10 +166,10 @@
     </unit>
     <unit id="nav.certificates">
       <notes>
-        <note category="location">src/app/app.routes.ts:33</note>
+        <note category="location">src/app/app.routes.ts:34</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:105</note>
-        <note category="location">src/app/shell.ts:137,138</note>
+        <note category="location">src/app/shell.ts:138,139</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -167,9 +177,9 @@
     </unit>
     <unit id="nav.identitySources">
       <notes>
-        <note category="location">src/app/app.routes.ts:34</note>
+        <note category="location">src/app/app.routes.ts:35</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
-        <note category="location">src/app/shell.ts:126,127</note>
+        <note category="location">src/app/shell.ts:127,128</note>
       </notes>
       <segment>
         <source>Identity Sources</source>
@@ -177,9 +187,9 @@
     </unit>
     <unit id="nav.updates">
       <notes>
-        <note category="location">src/app/app.routes.ts:35</note>
+        <note category="location">src/app/app.routes.ts:36</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:135,136</note>
+        <note category="location">src/app/shell.ts:136,137</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -187,9 +197,9 @@
     </unit>
     <unit id="nav.time">
       <notes>
-        <note category="location">src/app/app.routes.ts:36</note>
+        <note category="location">src/app/app.routes.ts:37</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:139</note>
+        <note category="location">src/app/shell.ts:140</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -197,9 +207,9 @@
     </unit>
     <unit id="nav.services">
       <notes>
-        <note category="location">src/app/app.routes.ts:37</note>
+        <note category="location">src/app/app.routes.ts:38</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:139,140</note>
+        <note category="location">src/app/shell.ts:140,141</note>
       </notes>
       <segment>
         <source>Services</source>
@@ -207,9 +217,9 @@
     </unit>
     <unit id="nav.apiTokens">
       <notes>
-        <note category="location">src/app/app.routes.ts:38</note>
+        <note category="location">src/app/app.routes.ts:39</note>
         <note category="location">src/app/pages/api-tokens.ts:17,18</note>
-        <note category="location">src/app/shell.ts:127,128</note>
+        <note category="location">src/app/shell.ts:128,129</note>
       </notes>
       <segment>
         <source>API Tokens</source>
@@ -217,8 +227,8 @@
     </unit>
     <unit id="nav.audit">
       <notes>
-        <note category="location">src/app/app.routes.ts:39</note>
-        <note category="location">src/app/shell.ts:128,129</note>
+        <note category="location">src/app/app.routes.ts:40</note>
+        <note category="location">src/app/shell.ts:129,130</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -2192,7 +2202,7 @@
         <note category="location">src/app/pages/users.ts:138,139</note>
         <note category="location">src/app/shared/filter-bar.ts:37,39</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:173,174</note>
+        <note category="location">src/app/shell.ts:174,175</note>
       </notes>
       <segment>
         <source>Cancel</source>
@@ -2845,10 +2855,13 @@
       <notes>
         <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
         <note category="location">src/app/pages/devices.ts:118,120</note>
-        <note category="location">src/app/pages/enrichment.ts:249,250</note>
+        <note category="location">src/app/pages/enrichment.ts:374,375</note>
+        <note category="location">src/app/pages/enrichment.ts:486,487</note>
+        <note category="location">src/app/pages/enrichment.ts:613,614</note>
         <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
         <note category="location">src/app/pages/exporters.ts:132,134</note>
         <note category="location">src/app/pages/identity-sources.ts:508,510</note>
+        <note category="location">src/app/pages/local-networks.ts:107,109</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/threat-feeds.ts:171,173</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
@@ -4373,7 +4386,7 @@
         <note category="location">src/app/pages/dashboard.ts:79,81</note>
       </notes>
       <segment>
-        <source>Ask an administrator to add it under Configuration → Enrichment.</source>
+        <source>Ask an administrator to add it under Configuration → Local Networks.</source>
       </segment>
     </unit>
     <unit id="dashboard.dismiss">
@@ -4899,7 +4912,7 @@
         <note category="location">src/app/pages/devices.ts:86,88</note>
       </notes>
       <segment>
-        <source> No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are set under Configuration → Enrichment. </source>
+        <source> No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are set under Configuration → Local Networks. </source>
       </segment>
     </unit>
     <unit id="devices.footer">
@@ -4969,7 +4982,7 @@
     </unit>
     <unit id="dataSources.geo.dbipHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:13</note>
+        <note category="location">src/app/pages/enrichment.ts:14</note>
       </notes>
       <segment>
         <source>Country and ASN databases from db-ip.com, downloaded monthly. Free under CC BY 4.0, which requires the attribution shown below.</source>
@@ -4977,7 +4990,7 @@
     </unit>
     <unit id="dataSources.geo.maxmindLabel">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:14</note>
+        <note category="location">src/app/pages/enrichment.ts:18</note>
       </notes>
       <segment>
         <source>MaxMind account</source>
@@ -4985,7 +4998,7 @@
     </unit>
     <unit id="dataSources.geo.maxmindHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:14</note>
+        <note category="location">src/app/pages/enrichment.ts:19</note>
       </notes>
       <segment>
         <source>GeoLite2 (free with an account) or GeoIP2 (commercial) editions, downloaded with your account ID and license key. Switching to another source deletes the stored key.</source>
@@ -4993,7 +5006,7 @@
     </unit>
     <unit id="dataSources.geo.urlsLabel">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:15</note>
+        <note category="location">src/app/pages/enrichment.ts:23</note>
       </notes>
       <segment>
         <source>Download URLs</source>
@@ -5001,7 +5014,7 @@
     </unit>
     <unit id="dataSources.geo.urlsHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:15</note>
+        <note category="location">src/app/pages/enrichment.ts:24</note>
       </notes>
       <segment>
         <source>Any MaxMind-format (.mmdb) databases you are licensed for, such as a DB-IP subscription. Plain, .gz and .tar.gz downloads are accepted. Switching to another source deletes the stored URLs.</source>
@@ -5009,7 +5022,7 @@
     </unit>
     <unit id="dataSources.geo.filesLabel">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:16</note>
+        <note category="location">src/app/pages/enrichment.ts:28</note>
       </notes>
       <segment>
         <source>Files on the appliance</source>
@@ -5017,7 +5030,7 @@
     </unit>
     <unit id="dataSources.geo.filesHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:16</note>
+        <note category="location">src/app/pages/enrichment.ts:29</note>
       </notes>
       <segment>
         <source>Databases kept up to date by another tool, such as MaxMind geoipupdate. Reloaded automatically when the files change.</source>
@@ -5025,7 +5038,7 @@
     </unit>
     <unit id="dataSources.oui.ieeeLabel">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:20</note>
+        <note category="location">src/app/pages/enrichment.ts:36</note>
       </notes>
       <segment>
         <source>IEEE registry</source>
@@ -5033,7 +5046,7 @@
     </unit>
     <unit id="dataSources.oui.ieeeHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:20</note>
+        <note category="location">src/app/pages/enrichment.ts:37</note>
       </notes>
       <segment>
         <source>The default. Downloads the MA-L, MA-M and MA-S registries from the IEEE Registration Authority weekly: the authoritative, most current source.</source>
@@ -5041,8 +5054,8 @@
     </unit>
     <unit id="dataSources.downloadUrl">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:21</note>
-        <note category="location">src/app/pages/enrichment.ts:217,218</note>
+        <note category="location">src/app/pages/enrichment.ts:41</note>
+        <note category="location">src/app/pages/enrichment.ts:569,571</note>
       </notes>
       <segment>
         <source>Download URL</source>
@@ -5050,7 +5063,7 @@
     </unit>
     <unit id="dataSources.oui.urlHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:21</note>
+        <note category="location">src/app/pages/enrichment.ts:42</note>
       </notes>
       <segment>
         <source>An IEEE registry CSV (or a Wireshark-format manuf file) from your own mirror, optionally gzipped. Useful when the appliance cannot reach the IEEE.</source>
@@ -5058,7 +5071,7 @@
     </unit>
     <unit id="dataSources.oui.fileLabel">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:22</note>
+        <note category="location">src/app/pages/enrichment.ts:46</note>
       </notes>
       <segment>
         <source>File on the appliance</source>
@@ -5066,23 +5079,23 @@
     </unit>
     <unit id="dataSources.oui.fileHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:22</note>
+        <note category="location">src/app/pages/enrichment.ts:47</note>
       </notes>
       <segment>
         <source>An IEEE registry CSV (or a Wireshark-format manuf file), optionally gzipped. Reloaded automatically when it changes.</source>
       </segment>
     </unit>
-    <unit id="enrichment.subtitle">
+    <unit id="enrichment.subtitle2">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:32,36</note>
+        <note category="location">src/app/pages/enrichment.ts:80,82</note>
       </notes>
       <segment>
-        <source>Local networks, geolocation, AS numbers, hostnames and MAC vendors</source>
+        <source> Geolocation, AS numbers, hostnames and MAC vendors </source>
       </segment>
     </unit>
     <unit id="dataSources.saved">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:38</note>
+        <note category="location">src/app/pages/enrichment.ts:92,93</note>
       </notes>
       <segment>
         <source>Saved. New sources are loaded in the background.</source>
@@ -5090,63 +5103,34 @@
     </unit>
     <unit id="enrichment.saved">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:38,39</note>
+        <note category="location">src/app/pages/enrichment.ts:95,96</note>
+        <note category="location">src/app/pages/local-networks.ts:28,30</note>
       </notes>
       <segment>
         <source>Saved and applied.</source>
       </segment>
     </unit>
-    <unit id="settings.localNetworks">
+    <unit id="enrichment.tab.geo">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:48,49</note>
+        <note category="location">src/app/pages/enrichment.ts:116,117</note>
       </notes>
       <segment>
-        <source>Local networks</source>
+        <source>Geolocation &amp; ASN</source>
       </segment>
     </unit>
-    <unit id="enrichment.prefixes">
+    <unit id="enrichment.unsavedTab">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:51,52</note>
+        <note category="location">src/app/pages/enrichment.ts:118</note>
+        <note category="location">src/app/pages/enrichment.ts:413</note>
+        <note category="location">src/app/pages/enrichment.ts:511</note>
       </notes>
       <segment>
-        <source>Prefixes</source>
-      </segment>
-    </unit>
-    <unit id="settings.localNetworksEmpty">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:54,56</note>
-      </notes>
-      <segment>
-        <source>None added: only private ranges are local.</source>
-      </segment>
-    </unit>
-    <unit id="settings.localNetworkLabel">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:56</note>
-      </notes>
-      <segment>
-        <source>Local network</source>
-      </segment>
-    </unit>
-    <unit id="settings.localNetworksHelp2">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:57,59</note>
-      </notes>
-      <segment>
-        <source>CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.geoTitle">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:64,65</note>
-      </notes>
-      <segment>
-        <source>IP geolocation and AS numbers</source>
+        <source>Unsaved changes</source>
       </segment>
     </unit>
     <unit id="dataSources.countryDatabase">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:69</note>
+        <note category="location">src/app/pages/enrichment.ts:135,137</note>
       </notes>
       <segment>
         <source>Country database</source>
@@ -5154,8 +5138,8 @@
     </unit>
     <unit id="dataSources.notInstalled">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:69</note>
-        <note category="location">src/app/pages/enrichment.ts:70</note>
+        <note category="location">src/app/pages/enrichment.ts:141,142</note>
+        <note category="location">src/app/pages/enrichment.ts:166,167</note>
       </notes>
       <segment>
         <source>not installed</source>
@@ -5163,8 +5147,8 @@
     </unit>
     <unit id="dataSources.built">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:69</note>
-        <note category="location">src/app/pages/enrichment.ts:70</note>
+        <note category="location">src/app/pages/enrichment.ts:149,150</note>
+        <note category="location">src/app/pages/enrichment.ts:174,175</note>
       </notes>
       <segment>
         <source> · built <ph id="0" equiv="INTERPOLATION" disp="{{ dt(g.geo.countryBuilt) }}"/></source>
@@ -5172,8 +5156,8 @@
     </unit>
     <unit id="dataSources.previousSource">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:69,70</note>
-        <note category="location">src/app/pages/enrichment.ts:70,71</note>
+        <note category="location">src/app/pages/enrichment.ts:154,156</note>
+        <note category="location">src/app/pages/enrichment.ts:179,181</note>
       </notes>
       <segment>
         <source>previous source, until the new database loads</source>
@@ -5181,7 +5165,7 @@
     </unit>
     <unit id="dataSources.asnDatabase">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:70</note>
+        <note category="location">src/app/pages/enrichment.ts:160,162</note>
       </notes>
       <segment>
         <source>ASN database</source>
@@ -5189,8 +5173,8 @@
     </unit>
     <unit id="dataSources.lastUpdate">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:71</note>
-        <note category="location">src/app/pages/enrichment.ts:201</note>
+        <note category="location">src/app/pages/enrichment.ts:185,186</note>
+        <note category="location">src/app/pages/enrichment.ts:543,544</note>
       </notes>
       <segment>
         <source>Last update</source>
@@ -5198,7 +5182,7 @@
     </unit>
     <unit id="dataSources.accountId">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:90,91</note>
+        <note category="location">src/app/pages/enrichment.ts:214,216</note>
       </notes>
       <segment>
         <source>Account ID</source>
@@ -5206,7 +5190,7 @@
     </unit>
     <unit id="dataSources.licenseKey">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:94,95</note>
+        <note category="location">src/app/pages/enrichment.ts:223,225</note>
       </notes>
       <segment>
         <source>License key</source>
@@ -5214,7 +5198,7 @@
     </unit>
     <unit id="dataSources.licenseKeyHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:96</note>
+        <note category="location">src/app/pages/enrichment.ts:232,233</note>
       </notes>
       <segment>
         <source>Create one under <pc id="0" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i&gt;" dispEnd="&lt;/i&gt;">Manage license keys</pc> in your MaxMind account. Stored encrypted.</source>
@@ -5222,7 +5206,7 @@
     </unit>
     <unit id="dataSources.countryEdition">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:99,100</note>
+        <note category="location">src/app/pages/enrichment.ts:237,238</note>
       </notes>
       <segment>
         <source>Country edition</source>
@@ -5230,7 +5214,7 @@
     </unit>
     <unit id="dataSources.editionHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:103,104</note>
+        <note category="location">src/app/pages/enrichment.ts:244,245</note>
       </notes>
       <segment>
         <source>GeoLite2 editions are free; GeoIP2 editions need a subscription.</source>
@@ -5238,7 +5222,7 @@
     </unit>
     <unit id="dataSources.asnEdition">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:106,107</note>
+        <note category="location">src/app/pages/enrichment.ts:249,250</note>
       </notes>
       <segment>
         <source>ASN edition</source>
@@ -5246,7 +5230,7 @@
     </unit>
     <unit id="dataSources.countryUrl">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:114,115</note>
+        <note category="location">src/app/pages/enrichment.ts:259,261</note>
       </notes>
       <segment>
         <source>Country database URL</source>
@@ -5254,7 +5238,7 @@
     </unit>
     <unit id="dataSources.urlHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:116,117</note>
+        <note category="location">src/app/pages/enrichment.ts:268,269</note>
       </notes>
       <segment>
         <source>Download links often contain a license key, so they are stored encrypted and not shown again.</source>
@@ -5262,7 +5246,7 @@
     </unit>
     <unit id="dataSources.asnUrl">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:119,120</note>
+        <note category="location">src/app/pages/enrichment.ts:273,274</note>
       </notes>
       <segment>
         <source>ASN database URL</source>
@@ -5270,7 +5254,7 @@
     </unit>
     <unit id="dataSources.removeAsnUrl">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:127,128</note>
+        <note category="location">src/app/pages/enrichment.ts:293,294</note>
       </notes>
       <segment>
         <source>Remove the stored ASN URL</source>
@@ -5278,7 +5262,7 @@
     </unit>
     <unit id="dataSources.countryFile">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:134,135</note>
+        <note category="location">src/app/pages/enrichment.ts:300,302</note>
       </notes>
       <segment>
         <source>Country database file</source>
@@ -5286,7 +5270,7 @@
     </unit>
     <unit id="dataSources.asnFile">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:138,139</note>
+        <note category="location">src/app/pages/enrichment.ts:309,310</note>
       </notes>
       <segment>
         <source>ASN database file</source>
@@ -5294,7 +5278,7 @@
     </unit>
     <unit id="dataSources.asnFilePlaceholder">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:139</note>
+        <note category="location">src/app/pages/enrichment.ts:314,315</note>
       </notes>
       <segment>
         <source>/var/lib/GeoIP/GeoLite2-ASN.mmdb (optional)</source>
@@ -5302,7 +5286,7 @@
     </unit>
     <unit id="dataSources.filesHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:140</note>
+        <note category="location">src/app/pages/enrichment.ts:318,319</note>
       </notes>
       <segment>
         <source>Absolute paths readable by the <pc id="0" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">nfa</pc> user. Paths under /home are not accessible to the service.</source>
@@ -5310,7 +5294,7 @@
     </unit>
     <unit id="settings.onlineAsn">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:153,154</note>
+        <note category="location">src/app/pages/enrichment.ts:336,337</note>
       </notes>
       <segment>
         <source>Online ASN lookup</source>
@@ -5318,7 +5302,7 @@
     </unit>
     <unit id="settings.onlineAsnToggle">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:156,157</note>
+        <note category="location">src/app/pages/enrichment.ts:345,347</note>
       </notes>
       <segment>
         <source>Look up ASNs missing from the local database via RIPEstat</source>
@@ -5326,161 +5310,16 @@
     </unit>
     <unit id="settings.onlineAsnHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:158,159</note>
+        <note category="location">src/app/pages/enrichment.ts:349,350</note>
       </notes>
       <segment>
         <source>Queries stat.ripe.net once per /24 (IPv4) or /48 (IPv6) and caches results for 7 days.</source>
       </segment>
     </unit>
-    <unit id="dataSources.reloadNow">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:160</note>
-        <note category="location">src/app/pages/enrichment.ts:229</note>
-      </notes>
-      <segment>
-        <source>Reload now</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.updateNow">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:160,161</note>
-        <note category="location">src/app/pages/enrichment.ts:229,230</note>
-      </notes>
-      <segment>
-        <source>Update now</source>
-      </segment>
-    </unit>
-    <unit id="settings.reverseDns">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:165,166</note>
-      </notes>
-      <segment>
-        <source>Reverse DNS</source>
-      </segment>
-    </unit>
-    <unit id="enrichment.hostnames">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:168,169</note>
-      </notes>
-      <segment>
-        <source>Hostnames</source>
-      </segment>
-    </unit>
-    <unit id="settings.reverseDnsToggle">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:171,172</note>
-      </notes>
-      <segment>
-        <source>Resolve hostnames for addresses in reports</source>
-      </segment>
-    </unit>
-    <unit id="enrichment.reverseDnsHelp">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:174,175</note>
-      </notes>
-      <segment>
-        <source>Cached for 6 hours. Disable on isolated networks.</source>
-      </segment>
-    </unit>
-    <unit id="settings.hostnameCache">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:175</note>
-      </notes>
-      <segment>
-        <source>Hostname cache: <ph id="0" equiv="INTERPOLATION" disp="{{ g.rdnsCache }}"/> entries.</source>
-      </segment>
-    </unit>
-    <unit id="settings.dnsResolvers">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:179,180</note>
-      </notes>
-      <segment>
-        <source>DNS resolvers</source>
-      </segment>
-    </unit>
-    <unit id="settings.dnsEmpty">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:183</note>
-      </notes>
-      <segment>
-        <source>None added: using the system resolvers</source>
-      </segment>
-    </unit>
-    <unit id="settings.dnsResolverLabel">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:186</note>
-      </notes>
-      <segment>
-        <source>DNS resolver</source>
-      </segment>
-    </unit>
-    <unit id="settings.dnsResolversHelp2">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:187,189</note>
-      </notes>
-      <segment>
-        <source>IP addresses, optionally with a port, tried in order. Used for Tributary&apos;s own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.vendorsTitle">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:194,195</note>
-      </notes>
-      <segment>
-        <source>MAC address vendors</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.loadedFrom">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:199</note>
-      </notes>
-      <segment>
-        <source>Loaded from</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.entries">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:200</note>
-      </notes>
-      <segment>
-        <source>Entries</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.updated">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:200</note>
-      </notes>
-      <segment>
-        <source> · updated <ph id="0" equiv="INTERPOLATION" disp="{{ dt(g.vendors.updated) }}"/></source>
-      </segment>
-    </unit>
-    <unit id="dataSources.file">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:223,224</note>
-      </notes>
-      <segment>
-        <source>File</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.fileHelp">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:225</note>
-      </notes>
-      <segment>
-        <source>An absolute path readable by the <pc id="0" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">nfa</pc> user.</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.updates">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:235,236</note>
-      </notes>
-      <segment>
-        <source>Updates</source>
-      </segment>
-    </unit>
     <unit id="dataSources.autoUpdate">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:238,239</note>
+        <note category="location">src/app/pages/enrichment.ts:354,355</note>
+        <note category="location">src/app/pages/enrichment.ts:593,594</note>
       </notes>
       <segment>
         <source>Automatic updates</source>
@@ -5488,7 +5327,8 @@
     </unit>
     <unit id="dataSources.autoUpdateToggle">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:241,242</note>
+        <note category="location">src/app/pages/enrichment.ts:358,360</note>
+        <note category="location">src/app/pages/enrichment.ts:597,599</note>
       </notes>
       <segment>
         <source>Keep downloaded databases current</source>
@@ -5496,7 +5336,8 @@
     </unit>
     <unit id="dataSources.autoUpdateHelp">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:243,244</note>
+        <note category="location">src/app/pages/enrichment.ts:362,364</note>
+        <note category="location">src/app/pages/enrichment.ts:601,603</note>
       </notes>
       <segment>
         <source>DB-IP Lite is refreshed monthly; MaxMind, URL and IEEE downloads weekly. Files on the appliance are always reloaded when they change.</source>
@@ -5504,32 +5345,168 @@
     </unit>
     <unit id="common.revert">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:250,251</note>
+        <note category="location">src/app/pages/enrichment.ts:383,384</note>
+        <note category="location">src/app/pages/enrichment.ts:495,496</note>
+        <note category="location">src/app/pages/enrichment.ts:622,623</note>
+        <note category="location">src/app/pages/local-networks.ts:116,118</note>
         <note category="location">src/app/pages/settings.ts:130,132</note>
       </notes>
       <segment>
-        <source>Revert</source>
+        <source> Revert </source>
+      </segment>
+    </unit>
+    <unit id="dataSources.reloadNow">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:394,395</note>
+        <note category="location">src/app/pages/enrichment.ts:634,635</note>
+      </notes>
+      <segment>
+        <source>Reload now</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.updateNow">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:396,398</note>
+        <note category="location">src/app/pages/enrichment.ts:636,637</note>
+      </notes>
+      <segment>
+        <source>Update now</source>
       </segment>
     </unit>
     <unit id="enrichment.unsaved">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:254,255</note>
+        <note category="location">src/app/pages/enrichment.ts:402,403</note>
+        <note category="location">src/app/pages/enrichment.ts:500,501</note>
+        <note category="location">src/app/pages/enrichment.ts:643,644</note>
+        <note category="location">src/app/pages/local-networks.ts:121,123</note>
       </notes>
       <segment>
         <source>Unsaved changes.</source>
       </segment>
     </unit>
-    <unit id="settings.notCidr">
+    <unit id="enrichment.tab.hostnames">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:291</note>
+        <note category="location">src/app/pages/enrichment.ts:411,412</note>
       </notes>
       <segment>
-        <source>Not a CIDR prefix, e.g. 2001:db8:1234::/56</source>
+        <source>Hostnames</source>
+      </segment>
+    </unit>
+    <unit id="enrichment.hostnames">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:427,428</note>
+      </notes>
+      <segment>
+        <source>Hostnames</source>
+      </segment>
+    </unit>
+    <unit id="settings.reverseDnsToggle">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:431,433</note>
+      </notes>
+      <segment>
+        <source>Resolve hostnames for addresses in reports</source>
+      </segment>
+    </unit>
+    <unit id="enrichment.reverseDnsHelp">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:436,438</note>
+      </notes>
+      <segment>
+        <source>Cached for 6 hours. Disable on isolated networks.</source>
+      </segment>
+    </unit>
+    <unit id="settings.hostnameCache">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:440,441</note>
+      </notes>
+      <segment>
+        <source>Hostname cache: <ph id="0" equiv="INTERPOLATION" disp="{{ g.rdnsCache }}"/> entries.</source>
+      </segment>
+    </unit>
+    <unit id="settings.dnsResolvers">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:449,451</note>
+      </notes>
+      <segment>
+        <source>DNS resolvers</source>
+      </segment>
+    </unit>
+    <unit id="settings.dnsEmpty">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:455,456</note>
+      </notes>
+      <segment>
+        <source>None added: using the system resolvers</source>
+      </segment>
+    </unit>
+    <unit id="settings.dnsResolverLabel">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:467,468</note>
+      </notes>
+      <segment>
+        <source>DNS resolver</source>
+      </segment>
+    </unit>
+    <unit id="settings.dnsResolversHelp2">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:472,474</note>
+      </notes>
+      <segment>
+        <source>IP addresses, optionally with a port, tried in order. Used for Tributary&apos;s own lookups: reverse DNS, GeoIP downloads and ASN lookups. Tip: your router/DHCP server usually knows local device names.</source>
+      </segment>
+    </unit>
+    <unit id="enrichment.tab.vendors">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:509,510</note>
+      </notes>
+      <segment>
+        <source>MAC Vendors</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.loadedFrom">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:528,529</note>
+      </notes>
+      <segment>
+        <source>Loaded from</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.entries">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:532,534</note>
+      </notes>
+      <segment>
+        <source>Entries</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.updated">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:537,538</note>
+      </notes>
+      <segment>
+        <source> · updated <ph id="0" equiv="INTERPOLATION" disp="{{ dt(g.vendors.updated) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="dataSources.file">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:580,581</note>
+      </notes>
+      <segment>
+        <source>File</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.fileHelp">
+      <notes>
+        <note category="location">src/app/pages/enrichment.ts:588</note>
+      </notes>
+      <segment>
+        <source>An absolute path readable by the <pc id="0" equivStart="START_TAG_CODE" equivEnd="CLOSE_TAG_CODE" type="other" dispStart="&lt;code&gt;" dispEnd="&lt;/code&gt;">nfa</pc> user.</source>
       </segment>
     </unit>
     <unit id="settings.notAddrPort">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:292</note>
+        <note category="location">src/app/pages/enrichment.ts:743</note>
       </notes>
       <segment>
         <source>Not an IP address (optionally with :port)</source>
@@ -5537,7 +5514,7 @@
     </unit>
     <unit id="dataSources.storedKeep">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:304</note>
+        <note category="location">src/app/pages/enrichment.ts:761</note>
       </notes>
       <segment>
         <source>Stored · leave empty to keep</source>
@@ -5545,7 +5522,7 @@
     </unit>
     <unit id="dataSources.optional">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:305</note>
+        <note category="location">src/app/pages/enrichment.ts:762</note>
       </notes>
       <segment>
         <source>Optional</source>
@@ -5553,7 +5530,7 @@
     </unit>
     <unit id="dataSources.saveFirst">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:306</note>
+        <note category="location">src/app/pages/enrichment.ts:763</note>
       </notes>
       <segment>
         <source>Save your changes first</source>
@@ -5561,7 +5538,7 @@
     </unit>
     <unit id="dataSources.storedHost">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:308</note>
+        <note category="location">src/app/pages/enrichment.ts:765</note>
       </notes>
       <segment>
         <source>Stored (<ph id="0" equiv="host" disp="host"/>) · leave empty to keep</source>
@@ -5569,7 +5546,8 @@
     </unit>
     <unit id="settings.fixEntries">
       <notes>
-        <note category="location">src/app/pages/enrichment.ts:376</note>
+        <note category="location">src/app/pages/enrichment.ts:957</note>
+        <note category="location">src/app/pages/local-networks.ts:239</note>
         <note category="location">src/app/pages/settings.ts:198</note>
       </notes>
       <segment>
@@ -7805,7 +7783,7 @@
       <notes>
         <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
-        <note category="location">src/app/shell.ts:206,208</note>
+        <note category="location">src/app/shell.ts:207,209</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -7897,6 +7875,78 @@
       </notes>
       <segment>
         <source><ph id="0" equiv="claims" disp="want.join(&apos;, &apos;)"/> advertised</source>
+      </segment>
+    </unit>
+    <unit id="localNetworks.subtitle">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:18,21</note>
+      </notes>
+      <segment>
+        <source> Which addresses are yours: this decides download and upload, devices, local and remote hosts, and what is enriched and matched against threat feeds. </source>
+      </segment>
+    </unit>
+    <unit id="enrichment.prefixes">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:48,50</note>
+      </notes>
+      <segment>
+        <source>Prefixes</source>
+      </segment>
+    </unit>
+    <unit id="settings.localNetworksEmpty">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:53,55</note>
+      </notes>
+      <segment>
+        <source> None added: only private ranges are local. </source>
+      </segment>
+    </unit>
+    <unit id="settings.localNetworkLabel">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:59,60</note>
+      </notes>
+      <segment>
+        <source>Local network</source>
+      </segment>
+    </unit>
+    <unit id="settings.localNetworksHelp2">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:64,67</note>
+      </notes>
+      <segment>
+        <source>CIDR prefixes of your own public ranges (e.g. your ISP-delegated IPv6 prefix). Private ranges (10/8, 172.16/12, 192.168/16, fc00::/7) are always local. Local addresses are never geolocated or assigned an AS.</source>
+      </segment>
+    </unit>
+    <unit id="localNetworks.suggested">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:75,77</note>
+      </notes>
+      <segment>
+        <source> Suggested from recent traffic </source>
+      </segment>
+    </unit>
+    <unit id="localNetworks.suggestionDetail">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:81,82</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ count(p.hosts) }}"/> addresses talking to <ph id="1" equiv="INTERPOLATION_1" disp="{{ count(p.peers) }}"/> remote hosts</source>
+      </segment>
+    </unit>
+    <unit id="localNetworks.add">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:89,90</note>
+      </notes>
+      <segment>
+        <source> Add </source>
+      </segment>
+    </unit>
+    <unit id="settings.notCidr">
+      <notes>
+        <note category="location">src/app/pages/local-networks.ts:197</note>
+      </notes>
+      <segment>
+        <source>Not a CIDR prefix, e.g. 2001:db8:1234::/56</source>
       </segment>
     </unit>
     <unit id="login.tagline">
@@ -9504,7 +9554,7 @@
     </unit>
     <unit id="feeds.addTitle">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:225</note>
+        <note category="location">src/app/pages/threat-feeds.ts:226</note>
       </notes>
       <segment>
         <source>Add threat feed</source>
@@ -9512,7 +9562,7 @@
     </unit>
     <unit id="feeds.editTitle">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:226</note>
+        <note category="location">src/app/pages/threat-feeds.ts:227</note>
       </notes>
       <segment>
         <source>Edit threat feed</source>
@@ -9520,7 +9570,7 @@
     </unit>
     <unit id="feeds.csvColumn">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:233</note>
+        <note category="location">src/app/pages/threat-feeds.ts:234</note>
       </notes>
       <segment>
         <source>CSV, column <ph id="0" equiv="column" disp="f.column"/></source>
@@ -9528,7 +9578,7 @@
     </unit>
     <unit id="feeds.jsonField">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:235</note>
+        <note category="location">src/app/pages/threat-feeds.ts:236</note>
       </notes>
       <segment>
         <source>JSON, <ph id="0" equiv="field" disp="f.field"/></source>
@@ -9536,7 +9586,7 @@
     </unit>
     <unit id="feeds.text">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:237</note>
+        <note category="location">src/app/pages/threat-feeds.ts:238</note>
       </notes>
       <segment>
         <source>Text</source>
@@ -9544,7 +9594,7 @@
     </unit>
     <unit id="feeds.updating">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:305</note>
+        <note category="location">src/app/pages/threat-feeds.ts:306</note>
       </notes>
       <segment>
         <source>Updating <ph id="0" equiv="name" disp="f.name"/>…</source>
@@ -9552,7 +9602,7 @@
     </unit>
     <unit id="feeds.defaultsAdded">
       <notes>
-        <note category="location">src/app/pages/threat-feeds.ts:315</note>
+        <note category="location">src/app/pages/threat-feeds.ts:316</note>
       </notes>
       <segment>
         <source>Added <ph id="0" equiv="count" disp="r.added"/> default feeds.</source>
@@ -11230,8 +11280,8 @@
     <unit id="shell.changePassword">
       <notes>
         <note category="location">src/app/shell.ts:72,73</note>
-        <note category="location">src/app/shell.ts:151,152</note>
-        <note category="location">src/app/shell.ts:174,176</note>
+        <note category="location">src/app/shell.ts:152,153</note>
+        <note category="location">src/app/shell.ts:175,177</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -11271,7 +11321,7 @@
     </unit>
     <unit id="nav.groupAccess">
       <notes>
-        <note category="location">src/app/shell.ts:123,124</note>
+        <note category="location">src/app/shell.ts:124,125</note>
       </notes>
       <segment>
         <source>Access</source>
@@ -11279,7 +11329,7 @@
     </unit>
     <unit id="nav.groupAppliance">
       <notes>
-        <note category="location">src/app/shell.ts:133,134</note>
+        <note category="location">src/app/shell.ts:134,135</note>
       </notes>
       <segment>
         <source>Appliance</source>
@@ -11287,7 +11337,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:155,156</note>
+        <note category="location">src/app/shell.ts:156,157</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -11295,7 +11345,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:159,160</note>
+        <note category="location">src/app/shell.ts:160,161</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -11303,7 +11353,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:161,162</note>
+        <note category="location">src/app/shell.ts:162,163</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -11311,7 +11361,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:164,165</note>
+        <note category="location">src/app/shell.ts:165,166</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -11319,7 +11369,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:183,185</note>
+        <note category="location">src/app/shell.ts:184,186</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -11327,7 +11377,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:185,186</note>
+        <note category="location">src/app/shell.ts:186,187</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -11335,7 +11385,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:188</note>
+        <note category="location">src/app/shell.ts:189</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -11343,7 +11393,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:192,193</note>
+        <note category="location">src/app/shell.ts:193,194</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -11351,7 +11401,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:199,201</note>
+        <note category="location">src/app/shell.ts:200,202</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -11359,7 +11409,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:201,202</note>
+        <note category="location">src/app/shell.ts:202,203</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -11367,7 +11417,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:202,205</note>
+        <note category="location">src/app/shell.ts:203,206</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -11375,7 +11425,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:371</note>
+        <note category="location">src/app/shell.ts:372</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

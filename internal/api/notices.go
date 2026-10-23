@@ -210,11 +210,11 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 				Action:  &NoticeAction{Label: "Time settings", Route: "/admin/time", admin: true}})
 		}
 	}
-	for _, f := range []struct{ what, db, status string }{{"GeoIP", "geoip", s.Geo.Status().LastUpdate}, {"MAC vendor", "vendors", s.vendorStatus()}} {
+	for _, f := range []struct{ what, db, status, route string }{{"GeoIP", "geoip", s.Geo.Status().LastUpdate, "/admin/enrichment"}, {"MAC vendor", "vendors", s.vendorStatus(), "/admin/enrichment?tab=vendors"}} {
 		if when, msg, ok := strings.Cut(f.status, ": failed: "); ok {
 			add(Notice{ID: "datasource:" + f.what + ":" + when, Kind: "datasource-failed", Params: map[string]string{"database": f.db, "error": firstLine(msg)}, Level: "info", adminOnly: true,
 				Message: fmt.Sprintf("The %s database could not be updated: %s", f.what, firstLine(msg)),
-				Action:  &NoticeAction{Label: "Enrichment", Route: "/admin/enrichment", admin: true}})
+				Action:  &NoticeAction{Label: "Enrichment", Route: f.route, admin: true}})
 		}
 	}
 	if n := s.threatNotice(ctx, now); n != nil {

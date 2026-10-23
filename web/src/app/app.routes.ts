@@ -27,6 +27,7 @@ export const routes: Routes = [
         children: [
           { path: 'settings', loadComponent: () => import('./pages/settings').then((m) => m.SettingsPage), title: $localize`:@@nav.settings:Settings` },
           { path: 'users', loadComponent: () => import('./pages/users').then((m) => m.Users), title: $localize`:@@nav.users:Users` },
+          { path: 'local-networks', loadComponent: () => import('./pages/local-networks').then((m) => m.LocalNetworks), title: $localize`:@@nav.localNetworks:Local Networks` },
           { path: 'enrichment', loadComponent: () => import('./pages/enrichment').then((m) => m.EnrichmentPage), title: $localize`:@@nav.enrichment:Enrichment` },
           { path: 'data-sources', redirectTo: 'enrichment' },
           { path: 'backup', loadComponent: () => import('./pages/backup').then((m) => m.Backup), title: $localize`:@@nav.backup:Backup & Restore` },

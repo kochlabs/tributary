@@ -12,6 +12,9 @@
 
 ## Enrichment
 
+- Local networks (Configuration → Local Networks): your public prefixes, in
+  addition to private ranges. They decide download and upload, devices, and
+  local and remote hosts; suggestions come from recent traffic.
 - Country and ASN (with organization names) at ingest. Sources, chosen under
   Configuration → Enrichment: DB-IP Lite (default), MaxMind GeoLite2 or
   GeoIP2, custom URLs, or files kept up to date by `geoipupdate`.

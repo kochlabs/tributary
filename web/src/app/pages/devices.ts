@@ -83,7 +83,7 @@ const SOURCE_HINT: Record<string, string> = {
         </clr-dg-row-detail>
       </clr-dg-row>
       <clr-dg-placeholder i18n="@@devices.placeholderEnrichment">
-        No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are set under Configuration → Enrichment.
+        No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are set under Configuration → Local Networks.
       </clr-dg-placeholder>
       <clr-dg-footer>
         <clr-dg-pagination #pg [clrDgPageSize]="25">
