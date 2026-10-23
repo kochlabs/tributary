@@ -269,6 +269,11 @@ func (s *Server) addMCPTools(srv *mcp.Server) {
 			return s.mcpLookup(ctx, u, in)
 		}, readOnly)
 
+	addTool(s, srv, "threat_feeds", "The enabled threat feeds (lists of known-bad addresses that flows are matched against), in matching order: entries, last update and errors, plus how many listed hosts and flows each matched in the last 24 hours. Use the threat filter and dimensions for details.",
+		nil, func(ctx context.Context, u *config.User, _ mcpNoInput) (any, error) {
+			return s.mcpGet(ctx, u, s.threatStatus, "/api/threats", mcpWindow{}, nil, nil)
+		}, readOnly)
+
 	addTool(s, srv, "appliance_health", "The appliance's own state: collector listeners and counters, database health and disk space, and current notices (problems needing attention).",
 		nil, func(ctx context.Context, u *config.User, _ mcpNoInput) (any, error) {
 			sys, err := s.mcpGet(ctx, u, s.system, "/api/system", mcpWindow{}, nil, nil)

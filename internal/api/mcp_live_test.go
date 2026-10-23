@@ -74,6 +74,8 @@ func TestMCPLive(t *testing.T) {
 		{"interfaces", map[string]any{"exporter": exporter, "range": "1h"}},
 		{"devices", map[string]any{"range": "1h"}},
 		{"lookup_address", map[string]any{"address": host, "range": "1h"}},
+		{"top", map[string]any{"dimension": "threat", "range": "6h"}},
+		{"threat_feeds", nil},
 		{"appliance_health", nil},
 	}
 	for _, c := range calls {
