@@ -18,6 +18,7 @@ const (
 	kCountry
 	kDirection
 	kDevice
+	kThreat
 )
 
 type filterField struct {
@@ -55,6 +56,8 @@ var FilterFields = map[string]filterField{
 	"country":     {kind: kCountry, cols: []string{"src_country", "dst_country"}},
 	"direction":   {kind: kDirection},
 	"device":      {kind: kDevice},
+	// A threat feed's name, or * for any feed.
+	"threat": {kind: kThreat, cols: []string{"src_threat", "dst_threat"}},
 }
 
 var protoByName = map[string]uint8{
@@ -174,6 +177,15 @@ func (d filterField) cond(v string) (string, []any, error) {
 			return "", nil, err
 		}
 		return c, nil, nil
+	case kThreat:
+		for _, c := range d.cols {
+			if v == "*" {
+				parts = append(parts, c+" != ''")
+			} else {
+				parts = append(parts, c+" = ?")
+				args = append(args, v)
+			}
+		}
 	case kCountry:
 		v = strings.ToUpper(v)
 		if len(v) != 2 || v[0] < 'A' || v[0] > 'Z' || v[1] < 'A' || v[1] > 'Z' {

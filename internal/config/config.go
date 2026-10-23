@@ -104,6 +104,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateAPITokens(); err != nil {
 		return nil, fmt.Errorf("API token schema: %w", err)
 	}
+	if err := c.migrateThreatFeeds(); err != nil {
+		return nil, fmt.Errorf("threat feed schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}

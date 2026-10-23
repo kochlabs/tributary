@@ -117,7 +117,8 @@ func ip16(a interface{ As16() [16]byte }) net.IP {
 func (w *Writer) insert(ctx context.Context, recs []flow.Record) error {
 	batch, err := w.s.conn.PrepareBatch(ctx, `INSERT INTO netflow.flows (time_received, time_start, time_end, flow_type, exporter,
 		sampling_rate, in_if, out_if, direction, src_addr, dst_addr, next_hop, src_port, dst_port, proto, tcp_flags, tos,
-		src_as, dst_as, src_mask, dst_mask, vlan, etype, bytes, packets, src_country, dst_country, src_mac, dst_mac, device_mac)`)
+		src_as, dst_as, src_mask, dst_mask, vlan, etype, bytes, packets, src_country, dst_country, src_mac, dst_mac, device_mac,
+		src_threat, dst_threat)`)
 	if err != nil {
 		return err
 	}
@@ -135,6 +136,7 @@ func (w *Writer) insert(ctx context.Context, recs []flow.Record) error {
 		bytes, packets     = make([]uint64, n), make([]uint64, n)
 		scc, dcc           = make([]string, n), make([]string, n)
 		smac, dmac, devmac = make([]uint64, n), make([]uint64, n), make([]uint64, n)
+		sthr, dthr         = make([]string, n), make([]string, n)
 	)
 	for i := range recs {
 		r := &recs[i]
@@ -147,8 +149,9 @@ func (w *Writer) insert(ctx context.Context, recs []flow.Record) error {
 		bytes[i], packets[i] = r.Bytes, r.Packets
 		scc[i], dcc[i] = r.SrcCountry, r.DstCountry
 		smac[i], dmac[i], devmac[i] = r.SrcMAC, r.DstMAC, r.DeviceMAC
+		sthr[i], dthr[i] = r.SrcThreat, r.DstThreat
 	}
-	cols := []any{tr, ts, te, ft, exp, samp, inIf, outIf, dir, src, dst, nh, sport, dport, proto, flags, tos, sas, das, smask, dmask, vlan, etype, bytes, packets, scc, dcc, smac, dmac, devmac}
+	cols := []any{tr, ts, te, ft, exp, samp, inIf, outIf, dir, src, dst, nh, sport, dport, proto, flags, tos, sas, das, smask, dmask, vlan, etype, bytes, packets, scc, dcc, smac, dmac, devmac, sthr, dthr}
 	for i, c := range cols {
 		if err := batch.Column(i).Append(c); err != nil {
 			batch.Abort()

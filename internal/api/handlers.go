@@ -768,7 +768,13 @@ func (s *Server) details(ctx context.Context, dim string, rows []store.TopRow) {
 		for i := range rows {
 			rows[i].Detail = rows[i].Key
 		}
-	case "src_addr", "dst_addr", "host", "local_host", "remote_host":
+	case "threat":
+		for i := range rows {
+			if rows[i].Key == "" {
+				rows[i].Label = "Not listed"
+			}
+		}
+	case "src_addr", "dst_addr", "host", "local_host", "remote_host", "threat_host":
 		addrs := make([]netip.Addr, 0, len(rows))
 		for _, r := range rows {
 			if ip, err := netip.ParseAddr(r.Key); err == nil {

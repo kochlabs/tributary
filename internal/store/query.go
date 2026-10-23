@@ -45,6 +45,10 @@ var Dimensions = map[string]dimension{
 	"src_country":  {"src_country", false},
 	"dst_country":  {"dst_country", false},
 	"country":      {"arrayJoin(arrayFilter(c -> c != '', arrayDistinct([src_country, dst_country])))", false},
+	// The threat feed listing either end (the source's first), and that
+	// end's address.
+	"threat":      {"if(src_threat != '', src_threat, dst_threat)", false},
+	"threat_host": {"multiIf(src_threat != '', " + ipstr("src_addr") + ", dst_threat != '', " + ipstr("dst_addr") + ", '')", false},
 }
 
 type Query struct {
@@ -349,6 +353,8 @@ type FlowRow struct {
 	DstMAC       string `json:"dstMac,omitempty"`
 	DeviceMAC    string `json:"deviceMac,omitempty"`
 	SrcCountry   string `json:"srcCountry"`
+	SrcThreat    string `json:"srcThreat,omitempty"`
+	DstThreat    string `json:"dstThreat,omitempty"`
 	DstCountry   string `json:"dstCountry"`
 	SrcHost      string `json:"srcHost,omitempty"`
 	DstHost      string `json:"dstHost,omitempty"`
@@ -390,7 +396,7 @@ func (s *Store) Flows(ctx context.Context, q Query, sortBy string, desc bool, of
 	sql := fmt.Sprintf(`SELECT toUnixTimestamp(time_received), toUnixTimestamp(time_start), toUnixTimestamp(time_end), flow_type,
 		%s, sampling_rate, in_if, out_if, %s, %s, %s, src_port, dst_port, proto, tcp_flags, tos, src_as, dst_as, vlan, bytes, packets, src_country, dst_country,
 		if(src_mac = 0, '', lower(MACNumToString(src_mac))), if(dst_mac = 0, '', lower(MACNumToString(dst_mac))),
-		if(device_mac = 0, '', lower(MACNumToString(device_mac)))
+		if(device_mac = 0, '', lower(MACNumToString(device_mac))), src_threat, dst_threat
 		FROM netflow.flows WHERE %s ORDER BY %s %s LIMIT %d OFFSET %d`,
 		ipstr("exporter"), ipstr("src_addr"), ipstr("dst_addr"), ipstr("next_hop"), where, col, dir, q.Limit, max(offset, 0))
 	rows, err := s.conn.Query(ctx, sql, args...)
@@ -404,7 +410,7 @@ func (s *Store) Flows(ctx context.Context, q Query, sortBy string, desc bool, of
 		var tr, ts, te uint32
 		if err := rows.Scan(&tr, &ts, &te, &r.FlowType, &r.Exporter, &r.Sampling, &r.InIf, &r.OutIf, &r.SrcAddr, &r.DstAddr, &r.NextHop,
 			&r.SrcPort, &r.DstPort, &r.Proto, &r.TCPFlags, &r.ToS, &r.SrcAS, &r.DstAS, &r.VLAN, &r.Bytes, &r.Packets, &r.SrcCountry, &r.DstCountry,
-			&r.SrcMAC, &r.DstMAC, &r.DeviceMAC); err != nil {
+			&r.SrcMAC, &r.DstMAC, &r.DeviceMAC, &r.SrcThreat, &r.DstThreat); err != nil {
 			return nil, err
 		}
 		r.TimeReceived, r.TimeStart, r.TimeEnd = int64(tr)*1000, int64(ts)*1000, int64(te)*1000
@@ -439,8 +445,8 @@ func (s *Store) Summary(ctx context.Context, q Query) (*Summary, error) {
 	in, _ := LookupDimensionExpr("direction")
 	err := s.conn.QueryRow(ctx, fmt.Sprintf(`SELECT sum(bytes), sum(packets), count(), uniq(exporter), uniq(src_addr), uniq(dst_addr),
 		sumIf(bytes, %[1]s = 'download'), sumIf(bytes, %[1]s = 'upload'),
-		uniqIf(src_addr, %[2]s) + uniqIf(dst_addr, %[3]s AND NOT %[2]s),
-		uniqIf(src_addr, NOT %[2]s) + uniqIf(dst_addr, NOT %[3]s AND %[2]s)
+		uniqArray(arrayFilter((a, l) -> l, [src_addr, dst_addr], [%[2]s, %[3]s])),
+		uniqArray(arrayFilter((a, l) -> NOT l, [src_addr, dst_addr], [%[2]s, %[3]s]))
 		FROM netflow.flows WHERE `+where, in, isLocal("src_addr"), isLocal("dst_addr")), args...).
 		Scan(&sum.Bytes, &sum.Packets, &sum.Flows, &sum.Exporters, &sum.SrcHosts, &sum.DstHosts,
 			&sum.DownloadBytes, &sum.UploadBytes, &sum.LocalHosts, &sum.RemoteHosts)
@@ -671,6 +677,37 @@ func (s *Store) DeviceTraffic(ctx context.Context, from, to time.Time) (map[uint
 			return nil, err
 		}
 		out[mac] = [2]uint64{b, f}
+	}
+	return out, rows.Err()
+}
+
+// ThreatHit is how often a threat feed's addresses were seen.
+type ThreatHit struct {
+	Feed  string `json:"feed"`
+	Hosts uint64 `json:"hosts"` // distinct listed addresses
+	Flows uint64 `json:"flows"`
+	Last  int64  `json:"last"` // ms
+}
+
+// ThreatHits counts flows to or from listed addresses since from, by feed.
+func (s *Store) ThreatHits(ctx context.Context, from time.Time) ([]ThreatHit, error) {
+	rows, err := s.conn.Query(ctx, `SELECT if(src_threat != '', src_threat, dst_threat) AS feed,
+			uniq(if(src_threat != '', src_addr, dst_addr)), count(), toUnixTimestamp(max(time_received))
+		FROM netflow.flows WHERE time_received >= toDateTime(?) AND (src_threat != '' OR dst_threat != '')
+		GROUP BY feed ORDER BY feed`, from.Unix())
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []ThreatHit{}
+	for rows.Next() {
+		var h ThreatHit
+		var last uint32
+		if err := rows.Scan(&h.Feed, &h.Hosts, &h.Flows, &last); err != nil {
+			return nil, err
+		}
+		h.Last = int64(last) * 1000
+		out = append(out, h)
 	}
 	return out, rows.Err()
 }

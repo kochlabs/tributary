@@ -64,6 +64,9 @@ type Record struct {
 	// exported; DeviceMAC is the local device the flow belongs to, set by
 	// the device tracker.
 	SrcMAC, DstMAC, DeviceMAC uint64
+	// SrcThreat and DstThreat name the threat feed listing the address, if
+	// any; set by threat matching.
+	SrcThreat, DstThreat string
 }
 
 const (

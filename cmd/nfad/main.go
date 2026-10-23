@@ -32,6 +32,7 @@ import (
 	"github.com/kochlabs/tributary/internal/store"
 	"github.com/kochlabs/tributary/internal/syslog"
 	"github.com/kochlabs/tributary/internal/system"
+	"github.com/kochlabs/tributary/internal/threat"
 	"github.com/kochlabs/tributary/internal/webui"
 )
 
@@ -201,6 +202,12 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		}
 	}()
 
+	// Threat feeds: lists of known-bad addresses matched at ingest.
+	threats := &threat.Manager{Cfg: cfg, Log: log, Dir: filepath.Join(dataDir, "threat"), Client: trust.Client, Agent: "Tributary/" + version}
+	if err := threats.Reload(); err != nil {
+		log.Warn("threat feeds could not be loaded", "err", err)
+	}
+
 	col := collector.New(log, collector.Hooks{
 		Sink:             writer.Submit,
 		NewExporter:      cfg.SeenExporter,
@@ -208,6 +215,12 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		Enrich: func(r *flow.Record) {
 			geo.Enrich(r)
 			devices.Assign(r)
+			if !geo.IsLocal(r.SrcAddr) {
+				r.SrcThreat = threats.Match(r.SrcAddr)
+			}
+			if !geo.IsLocal(r.DstAddr) {
+				r.DstThreat = threats.Match(r.DstAddr)
+			}
 		},
 		InterfaceName:   cfg.LearnInterface,
 		LearnedSampling: cfg.SetLearnedSampling,
@@ -221,7 +234,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	srv := &api.Server{
 		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop, Syslog: fwd, SNMP: poller,
 		Backups: &backup.Manager{Dir: dataDir, Version: version, Log: log, Snapshot: cfg.Snapshot,
-			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
+			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, Threats: threats, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)
@@ -252,6 +265,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12, GetCertificate: certMgr.GetCertificate},
 	}
 	go srv.RunNotices(ctx)
+	go threats.Run(ctx)
 	srv.Scheduler = &offsite.Scheduler{Cfg: cfg, Backups: srv.Backups, Log: log, RootCAs: trust.Pool}
 	go srv.Scheduler.Run(ctx)
 

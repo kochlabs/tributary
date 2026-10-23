@@ -230,6 +230,9 @@ export interface FlowRow {
   deviceMac?: string;
   srcCountry: string;
   dstCountry: string;
+  /** The threat feed listing the address, if any. */
+  srcThreat?: string;
+  dstThreat?: string;
   srcHost?: string;
   dstHost?: string;
   srcAsName?: string;
@@ -331,6 +334,39 @@ export interface APIToken {
   createdAt: number;
   expiresAt: number;
   lastUsed: number;
+}
+
+/** A list of known-bad addresses that flows are matched against. */
+export interface ThreatFeed {
+  id: number;
+  name: string;
+  url: string;
+  format: 'text' | 'csv' | 'json';
+  field: string;
+  column: number;
+  delimiter: string;
+  enabled: boolean;
+  notify: boolean;
+  intervalHours: number;
+  lastAttempt: number;
+  lastSuccess: number;
+  lastError: string;
+  entries: number;
+  createdAt: number;
+}
+
+export interface ThreatHit {
+  feed: string;
+  hosts: number;
+  flows: number;
+  last: number;
+}
+
+export interface ThreatStatus {
+  feeds: { name: string; notify: boolean; entries: number; lastSuccess: number; lastError: string }[];
+  ranges: number;
+  /** Matches in the last 24 hours, by feed. */
+  hits: ThreatHit[];
 }
 
 /** An appliance-wide condition shown as a banner above the header. */
@@ -869,6 +905,30 @@ export class Api {
   }
   deleteApiToken(id: number) {
     return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
+  }
+  threatStatus() {
+    return this.get<ThreatStatus>('/api/threats');
+  }
+  threatFeeds() {
+    return this.get<{ feeds: ThreatFeed[]; ranges: number; defaultsMissing: number }>('/api/threat-feeds');
+  }
+  saveThreatFeed(f: Partial<ThreatFeed>) {
+    return firstValueFrom(f.id ? this.http.put<ThreatFeed>(`/api/threat-feeds/${f.id}`, f) : this.http.post<ThreatFeed>('/api/threat-feeds', f));
+  }
+  deleteThreatFeed(id: number) {
+    return firstValueFrom(this.http.delete(`/api/threat-feeds/${id}`));
+  }
+  testThreatFeed(f: Partial<ThreatFeed>) {
+    return firstValueFrom(this.http.post<{ ok: boolean; error?: string; entries?: number; skipped?: number; sample?: string[] }>('/api/threat-feeds/test', f));
+  }
+  moveThreatFeed(id: number, up: boolean) {
+    return firstValueFrom(this.http.post(`/api/threat-feeds/${id}/move`, { up }));
+  }
+  updateThreatFeed(id: number) {
+    return firstValueFrom(this.http.post(`/api/threat-feeds/${id}/update`, {}));
+  }
+  addDefaultThreatFeeds() {
+    return firstValueFrom(this.http.post<{ added: number }>('/api/threat-feeds/defaults', {}));
   }
   regenerateBackupSSHKey() {
     return firstValueFrom(this.http.post<SSHKeyInfo>('/api/backup-schedule/ssh-key/regenerate', {}));

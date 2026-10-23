@@ -106,6 +106,8 @@ export const DIMENSIONS: { id: string; label: string }[] = [
   { id: 'local_host', label: $localize`:@@format.localHostIp:Local host (IP)` },
   { id: 'remote_host', label: $localize`:@@format.remoteHost:Remote host` },
   { id: 'remote_country', label: $localize`:@@format.remoteCountry:Remote country` },
+  { id: 'threat', label: $localize`:@@format.threatFeed:Threat feed` },
+  { id: 'threat_host', label: $localize`:@@format.threatHost:Listed host` },
   { id: 'direction', label: $localize`:@@format.direction:Direction` },
   { id: 'app', label: $localize`:@@format.application:Application` },
   { id: 'src_addr', label: $localize`:@@format.sourceAddress:Source address` },
@@ -143,7 +145,10 @@ export function drillFilter(dim: string, key: string): Record<string, string> | 
     case 'host':
     case 'local_host':
     case 'remote_host':
-      return { host: key };
+    case 'threat_host':
+      return key ? { host: key } : null;
+    case 'threat':
+      return key ? { threat: key } : null;
     case 'device':
       return key ? { device: key } : null;
     case 'remote_as':
@@ -210,6 +215,7 @@ export const FILTER_FIELDS: { id: string; label: string; hint: string }[] = [
   { id: 'vlan', label: $localize`:@@format.vlan:VLAN`, hint: '100' },
   { id: 'dscp', label: $localize`:@@format.dscp:DSCP`, hint: '46' },
   { id: 'etype', label: $localize`:@@format.ipVersion:IP version`, hint: $localize`:Filter hint; keep ipv4 and ipv6 untranslated: they are the values users type@@format.hintEtype:ipv4 or ipv6` },
+  { id: 'threat', label: $localize`:@@format.threatFeed:Threat feed`, hint: $localize`:Filter hint; keep * untranslated@@format.hintThreat:* for any feed, or a feed name` },
   { id: 'nexthop', label: $localize`:@@format.nextHop:Next hop`, hint: $localize`:@@format.hintIpOrCidr:IP or CIDR` },
 ];
 

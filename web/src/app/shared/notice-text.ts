@@ -64,6 +64,9 @@ import { Notice } from '../core/api';
       @case ('backup-overdue') {
         <ng-container i18n="@@notice.backupOverdue">No scheduled backup has succeeded recently. Check the backup schedule and its destination.</ng-container>
       }
+      @case ('threat-traffic') {
+        <ng-container i18n="@@notice.threatTraffic">{num('count'), plural, =1 {Traffic with 1 address on threat lists in the last hour ({{ p['feeds'] }}).} other {Traffic with {{ p['count'] }} addresses on threat lists in the last hour ({{ p['feeds'] }}).}}</ng-container>
+      }
       @default {
         {{ notice().message }}
       }
@@ -109,6 +112,8 @@ export function noticeActionLabel(n: Notice): string {
     case 'backup-failed':
     case 'backup-overdue':
       return $localize`:@@nav.backup:Backup & Restore`;
+    case 'threat-traffic':
+      return $localize`:@@nav.detections:Detections`;
   }
   return n.action?.label ?? '';
 }

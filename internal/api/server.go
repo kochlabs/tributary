@@ -27,6 +27,7 @@ import (
 	"github.com/kochlabs/tributary/internal/store"
 	"github.com/kochlabs/tributary/internal/syslog"
 	"github.com/kochlabs/tributary/internal/system"
+	"github.com/kochlabs/tributary/internal/threat"
 )
 
 type Server struct {
@@ -41,6 +42,7 @@ type Server struct {
 	System        *system.Manager
 	Certs         *certs.Manager
 	Trust         *certs.TrustStore
+	Threats       *threat.Manager
 	UI            fs.FS
 	Version       string
 	SourceURL     string
@@ -183,6 +185,15 @@ func (s *Server) Handler() http.Handler {
 	admin("GET /api/services", s.servicesList)
 	admin("POST /api/services/{unit}/{op}", s.serviceAction)
 	admin("GET /api/admin/result/{id}", s.adminResult)
+	auth("GET /api/threats", s.threatStatus)
+	admin("GET /api/threat-feeds", s.threatFeeds)
+	admin("POST /api/threat-feeds", s.threatFeedSave)
+	admin("PUT /api/threat-feeds/{id}", s.threatFeedSave)
+	admin("DELETE /api/threat-feeds/{id}", s.threatFeedDelete)
+	admin("POST /api/threat-feeds/test", s.threatFeedTest)
+	admin("POST /api/threat-feeds/{id}/update", s.threatFeedUpdate)
+	admin("POST /api/threat-feeds/{id}/move", s.threatFeedMove)
+	admin("POST /api/threat-feeds/defaults", s.threatFeedDefaults)
 
 	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) { writeErr(w, http.StatusNotFound, "not found") })
 	mux.Handle("/", s.spa())

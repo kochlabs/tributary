@@ -36,7 +36,7 @@ const (
 	mcpMaxResult      = 512 << 10 // bytes of JSON per tool result
 )
 
-const mcpInstructions = `Tributary collects NetFlow, IPFIX and sFlow records from routers, switches and firewalls ("exporters") and stores them for analysis. Byte and packet counts are corrected for sampling. "Local" addresses are private ranges plus the networks configured as local; "remote" ones are everything else, enriched with country and AS (organization). Rates are averages over the requested time range. Start with summary or top to get an overview, use filters to narrow down, and search_flows for individual records.`
+const mcpInstructions = `Tributary collects NetFlow, IPFIX and sFlow records from routers, switches and firewalls ("exporters") and stores them for analysis. Byte and packet counts are corrected for sampling. "Local" addresses are private ranges plus the networks configured as local; "remote" ones are everything else, enriched with country and AS (organization). Rates are averages over the requested time range. Remote addresses on threat feeds (lists of known-bad addresses) are tagged: the threat dimension names the feed, threat_host the listed address, and the filter threat=* finds all such traffic. Start with summary or top to get an overview, use filters to narrow down, and search_flows for individual records.`
 
 // mcpWindow is the time range and filters most tools take.
 type mcpWindow struct {
@@ -261,7 +261,7 @@ func (s *Server) addMCPTools(srv *mcp.Server) {
 			return map[string]any{"total": len(list), "devices": list[:min(n, len(list))]}, nil
 		}, readOnly)
 
-	addTool(s, srv, "lookup_address", "Everything known about one IP address: whether it is local, its hostname, country and AS, its traffic totals, and its top conversations and applications in the time range.",
+	addTool(s, srv, "lookup_address", "Everything known about one IP address: whether it is local, its hostname, country and AS, the threat feeds listing it, its traffic totals, and its top conversations and applications in the time range.",
 		func(p map[string]*jsonschema.Schema) {
 			window(p)
 			p["address"].Description = "An IPv4 or IPv6 address."
@@ -394,6 +394,11 @@ func (s *Server) mcpLookup(ctx context.Context, u *config.User, in mcpLookupIn) 
 	}
 	if name := s.RDNS.Names(ctx, []netip.Addr{a}, 2*time.Second)[a]; name != "" {
 		out["hostname"] = name
+	}
+	if s.Threats != nil {
+		if feeds := s.Threats.Feeds(a); len(feeds) > 0 {
+			out["threatFeeds"] = feeds
+		}
 	}
 	for key, req := range map[string]struct {
 		h     http.HandlerFunc

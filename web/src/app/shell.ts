@@ -13,6 +13,7 @@ import { TimeRangePicker } from './shared/time-range';
 
 /** Admin pages (/admin/<page>) in each sidebar group. */
 const NAV_GROUPS: Record<string, string[]> = {
+  security: ['detections', 'threat-feeds'],
   config: ['settings', 'enrichment'],
   access: ['users', 'identity-sources', 'api-tokens', 'audit'],
   appliance: ['updates', 'backup', 'certificates', 'time', 'services'],
@@ -91,6 +92,18 @@ const NAV_GROUPS: Record<string, string[]> = {
           <a clrVerticalNavLink routerLink="/dashboard" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="dashboard"></cds-icon><ng-container i18n="@@nav.dashboard">Dashboard</ng-container></a>
           <a clrVerticalNavLink routerLink="/explorer" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="line-chart"></cds-icon><ng-container i18n="@@nav.explorer">Traffic Explorer</ng-container></a>
           <a clrVerticalNavLink routerLink="/flows" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="table"></cds-icon><ng-container i18n="@@nav.flows">Flow Search</ng-container></a>
+          <a clrVerticalNavLink routerLink="/reports" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="file-group"></cds-icon><ng-container i18n="@@nav.reports">Reports</ng-container></a>
+          <div class="nav-divider"></div>
+          <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('security')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('security', $event)">
+            <cds-icon clrVerticalNavIcon shape="shield"></cds-icon>
+            <ng-container i18n="@@nav.groupSecurity">Security</ng-container>
+            <clr-vertical-nav-group-children>
+              <a clrVerticalNavLink routerLink="/security/detections" routerLinkActive="active" i18n="@@nav.detections">Detections</a>
+              @if (auth.isAdmin()) {
+                <a clrVerticalNavLink routerLink="/security/threat-feeds" routerLinkActive="active" i18n="@@nav.threatFeeds">Threat Feeds</a>
+              }
+            </clr-vertical-nav-group-children>
+          </clr-vertical-nav-group>
           <div class="nav-divider"></div>
           <a clrVerticalNavLink routerLink="/exporters" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="router"></cds-icon><ng-container i18n="@@nav.exporters">Exporters</ng-container></a>
           <a clrVerticalNavLink routerLink="/devices" routerLinkActive="active"><cds-icon clrVerticalNavIcon shape="devices"></cds-icon><ng-container i18n="@@nav.devices">Devices</ng-container></a>

@@ -217,6 +217,9 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 				Action:  &NoticeAction{Label: "Enrichment", Route: "/admin/enrichment", admin: true}})
 		}
 	}
+	if n := s.threatNotice(ctx, now); n != nil {
+		add(*n)
+	}
 
 	slices.SortStableFunc(out, func(a, b Notice) int { return levelOrder[a.Level] - levelOrder[b.Level] })
 	return out
@@ -265,6 +268,43 @@ func (s *Server) silentExporters(ctx context.Context, now time.Time) *Notice {
 	}
 	return &Notice{ID: "silent:" + strings.Join(silent, ","), Kind: "exporters-silent", Params: params, Level: "warning", Message: msg,
 		Action: &NoticeAction{Label: "Exporters", Route: "/exporters"}}
+}
+
+// threatNotice reports traffic in the last hour to or from addresses on
+// threat feeds that raise notices. Its ID changes daily and when other feeds
+// match, so a dismissed notice comes back for new activity.
+func (s *Server) threatNotice(ctx context.Context, now time.Time) *Notice {
+	if s.Threats == nil || s.Threats.Prefixes() == 0 {
+		return nil
+	}
+	feeds, err := s.Config.ThreatFeeds()
+	if err != nil {
+		return nil
+	}
+	notify := map[string]bool{}
+	for _, f := range feeds {
+		notify[f.Name] = f.Enabled && f.Notify
+	}
+	hits, err := s.Store.ThreatHits(ctx, now.Add(-time.Hour))
+	if err != nil {
+		return nil
+	}
+	var names []string
+	var hosts uint64
+	for _, h := range hits {
+		if notify[h.Feed] {
+			names = append(names, h.Feed)
+			hosts += h.Hosts
+		}
+	}
+	if len(names) == 0 {
+		return nil
+	}
+	list := strings.Join(names, ", ")
+	return &Notice{ID: "threat:" + now.Format("20060102") + ":" + list, Kind: "threat-traffic", Level: "warning",
+		Params:  map[string]string{"count": fmt.Sprint(hosts), "feeds": list},
+		Message: fmt.Sprintf("Traffic with %d address%s on threat lists in the last hour (%s).", hosts, map[bool]string{true: "", false: "es"}[hosts == 1], list),
+		Action:  &NoticeAction{Label: "Detections", Route: "/security/detections"}}
 }
 
 // initialPasswordNotice warns while the bootstrap admin password is still in

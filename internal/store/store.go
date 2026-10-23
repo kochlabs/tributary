@@ -84,6 +84,8 @@ func flowsDDL(table string) string {
 		src_mac       UInt64 CODEC(ZSTD(1)),
 		dst_mac       UInt64 CODEC(ZSTD(1)),
 		device_mac    UInt64 CODEC(ZSTD(1)),
+		src_threat    LowCardinality(String),
+		dst_threat    LowCardinality(String),
 		src_mask      UInt8,
 		dst_mask      UInt8,
 		vlan          UInt16,
@@ -143,6 +145,9 @@ func (s *Store) Migrate(ctx context.Context, r Retention) error {
 		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS src_mac UInt64 CODEC(ZSTD(1)) AFTER dst_country`,
 		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS dst_mac UInt64 CODEC(ZSTD(1)) AFTER src_mac`,
 		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS device_mac UInt64 CODEC(ZSTD(1)) AFTER dst_mac`,
+		// The threat feed listing the source or destination, if any.
+		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS src_threat LowCardinality(String) AFTER device_mac`,
+		`ALTER TABLE netflow.flows ADD COLUMN IF NOT EXISTS dst_threat LowCardinality(String) AFTER src_threat`,
 		rollupDDL("traffic_1m"),
 		// v1 bucketed flows by receive time; v2 spreads them over their duration.
 		`DROP VIEW IF EXISTS netflow.traffic_1m_mv`,

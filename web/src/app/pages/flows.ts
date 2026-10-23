@@ -47,12 +47,14 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
         <clr-dg-cell><a href="#" (click)="$event.preventDefault(); filterOn('exporter', f.exporter)" [title]="f.exporter">{{ f.exporterName || f.exporter }}</a></clr-dg-cell>
         <clr-dg-cell>
           <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.srcAddr)">{{ f.srcAddr }}</a>{{ f.srcPort ? ':' + f.srcPort : '' }}
-            @if (f.srcCountry) {<span class="cc" [title]="f.srcAsName || ''">{{ f.srcCountry }}</span>}</div>
+            @if (f.srcCountry) {<span class="cc" [title]="f.srcAsName || ''">{{ f.srcCountry }}</span>}
+            @if (f.srcThreat) {<span class="label label-danger threat" [title]="f.srcThreat">{{ listedLabel }}</span>}</div>
           @if (f.srcHost) {<div class="host" [title]="f.srcHost">{{ f.srcHost }}</div>}
         </clr-dg-cell>
         <clr-dg-cell>
           <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.dstAddr)">{{ f.dstAddr }}</a>{{ f.dstPort ? ':' + f.dstPort : '' }}
-            @if (f.dstCountry) {<span class="cc" [title]="f.dstAsName || ''">{{ f.dstCountry }}</span>}</div>
+            @if (f.dstCountry) {<span class="cc" [title]="f.dstAsName || ''">{{ f.dstCountry }}</span>}
+            @if (f.dstThreat) {<span class="label label-danger threat" [title]="f.dstThreat">{{ listedLabel }}</span>}</div>
           @if (f.dstHost) {<div class="host" [title]="f.dstHost">{{ f.dstHost }}</div>}
         </clr-dg-cell>
         <clr-dg-cell class="nowrap">{{ service(f) }}</clr-dg-cell>
@@ -76,6 +78,9 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
               <div><span i18n="@@flows.detail.srcDstMac">Source / destination MAC</span>{{ f.srcMac || '–' }} → {{ f.dstMac || '–' }}</div>
               <div><span i18n="@@flows.detail.sourceCountry">Source country</span>{{ f.srcCountry || '–' }}</div>
               <div><span i18n="@@flows.detail.destinationCountry">Destination country</span>{{ f.dstCountry || '–' }}</div>
+              @if (f.srcThreat || f.dstThreat) {
+                <div><span i18n="@@flows.detail.threat">Threat feed</span>{{ f.srcThreat || f.dstThreat }} ({{ f.srcThreat ? f.srcAddr : f.dstAddr }})</div>
+              }
               <div><span i18n="@@flows.detail.dscpTos">DSCP / ToS</span>{{ dscp(f.tos) }} / 0x{{ f.tos.toString(16) }}</div>
               <div><span i18n="@@flows.detail.vlan">VLAN</span>@if (f.vlan) { {{ f.vlan }} } @else {<ng-container i18n="@@flows.untagged">untagged</ng-container>}</div>
               <div><span i18n="@@flows.detail.tcpFlags">TCP flags</span>{{ f.tcpFlags ? '0x' + f.tcpFlags.toString(16) + ' (' + flags(f.tcpFlags) + ')' : '–' }}</div>
@@ -104,6 +109,7 @@ const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; white-space: nowrap; }
     .nowrap { white-space: nowrap; }
     .cc { display: inline-block; margin-left: 6px; padding: 0 4px; font-size: 10px; line-height: 14px; border-radius: 3px; border: 1px solid var(--cds-alias-object-border-color); color: var(--cds-alias-typography-color-300); font-family: inherit; }
+    .threat { margin-left: 6px; font-family: inherit; }
     .host { font-size: 11px; color: var(--cds-alias-typography-color-300); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
     .flows-grid { margin-top: 12px; }
@@ -145,6 +151,7 @@ export class Flows {
   st = shortTime;
   fmtBytes = bytes;
   fmtCount = count;
+  readonly listedLabel = $localize`:Badge on an address listed by a threat feed@@flows.listed:listed`;
 
   constructor() {
     effect(() => {

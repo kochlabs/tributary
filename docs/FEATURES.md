@@ -31,7 +31,15 @@
 - Exporter and interface pages with utilization.
 - Devices: local hosts identified by MAC address and vendor.
 - Filters: IP/CIDR (v4 and v6), ports and ranges, protocols, AS, country,
-  interface, VLAN, DSCP, `proto/port`; `,` for OR, `!` for NOT.
+  interface, VLAN, DSCP, threat feed, `proto/port`; `,` for OR, `!` for NOT.
+
+## Security
+
+- Threat feeds: flows to or from addresses on lists of known-bad addresses are
+  tagged at ingest. Spamhaus DROP, abuse.ch Feodo Tracker, FireHOL Level 1 and
+  others are seeded; add your own as text, CSV or JSON from a URL or file
+  ([THREAT-FEEDS.md](THREAT-FEEDS.md)).
+- Detections page and notices for matches.
 
 ## Access
 

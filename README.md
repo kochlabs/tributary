@@ -14,6 +14,7 @@ single Go binary with a web UI.
 - Dashboard, traffic explorer, Sankey path analysis and flow search
 - GeoIP, ASN, MAC vendor and reverse DNS enrichment
 - SNMP polling for interface names and speeds
+- Threat-feed matching (Spamhaus DROP, Feodo Tracker, FireHOL, or your own lists)
 - Sign-in with local accounts, OIDC, SAML, LDAP/AD or RADIUS, plus TOTP
 - Encrypted backups, scheduled to SMB, S3 or SFTP
 - Audit log with syslog forwarding
@@ -40,6 +41,7 @@ how ClickHouse is configured.
 - [Installation](docs/INSTALL.md)
 - [Features](docs/FEATURES.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Threat feeds](docs/THREAT-FEEDS.md)
 - [MCP](docs/MCP.md)
 - [Development](docs/DEVELOPMENT.md)
 - [Translating](docs/TRANSLATING.md)

@@ -17,6 +17,9 @@ export const routes: Routes = [
       { path: 'devices', loadComponent: () => import('./pages/devices').then((m) => m.Devices), title: $localize`:@@nav.devices:Devices` },
       { path: 'exporters', loadComponent: () => import('./pages/exporters').then((m) => m.Exporters), title: $localize`:@@nav.exporters:Exporters` },
       { path: 'exporters/:addr', loadComponent: () => import('./pages/exporter-detail').then((m) => m.ExporterDetail), title: $localize`:@@nav.exporter:Exporter` },
+      { path: 'reports', loadComponent: () => import('./pages/reports').then((m) => m.Reports), title: $localize`:@@nav.reports:Reports` },
+      { path: 'security/detections', loadComponent: () => import('./pages/detections').then((m) => m.Detections), title: $localize`:@@nav.detections:Detections` },
+      { path: 'security/threat-feeds', canActivate: [adminGuard], loadComponent: () => import('./pages/threat-feeds').then((m) => m.ThreatFeeds), title: $localize`:@@nav.threatFeeds:Threat Feeds` },
       { path: 'system', loadComponent: () => import('./pages/system').then((m) => m.System), title: $localize`:@@nav.system:System Health` },
       {
         path: 'admin',
