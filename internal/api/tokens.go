@@ -66,10 +66,13 @@ func (s *Server) tokenDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 // mcpURL is the MCP endpoint as this browser reaches the appliance.
-func (s *Server) mcpURL(r *http.Request) string {
+func (s *Server) mcpURL(r *http.Request) string { return s.baseURL(r) + mcpPath }
+
+// baseURL is the appliance's address as this browser reaches it.
+func (s *Server) baseURL(r *http.Request) string {
 	scheme := "https"
 	if !s.SecureCookies {
 		scheme = "http"
 	}
-	return scheme + "://" + r.Host + mcpPath
+	return scheme + "://" + r.Host
 }

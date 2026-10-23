@@ -63,6 +63,8 @@
   history. Scheduled backups to SMB/CIFS, S3-compatible storage or SFTP, with
   retention at both ends; encryption to an age public key lets the appliance
   write backups it cannot read.
+- Email through your SMTP server (STARTTLS, TLS or a plain relay; trusted CAs
+  apply), with a test send. Used by reports and alerts as they arrive.
 - Notices for low disk space, OS updates, expiring certificates, silent
   exporters, failed backups and database problems.
 - OS updates, time and NTP, and service restarts from the UI.

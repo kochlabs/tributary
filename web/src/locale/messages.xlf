@@ -126,7 +126,7 @@
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
         <note category="location">src/app/shared/notice-text.ts:107</note>
-        <note category="location">src/app/shell.ts:126,127</note>
+        <note category="location">src/app/shell.ts:127,128</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -153,12 +153,22 @@
         <source>Enrichment</source>
       </segment>
     </unit>
+    <unit id="nav.email">
+      <notes>
+        <note category="location">src/app/app.routes.ts:32</note>
+        <note category="location">src/app/pages/email.ts:15,16</note>
+        <note category="location">src/app/shell.ts:120,121</note>
+      </notes>
+      <segment>
+        <source>Email</source>
+      </segment>
+    </unit>
     <unit id="nav.backup">
       <notes>
-        <note category="location">src/app/app.routes.ts:33</note>
+        <note category="location">src/app/app.routes.ts:34</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
         <note category="location">src/app/shared/notice-text.ts:114</note>
-        <note category="location">src/app/shell.ts:137,138</note>
+        <note category="location">src/app/shell.ts:138,139</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -166,10 +176,10 @@
     </unit>
     <unit id="nav.certificates">
       <notes>
-        <note category="location">src/app/app.routes.ts:34</note>
+        <note category="location">src/app/app.routes.ts:35</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:105</note>
-        <note category="location">src/app/shell.ts:138,139</note>
+        <note category="location">src/app/shell.ts:139,140</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -177,9 +187,9 @@
     </unit>
     <unit id="nav.identitySources">
       <notes>
-        <note category="location">src/app/app.routes.ts:35</note>
+        <note category="location">src/app/app.routes.ts:36</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
-        <note category="location">src/app/shell.ts:127,128</note>
+        <note category="location">src/app/shell.ts:128,129</note>
       </notes>
       <segment>
         <source>Identity Sources</source>
@@ -187,9 +197,9 @@
     </unit>
     <unit id="nav.updates">
       <notes>
-        <note category="location">src/app/app.routes.ts:36</note>
+        <note category="location">src/app/app.routes.ts:37</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:136,137</note>
+        <note category="location">src/app/shell.ts:137,138</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -197,9 +207,9 @@
     </unit>
     <unit id="nav.time">
       <notes>
-        <note category="location">src/app/app.routes.ts:37</note>
+        <note category="location">src/app/app.routes.ts:38</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:140</note>
+        <note category="location">src/app/shell.ts:141</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -207,9 +217,9 @@
     </unit>
     <unit id="nav.services">
       <notes>
-        <note category="location">src/app/app.routes.ts:38</note>
+        <note category="location">src/app/app.routes.ts:39</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:140,141</note>
+        <note category="location">src/app/shell.ts:141,142</note>
       </notes>
       <segment>
         <source>Services</source>
@@ -217,9 +227,9 @@
     </unit>
     <unit id="nav.apiTokens">
       <notes>
-        <note category="location">src/app/app.routes.ts:39</note>
+        <note category="location">src/app/app.routes.ts:40</note>
         <note category="location">src/app/pages/api-tokens.ts:17,18</note>
-        <note category="location">src/app/shell.ts:128,129</note>
+        <note category="location">src/app/shell.ts:129,130</note>
       </notes>
       <segment>
         <source>API Tokens</source>
@@ -227,8 +237,8 @@
     </unit>
     <unit id="nav.audit">
       <notes>
-        <note category="location">src/app/app.routes.ts:40</note>
-        <note category="location">src/app/shell.ts:129,130</note>
+        <note category="location">src/app/app.routes.ts:41</note>
+        <note category="location">src/app/shell.ts:130,131</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -236,7 +246,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:729</note>
+        <note category="location">src/app/core/api.ts:743</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -2202,7 +2212,7 @@
         <note category="location">src/app/pages/users.ts:138,139</note>
         <note category="location">src/app/shared/filter-bar.ts:37,39</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:174,175</note>
+        <note category="location">src/app/shell.ts:175,176</note>
       </notes>
       <segment>
         <source>Cancel</source>
@@ -2855,6 +2865,7 @@
       <notes>
         <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
         <note category="location">src/app/pages/devices.ts:118,120</note>
+        <note category="location">src/app/pages/email.ts:207,208</note>
         <note category="location">src/app/pages/enrichment.ts:374,375</note>
         <note category="location">src/app/pages/enrichment.ts:486,487</note>
         <note category="location">src/app/pages/enrichment.ts:613,614</note>
@@ -4972,6 +4983,240 @@
         <source>Leave empty to use the DNS or vendor name again.</source>
       </segment>
     </unit>
+    <unit id="email.subtitle">
+      <notes>
+        <note category="location">src/app/pages/email.ts:17,19</note>
+      </notes>
+      <segment>
+        <source> The mail server the appliance sends reports and alerts through. </source>
+      </segment>
+    </unit>
+    <unit id="email.saved">
+      <notes>
+        <note category="location">src/app/pages/email.ts:26,28</note>
+      </notes>
+      <segment>
+        <source>Saved.</source>
+      </segment>
+    </unit>
+    <unit id="email.server">
+      <notes>
+        <note category="location">src/app/pages/email.ts:44,45</note>
+      </notes>
+      <segment>
+        <source>SMTP server</source>
+      </segment>
+    </unit>
+    <unit id="email.sending">
+      <notes>
+        <note category="location">src/app/pages/email.ts:47,48</note>
+      </notes>
+      <segment>
+        <source>Sending</source>
+      </segment>
+    </unit>
+    <unit id="email.enable">
+      <notes>
+        <note category="location">src/app/pages/email.ts:50,51</note>
+      </notes>
+      <segment>
+        <source>Send email from the appliance</source>
+      </segment>
+    </unit>
+    <unit id="email.enableHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:53,54</note>
+      </notes>
+      <segment>
+        <source>While off, nothing is sent; you can still send a test message.</source>
+      </segment>
+    </unit>
+    <unit id="email.host">
+      <notes>
+        <note category="location">src/app/pages/email.ts:57,58</note>
+      </notes>
+      <segment>
+        <source>Server</source>
+      </segment>
+    </unit>
+    <unit id="email.security">
+      <notes>
+        <note category="location">src/app/pages/email.ts:68,69</note>
+      </notes>
+      <segment>
+        <source>Security</source>
+      </segment>
+    </unit>
+    <unit id="email.starttls">
+      <notes>
+        <note category="location">src/app/pages/email.ts:76,77</note>
+      </notes>
+      <segment>
+        <source> STARTTLS (usually port 587) </source>
+      </segment>
+    </unit>
+    <unit id="email.tls">
+      <notes>
+        <note category="location">src/app/pages/email.ts:78,79</note>
+      </notes>
+      <segment>
+        <source>TLS (usually port 465)</source>
+      </segment>
+    </unit>
+    <unit id="email.none">
+      <notes>
+        <note category="location">src/app/pages/email.ts:80,81</note>
+      </notes>
+      <segment>
+        <source> None: a relay on a trusted network (usually port 25) </source>
+      </segment>
+    </unit>
+    <unit id="email.noneHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:86,87</note>
+      </notes>
+      <segment>
+        <source>Mail is sent unencrypted, and without signing in.</source>
+      </segment>
+    </unit>
+    <unit id="email.securityHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:90,91</note>
+      </notes>
+      <segment>
+        <source>The server&apos;s certificate is checked against the system CAs and those under Appliance → Certificates.</source>
+      </segment>
+    </unit>
+    <unit id="email.port">
+      <notes>
+        <note category="location">src/app/pages/email.ts:97,98</note>
+      </notes>
+      <segment>
+        <source>Port</source>
+      </segment>
+    </unit>
+    <unit id="email.username">
+      <notes>
+        <note category="location">src/app/pages/email.ts:109,110</note>
+      </notes>
+      <segment>
+        <source>Username</source>
+      </segment>
+    </unit>
+    <unit id="email.usernameHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:119,120</note>
+      </notes>
+      <segment>
+        <source>Leave empty if the server accepts mail without signing in.</source>
+      </segment>
+    </unit>
+    <unit id="email.password">
+      <notes>
+        <note category="location">src/app/pages/email.ts:124,125</note>
+      </notes>
+      <segment>
+        <source>Password</source>
+      </segment>
+    </unit>
+    <unit id="email.passwordHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:133,134</note>
+      </notes>
+      <segment>
+        <source>Stored encrypted. For Microsoft 365 or Google, use an app password.</source>
+      </segment>
+    </unit>
+    <unit id="email.from">
+      <notes>
+        <note category="location">src/app/pages/email.ts:139,140</note>
+      </notes>
+      <segment>
+        <source>Sender</source>
+      </segment>
+    </unit>
+    <unit id="email.fromHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:150,151</note>
+      </notes>
+      <segment>
+        <source>An address the server lets this account send as, optionally with a name.</source>
+      </segment>
+    </unit>
+    <unit id="email.testTitle">
+      <notes>
+        <note category="location">src/app/pages/email.ts:158,159</note>
+      </notes>
+      <segment>
+        <source>Test</source>
+      </segment>
+    </unit>
+    <unit id="email.recipient">
+      <notes>
+        <note category="location">src/app/pages/email.ts:166,167</note>
+      </notes>
+      <segment>
+        <source>Recipient</source>
+      </segment>
+    </unit>
+    <unit id="email.sendTest">
+      <notes>
+        <note category="location">src/app/pages/email.ts:178,179</note>
+      </notes>
+      <segment>
+        <source> Send test message </source>
+      </segment>
+    </unit>
+    <unit id="email.testHelp">
+      <notes>
+        <note category="location">src/app/pages/email.ts:181,182</note>
+      </notes>
+      <segment>
+        <source>Uses the settings above, saved or not.</source>
+      </segment>
+    </unit>
+    <unit id="email.testOk">
+      <notes>
+        <note category="location">src/app/pages/email.ts:187,188</note>
+      </notes>
+      <segment>
+        <source>Sent. Check the inbox (and the spam folder).</source>
+      </segment>
+    </unit>
+    <unit id="common.revert">
+      <notes>
+        <note category="location">src/app/pages/email.ts:216,217</note>
+        <note category="location">src/app/pages/enrichment.ts:383,384</note>
+        <note category="location">src/app/pages/enrichment.ts:495,496</note>
+        <note category="location">src/app/pages/enrichment.ts:622,623</note>
+        <note category="location">src/app/pages/local-networks.ts:116,118</note>
+        <note category="location">src/app/pages/settings.ts:130,132</note>
+      </notes>
+      <segment>
+        <source> Revert </source>
+      </segment>
+    </unit>
+    <unit id="enrichment.unsaved">
+      <notes>
+        <note category="location">src/app/pages/email.ts:221,222</note>
+        <note category="location">src/app/pages/enrichment.ts:402,403</note>
+        <note category="location">src/app/pages/enrichment.ts:500,501</note>
+        <note category="location">src/app/pages/enrichment.ts:643,644</note>
+        <note category="location">src/app/pages/local-networks.ts:121,123</note>
+      </notes>
+      <segment>
+        <source>Unsaved changes.</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.storedKeep">
+      <notes>
+        <note category="location">src/app/pages/email.ts:293</note>
+        <note category="location">src/app/pages/enrichment.ts:761</note>
+      </notes>
+      <segment>
+        <source>Stored · leave empty to keep</source>
+      </segment>
+    </unit>
     <unit id="dataSources.geo.dbipLabel">
       <notes>
         <note category="location">src/app/pages/enrichment.ts:13</note>
@@ -5343,18 +5588,6 @@
         <source>DB-IP Lite is refreshed monthly; MaxMind, URL and IEEE downloads weekly. Files on the appliance are always reloaded when they change.</source>
       </segment>
     </unit>
-    <unit id="common.revert">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:383,384</note>
-        <note category="location">src/app/pages/enrichment.ts:495,496</note>
-        <note category="location">src/app/pages/enrichment.ts:622,623</note>
-        <note category="location">src/app/pages/local-networks.ts:116,118</note>
-        <note category="location">src/app/pages/settings.ts:130,132</note>
-      </notes>
-      <segment>
-        <source> Revert </source>
-      </segment>
-    </unit>
     <unit id="dataSources.reloadNow">
       <notes>
         <note category="location">src/app/pages/enrichment.ts:394,395</note>
@@ -5371,17 +5604,6 @@
       </notes>
       <segment>
         <source>Update now</source>
-      </segment>
-    </unit>
-    <unit id="enrichment.unsaved">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:402,403</note>
-        <note category="location">src/app/pages/enrichment.ts:500,501</note>
-        <note category="location">src/app/pages/enrichment.ts:643,644</note>
-        <note category="location">src/app/pages/local-networks.ts:121,123</note>
-      </notes>
-      <segment>
-        <source>Unsaved changes.</source>
       </segment>
     </unit>
     <unit id="enrichment.tab.hostnames">
@@ -5510,14 +5732,6 @@
       </notes>
       <segment>
         <source>Not an IP address (optionally with :port)</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.storedKeep">
-      <notes>
-        <note category="location">src/app/pages/enrichment.ts:761</note>
-      </notes>
-      <segment>
-        <source>Stored · leave empty to keep</source>
       </segment>
     </unit>
     <unit id="dataSources.optional">
@@ -7783,7 +7997,7 @@
       <notes>
         <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
-        <note category="location">src/app/shell.ts:207,209</note>
+        <note category="location">src/app/shell.ts:208,210</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -11280,8 +11494,8 @@
     <unit id="shell.changePassword">
       <notes>
         <note category="location">src/app/shell.ts:72,73</note>
-        <note category="location">src/app/shell.ts:152,153</note>
-        <note category="location">src/app/shell.ts:175,177</note>
+        <note category="location">src/app/shell.ts:153,154</note>
+        <note category="location">src/app/shell.ts:176,178</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -11321,7 +11535,7 @@
     </unit>
     <unit id="nav.groupAccess">
       <notes>
-        <note category="location">src/app/shell.ts:124,125</note>
+        <note category="location">src/app/shell.ts:125,126</note>
       </notes>
       <segment>
         <source>Access</source>
@@ -11329,7 +11543,7 @@
     </unit>
     <unit id="nav.groupAppliance">
       <notes>
-        <note category="location">src/app/shell.ts:134,135</note>
+        <note category="location">src/app/shell.ts:135,136</note>
       </notes>
       <segment>
         <source>Appliance</source>
@@ -11337,7 +11551,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:156,157</note>
+        <note category="location">src/app/shell.ts:157,158</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -11345,7 +11559,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:160,161</note>
+        <note category="location">src/app/shell.ts:161,162</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -11353,7 +11567,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:162,163</note>
+        <note category="location">src/app/shell.ts:163,164</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -11361,7 +11575,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:165,166</note>
+        <note category="location">src/app/shell.ts:166,167</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -11369,7 +11583,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:184,186</note>
+        <note category="location">src/app/shell.ts:185,187</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -11377,7 +11591,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:186,187</note>
+        <note category="location">src/app/shell.ts:187,188</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -11385,7 +11599,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:189</note>
+        <note category="location">src/app/shell.ts:190</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -11393,7 +11607,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:193,194</note>
+        <note category="location">src/app/shell.ts:194,195</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -11401,7 +11615,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:200,202</note>
+        <note category="location">src/app/shell.ts:201,203</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -11409,7 +11623,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:202,203</note>
+        <note category="location">src/app/shell.ts:203,204</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -11417,7 +11631,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:203,206</note>
+        <note category="location">src/app/shell.ts:204,207</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -11425,7 +11639,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:372</note>
+        <note category="location">src/app/shell.ts:373</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

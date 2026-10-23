@@ -336,6 +336,20 @@ export interface APIToken {
   lastUsed: number;
 }
 
+/** The SMTP server the appliance sends mail through. */
+export interface EmailConfig {
+  enabled: boolean;
+  host: string;
+  port: number;
+  security: 'starttls' | 'tls' | 'none';
+  username: string;
+  /** Write-only: empty keeps the stored password. */
+  password?: string;
+  hasPassword: boolean;
+  from: string;
+  updated: number;
+}
+
 /** A list of known-bad addresses that flows are matched against. */
 export interface ThreatFeed {
   id: number;
@@ -905,6 +919,15 @@ export class Api {
   }
   deleteApiToken(id: number) {
     return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
+  }
+  email() {
+    return this.get<EmailConfig>('/api/email');
+  }
+  saveEmail(c: EmailConfig) {
+    return firstValueFrom(this.http.put<EmailConfig>('/api/email', c));
+  }
+  testEmail(config: EmailConfig, to: string) {
+    return firstValueFrom(this.http.post<{ ok: boolean; error?: string }>('/api/email/test', { config, to }));
   }
   threatStatus() {
     return this.get<ThreatStatus>('/api/threats');

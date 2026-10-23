@@ -29,6 +29,7 @@ export const routes: Routes = [
           { path: 'users', loadComponent: () => import('./pages/users').then((m) => m.Users), title: $localize`:@@nav.users:Users` },
           { path: 'local-networks', loadComponent: () => import('./pages/local-networks').then((m) => m.LocalNetworks), title: $localize`:@@nav.localNetworks:Local Networks` },
           { path: 'enrichment', loadComponent: () => import('./pages/enrichment').then((m) => m.EnrichmentPage), title: $localize`:@@nav.enrichment:Enrichment` },
+          { path: 'email', loadComponent: () => import('./pages/email').then((m) => m.EmailPage), title: $localize`:@@nav.email:Email` },
           { path: 'data-sources', redirectTo: 'enrichment' },
           { path: 'backup', loadComponent: () => import('./pages/backup').then((m) => m.Backup), title: $localize`:@@nav.backup:Backup & Restore` },
           { path: 'certificates', loadComponent: () => import('./pages/certificates').then((m) => m.Certificates), title: $localize`:@@nav.certificates:Certificates` },
