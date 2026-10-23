@@ -94,10 +94,22 @@ if ! [[ $result =~ \(([0-9]+)\ written ]] || (( BASH_REMATCH[1] == 0 )); then
   die "the backfill wrote nothing"
 fi
 
+# Simulated remote hosts aren't on real threat feeds: list a few in a local
+# "Demo watchlist" feed (added by shots.mjs) and tag the backfilled flows,
+# which bypass ingest, as Tributary would have.
+clickhouse client --port 19000 -q "
+  SELECT IPv6NumToString(dst_addr) AS a FROM netflow.flows
+  WHERE startsWith(a, '::ffff:') AND NOT match(a, '^::ffff:(10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.|192\\.168\\.|203\\.0\\.113\\.)')
+  GROUP BY dst_addr ORDER BY cityHash64(dst_addr) LIMIT 6" | sed 's/^::ffff://' > "$W/watchlist.txt"
+[[ -s $W/watchlist.txt ]] || die "no remote addresses for the demo watchlist"
+in=$(sed "s/.*/toIPv6('&')/" "$W/watchlist.txt" | paste -sd,)
+clickhouse client --port 19000 --mutations_sync 1 -q "ALTER TABLE netflow.flows UPDATE src_threat = 'Demo watchlist' WHERE src_addr IN ($in)"
+clickhouse client --port 19000 --mutations_sync 1 -q "ALTER TABLE netflow.flows UPDATE dst_threat = 'Demo watchlist' WHERE dst_addr IN ($in)"
+
 "$W/flowgen" -target 127.0.0.1 -port-offset 10000 -rate 200 > "$W/flowgen.log" 2>&1 &
 pids+=($!)
 sleep 20 # live counters and templates
 
 echo "==> taking screenshots into $OUT"
 mkdir -p "$OUT"
-BASE=https://127.0.0.1:8443 PASSWORD=Screenshots-2026 OUT=$OUT CHROME=$CHROME node "$HERE/shots.mjs"
+BASE=https://127.0.0.1:8443 PASSWORD=Screenshots-2026 WATCHLIST=$W/watchlist.txt OUT=$OUT CHROME=$CHROME node "$HERE/shots.mjs"

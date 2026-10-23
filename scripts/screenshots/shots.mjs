@@ -1,11 +1,11 @@
 // Seeds a demo instance with the names an administrator would set, then
 // takes the screenshots in docs/screenshots. Run by run.sh.
 //
-// Environment: BASE (the instance's URL), PASSWORD (admin's), OUT (output
-// directory), CHROME (browser executable).
+// Environment: BASE (the instance's URL), PASSWORD (admin's), WATCHLIST (a
+// threat feed file), OUT (output directory), CHROME (browser executable).
 import puppeteer from 'puppeteer-core';
 
-const { BASE, PASSWORD, OUT, CHROME } = process.env;
+const { BASE, PASSWORD, WATCHLIST, OUT, CHROME } = process.env;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const EXPORTERS = [
@@ -34,11 +34,12 @@ page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 
 async function api(path, method, body) {
-  const status = await page.evaluate(async (path, method, body) => {
-    const r = await fetch(path, { method, headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'nfa' }, body: JSON.stringify(body) });
-    return r.status;
+  const { status, text } = await page.evaluate(async (path, method, body) => {
+    const r = await fetch(path, { method, headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'nfa' }, body: body && JSON.stringify(body) });
+    return { status: r.status, text: await r.text() };
   }, path, method, body);
   if (status !== 200) throw new Error(`${method} ${path}: ${status}`);
+  return JSON.parse(text);
 }
 
 // Preferences the app keeps in the browser: the last 24 hours, light theme,
@@ -50,7 +51,15 @@ async function prefs(extra = {}) {
   }, extra);
 }
 
+// Dismisses current notices (such as the demo's threat matches) so they don't
+// crowd every shot.
+async function dismissNotices() {
+  const ids = (await api('/api/notices', 'GET')).map((n) => n.id);
+  await page.evaluate((v) => localStorage.setItem('nfa.dismissedNotices', v), JSON.stringify(['initial-password', ...ids]));
+}
+
 async function shot(name, url, prepare) {
+  if (url !== '/login') await dismissNotices();
   await page.goto(BASE + url, { waitUntil: 'networkidle0' });
   await sleep(2500);
   if (prepare) {
@@ -79,6 +88,8 @@ for (const [addr, name, description, location] of EXPORTERS) await api(`/api/exp
 for (const [addr, list] of Object.entries(INTERFACES))
   for (const [idx, name, description, speed] of list) await api(`/api/exporters/${addr}/interfaces/${idx}`, 'PUT', { name, description, speed });
 for (const [mac, name] of DEVICES) await api(`/api/devices/${encodeURIComponent(mac)}`, 'PUT', { name });
+const feed = await api('/api/threat-feeds', 'POST', { name: 'Demo watchlist', url: WATCHLIST, format: 'text', enabled: true, notify: true, intervalHours: 24 });
+for (let i = 0; i < 10; i++) await api(`/api/threat-feeds/${feed.id}/move`, 'POST', { up: true });
 
 await prefs();
 await shot('dashboard', '/dashboard', trafficByService);
@@ -89,6 +100,9 @@ await shot('flow-search', '/flows?exporter=127.0.1.2', expandRow(10));
 await shot('devices', '/devices', expandRow(0));
 await shot('exporters', '/exporters');
 await shot('exporter-detail', '/exporters/127.0.1.1');
+await shot('detections', '/security/detections');
+await shot('threat-feeds', '/security/threat-feeds');
+await shot('local-networks', '/admin/local-networks');
 await shot('enrichment', '/admin/enrichment');
 await prefs({ 'nfa.theme': 'dark' });
 await shot('dashboard-dark', '/dashboard', trafficByService);
