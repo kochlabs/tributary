@@ -111,12 +111,13 @@ const HISTORY_SIZE = 20;
         <button
           type="button"
           class="btn btn-sm ai-btn"
-          [class.active]="aiOpen()"
+          [class.btn-outline]="!aiOpen()"
+          [class.btn-primary]="aiOpen()"
           (click)="toggleAI()"
           title="Write a query from plain English"
           i18n-title="@@queryBar.aiTitle"
         >
-          AI
+          <cds-icon shape="wand"></cds-icon> AI
         </button>
       }
       <cds-icon shape="search" class="icon"></cds-icon>
@@ -183,7 +184,9 @@ const HISTORY_SIZE = 20;
       }
     }
     @if (aiNote(); as n) {
-      <div class="issue ai-note"><span class="ai-tag">AI</span> {{ n }}</div>
+      <div class="issue ai-note">
+        <cds-icon shape="wand" size="12" class="ai-tag"></cds-icon> {{ n }}
+      </div>
     }
     @if (aiOpen()) {
       <div class="ai card">
@@ -397,23 +400,7 @@ const HISTORY_SIZE = 20;
       margin-left: 4px;
     }
     .ai-btn {
-      margin: 0 4px 0 0;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      background:
-        linear-gradient(
-            var(--cds-alias-object-container-background, #fff),
-            var(--cds-alias-object-container-background, #fff)
-          )
-          padding-box,
-        linear-gradient(135deg, #e8743b, #b34fc4, #3fa7d6) border-box;
-      color: var(--cds-alias-typography-color-400);
-    }
-    .ai-btn.active,
-    .ai-btn:hover {
-      color: #b34fc4;
+      margin: 0 6px 0 0;
     }
     .ai {
       margin: 8px 0 0;
@@ -436,7 +423,7 @@ const HISTORY_SIZE = 20;
     .ai-tag {
       font-size: 10px;
       font-weight: 700;
-      color: #b34fc4;
+      color: var(--cds-alias-status-info, #0072a3);
       margin-right: 2px;
     }
     .btn.active {

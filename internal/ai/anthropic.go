@@ -53,10 +53,28 @@ func (p *anthropicProvider) Models(ctx context.Context) ([]Model, error) {
 	if err := pager.Err(); err != nil {
 		return nil, anthropicErr(err)
 	}
+	// Gateways answer the model list at their root too (OpenAI-style), but
+	// serve the Messages API elsewhere. An empty request costs nothing: the
+	// API rejects it as invalid (400); a URL without the API says 404 or 405.
+	if err := p.probeMessages(ctx); err != nil {
+		return nil, err
+	}
 	p.mu.Lock()
 	p.structured = structured
 	p.mu.Unlock()
 	return out, nil
+}
+
+func (p *anthropicProvider) probeMessages(ctx context.Context) error {
+	_, err := p.client.Messages.New(ctx, anthropic.MessageNewParams{}, option.WithMaxRetries(0))
+	var apierr *anthropic.Error
+	if errors.As(err, &apierr) && (apierr.StatusCode == 405 || apierr.StatusCode == 404 && !strings.Contains(strings.ToLower(apierr.Error()), "model")) {
+		return errors.New(wrongEndpoint)
+	}
+	if err != nil && !errors.As(err, &apierr) && strings.Contains(err.Error(), "content-type") {
+		return errors.New(wrongEndpoint)
+	}
+	return nil
 }
 
 // supportsStructured tells whether model takes a JSON schema, as the Models
@@ -129,12 +147,16 @@ func (p *anthropicProvider) Complete(ctx context.Context, model, system string, 
 	return b.String(), nil
 }
 
+// wrongEndpoint explains a URL that doesn't serve the Messages API.
+const wrongEndpoint = "this URL doesn't serve the Anthropic Messages API (requests go to <URL>/v1/messages). " +
+	"For a gateway, use its Anthropic endpoint, such as https://gateway/anthropic, or choose OpenAI-compatible with https://gateway/v1"
+
 // anthropicErr turns API errors into messages for the settings page.
 func anthropicErr(err error) error {
 	var apierr *anthropic.Error
 	if !errors.As(err, &apierr) {
 		if strings.Contains(err.Error(), "content-type") {
-			return errors.New("that URL doesn't answer like the Anthropic API (for a gateway, use its Anthropic endpoint, such as https://gateway/anthropic)")
+			return errors.New(wrongEndpoint)
 		}
 		return fmt.Errorf("can't reach the API: %w", err)
 	}
@@ -143,8 +165,13 @@ func anthropicErr(err error) error {
 		return errors.New("the API key was rejected")
 	case 403:
 		return errors.New("the API key isn't allowed to do this")
-	case 404:
-		return errors.New("not found: check the URL and the model")
+	case 404, 405:
+		// The API says "model: … not found"; a URL that isn't the API says
+		// 404 or 405 about the path.
+		if apierr.StatusCode == 404 && strings.Contains(strings.ToLower(apierr.Error()), "model") {
+			return errors.New("the model wasn't found: choose one from the list")
+		}
+		return errors.New(wrongEndpoint)
 	case 429:
 		return errors.New("rate limited by the API: try again shortly")
 	}

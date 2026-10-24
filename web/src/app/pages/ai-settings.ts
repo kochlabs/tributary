@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { AIQueryResult, AISettings, Api, errorMessage } from '../core/api';
+import { ModelPicker } from '../shared/model-picker';
 
 const ANTHROPIC_URL = 'https://api.anthropic.com';
 /** Preselected for Anthropic when the endpoint offers it. */
@@ -10,7 +11,7 @@ const ANTHROPIC_DEFAULT_MODEL = 'claude-opus-5-5';
 /** The AI query assistant (Configuration → AI Assistant). */
 @Component({
   selector: 'nfa-ai-settings',
-  imports: [ClarityModule, FormsModule],
+  imports: [ClarityModule, FormsModule, ModelPicker],
   template: `
     <div class="page-header">
       <div>
@@ -140,50 +141,39 @@ const ANTHROPIC_DEFAULT_MODEL = 'claude-opus-5-5';
                 </clr-checkbox-wrapper>
               </clr-checkbox-container>
             }
-            <clr-input-container>
-              <label i18n="@@ai.modelLabel">Model</label>
-              <input
-                clrInput
-                name="model"
-                [(ngModel)]="c.model"
-                list="ai-models"
-                autocomplete="off"
-                spellcheck="false"
-                class="wide"
-                placeholder="Type to search"
-                i18n-placeholder="@@ai.modelSearch"
-              />
-              <datalist id="ai-models">
-                @for (m of models(); track m.id) {
-                  <option [value]="m.id">{{ m.name }}</option>
-                }
-              </datalist>
-              <clr-control-helper>
-                @if (loadingModels()) {
-                  <span class="spinner spinner-inline"></span>
-                  <ng-container i18n="@@ai.loadingModels">Loading models…</ng-container>
-                } @else if (modelsError()) {
-                  <span class="bad">{{ modelsError() }}</span>
-                } @else if (models().length) {
-                  <ng-container i18n="@@ai.modelsCount"
-                    >{{ models().length }} models offered; type to search.</ng-container
+            <div class="clr-form-control clr-row">
+              <label class="clr-control-label clr-col-12 clr-col-md-3" i18n="@@ai.modelLabel"
+                >Model</label
+              >
+              <div class="clr-control-container clr-col-12 clr-col-md-9">
+                <nfa-model-picker [models]="models()" [(value)]="c.model" />
+                <span class="clr-subtext model-help">
+                  @if (loadingModels()) {
+                    <span class="spinner spinner-inline"></span>
+                    <ng-container i18n="@@ai.loadingModels">Loading models…</ng-container>
+                  } @else if (modelsError()) {
+                    <span class="bad">{{ modelsError() }}</span>
+                  } @else if (models().length) {
+                    <ng-container i18n="@@ai.modelsCount"
+                      >{{ models().length }} models offered.</ng-container
+                    >
+                  } @else {
+                    <ng-container i18n="@@ai.modelsHint"
+                      >Models are listed once the URL (and key) are set.</ng-container
+                    >
+                  }
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-link reload"
+                    (click)="loadModels()"
+                    [disabled]="loadingModels()"
+                    i18n="@@ai.reloadModels"
                   >
-                } @else {
-                  <ng-container i18n="@@ai.modelsHint"
-                    >Models are listed once the URL (and key) are set.</ng-container
-                  >
-                }
-                <button
-                  type="button"
-                  class="btn btn-sm btn-link reload"
-                  (click)="loadModels()"
-                  [disabled]="loadingModels()"
-                  i18n="@@ai.reloadModels"
-                >
-                  Reload
-                </button>
-              </clr-control-helper>
-            </clr-input-container>
+                    Reload
+                  </button>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -294,6 +284,10 @@ const ANTHROPIC_DEFAULT_MODEL = 'claude-opus-5-5';
     input.wide {
       width: 28rem;
       max-width: 100%;
+    }
+    .model-help {
+      display: block;
+      margin-top: 4px;
     }
     .reload {
       margin: 0 0 0 6px;

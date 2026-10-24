@@ -26,6 +26,11 @@ func TestAnthropic(t *testing.T) {
 		case "/gw/v1/messages":
 			gotBeta = r.Header.Get("anthropic-beta")
 			b, _ := io.ReadAll(r.Body)
+			if !strings.Contains(string(b), "messages\":[") { // the endpoint probe
+				w.WriteHeader(400)
+				json.NewEncoder(w).Encode(map[string]any{"type": "error", "error": map[string]any{"type": "invalid_request_error", "message": "messages: field required"}})
+				return
+			}
 			json.Unmarshal(b, &got)
 			json.NewEncoder(w).Encode(map[string]any{"id": "m", "type": "message", "role": "assistant", "model": "claude-x", "stop_reason": "end_turn",
 				"content": []any{map[string]any{"type": "text", "text": `{"query":"dst_port:22","range":"","explanation":"SSH"}`}}})
@@ -93,5 +98,26 @@ func TestOpenAI(t *testing.T) {
 	bad, _ := New(Config{Provider: "openai", URL: srv.URL + "/v1", APIKey: "wrong", Client: srv.Client()})
 	if _, err := bad.Models(context.Background()); err == nil || err.Error() != "the API key was rejected" {
 		t.Fatalf("bad key: %v", err)
+	}
+}
+
+// A gateway's root answers the OpenAI-style model list but not the Messages
+// API: the error says which URL to use.
+func TestAnthropicWrongEndpoint(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/v1/messages" {
+			w.Header().Set("Content-Type", "text/plain")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	}))
+	defer srv.Close()
+	p, _ := New(Config{Provider: "anthropic", URL: srv.URL, Client: srv.Client()})
+	_, err := p.Complete(context.Background(), "m", "s", []Message{{"user", "x"}}, nil)
+	if err == nil || !strings.Contains(err.Error(), "https://gateway/anthropic") {
+		t.Fatalf("%v", err)
+	}
+	// Caught when listing models, before a model is even chosen.
+	if _, err := p.Models(context.Background()); err == nil || !strings.Contains(err.Error(), "https://gateway/anthropic") {
+		t.Fatalf("models: %v", err)
 	}
 }
