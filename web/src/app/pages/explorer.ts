@@ -307,7 +307,7 @@ export class Explorer {
   fmtCount = count;
 
   addFilter(r: TopRow, exclude: boolean) {
-    const f = drillFilter(this.groupBy(), r.key);
+    const f = drillFilter(this.groupBy(), r.key, r.label);
     if (!f) return;
     const next = { ...this.filters() };
     for (const [k, v] of Object.entries(f)) next[k] = (exclude && k !== 'exporter' ? '!' : '') + v;
@@ -345,13 +345,13 @@ export class Explorer {
     const next = { ...this.filters() };
     for (const n of nodes) {
       if (n.key === '__other__') continue;
-      Object.assign(next, drillFilter(p.dimensions[n.column], n.key) ?? {});
+      Object.assign(next, drillFilter(p.dimensions[n.column], n.key, n.label) ?? {});
     }
     this.filters.set(next);
   }
 
   showFlowsFor(r: TopRow) {
-    this.showFlows(drillFilter(this.groupBy(), r.key) ?? {});
+    this.showFlows(drillFilter(this.groupBy(), r.key, r.label) ?? {});
   }
 
   showFlows(extra: Filters) {

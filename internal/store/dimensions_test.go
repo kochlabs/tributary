@@ -28,6 +28,13 @@ func TestThreatFilter(t *testing.T) {
 	if err != nil || f.conds[0] != "NOT ((src_threat = ? OR dst_threat = ?))" || len(f.args) != 2 || f.args[0] != "Tor exit nodes" {
 		t.Fatalf("not one feed: %+v %v", f, err)
 	}
+	// Feed names resolve to the IDs flows store; unknown values pass through.
+	SetThreatFeeds(map[string]string{"7": "Spamhaus DROP (IPv4)"})
+	defer SetThreatFeeds(nil)
+	f, err = ParseFilter(map[string]string{"threat": "spamhaus drop (ipv4),7,Old name"})
+	if err != nil || len(f.args) != 6 || f.args[0] != "7" || f.args[2] != "7" || f.args[4] != "Old name" {
+		t.Fatalf("names: %+v %v", f.args, err)
+	}
 	for _, d := range []string{"threat", "threat_host"} {
 		if dim, ok := LookupDimension(d); !ok || dim.rollup {
 			t.Fatalf("%s: %+v", d, dim)

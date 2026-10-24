@@ -266,6 +266,13 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	}
 	go srv.RunNotices(ctx)
 	go threats.Run(ctx)
+	// Flows store threat feed IDs; matches stored by name before are
+	// converted once (in the background: it rewrites two columns).
+	go func(names map[string]string) {
+		if err := st.MigrateThreatNames(ctx, names); err != nil {
+			log.Warn("converting stored threat matches to feed IDs failed", "err", err)
+		}
+	}(srv.SyncThreatFeedNames())
 	go srv.RunReports(ctx)
 	srv.Scheduler = &offsite.Scheduler{Cfg: cfg, Backups: srv.Backups, Log: log, RootCAs: trust.Pool}
 	go srv.Scheduler.Run(ctx)

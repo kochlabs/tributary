@@ -47,7 +47,7 @@ var Dimensions = map[string]dimension{
 	"country":      {"arrayJoin(arrayFilter(c -> c != '', arrayDistinct([src_country, dst_country])))", false},
 	// The threat feed listing either end (the source's first), and that
 	// end's address.
-	"threat":      {"if(src_threat != '', src_threat, dst_threat)", false},
+	"threat":      {"if(src_threat != '', src_threat, dst_threat)", false}, // the feed's ID
 	"threat_host": {"multiIf(src_threat != '', " + ipstr("src_addr") + ", dst_threat != '', " + ipstr("dst_addr") + ", '')", false},
 }
 
@@ -683,7 +683,7 @@ func (s *Store) DeviceTraffic(ctx context.Context, from, to time.Time) (map[uint
 
 // ThreatHit is how often a threat feed's addresses were seen.
 type ThreatHit struct {
-	Feed  string `json:"feed"`
+	Feed  string `json:"feed"`  // the feed's ID, as flows store it
 	Hosts uint64 `json:"hosts"` // distinct listed addresses
 	Flows uint64 `json:"flows"`
 	Last  int64  `json:"last"` // ms

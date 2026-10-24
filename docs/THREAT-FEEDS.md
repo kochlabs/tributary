@@ -42,6 +42,7 @@ own interval; the last good list stays in use when a download fails.
 - A flow records the first feed listing the address; reorder feeds with
   **Move up** and **Move down** to put the most specific first.
 - Tags are set when a flow arrives: changing feeds doesn't re-tag stored flows.
+  Flows record the feed's ID, so renaming a feed relabels its past matches.
 
 ## Querying
 

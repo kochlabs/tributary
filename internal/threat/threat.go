@@ -59,6 +59,7 @@ type addrRange struct{ lo, hi netip.Addr }
 
 // list is one feed's ranges, sorted and merged.
 type list struct {
+	id     string // the feed's ID, stored in flows
 	name   string
 	ranges []addrRange
 }
@@ -85,7 +86,7 @@ func lastAddr(p netip.Prefix) netip.Addr {
 	return a
 }
 
-func newList(name string, prefixes []netip.Prefix) list {
+func newList(id, name string, prefixes []netip.Prefix) list {
 	rs := make([]addrRange, 0, len(prefixes))
 	for _, p := range prefixes {
 		rs = append(rs, addrRange{p.Addr(), lastAddr(p)})
@@ -102,7 +103,7 @@ func newList(name string, prefixes []netip.Prefix) list {
 		}
 		merged = append(merged, r)
 	}
-	return list{name: name, ranges: merged}
+	return list{id: id, name: name, ranges: merged}
 }
 
 func (l list) contains(a netip.Addr) bool {
@@ -116,8 +117,9 @@ func (l list) contains(a netip.Addr) bool {
 	return i > 0 && l.ranges[i-1].lo.BitLen() == a.BitLen() && a.Compare(l.ranges[i-1].hi) <= 0
 }
 
-// Match returns the name of the first feed listing a, or "". Addresses that
-// aren't Matchable never match.
+// Match returns the ID of the first feed listing a, or "". Flows store the
+// ID, so renaming a feed relabels its past matches. Addresses that aren't
+// Matchable never match.
 func (m *Matcher) Match(a netip.Addr) string {
 	if m == nil || len(m.lists) == 0 {
 		return ""
@@ -128,7 +130,7 @@ func (m *Matcher) Match(a netip.Addr) string {
 	}
 	for _, l := range m.lists {
 		if l.contains(a) {
-			return l.name
+			return l.id
 		}
 	}
 	return ""
@@ -168,7 +170,7 @@ func (m *Manager) init() {
 	}
 }
 
-// Match returns the first feed listing a, or "".
+// Match returns the ID of the first feed listing a, or "".
 func (m *Manager) Match(a netip.Addr) string { return m.cur.Load().Match(a) }
 
 // Feeds lists every feed listing a.
@@ -207,7 +209,7 @@ func (m *Manager) Reload() error {
 		if err != nil {
 			continue
 		}
-		l := newList(f.Name, ps)
+		l := newList(strconv.FormatInt(f.ID, 10), f.Name, ps)
 		mt.lists = append(mt.lists, l)
 		mt.prefixes += len(l.ranges)
 	}

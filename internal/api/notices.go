@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -284,9 +285,9 @@ func (s *Server) threatNotice(ctx context.Context, now time.Time) *Notice {
 	if err != nil {
 		return nil
 	}
-	notify := map[string]bool{}
+	notify := map[string]bool{} // by ID, as flows store it
 	for _, f := range feeds {
-		notify[f.Name] = f.Enabled && f.Notify
+		notify[strconv.FormatInt(f.ID, 10)] = f.Enabled && f.Notify
 	}
 	hits, err := s.Store.ThreatHits(ctx, now.Add(-time.Hour))
 	if err != nil {
@@ -296,7 +297,7 @@ func (s *Server) threatNotice(ctx context.Context, now time.Time) *Notice {
 	var hosts uint64
 	for _, h := range hits {
 		if notify[h.Feed] {
-			names = append(names, h.Feed)
+			names = append(names, s.threatFeedName(h.Feed))
 			hosts += h.Hosts
 		}
 	}

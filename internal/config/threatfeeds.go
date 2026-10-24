@@ -133,6 +133,9 @@ func (f *ThreatFeed) normalize() error {
 	if strings.ContainsAny(f.Name, ",!*") { // the filter syntax uses them
 		return errors.New("the name can't contain , ! or *")
 	}
+	if strings.Trim(f.Name, "0123456789") == "" { // flows store feed IDs; filters accept either
+		return errors.New("the name can't be only digits")
+	}
 	if strings.HasPrefix(f.URL, "/") {
 		if filepath.Clean(f.URL) != f.URL {
 			return errors.New("the file path must be absolute and clean")

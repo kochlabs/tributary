@@ -78,3 +78,39 @@ func TestReportsAPI(t *testing.T) {
 }
 
 func itoa64(n int64) string { return strconv.FormatInt(n, 10) }
+
+func TestThreatFeedName(t *testing.T) {
+	cfg, err := config.Open(filepath.Join(t.TempDir(), "config.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cfg.Close()
+	s := &Server{Config: cfg}
+	id, _ := cfg.SaveThreatFeed(config.ThreatFeed{Name: "Lab list", URL: "https://example.com/l.txt"})
+	key := strconv.FormatInt(id, 10)
+	if got := s.threatFeedName(key); got != "Lab list" {
+		t.Fatalf("name: %q", got)
+	}
+	// Renaming relabels matches already stored by ID.
+	f, _ := cfg.ThreatFeed(id)
+	f.Name = "Renamed list"
+	cfg.SaveThreatFeed(f)
+	if got := s.threatFeedName(key); got != "Renamed list" {
+		t.Fatalf("after rename: %q", got)
+	}
+	// The filter resolves the new name to the stored ID.
+	names := s.SyncThreatFeedNames()
+	if names[key] != "Renamed list" {
+		t.Fatalf("synced: %v", names)
+	}
+	cfg.DeleteThreatFeed(id)
+	if got := s.threatFeedName(key); got != "Deleted feed (#"+key+")" {
+		t.Fatalf("deleted: %q", got)
+	}
+	if s.threatFeedName("Old name") != "Old name" || s.threatFeedName("") != "" {
+		t.Fatal("names stored before IDs, or none")
+	}
+	if _, err := cfg.SaveThreatFeed(config.ThreatFeed{Name: "123", URL: "https://example.com/x.txt"}); err == nil {
+		t.Fatal("an all-digit name was accepted")
+	}
+}

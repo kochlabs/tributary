@@ -210,6 +210,8 @@ func (s *Server) label(dim, key string) string {
 		return "AS" + key
 	case "direction":
 		return map[string]string{"download": "Download (remote → local)", "upload": "Upload (local → remote)", "internal": "Internal (local ↔ local)", "transit": "Transit (remote ↔ remote)"}[key]
+	case "threat":
+		return s.threatFeedName(key)
 	case "remote_country":
 		if key == "" {
 			return "Internal / unknown"
@@ -359,6 +361,7 @@ func (s *Server) flows(w http.ResponseWriter, r *http.Request) {
 		}
 		f.SrcASName, f.DstASName = s.Geo.ASName(f.SrcAS), s.Geo.ASName(f.DstAS)
 		f.ExporterName = s.Config.ExporterName(f.Exporter)
+		f.SrcThreat, f.DstThreat = s.threatFeedName(f.SrcThreat), s.threatFeedName(f.DstThreat)
 	}
 	writeJSON(w, http.StatusOK, page)
 }

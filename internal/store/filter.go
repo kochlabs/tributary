@@ -183,7 +183,7 @@ func (d filterField) cond(v string) (string, []any, error) {
 				parts = append(parts, c+" != ''")
 			} else {
 				parts = append(parts, c+" = ?")
-				args = append(args, v)
+				args = append(args, threatValue(v))
 			}
 		}
 	case kCountry:

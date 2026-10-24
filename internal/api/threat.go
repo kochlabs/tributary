@@ -9,10 +9,43 @@ import (
 	"time"
 
 	"github.com/kochlabs/tributary/internal/config"
+	"github.com/kochlabs/tributary/internal/store"
 )
 
 // Threat feeds (Security → Threat Feeds): lists of known-bad addresses that
-// flows are matched against at ingest.
+// flows are matched against at ingest. Flows store the feed's ID; names are
+// looked up when shown, so a renamed feed relabels its past matches.
+
+// threatFeedName is the current name of a feed ID stored in flows. Values
+// stored before flows held IDs are names already; deleted feeds are marked.
+func (s *Server) threatFeedName(id string) string {
+	if id == "" {
+		return ""
+	}
+	n, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return id // stored by name, before IDs
+	}
+	if f, err := s.Config.ThreatFeed(n); err == nil {
+		return f.Name
+	}
+	return fmt.Sprintf("Deleted feed (#%d)", n)
+}
+
+// SyncThreatFeedNames tells the store which names the threat filter
+// resolves, after feeds change.
+func (s *Server) SyncThreatFeedNames() map[string]string {
+	feeds, err := s.Config.ThreatFeeds()
+	if err != nil {
+		return nil
+	}
+	names := make(map[string]string, len(feeds))
+	for _, f := range feeds {
+		names[strconv.FormatInt(f.ID, 10)] = f.Name
+	}
+	store.SetThreatFeeds(names)
+	return names
+}
 
 func (s *Server) threatFeeds(w http.ResponseWriter, r *http.Request) {
 	feeds, err := s.Config.ThreatFeeds()
@@ -59,6 +92,9 @@ func (s *Server) threatStatus(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadGateway, err.Error())
 		return
 	}
+	for i := range hits {
+		hits[i].Feed = s.threatFeedName(hits[i].Feed)
+	}
 	writeJSON(w, http.StatusOK, map[string]any{"feeds": out, "ranges": s.Threats.Prefixes(), "hits": hits})
 }
 
@@ -100,6 +136,7 @@ func (s *Server) threatFeedSave(w http.ResponseWriter, r *http.Request) {
 	if err := s.Threats.Reload(); err != nil {
 		s.Log.Warn("threat feeds: reload", "err", err)
 	}
+	s.SyncThreatFeedNames()
 	if saved.Enabled && (old.ID == 0 || saved.LastSuccess == 0 || !old.Enabled) {
 		s.Threats.UpdateSoon(id)
 	}
@@ -125,6 +162,7 @@ func (s *Server) threatFeedDelete(w http.ResponseWriter, r *http.Request) {
 	}
 	s.Threats.Forget(id)
 	_ = s.Threats.Reload()
+	s.SyncThreatFeedNames()
 	s.Config.Audit(userFrom(r).Username, "threat.feed.delete", f.String())
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 }
@@ -201,6 +239,7 @@ func (s *Server) threatFeedDefaults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if n > 0 {
+		s.SyncThreatFeedNames()
 		s.Config.Audit(userFrom(r).Username, "threat.feed.defaults", fmt.Sprintf("added %d default feeds", n))
 		s.Threats.UpdateSoon(0)
 	}

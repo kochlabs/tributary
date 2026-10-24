@@ -135,8 +135,8 @@ export function dimLabel(id: string) {
   return DIMENSIONS.find((d) => d.id === id)?.label ?? id;
 }
 
-/** Filter key to apply when drilling into a row of the given dimension. */
-export function drillFilter(dim: string, key: string): Record<string, string> | null {
+/** Filter key to apply when drilling into a row of the given dimension (label: the row's display name). */
+export function drillFilter(dim: string, key: string, label?: string): Record<string, string> | null {
   switch (dim) {
     case 'src_addr':
       return { src: key };
@@ -148,7 +148,8 @@ export function drillFilter(dim: string, key: string): Record<string, string> | 
     case 'threat_host':
       return key ? { host: key } : null;
     case 'threat':
-      return key ? { threat: key } : null;
+      // Keys are feed IDs; filters accept names, which read better as chips.
+      return key ? { threat: label || key } : null;
     case 'device':
       return key ? { device: key } : null;
     case 'remote_as':

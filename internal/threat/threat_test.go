@@ -11,6 +11,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -69,8 +70,8 @@ func TestMatcher(t *testing.T) {
 		return ps
 	}
 	m := &Matcher{lists: []list{
-		newList("first", mk("1.10.16.0/20", "1.10.20.0/22", "1.10.32.0/24", "1.10.33.0/24", "2a00:1::/32")),
-		newList("second", mk("1.10.16.5", "8.8.8.8", "10.0.0.0/8", "100.64.0.0/10", "224.0.0.0/3", "0.0.0.0/0")),
+		newList("1", "first", mk("1.10.16.0/20", "1.10.20.0/22", "1.10.32.0/24", "1.10.33.0/24", "2a00:1::/32")),
+		newList("2", "second", mk("1.10.16.5", "8.8.8.8", "10.0.0.0/8", "100.64.0.0/10", "224.0.0.0/3", "0.0.0.0/0")),
 	}}
 	// The /22 is inside the /20, which ends where 1.10.32.0/24 starts, and that
 	// is adjacent to 1.10.33.0/24: one IPv4 range, plus the IPv6 one.
@@ -78,14 +79,14 @@ func TestMatcher(t *testing.T) {
 		t.Fatalf("first list has %d ranges", n)
 	}
 	for addr, want := range map[string]string{
-		"1.10.16.0":        "first",
-		"1.10.31.255":      "first",
-		"1.10.32.200":      "first",
-		"1.10.33.255":      "first",
-		"1.10.16.5":        "first", // first feed wins
-		"8.8.8.8":          "second",
-		"9.9.9.9":          "second", // 0.0.0.0/0
-		"2a00:1:ffff::1":   "first",
+		"1.10.16.0":        "1",
+		"1.10.31.255":      "1",
+		"1.10.32.200":      "1",
+		"1.10.33.255":      "1",
+		"1.10.16.5":        "1", // first feed wins
+		"8.8.8.8":          "2",
+		"9.9.9.9":          "2", // 0.0.0.0/0
+		"2a00:1:ffff::1":   "1",
 		"2a00:2::1":        "",
 		"10.1.2.3":         "", // private
 		"192.168.1.1":      "",
@@ -94,7 +95,7 @@ func TestMatcher(t *testing.T) {
 		"127.0.0.1":        "",
 		"169.254.1.1":      "",
 		"203.0.113.9":      "", // documentation
-		"::ffff:1.10.16.9": "first",
+		"::ffff:1.10.16.9": "1",
 	} {
 		if got := m.Match(netip.MustParseAddr(addr)); got != want {
 			t.Errorf("%s: %q, want %q", addr, got, want)
@@ -146,11 +147,15 @@ func TestManager(t *testing.T) {
 	m := &Manager{Cfg: cfg, Log: slog.New(slog.NewTextHandler(io.Discard, nil)), Dir: t.TempDir(), Client: func() *http.Client { return srv.Client() }, Agent: "Tributary/test"}
 	m.init()
 	m.updateDue(context.Background(), 0, true)
-	if got := m.Match(netip.MustParseAddr("45.1.1.1")); got != "served" {
+	// Match returns the feed's ID; Feeds lists every feed by name.
+	if got := m.Match(netip.MustParseAddr("45.1.1.1")); got != strconv.FormatInt(id1, 10) {
 		t.Fatalf("45.1.1.1 matched %q", got)
 	}
-	if got := m.Match(netip.MustParseAddr("45.1.1.2")); got != "file" {
+	if got := m.Match(netip.MustParseAddr("45.1.1.2")); got != strconv.FormatInt(id2, 10) {
 		t.Fatalf("45.1.1.2 matched %q", got)
+	}
+	if got := m.Feeds(netip.MustParseAddr("45.1.1.1")); len(got) != 2 || got[0] != "served" || got[1] != "file" {
+		t.Fatalf("feeds for 45.1.1.1: %v", got)
 	}
 	f1, _ := cfg.ThreatFeed(id1)
 	if f1.Entries != 2 || f1.LastSuccess == 0 || f1.LastError != "" {
@@ -171,7 +176,7 @@ func TestManager(t *testing.T) {
 	// The cached list survives a restart without downloading.
 	m2 := &Manager{Cfg: cfg, Log: m.Log, Dir: m.Dir, Client: m.Client}
 	m2.Reload()
-	if m2.Match(netip.MustParseAddr("45.1.1.1")) != "served" {
+	if m2.Match(netip.MustParseAddr("45.1.1.1")) != strconv.FormatInt(id1, 10) {
 		t.Fatal("cached list not loaded")
 	}
 	// Defaults come back on request, without duplicating.

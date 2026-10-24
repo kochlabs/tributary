@@ -217,7 +217,7 @@ export class Dashboard {
   }
 
   drill(dim: string, row: TopRow) {
-    const f = drillFilter(dim, row.key);
+    const f = drillFilter(dim, row.key, row.label);
     if (!f) return;
     const next = dim === 'device' || dim === 'local_host' ? 'remote_as' : dim === 'remote_as' || dim === 'app' ? 'device' : 'app';
     this.router.navigate(['/explorer'], { queryParams: { ...f, groupBy: next, metric: this.metric() } });
