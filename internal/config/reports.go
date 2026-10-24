@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS reports (
 	weekday     INTEGER NOT NULL DEFAULT 1,
 	monthday    INTEGER NOT NULL DEFAULT 1,
 	recipients  TEXT NOT NULL DEFAULT '',
+	channels    TEXT NOT NULL DEFAULT '[]',
 	keep        INTEGER NOT NULL DEFAULT 12,
 	created_by  TEXT NOT NULL DEFAULT '',
 	created_at  INTEGER NOT NULL,
@@ -78,11 +79,13 @@ type Report struct {
 	Weekday    int    `json:"weekday"`
 	Monthday   int    `json:"monthday"`
 	Recipients string `json:"recipients"` // comma- or newline-separated addresses
-	Keep       int    `json:"keep"`       // runs kept on the appliance
-	CreatedBy  string `json:"createdBy"`
-	CreatedAt  int64  `json:"createdAt"`
-	UpdatedAt  int64  `json:"updatedAt"`
-	NextRun    int64  `json:"nextRun"` // ms; 0 = not scheduled
+	// Channels are notification channels runs are sent to (IDs).
+	Channels  []int64 `json:"channels"`
+	Keep      int     `json:"keep"` // runs kept on the appliance
+	CreatedBy string  `json:"createdBy"`
+	CreatedAt int64   `json:"createdAt"`
+	UpdatedAt int64   `json:"updatedAt"`
+	NextRun   int64   `json:"nextRun"` // ms; 0 = not scheduled
 }
 
 type ReportRun struct {
@@ -102,8 +105,18 @@ type ReportRun struct {
 var ErrReportExists = errors.New("a report with that name already exists")
 
 func (c *DB) migrateReports() error {
-	_, err := c.db.Exec(reportSchema)
-	return err
+	if _, err := c.db.Exec(reportSchema); err != nil {
+		return err
+	}
+	var n int
+	if err := c.db.QueryRow("SELECT count(*) FROM pragma_table_info('reports') WHERE name = 'channels'").Scan(&n); err != nil {
+		return err
+	}
+	if n == 0 {
+		_, err := c.db.Exec("ALTER TABLE reports ADD COLUMN channels TEXT NOT NULL DEFAULT '[]'")
+		return err
+	}
+	return nil
 }
 
 // ValidateReport checks and normalises r.
@@ -174,6 +187,14 @@ func ValidateReport(r *Report) error {
 		return errors.New("at most 50 recipients")
 	}
 	r.Recipients = strings.Join(to, ", ")
+	if r.Channels == nil {
+		r.Channels = []int64{}
+	}
+	slices.Sort(r.Channels)
+	r.Channels = slices.Compact(r.Channels)
+	if len(r.Channels) > 20 {
+		return errors.New("at most 20 channels")
+	}
 	if r.Keep == 0 {
 		r.Keep = 12
 	}
@@ -232,18 +253,22 @@ func NextReportRun(r Report, t time.Time, loc *time.Location) time.Time {
 	return time.Time{}
 }
 
-const reportCols = "id, name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, keep, created_by, created_at, updated_at, next_run"
+const reportCols = "id, name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, channels, keep, created_by, created_at, updated_at, next_run"
 
 func scanReport(row interface{ Scan(...any) error }) (Report, error) {
 	var r Report
-	var secs, filters string
+	var secs, filters, chans string
 	err := row.Scan(&r.ID, &r.Name, &r.Template, &secs, &r.Period, &filters, &r.Schedule, &r.Hour, &r.Weekday, &r.Monthday,
-		&r.Recipients, &r.Keep, &r.CreatedBy, &r.CreatedAt, &r.UpdatedAt, &r.NextRun)
+		&r.Recipients, &chans, &r.Keep, &r.CreatedBy, &r.CreatedAt, &r.UpdatedAt, &r.NextRun)
 	if err != nil {
 		return r, err
 	}
 	_ = json.Unmarshal([]byte(secs), &r.Sections)
 	_ = json.Unmarshal([]byte(filters), &r.Filters)
+	_ = json.Unmarshal([]byte(chans), &r.Channels)
+	if r.Channels == nil {
+		r.Channels = []int64{}
+	}
 	if r.Sections == nil {
 		r.Sections = []string{}
 	}
@@ -286,6 +311,7 @@ func (c *DB) SaveReport(r Report, now time.Time, loc *time.Location) (Report, er
 	}
 	secs, _ := json.Marshal(r.Sections)
 	filters, _ := json.Marshal(r.Filters)
+	chans, _ := json.Marshal(r.Channels)
 	next := int64(0)
 	if n := NextReportRun(r, now, loc); !n.IsZero() {
 		next = n.UnixMilli()
@@ -294,17 +320,17 @@ func (c *DB) SaveReport(r Report, now time.Time, loc *time.Location) (Report, er
 	var err error
 	if r.ID == 0 {
 		var res sql.Result
-		res, err = c.db.Exec(`INSERT INTO reports(name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, keep, created_by, created_at, updated_at, next_run)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, r.Keep, r.CreatedBy, ms, ms, next)
+		res, err = c.db.Exec(`INSERT INTO reports(name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, channels, keep, created_by, created_at, updated_at, next_run)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, string(chans), r.Keep, r.CreatedBy, ms, ms, next)
 		if err == nil {
 			r.ID, err = res.LastInsertId()
 		}
 	} else {
 		var res sql.Result
 		res, err = c.db.Exec(`UPDATE reports SET name = ?, template = ?, sections = ?, period = ?, filters = ?, schedule = ?, hour = ?, weekday = ?, monthday = ?,
-			recipients = ?, keep = ?, updated_at = ?, next_run = ? WHERE id = ?`,
-			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, r.Keep, ms, next, r.ID)
+			recipients = ?, channels = ?, keep = ?, updated_at = ?, next_run = ? WHERE id = ?`,
+			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, string(chans), r.Keep, ms, next, r.ID)
 		if err == nil {
 			if n, _ := res.RowsAffected(); n == 0 {
 				return r, ErrNotFound

@@ -15,6 +15,7 @@ single Go binary with a web UI.
 - GeoIP, ASN, MAC vendor and reverse DNS enrichment; names from NetBox
 - SNMP polling for interface names and speeds
 - Scheduled PDF reports by email
+- Webhook and Telegram notifications
 - Threat-feed matching (Spamhaus DROP, Feodo Tracker, FireHOL, or your own lists)
 - Sign-in with local accounts, OIDC, SAML, LDAP/AD or RADIUS, plus TOTP
 - Encrypted backups, scheduled to SMB, S3 or SFTP
@@ -43,6 +44,7 @@ how ClickHouse is configured.
 - [Features](docs/FEATURES.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Reports](docs/REPORTS.md)
+- [Notifications](docs/NOTIFICATIONS.md)
 - [Threat feeds](docs/THREAT-FEEDS.md)
 - [MCP](docs/MCP.md)
 - [Development](docs/DEVELOPMENT.md)

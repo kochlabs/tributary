@@ -19,10 +19,13 @@ them, everyone can preview them and download past runs.
   period once.
 - **Email to:** recipients of scheduled runs, as a PDF attachment. Needs
   **Configuration → Email**.
+- **Send to channels:** notification channels for scheduled runs and
+  failures ([NOTIFICATIONS.md](NOTIFICATIONS.md)); Telegram gets the PDF.
 - **Keep:** how many runs stay on the appliance (in `/var/lib/nfa/reports`).
 
-**Run now** makes a run immediately, optionally emailed. **Preview** renders
-the period as of now without keeping or sending anything. A failed scheduled
+**Run now** makes a run immediately, optionally emailed and sent to its
+channels. **Preview** renders the period as of now without keeping or
+sending anything. A failed scheduled
 run shows in the report's history and raises a notice.
 
 ## Sections worth knowing

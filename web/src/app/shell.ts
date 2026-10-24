@@ -14,7 +14,7 @@ import { TimeRangePicker } from './shared/time-range';
 /** Admin pages (/admin/<page>) in each sidebar group. */
 const NAV_GROUPS: Record<string, string[]> = {
   security: ['detections', 'threat-feeds'],
-  config: ['settings', 'local-networks', 'enrichment', 'inventory-sources', 'email'],
+  config: ['settings', 'local-networks', 'enrichment', 'inventory-sources', 'email', 'notifications'],
   access: ['users', 'identity-sources', 'api-tokens', 'audit'],
   appliance: ['updates', 'backup', 'certificates', 'time', 'services'],
 };
@@ -119,6 +119,7 @@ const NAV_GROUPS: Record<string, string[]> = {
                 <a clrVerticalNavLink routerLink="/admin/enrichment" routerLinkActive="active" i18n="@@nav.enrichment">Enrichment</a>
                 <a clrVerticalNavLink routerLink="/admin/inventory-sources" routerLinkActive="active" i18n="@@nav.inventorySources">Inventory Sources</a>
                 <a clrVerticalNavLink routerLink="/admin/email" routerLinkActive="active" i18n="@@nav.email">Email</a>
+                <a clrVerticalNavLink routerLink="/admin/notifications" routerLinkActive="active" i18n="@@nav.notifications">Notifications</a>
               </clr-vertical-nav-group-children>
             </clr-vertical-nav-group>
             <clr-vertical-nav-group routerLinkActive="active" [clrVerticalNavGroupExpanded]="groupOpen('access')" (clrVerticalNavGroupExpandedChange)="setGroupOpen('access', $event)">

@@ -73,6 +73,9 @@
   history. Scheduled backups to SMB/CIFS, S3-compatible storage or SFTP, with
   retention at both ends; encryption to an age public key lets the appliance
   write backups it cannot read.
+- Notification channels: signed webhooks (Standard Webhooks) and Telegram,
+  queued and retried; reports choose which channels they go to
+  ([NOTIFICATIONS.md](NOTIFICATIONS.md)).
 - Email through your SMTP server (STARTTLS, TLS or a plain relay; trusted CAs
   apply), with a test send; used by scheduled reports.
 - Notices for low disk space, OS updates, expiring certificates, silent

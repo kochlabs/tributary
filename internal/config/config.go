@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"net/netip"
+	"net/url"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -113,6 +114,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateInventory(); err != nil {
 		return nil, fmt.Errorf("inventory schema: %w", err)
 	}
+	if err := c.migrateChannels(); err != nil {
+		return nil, fmt.Errorf("notification schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}
@@ -131,7 +135,10 @@ type Settings struct {
 	IPFIXPort           int    `json:"ipfixPort"`
 	SFlowPort           int    `json:"sflowPort"`
 	ApplianceName       string `json:"applianceName"`
-	SessionHours        int    `json:"sessionHours"`
+	// PublicURL is how people reach the appliance (https://host), for links
+	// in notifications; empty leaves links out.
+	PublicURL    string `json:"publicUrl"`
+	SessionHours int    `json:"sessionHours"`
 	// RequireMFAAdmins makes administrators who sign in with a password set
 	// up two-factor authentication before they can continue.
 	RequireMFAAdmins bool     `json:"requireMfaAdmins"`
@@ -229,6 +236,11 @@ func (s Settings) Validate() error {
 	}
 	if strings.TrimSpace(s.ApplianceName) == "" {
 		return errors.New("appliance name is required")
+	}
+	if s.PublicURL != "" {
+		if u, err := url.Parse(s.PublicURL); err != nil || (u.Scheme != "https" && u.Scheme != "http") || u.Host == "" || u.Path != "" && u.Path != "/" {
+			return errors.New("the appliance address must be like https://tributary.example.com")
+		}
 	}
 	return nil
 }

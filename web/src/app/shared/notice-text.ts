@@ -70,6 +70,9 @@ import { Notice } from '../core/api';
       @case ('report-failed') {
         <ng-container i18n="@@notice.reportFailed">A scheduled report failed ({{ p['reports'] }}): {{ p['error'] }}</ng-container>
       }
+      @case ('channel-failing') {
+        <ng-container i18n="@@notice.channelFailing">Notifications aren't getting through ({{ p['channels'] }}): {{ p['error'] }}</ng-container>
+      }
       @default {
         {{ notice().message }}
       }
@@ -119,6 +122,8 @@ export function noticeActionLabel(n: Notice): string {
       return $localize`:@@nav.detections:Detections`;
     case 'report-failed':
       return $localize`:@@nav.reports:Reports`;
+    case 'channel-failing':
+      return $localize`:@@nav.notifications:Notifications`;
   }
   return n.action?.label ?? '';
 }

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage, Filters, Report, ReportRun } from '../core/api';
+import { Api, Channel, errorMessage, Filters, Report, ReportRun } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
@@ -63,6 +63,7 @@ const blank = (
   weekday: 1,
   monthday: 1,
   recipients: '',
+  channels: [],
   keep: 12,
 });
 
@@ -182,6 +183,9 @@ const blank = (
           <clr-dg-column i18n="@@reports.col.period">Period</clr-dg-column>
           <clr-dg-column i18n="@@reports.col.schedule">Schedule</clr-dg-column>
           <clr-dg-column i18n="@@reports.col.recipients">Email to</clr-dg-column>
+          @if (auth.isAdmin()) {
+            <clr-dg-column i18n="@@reports.col.channels">Send to</clr-dg-column>
+          }
           <clr-dg-column i18n="@@reports.col.lastRun">Last run</clr-dg-column>
           <clr-dg-row *clrDgItems="let r of l.reports; trackBy: byId" [clrDgItem]="r">
             <clr-dg-cell
@@ -212,6 +216,15 @@ const blank = (
                 <span class="muted">–</span>
               }
             </clr-dg-cell>
+            @if (auth.isAdmin()) {
+              <clr-dg-cell>
+                @for (n of channelNames(r); track $index) {
+                  <div>{{ n }}</div>
+                } @empty {
+                  <span class="muted">–</span>
+                }
+              </clr-dg-cell>
+            }
             <clr-dg-cell>
               @if (r.lastRun; as run) {
                 @if (run.status === 'ok') {
@@ -513,6 +526,40 @@ const blank = (
                 }
               </clr-control-helper>
             </clr-textarea-container>
+            <clr-checkbox-container>
+              <label i18n="@@reports.channels">Send to channels</label>
+              @for (c of channelList(); track c.id) {
+                <clr-checkbox-wrapper>
+                  <input
+                    type="checkbox"
+                    clrCheckbox
+                    [name]="'ch-' + c.id"
+                    [checked]="e.channels!.includes(c.id)"
+                    (change)="toggleChannel(e, c.id)"
+                  />
+                  <label
+                    >{{ c.name }}
+                    @if (!c.enabled) {
+                      <span class="muted" i18n="@@notify.disabled">disabled</span>
+                    }
+                  </label>
+                </clr-checkbox-wrapper>
+              }
+              <clr-control-helper>
+                @if (channelList().length) {
+                  <ng-container i18n="@@reports.channelsHelp"
+                    >Scheduled runs, and failures, are sent here too. Telegram gets the
+                    PDF.</ng-container
+                  >
+                } @else {
+                  <ng-container i18n="@@reports.noChannels"
+                    >No channels yet: add webhooks or Telegram under
+                    <a routerLink="/admin/notifications">Configuration → Notifications</a
+                    >.</ng-container
+                  >
+                }
+              </clr-control-helper>
+            </clr-checkbox-container>
             <clr-input-container>
               <label i18n="@@reports.keep">Keep</label>
               <input
@@ -572,11 +619,11 @@ const blank = (
         <p i18n="@@reports.runText">
           The report is generated for its period as of now and kept in its history.
         </p>
-        @if (confirmRun()?.recipients && list.value()?.emailEnabled) {
+        @if (canDeliver(confirmRun())) {
           <clr-checkbox-wrapper>
-            <input type="checkbox" clrCheckbox id="runEmail" [(ngModel)]="runEmail" />
-            <label for="runEmail" i18n="@@reports.runEmail"
-              >Also email it to {{ confirmRun()?.recipients }}</label
+            <input type="checkbox" clrCheckbox id="runDeliver" [(ngModel)]="runDeliver" />
+            <label for="runDeliver" i18n="@@reports.runDeliver"
+              >Also send it to its recipients and channels</label
             >
           </clr-checkbox-wrapper>
         }
@@ -749,7 +796,7 @@ export class Reports {
   readonly pageError = signal('');
   readonly info = signal('');
   readonly pdf = new PdfView(inject(DomSanitizer));
-  runEmail = true;
+  runDeliver = true;
 
   readonly templateIds = Object.keys(TEMPLATES);
   readonly periods = PERIODS;
@@ -761,6 +808,12 @@ export class Reports {
   readonly scheduledLabel = $localize`:@@reports.trigger.schedule:scheduled`;
   readonly manualLabel = $localize`:@@reports.trigger.manual:run now`;
   readonly allSections = computed(() => this.list.value()?.sections ?? Object.keys(SECTIONS));
+  /** Notification channels, for admins (the only ones who edit reports). */
+  readonly channels = loader(
+    () => (this.auth.isAdmin() ? true : undefined),
+    () => this.api.channels(),
+  );
+  readonly channelList = computed<Channel[]>(() => this.channels.value()?.channels ?? []);
   readonly hasRecipients = computed(() =>
     (this.list.value()?.reports ?? []).some((r) => r.recipients),
   );
@@ -777,6 +830,10 @@ export class Reports {
   pad = (n: number) => String(n).padStart(2, '0');
   kb = (n: number) => `${Math.max(1, Math.round(n / 1024))} KB`;
   filterCount = (r: Report) => Object.keys(r.filters ?? {}).length;
+  channelNames = (r: Report) =>
+    (r.channels ?? []).flatMap((id) => this.channelList().find((c) => c.id === id)?.name ?? []);
+  canDeliver = (r: Report | null) =>
+    !!r && ((!!r.recipients && !!this.list.value()?.emailEnabled) || !!r.channels?.length);
   recipientCount = (r: Report) => (r.recipients ? r.recipients.split(',').length : 0);
   fileName = (r: Report) => `${slug(r.name)}-${new Date().toISOString().slice(0, 10)}.pdf`;
 
@@ -809,7 +866,9 @@ export class Reports {
 
   openEdit(r?: Report, template: Report['template'] = 'summary') {
     const tpl = this.list.value()?.templates ?? {};
-    const e = r ? { ...r, sections: [...r.sections] } : blank(template, [...(tpl[template] ?? [])]);
+    const e = r
+      ? { ...r, sections: [...r.sections], channels: [...(r.channels ?? [])] }
+      : blank(template, [...(tpl[template] ?? [])]);
     this.editFilters.set({ ...(e.filters ?? {}) });
     this.editing.set(e);
     this.formError.set('');
@@ -834,6 +893,11 @@ export class Reports {
       if (match && !SCHEDULE_FOR[e.period!]) e.period = match;
     }
     e.schedule = s;
+  }
+
+  toggleChannel(e: Partial<Report>, id: number) {
+    const cur = e.channels ?? [];
+    e.channels = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id];
   }
 
   toggleSection(e: Partial<Report>, s: string) {
@@ -865,12 +929,14 @@ export class Reports {
     this.running.set(true);
     this.pageError.set('');
     try {
-      const res = await this.api.runReport(r.id, this.runEmail);
+      const res = await this.api.runReport(r.id, this.runDeliver && this.canDeliver(r));
       if (res.status === 'ok') {
         this.flash(
           res.emailed
             ? $localize`:@@reports.ranEmailed:${r.name}:name: was generated and emailed.`
-            : $localize`:@@reports.ran:${r.name}:name: was generated; it's in its history.`,
+            : this.runDeliver && r.channels.length
+              ? $localize`:@@reports.ranSent:${r.name}:name: was generated and sent to its channels.`
+              : $localize`:@@reports.ran:${r.name}:name: was generated; it's in its history.`,
         );
       } else {
         this.pageError.set(res.error ?? '');

@@ -29,6 +29,7 @@ export const routes: Routes = [
           { path: 'users', loadComponent: () => import('./pages/users').then((m) => m.Users), title: $localize`:@@nav.users:Users` },
           { path: 'local-networks', loadComponent: () => import('./pages/local-networks').then((m) => m.LocalNetworks), title: $localize`:@@nav.localNetworks:Local Networks` },
           { path: 'enrichment', loadComponent: () => import('./pages/enrichment').then((m) => m.EnrichmentPage), title: $localize`:@@nav.enrichment:Enrichment` },
+          { path: 'notifications', loadComponent: () => import('./pages/notifications').then((m) => m.Notifications), title: $localize`:@@nav.notifications:Notifications` },
           { path: 'inventory-sources', loadComponent: () => import('./pages/inventory-sources').then((m) => m.InventorySources), title: $localize`:@@nav.inventorySources:Inventory Sources` },
           { path: 'email', loadComponent: () => import('./pages/email').then((m) => m.EmailPage), title: $localize`:@@nav.email:Email` },
           { path: 'data-sources', redirectTo: 'enrichment' },

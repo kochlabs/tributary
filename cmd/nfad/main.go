@@ -28,6 +28,7 @@ import (
 	"github.com/kochlabs/tributary/internal/enrich"
 	"github.com/kochlabs/tributary/internal/flow"
 	"github.com/kochlabs/tributary/internal/inventory"
+	"github.com/kochlabs/tributary/internal/notify"
 	"github.com/kochlabs/tributary/internal/offsite"
 	"github.com/kochlabs/tributary/internal/snmp"
 	"github.com/kochlabs/tributary/internal/store"
@@ -249,7 +250,8 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	srv := &api.Server{
 		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop, Syslog: fwd, SNMP: poller,
 		Backups: &backup.Manager{Dir: dataDir, Version: version, Log: log, Snapshot: cfg.Snapshot,
-			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, Threats: threats, Inventory: inv, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
+			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, Threats: threats, Inventory: inv,
+		Notify: &notify.Dispatcher{Cfg: cfg, Log: log, Client: trust.Client, Agent: "Tributary/" + version}, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)
@@ -289,6 +291,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	}(srv.SyncThreatFeedNames())
 	go srv.RunReports(ctx)
 	go inv.Run(ctx)
+	go srv.Notify.Run(ctx)
 	srv.Scheduler = &offsite.Scheduler{Cfg: cfg, Backups: srv.Backups, Log: log, RootCAs: trust.Pool}
 	go srv.Scheduler.Run(ctx)
 

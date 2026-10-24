@@ -7,12 +7,14 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/kochlabs/tributary/internal/config"
 	"github.com/kochlabs/tributary/internal/mail"
+	"github.com/kochlabs/tributary/internal/notify"
 	"github.com/kochlabs/tributary/internal/report"
 	"github.com/kochlabs/tributary/internal/store"
 )
@@ -63,6 +65,11 @@ func (s *Server) reportSave(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	// Channels deleted since the editor loaded are dropped.
+	rep.Channels = slices.DeleteFunc(rep.Channels, func(id int64) bool {
+		_, err := s.Config.Channel(id)
+		return err != nil
+	})
 	saved, err := s.Config.SaveReport(rep, time.Now(), time.Local)
 	if err != nil {
 		code := http.StatusBadRequest
@@ -160,12 +167,12 @@ func (s *Server) reportRun(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req struct {
-		Email bool `json:"email"`
+		Deliver bool `json:"deliver"` // email it and send it to its channels
 	}
 	_ = readJSON(r, &req)
 	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Minute)
 	defer cancel()
-	run := s.runReport(ctx, rep, "manual", req.Email)
+	run := s.runReport(ctx, rep, "manual", req.Deliver)
 	s.Config.Audit(userFrom(r).Username, "report.run", rep.Name+": "+run.Status)
 	writeJSON(w, http.StatusOK, run)
 }
@@ -209,18 +216,24 @@ func (s *Server) removeReportFiles(files []string) {
 	}
 }
 
-// runReport renders rep for its period ending now, keeps the PDF, emails it
-// when email is set up and there are recipients (if email), and records the
-// run. Runs are serialized: they are heavy on the database.
-func (s *Server) runReport(ctx context.Context, rep config.Report, trigger string, email bool) config.ReportRun {
+// runReport renders rep for its period ending now, keeps the PDF, and when
+// deliver is set emails it to its recipients (if email is set up) and sends
+// it to its channels; it records the run. Runs are serialized: they are
+// heavy on the database.
+func (s *Server) runReport(ctx context.Context, rep config.Report, trigger string, deliver bool) config.ReportRun {
 	s.reportMu.Lock()
 	defer s.reportMu.Unlock()
 	now := time.Now()
 	from, to := config.ReportRange(rep.Period, now, time.Local)
 	run := config.ReportRun{ReportID: rep.ID, StartedAt: now.UnixMilli(), From: from.UnixMilli(), To: to.UnixMilli(), Trigger: trigger, Status: "ok"}
+	name := s.Config.Settings().ApplianceName
 	fail := func(err error) config.ReportRun {
 		run.Status, run.Error = "failed", err.Error()
 		s.Log.Warn("report failed", "report", rep.Name, "err", err)
+		if deliver {
+			s.Notify.Publish(notify.Event{Type: "report.failed", Level: "warning", Appliance: name, Title: rep.Name + " failed", Message: err.Error(),
+				URL: s.publicLink("/reports"), Data: map[string]any{"reportId": rep.ID, "trigger": trigger}}, rep.Channels)
+		}
 		return s.recordRun(run, rep.Keep)
 	}
 	pdf, err := s.renderReport(ctx, rep, from, to)
@@ -230,16 +243,21 @@ func (s *Server) runReport(ctx context.Context, rep config.Report, trigger strin
 	if err := os.MkdirAll(s.reportDir(), 0o750); err != nil {
 		return fail(err)
 	}
-	name := fmt.Sprintf("%d-%s.pdf", rep.ID, now.Format("20060102-150405"))
-	if err := os.WriteFile(s.reportPath(name), pdf, 0o640); err != nil {
+	file := fmt.Sprintf("%d-%s.pdf", rep.ID, now.Format("20060102-150405"))
+	if err := os.WriteFile(s.reportPath(file), pdf, 0o640); err != nil {
 		return fail(err)
 	}
-	run.File, run.Size = name, int64(len(pdf))
-	if rcpts := rep.RecipientList(); email && len(rcpts) > 0 {
+	run.File, run.Size = file, int64(len(pdf))
+	if rcpts := rep.RecipientList(); deliver && len(rcpts) > 0 {
 		if err := s.emailReport(ctx, rep, rcpts, from, to, pdf); err != nil {
 			return fail(fmt.Errorf("the report was made but not emailed: %w", err))
 		}
 		run.Emailed = strings.Join(rcpts, ", ")
+	}
+	if deliver {
+		s.Notify.Publish(notify.Event{Type: "report.completed", Level: "info", Appliance: name, Title: rep.Name, Message: periodLabel(from, to),
+			URL: s.publicLink("/reports"), Attachment: s.reportPath(run.File), AttachmentName: reportFileName(rep.Name, from),
+			Data: map[string]any{"reportId": rep.ID, "trigger": trigger, "from": from, "to": to, "size": run.Size}}, rep.Channels)
 	}
 	return s.recordRun(run, rep.Keep)
 }

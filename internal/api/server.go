@@ -23,6 +23,7 @@ import (
 	"github.com/kochlabs/tributary/internal/config"
 	"github.com/kochlabs/tributary/internal/enrich"
 	"github.com/kochlabs/tributary/internal/inventory"
+	"github.com/kochlabs/tributary/internal/notify"
 	"github.com/kochlabs/tributary/internal/offsite"
 	"github.com/kochlabs/tributary/internal/snmp"
 	"github.com/kochlabs/tributary/internal/store"
@@ -45,6 +46,7 @@ type Server struct {
 	Trust         *certs.TrustStore
 	Threats       *threat.Manager
 	Inventory     *inventory.Manager // nil-safe
+	Notify        *notify.Dispatcher // nil-safe
 	UI            fs.FS
 	Version       string
 	SourceURL     string
@@ -188,6 +190,13 @@ func (s *Server) Handler() http.Handler {
 	admin("GET /api/services", s.servicesList)
 	admin("POST /api/services/{unit}/{op}", s.serviceAction)
 	admin("GET /api/admin/result/{id}", s.adminResult)
+	admin("GET /api/channels", s.channelsList)
+	admin("POST /api/channels", s.channelSave)
+	admin("PUT /api/channels/{id}", s.channelSave)
+	admin("DELETE /api/channels/{id}", s.channelDelete)
+	admin("POST /api/channels/test", s.channelTest)
+	admin("POST /api/channels/{id}/secret", s.channelRegenerate)
+	admin("GET /api/channels/{id}/deliveries", s.channelDeliveries)
 	admin("GET /api/inventory-sources", s.inventorySources)
 	admin("POST /api/inventory-sources", s.inventorySourceSave)
 	admin("PUT /api/inventory-sources/{id}", s.inventorySourceSave)

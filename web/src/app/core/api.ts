@@ -333,6 +333,7 @@ export interface Settings {
   ipfixPort: number;
   sflowPort: number;
   applianceName: string;
+  publicUrl?: string;
   sessionHours: number;
   reverseDns: boolean;
   onlineAsnLookup: boolean;
@@ -367,6 +368,8 @@ export interface Report {
   weekday: number;
   monthday: number;
   recipients: string;
+  /** Notification channels each run is sent to. */
+  channels: number[];
   keep: number;
   createdBy: string;
   createdAt: number;
@@ -781,6 +784,36 @@ export interface InventoryRecord {
   services?: { name: string; protocol: string; ports: number[]; description?: string }[];
 }
 
+/** Where notifications go: a signed webhook or Telegram. */
+export interface Channel {
+  id: number;
+  name: string;
+  type: 'webhook' | 'telegram';
+  enabled: boolean;
+  url: string;
+  /** Write-only: a Telegram bot token; a new webhook's signing secret comes back once. */
+  secret?: string;
+  hasSecret: boolean;
+  chatId: string;
+  lastSuccess: number;
+  lastError: string;
+  failingSince: number;
+  createdAt: number;
+}
+
+export interface Delivery {
+  id: number;
+  channelId: number;
+  eventId: string;
+  eventType: string;
+  status: 'pending' | 'delivered' | 'failed';
+  attempts: number;
+  nextAttempt: number;
+  lastError?: string;
+  createdAt: number;
+  doneAt: number;
+}
+
 /** A read-only connection to an inventory (NetBox). */
 export interface InventorySource {
   id: number;
@@ -1136,6 +1169,28 @@ export class Api {
   deleteApiToken(id: number) {
     return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
   }
+  channels() {
+    return this.get<{ channels: Channel[]; publicUrl: string }>('/api/channels');
+  }
+  saveChannel(c: Partial<Channel>) {
+    return firstValueFrom(
+      c.id
+        ? this.http.put<Channel>(`/api/channels/${c.id}`, c)
+        : this.http.post<Channel>('/api/channels', c),
+    );
+  }
+  deleteChannel(id: number) {
+    return firstValueFrom(this.http.delete(`/api/channels/${id}`));
+  }
+  testChannel(c: Partial<Channel>) {
+    return firstValueFrom(this.http.post<{ ok: boolean; error?: string }>('/api/channels/test', c));
+  }
+  regenerateChannelSecret(id: number) {
+    return firstValueFrom(this.http.post<{ secret: string }>(`/api/channels/${id}/secret`, {}));
+  }
+  channelDeliveries(id: number) {
+    return this.get<Delivery[]>(`/api/channels/${id}/deliveries`);
+  }
   inventorySources() {
     return this.get<InventorySource[]>('/api/inventory-sources');
   }
@@ -1179,8 +1234,9 @@ export class Api {
   deleteReport(id: number) {
     return firstValueFrom(this.http.delete(`/api/reports/${id}`));
   }
-  runReport(id: number, email: boolean) {
-    return firstValueFrom(this.http.post<ReportRun>(`/api/reports/${id}/run`, { email }));
+  /** Runs a report now; deliver also emails it and sends it to its channels. */
+  runReport(id: number, deliver: boolean) {
+    return firstValueFrom(this.http.post<ReportRun>(`/api/reports/${id}/run`, { deliver }));
   }
   reportRuns(id: number) {
     return this.get<ReportRun[]>(`/api/reports/${id}/runs`);

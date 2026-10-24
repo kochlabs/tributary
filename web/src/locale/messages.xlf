@@ -55,7 +55,7 @@
         <note category="location">src/app/app.routes.ts:18</note>
         <note category="location">src/app/pages/exporter-detail.ts:19</note>
         <note category="location">src/app/pages/exporters.ts:18,19</note>
-        <note category="location">src/app/shared/notice-text.ts:99</note>
+        <note category="location">src/app/shared/notice-text.ts:102</note>
         <note category="location">src/app/shell.ts:108,109</note>
       </notes>
       <segment>
@@ -73,8 +73,8 @@
     <unit id="nav.reports">
       <notes>
         <note category="location">src/app/app.routes.ts:20</note>
-        <note category="location">src/app/pages/reports.ts:76,77</note>
-        <note category="location">src/app/shared/notice-text.ts:121</note>
+        <note category="location">src/app/pages/reports.ts:77,78</note>
+        <note category="location">src/app/shared/notice-text.ts:124</note>
         <note category="location">src/app/shell.ts:95,96</note>
       </notes>
       <segment>
@@ -85,7 +85,7 @@
       <notes>
         <note category="location">src/app/app.routes.ts:21</note>
         <note category="location">src/app/pages/detections.ts:30,31</note>
-        <note category="location">src/app/shared/notice-text.ts:119</note>
+        <note category="location">src/app/shared/notice-text.ts:122</note>
         <note category="location">src/app/shell.ts:101,102</note>
       </notes>
       <segment>
@@ -126,8 +126,8 @@
       <notes>
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
-        <note category="location">src/app/shared/notice-text.ts:110</note>
-        <note category="location">src/app/shell.ts:128,129</note>
+        <note category="location">src/app/shared/notice-text.ts:113</note>
+        <note category="location">src/app/shell.ts:129,130</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -147,16 +147,27 @@
       <notes>
         <note category="location">src/app/app.routes.ts:31</note>
         <note category="location">src/app/pages/enrichment.ts:78,79</note>
-        <note category="location">src/app/shared/notice-text.ts:114</note>
+        <note category="location">src/app/shared/notice-text.ts:117</note>
         <note category="location">src/app/shell.ts:119,120</note>
       </notes>
       <segment>
         <source>Enrichment</source>
       </segment>
     </unit>
-    <unit id="nav.inventorySources">
+    <unit id="nav.notifications">
       <notes>
         <note category="location">src/app/app.routes.ts:32</note>
+        <note category="location">src/app/pages/notifications.ts:47,48</note>
+        <note category="location">src/app/shared/notice-text.ts:126</note>
+        <note category="location">src/app/shell.ts:122,123</note>
+      </notes>
+      <segment>
+        <source>Notifications</source>
+      </segment>
+    </unit>
+    <unit id="nav.inventorySources">
+      <notes>
+        <note category="location">src/app/app.routes.ts:33</note>
         <note category="location">src/app/pages/inventory-sources.ts:41,42</note>
         <note category="location">src/app/shell.ts:120,121</note>
       </notes>
@@ -166,7 +177,7 @@
     </unit>
     <unit id="nav.email">
       <notes>
-        <note category="location">src/app/app.routes.ts:33</note>
+        <note category="location">src/app/app.routes.ts:34</note>
         <note category="location">src/app/pages/email.ts:15,16</note>
         <note category="location">src/app/shell.ts:121,122</note>
       </notes>
@@ -176,10 +187,10 @@
     </unit>
     <unit id="nav.backup">
       <notes>
-        <note category="location">src/app/app.routes.ts:35</note>
+        <note category="location">src/app/app.routes.ts:36</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
-        <note category="location">src/app/shared/notice-text.ts:117</note>
-        <note category="location">src/app/shell.ts:139,140</note>
+        <note category="location">src/app/shared/notice-text.ts:120</note>
+        <note category="location">src/app/shell.ts:140,141</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -187,10 +198,10 @@
     </unit>
     <unit id="nav.certificates">
       <notes>
-        <note category="location">src/app/app.routes.ts:36</note>
+        <note category="location">src/app/app.routes.ts:37</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
-        <note category="location">src/app/shared/notice-text.ts:108</note>
-        <note category="location">src/app/shell.ts:140,141</note>
+        <note category="location">src/app/shared/notice-text.ts:111</note>
+        <note category="location">src/app/shell.ts:141,142</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -198,9 +209,9 @@
     </unit>
     <unit id="nav.identitySources">
       <notes>
-        <note category="location">src/app/app.routes.ts:37</note>
+        <note category="location">src/app/app.routes.ts:38</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
-        <note category="location">src/app/shell.ts:129,130</note>
+        <note category="location">src/app/shell.ts:130,131</note>
       </notes>
       <segment>
         <source>Identity Sources</source>
@@ -208,9 +219,9 @@
     </unit>
     <unit id="nav.updates">
       <notes>
-        <note category="location">src/app/app.routes.ts:38</note>
+        <note category="location">src/app/app.routes.ts:39</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:138,139</note>
+        <note category="location">src/app/shell.ts:139,140</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -218,9 +229,9 @@
     </unit>
     <unit id="nav.time">
       <notes>
-        <note category="location">src/app/app.routes.ts:39</note>
+        <note category="location">src/app/app.routes.ts:40</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:142</note>
+        <note category="location">src/app/shell.ts:143</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -228,9 +239,9 @@
     </unit>
     <unit id="nav.services">
       <notes>
-        <note category="location">src/app/app.routes.ts:40</note>
+        <note category="location">src/app/app.routes.ts:41</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:142,143</note>
+        <note category="location">src/app/shell.ts:143,144</note>
       </notes>
       <segment>
         <source>Services</source>
@@ -238,9 +249,9 @@
     </unit>
     <unit id="nav.apiTokens">
       <notes>
-        <note category="location">src/app/app.routes.ts:41</note>
+        <note category="location">src/app/app.routes.ts:42</note>
         <note category="location">src/app/pages/api-tokens.ts:17,18</note>
-        <note category="location">src/app/shell.ts:130,131</note>
+        <note category="location">src/app/shell.ts:131,132</note>
       </notes>
       <segment>
         <source>API Tokens</source>
@@ -248,8 +259,8 @@
     </unit>
     <unit id="nav.audit">
       <notes>
-        <note category="location">src/app/app.routes.ts:42</note>
-        <note category="location">src/app/shell.ts:131,132</note>
+        <note category="location">src/app/app.routes.ts:43</note>
+        <note category="location">src/app/shell.ts:132,133</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -257,7 +268,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:870</note>
+        <note category="location">src/app/core/api.ts:903</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -2015,7 +2026,8 @@
         <note category="location">src/app/pages/audit.ts:17,18</note>
         <note category="location">src/app/pages/identity-sources.ts:88</note>
         <note category="location">src/app/pages/inventory-sources.ts:98</note>
-        <note category="location">src/app/pages/reports.ts:169</note>
+        <note category="location">src/app/pages/notifications.ts:117</note>
+        <note category="location">src/app/pages/reports.ts:170</note>
         <note category="location">src/app/pages/services.ts:26,27</note>
         <note category="location">src/app/pages/threat-feeds.ts:45</note>
         <note category="location">src/app/pages/time.ts:20,21</note>
@@ -2219,9 +2231,13 @@
         <note category="location">src/app/pages/inventory-sources.ts:210,212</note>
         <note category="location">src/app/pages/inventory-sources.ts:439,441</note>
         <note category="location">src/app/pages/inventory-sources.ts:474,476</note>
-        <note category="location">src/app/pages/reports.ts:550,552</note>
-        <note category="location">src/app/pages/reports.ts:591,593</note>
-        <note category="location">src/app/pages/reports.ts:615,617</note>
+        <note category="location">src/app/pages/notifications.ts:251,253</note>
+        <note category="location">src/app/pages/notifications.ts:414,416</note>
+        <note category="location">src/app/pages/notifications.ts:473,475</note>
+        <note category="location">src/app/pages/notifications.ts:502,504</note>
+        <note category="location">src/app/pages/reports.ts:597,599</note>
+        <note category="location">src/app/pages/reports.ts:638,640</note>
+        <note category="location">src/app/pages/reports.ts:662,664</note>
         <note category="location">src/app/pages/services.ts:84,85</note>
         <note category="location">src/app/pages/threat-feeds.ts:170,171</note>
         <note category="location">src/app/pages/threat-feeds.ts:179,180</note>
@@ -2231,7 +2247,7 @@
         <note category="location">src/app/pages/users.ts:138,139</note>
         <note category="location">src/app/shared/filter-bar.ts:37,39</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:176,177</note>
+        <note category="location">src/app/shell.ts:177,178</note>
       </notes>
       <segment>
         <source>Cancel</source>
@@ -2258,6 +2274,7 @@
         <note category="location">src/app/pages/api-tokens.ts:149</note>
         <note category="location">src/app/pages/backup-schedule.ts:412</note>
         <note category="location">src/app/pages/identity-sources.ts:602</note>
+        <note category="location">src/app/pages/notifications.ts:645</note>
       </notes>
       <segment>
         <source>Copy</source>
@@ -2268,6 +2285,7 @@
         <note category="location">src/app/pages/api-tokens.ts:150</note>
         <note category="location">src/app/pages/backup-schedule.ts:413</note>
         <note category="location">src/app/pages/identity-sources.ts:603</note>
+        <note category="location">src/app/pages/notifications.ts:646</note>
       </notes>
       <segment>
         <source>Copied</source>
@@ -2893,7 +2911,8 @@
         <note category="location">src/app/pages/identity-sources.ts:508,510</note>
         <note category="location">src/app/pages/inventory-sources.ts:449,450</note>
         <note category="location">src/app/pages/local-networks.ts:107,109</note>
-        <note category="location">src/app/pages/reports.ts:560,561</note>
+        <note category="location">src/app/pages/notifications.ts:424,425</note>
+        <note category="location">src/app/pages/reports.ts:607,608</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/threat-feeds.ts:171,173</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
@@ -5267,7 +5286,7 @@
         <note category="location">src/app/pages/enrichment.ts:495,496</note>
         <note category="location">src/app/pages/enrichment.ts:622,623</note>
         <note category="location">src/app/pages/local-networks.ts:116,118</note>
-        <note category="location">src/app/pages/settings.ts:130,132</note>
+        <note category="location">src/app/pages/settings.ts:270,271</note>
       </notes>
       <segment>
         <source> Revert </source>
@@ -5290,6 +5309,7 @@
         <note category="location">src/app/pages/email.ts:293</note>
         <note category="location">src/app/pages/enrichment.ts:761</note>
         <note category="location">src/app/pages/inventory-sources.ts:600</note>
+        <note category="location">src/app/pages/notifications.ts:643</note>
       </notes>
       <segment>
         <source>Stored · leave empty to keep</source>
@@ -5840,7 +5860,7 @@
       <notes>
         <note category="location">src/app/pages/enrichment.ts:957</note>
         <note category="location">src/app/pages/local-networks.ts:239</note>
-        <note category="location">src/app/pages/settings.ts:198</note>
+        <note category="location">src/app/pages/settings.ts:387</note>
       </notes>
       <segment>
         <source>Fix the highlighted entries first: <ph id="0" equiv="entries" disp="bad.join(&apos;, &apos;)"/></source>
@@ -8075,7 +8095,7 @@
       <notes>
         <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
-        <note category="location">src/app/shell.ts:209,211</note>
+        <note category="location">src/app/shell.ts:210,212</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -8828,6 +8848,427 @@
         <source>You have <ph id="0" equiv="count" disp="r.recoveryLeft"/> recovery codes left. Set up two-factor authentication again from the user menu to get new ones.</source>
       </segment>
     </unit>
+    <unit id="notify.webhookDescription">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:16</note>
+      </notes>
+      <segment>
+        <source>JSON to any URL, signed per the Standard Webhooks spec: SIEMs, automation tools, your own scripts.</source>
+      </segment>
+    </unit>
+    <unit id="notify.telegramDescription">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:21</note>
+      </notes>
+      <segment>
+        <source>Messages from your own bot to you or a group; reports arrive as PDFs.</source>
+      </segment>
+    </unit>
+    <unit id="notify.event.reportCompleted">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:26</note>
+      </notes>
+      <segment>
+        <source>A report run completes</source>
+      </segment>
+    </unit>
+    <unit id="notify.event.reportFailed">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:27</note>
+      </notes>
+      <segment>
+        <source>A report run fails</source>
+      </segment>
+    </unit>
+    <unit id="notify.event.test">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:28</note>
+      </notes>
+      <segment>
+        <source>Test</source>
+      </segment>
+    </unit>
+    <unit id="notify.subtitle2">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:49,51</note>
+      </notes>
+      <segment>
+        <source> Where notifications go: webhooks and Telegram. Reports choose their channels. Delivered in the background and retried for a day. </source>
+      </segment>
+    </unit>
+    <unit id="notify.noPublicUrl">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:78,79</note>
+      </notes>
+      <segment>
+        <source>Messages have no links back to Tributary until its address is set under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/settings&quot;&gt;" dispEnd="&lt;/a&gt;">Configuration → Settings</pc>.</source>
+      </segment>
+    </unit>
+    <unit id="notify.add">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:89,90</note>
+      </notes>
+      <segment>
+        <source>Add channel</source>
+      </segment>
+    </unit>
+    <unit id="notify.edit">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:93,94</note>
+      </notes>
+      <segment>
+        <source>Edit</source>
+      </segment>
+    </unit>
+    <unit id="notify.sendTest">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:102,103</note>
+        <note category="location">src/app/pages/notifications.ts:406,408</note>
+      </notes>
+      <segment>
+        <source>Send test</source>
+      </segment>
+    </unit>
+    <unit id="notify.delete">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:110,111</note>
+        <note category="location">src/app/pages/notifications.ts:505,507</note>
+      </notes>
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="notify.name">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:130,131</note>
+        <note category="location">src/app/pages/notifications.ts:278,279</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="notify.type">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:131,132</note>
+      </notes>
+      <segment>
+        <source>Type</source>
+      </segment>
+    </unit>
+    <unit id="notify.destination">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:132,133</note>
+      </notes>
+      <segment>
+        <source>Destination</source>
+      </segment>
+    </unit>
+    <unit id="notify.status">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:133,134</note>
+      </notes>
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="notify.disabled">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:141,143</note>
+        <note category="location">src/app/pages/reports.ts:543,545</note>
+      </notes>
+      <segment>
+        <source>disabled</source>
+      </segment>
+    </unit>
+    <unit id="notify.lastSent">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:155,156</note>
+      </notes>
+      <segment>
+        <source>sent <ph id="0" equiv="INTERPOLATION" disp="{{ ago(c.lastSuccess) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="notify.nothingYet">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:157,159</note>
+      </notes>
+      <segment>
+        <source>nothing sent yet</source>
+      </segment>
+    </unit>
+    <unit id="notify.placeholder">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:162,164</note>
+      </notes>
+      <segment>
+        <source>No channels. Add a webhook or Telegram to hear about notices and reports.</source>
+      </segment>
+    </unit>
+    <unit id="notify.recent">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:170,171</note>
+      </notes>
+      <segment>
+        <source>Recent deliveries</source>
+      </segment>
+    </unit>
+    <unit id="notify.col.when">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:177,178</note>
+      </notes>
+      <segment>
+        <source>Queued</source>
+      </segment>
+    </unit>
+    <unit id="notify.col.event">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:178,179</note>
+      </notes>
+      <segment>
+        <source>Event</source>
+      </segment>
+    </unit>
+    <unit id="notify.col.result">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:179,181</note>
+      </notes>
+      <segment>
+        <source>Result</source>
+      </segment>
+    </unit>
+    <unit id="notify.delivered">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:191,192</note>
+      </notes>
+      <segment>
+        <source>delivered</source>
+      </segment>
+    </unit>
+    <unit id="notify.afterAttempts">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:194,195</note>
+      </notes>
+      <segment>
+        <source>after <ph id="0" equiv="INTERPOLATION" disp="{{ d.attempts }}"/> attempts</source>
+      </segment>
+    </unit>
+    <unit id="notify.retrying">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:201,202</note>
+      </notes>
+      <segment>
+        <source>retrying <ph id="0" equiv="INTERPOLATION" disp="{{ dt(d.nextAttempt) }}"/></source>
+      </segment>
+    </unit>
+    <unit id="notify.noDeliveries">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:217,218</note>
+      </notes>
+      <segment>
+        <source> Nothing sent through this channel yet. </source>
+      </segment>
+    </unit>
+    <unit id="notify.addTitle">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:233,234</note>
+      </notes>
+      <segment>
+        <source>Add notification channel</source>
+      </segment>
+    </unit>
+    <unit id="notify.editTypeTitle">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:266,267</note>
+      </notes>
+      <segment>
+        <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(editing()?.type) }}"/> channel</source>
+      </segment>
+    </unit>
+    <unit id="notify.addTypeTitle">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:270,271</note>
+      </notes>
+      <segment>
+        <source>Add <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(editing()?.type) }}"/> channel</source>
+      </segment>
+    </unit>
+    <unit id="notify.statusLabel">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:282,283</note>
+      </notes>
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="notify.enabled">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:285,286</note>
+      </notes>
+      <segment>
+        <source>Enabled</source>
+      </segment>
+    </unit>
+    <unit id="notify.destinationSection">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:289,291</note>
+      </notes>
+      <segment>
+        <source>Destination</source>
+      </segment>
+    </unit>
+    <unit id="notify.url">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:293,294</note>
+      </notes>
+      <segment>
+        <source>URL</source>
+      </segment>
+    </unit>
+    <unit id="notify.urlHelp">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:305,306</note>
+      </notes>
+      <segment>
+        <source>Receives a JSON POST per event. HTTPS certificates are checked against the system CAs and those under Appliance → Certificates.</source>
+      </segment>
+    </unit>
+    <unit id="notify.signing">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:311,313</note>
+      </notes>
+      <segment>
+        <source>Signing</source>
+      </segment>
+    </unit>
+    <unit id="notify.regenerate">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:321,322</note>
+        <note category="location">src/app/pages/notifications.ts:481,483</note>
+      </notes>
+      <segment>
+        <source> Regenerate secret </source>
+      </segment>
+    </unit>
+    <unit id="notify.signingHelp">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:325,327</note>
+      </notes>
+      <segment>
+        <source>Each request carries webhook-id, webhook-timestamp and webhook-signature headers (Standard Webhooks): verify them with any Standard Webhooks library and the secret. The secret is shown once, when the channel is created.</source>
+      </segment>
+    </unit>
+    <unit id="notify.botToken">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:334,335</note>
+      </notes>
+      <segment>
+        <source>Bot token</source>
+      </segment>
+    </unit>
+    <unit id="notify.botTokenHelp">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:344,345</note>
+      </notes>
+      <segment>
+        <source>Create a bot with @BotFather in Telegram and paste its token. Stored encrypted.</source>
+      </segment>
+    </unit>
+    <unit id="notify.chatId">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:349,350</note>
+      </notes>
+      <segment>
+        <source>Chat ID</source>
+      </segment>
+    </unit>
+    <unit id="notify.chatIdHelp">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:359,360</note>
+      </notes>
+      <segment>
+        <source>Send your bot a message, then open api.telegram.org/bot&lt;token&gt;/getUpdates and use message.chat.id. Groups have negative IDs.</source>
+      </segment>
+    </unit>
+    <unit id="notify.testOk">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:372,373</note>
+      </notes>
+      <segment>
+        <source>Test sent.</source>
+      </segment>
+    </unit>
+    <unit id="notify.secretTitle">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:436,437</note>
+      </notes>
+      <segment>
+        <source>Signing secret</source>
+      </segment>
+    </unit>
+    <unit id="notify.secretText">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:439,441</note>
+      </notes>
+      <segment>
+        <source> Copy it into the receiving side now: it won&apos;t be shown again. </source>
+      </segment>
+    </unit>
+    <unit id="notify.done">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:450,451</note>
+      </notes>
+      <segment>
+        <source> Done </source>
+      </segment>
+    </unit>
+    <unit id="notify.regenTitle">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:460,461</note>
+      </notes>
+      <segment>
+        <source>Regenerate the signing secret?</source>
+      </segment>
+    </unit>
+    <unit id="notify.regenText">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:463,465</note>
+      </notes>
+      <segment>
+        <source> The receiving side rejects deliveries until it has the new secret. </source>
+      </segment>
+    </unit>
+    <unit id="notify.deleteTitle">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:491,492</note>
+      </notes>
+      <segment>
+        <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>?</source>
+      </segment>
+    </unit>
+    <unit id="notify.deleteText">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:493,495</note>
+      </notes>
+      <segment>
+        <source>Nothing more is sent to it; queued deliveries are dropped.</source>
+      </segment>
+    </unit>
+    <unit id="notify.chat">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:644</note>
+      </notes>
+      <segment>
+        <source>chat</source>
+      </segment>
+    </unit>
+    <unit id="notify.testSentTo">
+      <notes>
+        <note category="location">src/app/pages/notifications.ts:708</note>
+      </notes>
+      <segment>
+        <source>Test sent to <ph id="0" equiv="name" disp="c.name"/>.</source>
+      </segment>
+    </unit>
     <unit id="reports.template.summary">
       <notes>
         <note category="location">src/app/pages/reports.ts:13</note>
@@ -9030,7 +9471,7 @@
     </unit>
     <unit id="reports.subtitle3">
       <notes>
-        <note category="location">src/app/pages/reports.ts:78,80</note>
+        <note category="location">src/app/pages/reports.ts:79,81</note>
       </notes>
       <segment>
         <source> PDF reports generated on the appliance, on demand or on a schedule. </source>
@@ -9038,7 +9479,7 @@
     </unit>
     <unit id="reports.none">
       <notes>
-        <note category="location">src/app/pages/reports.ts:107,108</note>
+        <note category="location">src/app/pages/reports.ts:108,109</note>
       </notes>
       <segment>
         <source>No reports yet.</source>
@@ -9046,7 +9487,7 @@
     </unit>
     <unit id="reports.createSummary">
       <notes>
-        <note category="location">src/app/pages/reports.ts:115,116</note>
+        <note category="location">src/app/pages/reports.ts:116,117</note>
       </notes>
       <segment>
         <source> Create a network summary </source>
@@ -9054,7 +9495,7 @@
     </unit>
     <unit id="reports.createSecurity">
       <notes>
-        <note category="location">src/app/pages/reports.ts:122,123</note>
+        <note category="location">src/app/pages/reports.ts:123,124</note>
       </notes>
       <segment>
         <source> Create a security digest </source>
@@ -9062,7 +9503,7 @@
     </unit>
     <unit id="reports.askAdmin">
       <notes>
-        <note category="location">src/app/pages/reports.ts:126,128</note>
+        <note category="location">src/app/pages/reports.ts:127,129</note>
       </notes>
       <segment>
         <source>An administrator can set reports up.</source>
@@ -9070,7 +9511,7 @@
     </unit>
     <unit id="reports.new">
       <notes>
-        <note category="location">src/app/pages/reports.ts:136,137</note>
+        <note category="location">src/app/pages/reports.ts:137,138</note>
       </notes>
       <segment>
         <source>New report</source>
@@ -9078,7 +9519,7 @@
     </unit>
     <unit id="reports.edit">
       <notes>
-        <note category="location">src/app/pages/reports.ts:144,145</note>
+        <note category="location">src/app/pages/reports.ts:145,146</note>
       </notes>
       <segment>
         <source>Edit</source>
@@ -9086,8 +9527,8 @@
     </unit>
     <unit id="reports.runNow">
       <notes>
-        <note category="location">src/app/pages/reports.ts:153,154</note>
-        <note category="location">src/app/pages/reports.ts:594,596</note>
+        <note category="location">src/app/pages/reports.ts:154,155</note>
+        <note category="location">src/app/pages/reports.ts:641,643</note>
       </notes>
       <segment>
         <source>Run now</source>
@@ -9095,8 +9536,8 @@
     </unit>
     <unit id="reports.delete">
       <notes>
-        <note category="location">src/app/pages/reports.ts:161,162</note>
-        <note category="location">src/app/pages/reports.ts:618,620</note>
+        <note category="location">src/app/pages/reports.ts:162,163</note>
+        <note category="location">src/app/pages/reports.ts:665,667</note>
       </notes>
       <segment>
         <source>Delete</source>
@@ -9104,8 +9545,8 @@
     </unit>
     <unit id="reports.col.name">
       <notes>
-        <note category="location">src/app/pages/reports.ts:181,182</note>
-        <note category="location">src/app/pages/reports.ts:368,370</note>
+        <note category="location">src/app/pages/reports.ts:182,183</note>
+        <note category="location">src/app/pages/reports.ts:381,383</note>
       </notes>
       <segment>
         <source>Name</source>
@@ -9113,8 +9554,8 @@
     </unit>
     <unit id="reports.col.period">
       <notes>
-        <note category="location">src/app/pages/reports.ts:182,183</note>
-        <note category="location">src/app/pages/reports.ts:407,409</note>
+        <note category="location">src/app/pages/reports.ts:183,184</note>
+        <note category="location">src/app/pages/reports.ts:420,422</note>
       </notes>
       <segment>
         <source>Period</source>
@@ -9122,8 +9563,8 @@
     </unit>
     <unit id="reports.col.schedule">
       <notes>
-        <note category="location">src/app/pages/reports.ts:183,184</note>
-        <note category="location">src/app/pages/reports.ts:431,433</note>
+        <note category="location">src/app/pages/reports.ts:184,185</note>
+        <note category="location">src/app/pages/reports.ts:444,446</note>
       </notes>
       <segment>
         <source>Schedule</source>
@@ -9131,16 +9572,24 @@
     </unit>
     <unit id="reports.col.recipients">
       <notes>
-        <note category="location">src/app/pages/reports.ts:184,185</note>
-        <note category="location">src/app/pages/reports.ts:493,495</note>
+        <note category="location">src/app/pages/reports.ts:185,186</note>
+        <note category="location">src/app/pages/reports.ts:506,508</note>
       </notes>
       <segment>
         <source>Email to</source>
       </segment>
     </unit>
+    <unit id="reports.col.channels">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:187,189</note>
+      </notes>
+      <segment>
+        <source>Send to</source>
+      </segment>
+    </unit>
     <unit id="reports.col.lastRun">
       <notes>
-        <note category="location">src/app/pages/reports.ts:185,186</note>
+        <note category="location">src/app/pages/reports.ts:189,190</note>
       </notes>
       <segment>
         <source>Last run</source>
@@ -9148,7 +9597,7 @@
     </unit>
     <unit id="reports.filtered">
       <notes>
-        <note category="location">src/app/pages/reports.ts:192,193</note>
+        <note category="location">src/app/pages/reports.ts:196,197</note>
       </notes>
       <segment>
         <source>filtered</source>
@@ -9156,7 +9605,7 @@
     </unit>
     <unit id="reports.next">
       <notes>
-        <note category="location">src/app/pages/reports.ts:200,201</note>
+        <note category="location">src/app/pages/reports.ts:204,205</note>
       </notes>
       <segment>
         <source>next <ph id="0" equiv="INTERPOLATION" disp="{{ dt(r.nextRun) }}"/></source>
@@ -9164,7 +9613,7 @@
     </unit>
     <unit id="reports.recipients">
       <notes>
-        <note category="location">src/app/pages/reports.ts:206,209</note>
+        <note category="location">src/app/pages/reports.ts:210,213</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 recipient} other {<ph id="0" equiv="INTERPOLATION"/> recipients}}</source>
@@ -9172,7 +9621,7 @@
     </unit>
     <unit id="reports.never">
       <notes>
-        <note category="location">src/app/pages/reports.ts:228,230</note>
+        <note category="location">src/app/pages/reports.ts:241,243</note>
       </notes>
       <segment>
         <source>never</source>
@@ -9180,7 +9629,7 @@
     </unit>
     <unit id="reports.placeholder">
       <notes>
-        <note category="location">src/app/pages/reports.ts:232,233</note>
+        <note category="location">src/app/pages/reports.ts:245,246</note>
       </notes>
       <segment>
         <source>No reports.</source>
@@ -9188,7 +9637,7 @@
     </unit>
     <unit id="reports.emailOff">
       <notes>
-        <note category="location">src/app/pages/reports.ts:238,239</note>
+        <note category="location">src/app/pages/reports.ts:251,252</note>
       </notes>
       <segment>
         <source>Email is turned off, so reports aren&apos;t sent; they are still kept here. Set it up under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/email&quot;&gt;" dispEnd="&lt;/a&gt;">Configuration → Email</pc>.</source>
@@ -9196,7 +9645,7 @@
     </unit>
     <unit id="reports.preview">
       <notes>
-        <note category="location">src/app/pages/reports.ts:256,257</note>
+        <note category="location">src/app/pages/reports.ts:269,270</note>
       </notes>
       <segment>
         <source> Preview </source>
@@ -9204,7 +9653,7 @@
     </unit>
     <unit id="reports.history">
       <notes>
-        <note category="location">src/app/pages/reports.ts:265,266</note>
+        <note category="location">src/app/pages/reports.ts:278,279</note>
       </notes>
       <segment>
         <source> History </source>
@@ -9212,7 +9661,7 @@
     </unit>
     <unit id="reports.generating">
       <notes>
-        <note category="location">src/app/pages/reports.ts:275,277</note>
+        <note category="location">src/app/pages/reports.ts:288,290</note>
       </notes>
       <segment>
         <source>Generating the report… longer periods take a while.</source>
@@ -9220,7 +9669,7 @@
     </unit>
     <unit id="reports.previewHint">
       <notes>
-        <note category="location">src/app/pages/reports.ts:288,290</note>
+        <note category="location">src/app/pages/reports.ts:301,303</note>
       </notes>
       <segment>
         <source>The period as of now; nothing is kept or sent.</source>
@@ -9228,7 +9677,7 @@
     </unit>
     <unit id="reports.download">
       <notes>
-        <note category="location">src/app/pages/reports.ts:296,297</note>
+        <note category="location">src/app/pages/reports.ts:309,310</note>
       </notes>
       <segment>
         <source>Download PDF</source>
@@ -9236,7 +9685,7 @@
     </unit>
     <unit id="reports.run.when">
       <notes>
-        <note category="location">src/app/pages/reports.ts:305</note>
+        <note category="location">src/app/pages/reports.ts:318</note>
       </notes>
       <segment>
         <source>Run</source>
@@ -9244,7 +9693,7 @@
     </unit>
     <unit id="reports.run.period">
       <notes>
-        <note category="location">src/app/pages/reports.ts:305,306</note>
+        <note category="location">src/app/pages/reports.ts:318,319</note>
       </notes>
       <segment>
         <source>Period</source>
@@ -9252,7 +9701,7 @@
     </unit>
     <unit id="reports.run.result">
       <notes>
-        <note category="location">src/app/pages/reports.ts:306,307</note>
+        <note category="location">src/app/pages/reports.ts:319,320</note>
       </notes>
       <segment>
         <source>Result</source>
@@ -9260,7 +9709,7 @@
     </unit>
     <unit id="reports.run.emailed">
       <notes>
-        <note category="location">src/app/pages/reports.ts:307,308</note>
+        <note category="location">src/app/pages/reports.ts:320,321</note>
       </notes>
       <segment>
         <source>Emailed</source>
@@ -9268,7 +9717,7 @@
     </unit>
     <unit id="reports.noRuns">
       <notes>
-        <note category="location">src/app/pages/reports.ts:344,345</note>
+        <note category="location">src/app/pages/reports.ts:357,358</note>
       </notes>
       <segment>
         <source> Not run yet. Scheduled runs and Run now are kept here. </source>
@@ -9276,7 +9725,7 @@
     </unit>
     <unit id="reports.template">
       <notes>
-        <note category="location">src/app/pages/reports.ts:379,381</note>
+        <note category="location">src/app/pages/reports.ts:392,394</note>
       </notes>
       <segment>
         <source>Template</source>
@@ -9284,7 +9733,7 @@
     </unit>
     <unit id="reports.sections">
       <notes>
-        <note category="location">src/app/pages/reports.ts:392,393</note>
+        <note category="location">src/app/pages/reports.ts:405,406</note>
       </notes>
       <segment>
         <source>Sections</source>
@@ -9292,7 +9741,7 @@
     </unit>
     <unit id="reports.filters">
       <notes>
-        <note category="location">src/app/pages/reports.ts:421,423</note>
+        <note category="location">src/app/pages/reports.ts:434,436</note>
       </notes>
       <segment>
         <source>Filters</source>
@@ -9300,7 +9749,7 @@
     </unit>
     <unit id="reports.filtersHelp">
       <notes>
-        <note category="location">src/app/pages/reports.ts:426,428</note>
+        <note category="location">src/app/pages/reports.ts:439,441</note>
       </notes>
       <segment>
         <source>Optional: limit the whole report to matching traffic, e.g. one exporter.</source>
@@ -9308,7 +9757,7 @@
     </unit>
     <unit id="reports.schedule.off">
       <notes>
-        <note category="location">src/app/pages/reports.ts:438,439</note>
+        <note category="location">src/app/pages/reports.ts:451,452</note>
       </notes>
       <segment>
         <source>Off: run on demand</source>
@@ -9316,7 +9765,7 @@
     </unit>
     <unit id="reports.schedule.daily">
       <notes>
-        <note category="location">src/app/pages/reports.ts:439,440</note>
+        <note category="location">src/app/pages/reports.ts:452,453</note>
       </notes>
       <segment>
         <source>Daily</source>
@@ -9324,7 +9773,7 @@
     </unit>
     <unit id="reports.schedule.weekly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:440,441</note>
+        <note category="location">src/app/pages/reports.ts:453,454</note>
       </notes>
       <segment>
         <source>Weekly</source>
@@ -9332,7 +9781,7 @@
     </unit>
     <unit id="reports.schedule.monthly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:441,443</note>
+        <note category="location">src/app/pages/reports.ts:454,456</note>
       </notes>
       <segment>
         <source>Monthly</source>
@@ -9340,7 +9789,7 @@
     </unit>
     <unit id="reports.at">
       <notes>
-        <note category="location">src/app/pages/reports.ts:447,448</note>
+        <note category="location">src/app/pages/reports.ts:460,461</note>
       </notes>
       <segment>
         <source>At</source>
@@ -9348,7 +9797,7 @@
     </unit>
     <unit id="reports.weekday">
       <notes>
-        <note category="location">src/app/pages/reports.ts:455,456</note>
+        <note category="location">src/app/pages/reports.ts:468,469</note>
       </notes>
       <segment>
         <source>Day of the week</source>
@@ -9356,7 +9805,7 @@
     </unit>
     <unit id="reports.dayOfMonth">
       <notes>
-        <note category="location">src/app/pages/reports.ts:464,465</note>
+        <note category="location">src/app/pages/reports.ts:477,478</note>
       </notes>
       <segment>
         <source>day</source>
@@ -9364,7 +9813,7 @@
     </unit>
     <unit id="reports.monthday">
       <notes>
-        <note category="location">src/app/pages/reports.ts:469,470</note>
+        <note category="location">src/app/pages/reports.ts:482,483</note>
       </notes>
       <segment>
         <source>Day of the month</source>
@@ -9372,7 +9821,7 @@
     </unit>
     <unit id="reports.hour">
       <notes>
-        <note category="location">src/app/pages/reports.ts:482</note>
+        <note category="location">src/app/pages/reports.ts:495</note>
       </notes>
       <segment>
         <source>Hour</source>
@@ -9380,7 +9829,7 @@
     </unit>
     <unit id="reports.recipientsHelp">
       <notes>
-        <note category="location">src/app/pages/reports.ts:505,507</note>
+        <note category="location">src/app/pages/reports.ts:518,520</note>
       </notes>
       <segment>
         <source>Scheduled runs are emailed here as a PDF attachment. Leave empty to only keep them on the appliance.</source>
@@ -9388,15 +9837,40 @@
     </unit>
     <unit id="reports.recipientsEmailOff">
       <notes>
-        <note category="location">src/app/pages/reports.ts:510,512</note>
+        <note category="location">src/app/pages/reports.ts:523,525</note>
       </notes>
       <segment>
         <source>Email is turned off (Configuration → Email): runs are kept on the appliance only.</source>
       </segment>
     </unit>
+    <unit id="reports.channels">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:530,531</note>
+      </notes>
+      <segment>
+        <source>Send to channels</source>
+      </segment>
+    </unit>
+    <unit id="reports.channelsHelp">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:551,553</note>
+      </notes>
+      <segment>
+        <source>Scheduled runs, and failures, are sent here too. Telegram gets the PDF.</source>
+      </segment>
+    </unit>
+    <unit id="reports.noChannels">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:556,558</note>
+      </notes>
+      <segment>
+        <source>No channels yet: add webhooks or Telegram under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/notifications&quot;&gt;" dispEnd="&lt;/a
+                    &gt;">Configuration → Notifications</pc>.</source>
+      </segment>
+    </unit>
     <unit id="reports.keep">
       <notes>
-        <note category="location">src/app/pages/reports.ts:517,518</note>
+        <note category="location">src/app/pages/reports.ts:564,565</note>
       </notes>
       <segment>
         <source>Keep</source>
@@ -9404,7 +9878,7 @@
     </unit>
     <unit id="reports.keepHelp">
       <notes>
-        <note category="location">src/app/pages/reports.ts:528,529</note>
+        <note category="location">src/app/pages/reports.ts:575,576</note>
       </notes>
       <segment>
         <source>Runs kept on the appliance; older ones are deleted.</source>
@@ -9412,7 +9886,7 @@
     </unit>
     <unit id="reports.runTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:570,571</note>
+        <note category="location">src/app/pages/reports.ts:617,618</note>
       </notes>
       <segment>
         <source>Run <ph id="0" equiv="INTERPOLATION" disp="{{ confirmRun()?.name }}"/> now?</source>
@@ -9420,23 +9894,23 @@
     </unit>
     <unit id="reports.runText">
       <notes>
-        <note category="location">src/app/pages/reports.ts:573,575</note>
+        <note category="location">src/app/pages/reports.ts:620,622</note>
       </notes>
       <segment>
         <source> The report is generated for its period as of now and kept in its history. </source>
       </segment>
     </unit>
-    <unit id="reports.runEmail">
+    <unit id="reports.runDeliver">
       <notes>
-        <note category="location">src/app/pages/reports.ts:579,580</note>
+        <note category="location">src/app/pages/reports.ts:626,628</note>
       </notes>
       <segment>
-        <source>Also email it to <ph id="0" equiv="INTERPOLATION" disp="{{ confirmRun()?.recipients }}"/></source>
+        <source>Also send it to its recipients and channels</source>
       </segment>
     </unit>
     <unit id="reports.deleteTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:604,605</note>
+        <note category="location">src/app/pages/reports.ts:651,652</note>
       </notes>
       <segment>
         <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>?</source>
@@ -9444,7 +9918,7 @@
     </unit>
     <unit id="reports.deleteText">
       <notes>
-        <note category="location">src/app/pages/reports.ts:606,608</note>
+        <note category="location">src/app/pages/reports.ts:653,655</note>
       </notes>
       <segment>
         <source>Its schedule stops and its kept runs are deleted.</source>
@@ -9452,7 +9926,7 @@
     </unit>
     <unit id="reports.newTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:759</note>
+        <note category="location">src/app/pages/reports.ts:806</note>
       </notes>
       <segment>
         <source>New report</source>
@@ -9460,7 +9934,7 @@
     </unit>
     <unit id="reports.editTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:760</note>
+        <note category="location">src/app/pages/reports.ts:807</note>
       </notes>
       <segment>
         <source>Edit report</source>
@@ -9468,7 +9942,7 @@
     </unit>
     <unit id="reports.trigger.schedule">
       <notes>
-        <note category="location">src/app/pages/reports.ts:761</note>
+        <note category="location">src/app/pages/reports.ts:808</note>
       </notes>
       <segment>
         <source>scheduled</source>
@@ -9476,7 +9950,7 @@
     </unit>
     <unit id="reports.trigger.manual">
       <notes>
-        <note category="location">src/app/pages/reports.ts:762</note>
+        <note category="location">src/app/pages/reports.ts:809</note>
       </notes>
       <segment>
         <source>run now</source>
@@ -9484,7 +9958,7 @@
     </unit>
     <unit id="reports.when.daily">
       <notes>
-        <note category="location">src/app/pages/reports.ts:788</note>
+        <note category="location">src/app/pages/reports.ts:845</note>
       </notes>
       <segment>
         <source>Daily at <ph id="0" equiv="time" disp="at"/></source>
@@ -9492,7 +9966,7 @@
     </unit>
     <unit id="reports.when.weekly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:790</note>
+        <note category="location">src/app/pages/reports.ts:847</note>
       </notes>
       <segment>
         <source>Weekly on <ph id="0" equiv="day" disp="day"/> at <ph id="1" equiv="time" disp="at"/></source>
@@ -9500,7 +9974,7 @@
     </unit>
     <unit id="reports.when.monthly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:792</note>
+        <note category="location">src/app/pages/reports.ts:849</note>
       </notes>
       <segment>
         <source>Monthly on day <ph id="0" equiv="day" disp="r.monthday"/> at <ph id="1" equiv="time" disp="at"/></source>
@@ -9508,7 +9982,7 @@
     </unit>
     <unit id="reports.when.off">
       <notes>
-        <note category="location">src/app/pages/reports.ts:794</note>
+        <note category="location">src/app/pages/reports.ts:851</note>
       </notes>
       <segment>
         <source>On demand</source>
@@ -9516,15 +9990,23 @@
     </unit>
     <unit id="reports.ranEmailed">
       <notes>
-        <note category="location">src/app/pages/reports.ts:872</note>
+        <note category="location">src/app/pages/reports.ts:936</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="name" disp="r.name"/> was generated and emailed.</source>
       </segment>
     </unit>
+    <unit id="reports.ranSent">
+      <notes>
+        <note category="location">src/app/pages/reports.ts:938</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="name" disp="r.name"/> was generated and sent to its channels.</source>
+      </segment>
+    </unit>
     <unit id="reports.ran">
       <notes>
-        <note category="location">src/app/pages/reports.ts:873</note>
+        <note category="location">src/app/pages/reports.ts:939</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="name" disp="r.name"/> was generated; it&apos;s in its history.</source>
@@ -9702,15 +10184,15 @@
     </unit>
     <unit id="settings.subtitle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:16,20</note>
+        <note category="location">src/app/pages/settings.ts:17,19</note>
       </notes>
       <segment>
-        <source>Appliance configuration. Changes apply immediately.</source>
+        <source> Appliance configuration. Changes apply immediately. </source>
       </segment>
     </unit>
     <unit id="settings.saved">
       <notes>
-        <note category="location">src/app/pages/settings.ts:21,22</note>
+        <note category="location">src/app/pages/settings.ts:26,28</note>
       </notes>
       <segment>
         <source>Settings saved and applied.</source>
@@ -9718,7 +10200,7 @@
     </unit>
     <unit id="settings.general">
       <notes>
-        <note category="location">src/app/pages/settings.ts:30,31</note>
+        <note category="location">src/app/pages/settings.ts:50,51</note>
       </notes>
       <segment>
         <source>General</source>
@@ -9726,7 +10208,7 @@
     </unit>
     <unit id="settings.applianceName">
       <notes>
-        <note category="location">src/app/pages/settings.ts:33,34</note>
+        <note category="location">src/app/pages/settings.ts:53,54</note>
       </notes>
       <segment>
         <source>Appliance name</source>
@@ -9734,15 +10216,31 @@
     </unit>
     <unit id="settings.applianceNameHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:35,36</note>
+        <note category="location">src/app/pages/settings.ts:56,58</note>
       </notes>
       <segment>
         <source>Shown in the header and on the sign-in page.</source>
       </segment>
     </unit>
+    <unit id="settings.publicUrl">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:60,62</note>
+      </notes>
+      <segment>
+        <source>Appliance address</source>
+      </segment>
+    </unit>
+    <unit id="settings.publicUrlHelp">
+      <notes>
+        <note category="location">src/app/pages/settings.ts:70,72</note>
+      </notes>
+      <segment>
+        <source>Optional: how people reach this appliance, for links in notifications.</source>
+      </segment>
+    </unit>
     <unit id="settings.sessionLifetime">
       <notes>
-        <note category="location">src/app/pages/settings.ts:38,39</note>
+        <note category="location">src/app/pages/settings.ts:75,77</note>
       </notes>
       <segment>
         <source>Session lifetime (hours)</source>
@@ -9750,7 +10248,7 @@
     </unit>
     <unit id="settings.flowCollection">
       <notes>
-        <note category="location">src/app/pages/settings.ts:45,46</note>
+        <note category="location">src/app/pages/settings.ts:90,91</note>
       </notes>
       <segment>
         <source>Flow collection</source>
@@ -9758,15 +10256,15 @@
     </unit>
     <unit id="settings.flowCollectionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:47,49</note>
+        <note category="location">src/app/pages/settings.ts:93,95</note>
       </notes>
       <segment>
-        <source>Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener.</source>
+        <source> Every listener accepts NetFlow v5/v9, IPFIX and sFlow; the ports below match device defaults. Set 0 to disable a listener. </source>
       </segment>
     </unit>
     <unit id="settings.netflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:49,50</note>
+        <note category="location">src/app/pages/settings.ts:97,99</note>
       </notes>
       <segment>
         <source>NetFlow UDP port</source>
@@ -9774,7 +10272,7 @@
     </unit>
     <unit id="settings.ipfixPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:53,54</note>
+        <note category="location">src/app/pages/settings.ts:108,110</note>
       </notes>
       <segment>
         <source>IPFIX UDP port</source>
@@ -9782,7 +10280,7 @@
     </unit>
     <unit id="settings.sflowPort">
       <notes>
-        <note category="location">src/app/pages/settings.ts:57,58</note>
+        <note category="location">src/app/pages/settings.ts:119,121</note>
       </notes>
       <segment>
         <source>sFlow UDP port</source>
@@ -9790,7 +10288,7 @@
     </unit>
     <unit id="settings.exporterAllowlist">
       <notes>
-        <note category="location">src/app/pages/settings.ts:61,62</note>
+        <note category="location">src/app/pages/settings.ts:133,135</note>
       </notes>
       <segment>
         <source>Allowed exporters</source>
@@ -9798,15 +10296,15 @@
     </unit>
     <unit id="settings.allowlistEmpty">
       <notes>
-        <note category="location">src/app/pages/settings.ts:64,66</note>
+        <note category="location">src/app/pages/settings.ts:138,139</note>
       </notes>
       <segment>
-        <source>No entries: flows are accepted from any source.</source>
+        <source> No entries: flows are accepted from any source. </source>
       </segment>
     </unit>
     <unit id="settings.allowedExporterLabel">
       <notes>
-        <note category="location">src/app/pages/settings.ts:66</note>
+        <note category="location">src/app/pages/settings.ts:144,145</note>
       </notes>
       <segment>
         <source>Allowed exporter</source>
@@ -9814,7 +10312,7 @@
     </unit>
     <unit id="settings.addActiveExporters">
       <notes>
-        <note category="location">src/app/pages/settings.ts:68,69</note>
+        <note category="location">src/app/pages/settings.ts:152,154</note>
       </notes>
       <segment>
         <source>Add active exporters</source>
@@ -9822,7 +10320,7 @@
     </unit>
     <unit id="settings.allowlistLockout">
       <notes>
-        <note category="location">src/app/pages/settings.ts:70,71</note>
+        <note category="location">src/app/pages/settings.ts:157,159</note>
       </notes>
       <segment>
         <source>These exporters sent flows in the last hour and would be dropped: <ph id="0" equiv="INTERPOLATION" disp="{{ lockedOut().join(&apos;, &apos;) }}"/></source>
@@ -9830,7 +10328,7 @@
     </unit>
     <unit id="settings.allowlistHelp2">
       <notes>
-        <note category="location">src/app/pages/settings.ts:73,75</note>
+        <note category="location">src/app/pages/settings.ts:163,165</note>
       </notes>
       <segment>
         <source>IP addresses or CIDR prefixes. When set, datagrams from any other source are dropped before decoding and listed on System Health.</source>
@@ -9838,7 +10336,7 @@
     </unit>
     <unit id="settings.dataRetention">
       <notes>
-        <note category="location">src/app/pages/settings.ts:80,81</note>
+        <note category="location">src/app/pages/settings.ts:172,173</note>
       </notes>
       <segment>
         <source>Data retention</source>
@@ -9846,15 +10344,15 @@
     </unit>
     <unit id="settings.dataRetentionHint">
       <notes>
-        <note category="location">src/app/pages/settings.ts:82,84</note>
+        <note category="location">src/app/pages/settings.ts:175,177</note>
       </notes>
       <segment>
-        <source>Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size.</source>
+        <source> Raw flows power flow search and host-level reports. The 1-minute rollup keeps interface, exporter and protocol trends for long-range charts at a fraction of the size. </source>
       </segment>
     </unit>
     <unit id="settings.rawFlowsDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:84,85</note>
+        <note category="location">src/app/pages/settings.ts:180,182</note>
       </notes>
       <segment>
         <source>Raw flows (days)</source>
@@ -9862,15 +10360,17 @@
     </unit>
     <unit id="settings.rawFlowsEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:87</note>
+        <note category="location">src/app/pages/settings.ts:192,195</note>
       </notes>
       <segment>
-        <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rawRetentionDays) }}"/> at the current rate (<ph id="1" equiv="INTERPOLATION_1" disp="{{ count(r.rowsPerDay) }}"/> flows/day)</source>
+        <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rawRetentionDays) }}"/> at the current rate (<ph id="1" equiv="INTERPOLATION_1" disp="{{
+                    count(r.rowsPerDay)
+                  }}"/> flows/day)</source>
       </segment>
     </unit>
     <unit id="settings.rollupDays">
       <notes>
-        <note category="location">src/app/pages/settings.ts:91,92</note>
+        <note category="location">src/app/pages/settings.ts:200,202</note>
       </notes>
       <segment>
         <source>1-minute rollup (days)</source>
@@ -9878,7 +10378,7 @@
     </unit>
     <unit id="settings.rollupEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:94</note>
+        <note category="location">src/app/pages/settings.ts:212</note>
       </notes>
       <segment>
         <source>≈ <ph id="0" equiv="INTERPOLATION" disp="{{ size(r, s.rollupRetentionDays) }}"/> at the current rate</source>
@@ -9886,7 +10386,7 @@
     </unit>
     <unit id="settings.totalEstimate">
       <notes>
-        <note category="location">src/app/pages/settings.ts:101,103</note>
+        <note category="location">src/app/pages/settings.ts:221,224</note>
       </notes>
       <segment>
         <source>Estimated total <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;"><ph id="1" equiv="INTERPOLATION" disp="{{ fmtBytes(total) }}"/></pc> of <ph id="2" equiv="INTERPOLATION_1" disp="{{ fmtBytes(budget) }}"/> available for flow data (<ph id="3" equiv="INTERPOLATION_2" disp="{{ fmtBytes(st.diskFree) }}"/> free on a <ph id="4" equiv="INTERPOLATION_3" disp="{{ fmtBytes(st.diskTotal) }}"/> disk).</source>
@@ -9894,7 +10394,7 @@
     </unit>
     <unit id="settings.tooLittleSpace">
       <notes>
-        <note category="location">src/app/pages/settings.ts:104,106</note>
+        <note category="location">src/app/pages/settings.ts:227,229</note>
       </notes>
       <segment>
         <source>That leaves too little working space; ClickHouse needs about 25% free to merge data. Lower retention or grow the disk.</source>
@@ -9902,7 +10402,7 @@
     </unit>
     <unit id="settings.estimateSample">
       <notes>
-        <note category="location">src/app/pages/settings.ts:107,108</note>
+        <note category="location">src/app/pages/settings.ts:233,234</note>
       </notes>
       <segment>
         <source>Based on <ph id="0" equiv="INTERPOLATION" disp="{{ sampleHours().toFixed(1) }}"/> hours of data; the estimate firms up after a full day.</source>
@@ -9910,7 +10410,7 @@
     </unit>
     <unit id="settings.mcp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:115,116</note>
+        <note category="location">src/app/pages/settings.ts:243,244</note>
       </notes>
       <segment>
         <source>MCP</source>
@@ -9918,7 +10418,7 @@
     </unit>
     <unit id="settings.mcpClients">
       <notes>
-        <note category="location">src/app/pages/settings.ts:118,119</note>
+        <note category="location">src/app/pages/settings.ts:246,247</note>
       </notes>
       <segment>
         <source>AI assistants</source>
@@ -9926,7 +10426,7 @@
     </unit>
     <unit id="settings.mcpToggle">
       <notes>
-        <note category="location">src/app/pages/settings.ts:121,122</note>
+        <note category="location">src/app/pages/settings.ts:249,250</note>
       </notes>
       <segment>
         <source>Allow MCP clients to query flow data</source>
@@ -9934,7 +10434,7 @@
     </unit>
     <unit id="settings.mcpHelp">
       <notes>
-        <note category="location">src/app/pages/settings.ts:123</note>
+        <note category="location">src/app/pages/settings.ts:252,254</note>
       </notes>
       <segment>
         <source>Read-only, at <ph id="0" equiv="INTERPOLATION" disp="{{ mcpEndpoint }}"/>, with an API token (Access → API Tokens) and its owner&apos;s permissions. Every query is in the audit log. Results are sent to the assistant&apos;s provider.</source>
@@ -9942,15 +10442,15 @@
     </unit>
     <unit id="settings.saveSettings">
       <notes>
-        <note category="location">src/app/pages/settings.ts:129,130</note>
+        <note category="location">src/app/pages/settings.ts:267,269</note>
       </notes>
       <segment>
-        <source>Save settings</source>
+        <source> Save settings </source>
       </segment>
     </unit>
     <unit id="settings.notAddrOrPrefix">
       <notes>
-        <note category="location">src/app/pages/settings.ts:162</note>
+        <note category="location">src/app/pages/settings.ts:345</note>
       </notes>
       <segment>
         <source>Not an IP address or CIDR prefix</source>
@@ -12303,10 +12803,18 @@
         <source>A scheduled report failed (<ph id="0" equiv="INTERPOLATION" disp="{{ p[&apos;reports&apos;] }}"/>): <ph id="1" equiv="INTERPOLATION_1" disp="{{ p[&apos;error&apos;] }}"/></source>
       </segment>
     </unit>
+    <unit id="notice.channelFailing">
+      <notes>
+        <note category="location">src/app/shared/notice-text.ts:74,75</note>
+      </notes>
+      <segment>
+        <source>Notifications aren&apos;t getting through (<ph id="0" equiv="INTERPOLATION" disp="{{ p[&apos;channels&apos;] }}"/>): <ph id="1" equiv="INTERPOLATION_1" disp="{{ p[&apos;error&apos;] }}"/></source>
+      </segment>
+    </unit>
     <unit id="notice.action.systemHealth">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:93</note>
-        <note category="location">src/app/shared/notice-text.ts:101</note>
+        <note category="location">src/app/shared/notice-text.ts:96</note>
+        <note category="location">src/app/shared/notice-text.ts:104</note>
       </notes>
       <segment>
         <source>System health</source>
@@ -12314,7 +12822,7 @@
     </unit>
     <unit id="notice.action.retention">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:95</note>
+        <note category="location">src/app/shared/notice-text.ts:98</note>
       </notes>
       <segment>
         <source>Retention settings</source>
@@ -12322,7 +12830,7 @@
     </unit>
     <unit id="notice.action.ports">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:97</note>
+        <note category="location">src/app/shared/notice-text.ts:100</note>
       </notes>
       <segment>
         <source>Collector ports</source>
@@ -12330,7 +12838,7 @@
     </unit>
     <unit id="notice.action.viewUpdates">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:103</note>
+        <note category="location">src/app/shared/notice-text.ts:106</note>
       </notes>
       <segment>
         <source>View updates</source>
@@ -12338,7 +12846,7 @@
     </unit>
     <unit id="notice.action.restart">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:105</note>
+        <note category="location">src/app/shared/notice-text.ts:108</note>
       </notes>
       <segment>
         <source>Restart</source>
@@ -12346,7 +12854,7 @@
     </unit>
     <unit id="notice.action.time">
       <notes>
-        <note category="location">src/app/shared/notice-text.ts:112</note>
+        <note category="location">src/app/shared/notice-text.ts:115</note>
       </notes>
       <segment>
         <source>Time settings</source>
@@ -12710,8 +13218,8 @@
     <unit id="shell.changePassword">
       <notes>
         <note category="location">src/app/shell.ts:72,73</note>
-        <note category="location">src/app/shell.ts:154,155</note>
-        <note category="location">src/app/shell.ts:177,179</note>
+        <note category="location">src/app/shell.ts:155,156</note>
+        <note category="location">src/app/shell.ts:178,180</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -12751,7 +13259,7 @@
     </unit>
     <unit id="nav.groupAccess">
       <notes>
-        <note category="location">src/app/shell.ts:126,127</note>
+        <note category="location">src/app/shell.ts:127,128</note>
       </notes>
       <segment>
         <source>Access</source>
@@ -12759,7 +13267,7 @@
     </unit>
     <unit id="nav.groupAppliance">
       <notes>
-        <note category="location">src/app/shell.ts:136,137</note>
+        <note category="location">src/app/shell.ts:137,138</note>
       </notes>
       <segment>
         <source>Appliance</source>
@@ -12767,7 +13275,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:158,159</note>
+        <note category="location">src/app/shell.ts:159,160</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -12775,7 +13283,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:162,163</note>
+        <note category="location">src/app/shell.ts:163,164</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -12783,7 +13291,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:164,165</note>
+        <note category="location">src/app/shell.ts:165,166</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -12791,7 +13299,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:167,168</note>
+        <note category="location">src/app/shell.ts:168,169</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -12799,7 +13307,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:186,188</note>
+        <note category="location">src/app/shell.ts:187,189</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -12807,7 +13315,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:188,189</note>
+        <note category="location">src/app/shell.ts:189,190</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -12815,7 +13323,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:191</note>
+        <note category="location">src/app/shell.ts:192</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -12823,7 +13331,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:195,196</note>
+        <note category="location">src/app/shell.ts:196,197</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -12831,7 +13339,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:202,204</note>
+        <note category="location">src/app/shell.ts:203,205</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -12839,7 +13347,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:204,205</note>
+        <note category="location">src/app/shell.ts:205,206</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -12847,7 +13355,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:205,208</note>
+        <note category="location">src/app/shell.ts:206,209</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -12855,7 +13363,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:374</note>
+        <note category="location">src/app/shell.ts:375</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

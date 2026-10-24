@@ -224,6 +224,9 @@ func (s *Server) checkNotices(ctx context.Context) []Notice {
 	if n := s.reportNotice(); n != nil {
 		add(*n)
 	}
+	if n := s.channelNotice(now); n != nil {
+		add(*n)
+	}
 
 	slices.SortStableFunc(out, func(a, b Notice) int { return levelOrder[a.Level] - levelOrder[b.Level] })
 	return out
@@ -309,6 +312,44 @@ func (s *Server) threatNotice(ctx context.Context, now time.Time) *Notice {
 		Params:  map[string]string{"count": fmt.Sprint(hosts), "feeds": list},
 		Message: fmt.Sprintf("Traffic with %d address%s on threat lists in the last hour (%s).", hosts, map[bool]string{true: "", false: "es"}[hosts == 1], list),
 		Action:  &NoticeAction{Label: "Detections", Route: "/security/detections"}}
+}
+
+// publicLink is a page's address for messages, when the appliance address
+// is set (Settings); "" otherwise.
+func (s *Server) publicLink(route string) string {
+	base := strings.TrimRight(s.Config.Settings().PublicURL, "/")
+	if base == "" || route == "" {
+		return ""
+	}
+	return base + route
+}
+
+// channelNotice reports notification channels that keep failing or were
+// turned off for it.
+func (s *Server) channelNotice(now time.Time) *Notice {
+	list, err := s.Config.Channels()
+	if err != nil {
+		return nil
+	}
+	var names []string
+	var first string
+	for _, ch := range list {
+		if ch.FailingSince == 0 || (ch.Enabled && now.Sub(time.UnixMilli(ch.FailingSince)) < time.Hour) {
+			continue
+		}
+		names = append(names, ch.Name)
+		if first == "" {
+			first = ch.LastError
+		}
+	}
+	if len(names) == 0 {
+		return nil
+	}
+	l := strings.Join(names, ", ")
+	return &Notice{ID: "channel-failing:" + l, Kind: "channel-failing", Level: "warning", adminOnly: true,
+		Params:  map[string]string{"channels": l, "error": firstLine(first)},
+		Message: fmt.Sprintf("Notifications aren't getting through (%s): %s", l, firstLine(first)),
+		Action:  &NoticeAction{Label: "Notifications", Route: "/admin/notifications", admin: true}}
 }
 
 // reportNotice reports scheduled reports whose last run failed.
