@@ -1,23 +1,31 @@
 # Architecture
 
+```mermaid
+flowchart LR
+    exp["routers, switches,<br/>firewalls"] -->|"UDP 2055 NetFlow<br/>4739 IPFIX<br/>6343 sFlow"| recv
+    recv["receivers<br/>SO_REUSEPORT,<br/>one socket per CPU"] --> dec["decoders<br/>v5 · v9 · IPFIX · sFlow<br/>templates, sampling"]
+    dec --> enr["enrichment<br/>GeoIP/ASN · device MAC<br/>threat feed match"]
+    enr --> wr["batching writer<br/>non-blocking,<br/>drops counted"]
+    wr --> ch[("ClickHouse<br/>raw flows +<br/>1-min rollup")]
+
+    users(["browsers,<br/>MCP clients"]) --> api["HTTPS: REST API, MCP,<br/>Angular/Clarity UI<br/>sessions · RBAC · audit"]
+    api --> ch
+    api <--> db[("SQLite<br/>configuration")]
+    bg["background jobs<br/>notices · reports · SNMP<br/>threat feeds · inventory<br/>notifications · backups"] --> ch
+    bg <--> db
+    bg --> out(["NetBox, feeds, SMTP,<br/>webhooks, Telegram,<br/>syslog, SFTP"])
+
+    classDef nfad fill:#e8f1fb,stroke:#2f6db5,color:#1b1b1b
+    class recv,dec,enr,wr,api,bg nfad
 ```
- routers / switches / firewalls
-        │  UDP 2055 (NetFlow) · 4739 (IPFIX) · 6343 (sFlow)
-        ▼
- ┌─────────────────────────── nfad (single Go binary) ───────────────────────────┐
- │ SO_REUSEPORT receivers ─► decoders ─► GeoIP/ASN enrich ─► batching writer ──┐  │
- │ (one socket per CPU)     (v5/v9/IPFIX/sFlow,              (non-blocking,    │  │
- │                           template + sampling cache)       drop-counted)    │  │
- │ REST API + embedded Angular/Clarity UI (HTTPS, sessions, RBAC, audit) ◄─┐   │  │
- └─────────────────────────────────────────────────────────────────────────┼───┼──┘
-                                   SQLite: users, settings, names ─────────┘   ▼
-                                   ClickHouse: raw flows (TTL) + 1-min rollup (MV)
-```
+
+Blue boxes run inside `nfad`, a single Go binary.
 
 Flows are written to `netflow.flows` (raw, partitioned by day) and rolled up
 per minute into `netflow.traffic_1m` by a materialized view. Queries over more
 than three hours that only need rollup columns (exporter, interfaces, protocol)
-read the rollup. Configuration lives in SQLite under `/var/lib/nfa`.
+read the rollup. Configuration lives in SQLite under `/var/lib/nfa`; both
+schemas are in [DATABASE.md](DATABASE.md).
 See [INSTALL.md](INSTALL.md#how-clickhouse-is-set-up-for-tributary) for the
 ClickHouse setup.
 

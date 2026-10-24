@@ -8,11 +8,29 @@ comes from:
 - **Threat feeds:** each feed's **Send to channels** (Security → Threat Feeds).
 - **Reports:** each report's **Send to channels**.
 
-Deliveries
-are queued and retried (1 min, 5 min, 30 min, 2 h, then every 6 h) for up to
-a day; a channel failing for a day is turned off and a notice says so. Set
-**Configuration → Settings → Appliance address** to get links back to
+Set **Configuration → Settings → Appliance address** to get links back to
 Tributary in messages.
+
+```mermaid
+flowchart LR
+    src["notices · threat feeds · reports"] -->|"event, to the<br/>source's channels"| q[("delivery queue<br/>(SQLite)")]
+    q --> ch{{"webhook or Telegram"}}
+```
+
+Each delivery is retried after 1 min, 5 min, 30 min, 2 h, then every 6 h,
+for up to a day. A channel failing for a day is turned off, and a notice
+says so.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> pending
+    pending --> delivered: sent
+    pending --> pending: error, retry
+    pending --> failed: gave up
+    delivered --> [*]
+    failed --> [*]
+```
 
 ## Events
 

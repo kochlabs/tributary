@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
@@ -384,10 +383,7 @@ type NoticeRouting struct {
 
 func (c *DB) NoticeRouting() NoticeRouting {
 	r := NoticeRouting{Level: "warning", Channels: []int64{}}
-	var v string
-	if c.db.QueryRow("SELECT value FROM settings WHERE key = 'notice_routing'").Scan(&v) == nil {
-		_ = json.Unmarshal([]byte(v), &r)
-	}
+	c.settingJSON("notice_routing", &r)
 	return r
 }
 
@@ -401,7 +397,7 @@ func (c *DB) SaveNoticeRouting(r NoticeRouting) error {
 	if r.Channels, err = CleanChannelIDs(r.Channels); err != nil {
 		return err
 	}
-	return c.putSetting("notice_routing", r)
+	return c.saveSettingJSON("notice_routing", r)
 }
 
 // SentNotice is a notice that was sent to channels, until it clears.
@@ -414,23 +410,11 @@ type SentNotice struct {
 
 func (c *DB) SentNotices() []SentNotice {
 	out := []SentNotice{}
-	var v string
-	if c.db.QueryRow("SELECT value FROM settings WHERE key = 'notices_sent'").Scan(&v) == nil {
-		_ = json.Unmarshal([]byte(v), &out)
-	}
+	c.settingJSON("notices_sent", &out)
 	return out
 }
 
-func (c *DB) SaveSentNotices(list []SentNotice) error { return c.putSetting("notices_sent", list) }
-
-func (c *DB) putSetting(key string, v any) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	_, err = c.db.Exec("INSERT INTO settings(key, value) VALUES(?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value", key, string(b))
-	return err
-}
+func (c *DB) SaveSentNotices(list []SentNotice) error { return c.saveSettingJSON("notices_sent", list) }
 
 // ThreatAlertDue reports whether host's matches on a feed may be sent again
 // (never sent, or not since every), and if so records them as sent at now.

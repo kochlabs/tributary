@@ -43,6 +43,7 @@ how ClickHouse is configured.
 - [Installation](docs/INSTALL.md)
 - [Features](docs/FEATURES.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Databases](docs/DATABASE.md)
 - [Reports](docs/REPORTS.md)
 - [Notifications](docs/NOTIFICATIONS.md)
 - [Threat feeds](docs/THREAT-FEEDS.md)

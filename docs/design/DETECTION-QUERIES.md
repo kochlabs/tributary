@@ -9,10 +9,20 @@ correlation with other sources live in a separate security tool. That tool
 polls Tributary every few minutes with **detection queries**: analytical
 questions answered in ClickHouse, next to the data, returning small results.
 
-```
-Tributary                                  security tool
-  flows ─▶ ClickHouse ◀── detection queries ── rules (every N min)
-  threat feeds, notices ─▶ channels          findings, silences, correlation
+```mermaid
+flowchart LR
+    subgraph tributary[Tributary]
+      flows[("ClickHouse<br/>flows")]
+      own["threat feeds,<br/>notices"]
+    end
+    subgraph tool["security tool"]
+      rules["rules<br/>every N minutes"]
+      findings["findings, silences,<br/>correlation"]
+    end
+    rules -->|"detection queries<br/>since = last watermark"| flows
+    flows -->|"small results<br/>+ new watermark"| rules
+    rules --> findings
+    own --> channels(["channels:<br/>webhooks, Telegram"])
 ```
 
 ## Goals
