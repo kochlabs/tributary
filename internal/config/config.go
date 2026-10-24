@@ -110,6 +110,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateReports(); err != nil {
 		return nil, fmt.Errorf("report schema: %w", err)
 	}
+	if err := c.migrateInventory(); err != nil {
+		return nil, fmt.Errorf("inventory schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}

@@ -51,7 +51,7 @@ your own CA.
 | `exporters` | exporters with rates, sampling and health |
 | `interfaces` | an exporter's interfaces and utilization |
 | `devices` | local devices by MAC address |
-| `lookup_address` | geo, AS, hostname, threat feeds and top traffic of one address |
+| `lookup_address` | geo, AS, hostname, threat feeds, inventory record and top traffic of one address |
 | `threat_feeds` | enabled threat feeds and their matches in the last 24 hours |
 | `appliance_health` | collector, database, disk and notices |
 

@@ -43,7 +43,7 @@
     <unit id="nav.devices">
       <notes>
         <note category="location">src/app/app.routes.ts:17</note>
-        <note category="location">src/app/pages/devices.ts:26,27</note>
+        <note category="location">src/app/pages/devices.ts:27,28</note>
         <note category="location">src/app/shell.ts:109,110</note>
       </notes>
       <segment>
@@ -127,7 +127,7 @@
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
         <note category="location">src/app/shared/notice-text.ts:110</note>
-        <note category="location">src/app/shell.ts:127,128</note>
+        <note category="location">src/app/shell.ts:128,129</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -154,11 +154,21 @@
         <source>Enrichment</source>
       </segment>
     </unit>
-    <unit id="nav.email">
+    <unit id="nav.inventorySources">
       <notes>
         <note category="location">src/app/app.routes.ts:32</note>
-        <note category="location">src/app/pages/email.ts:15,16</note>
+        <note category="location">src/app/pages/inventory-sources.ts:41,42</note>
         <note category="location">src/app/shell.ts:120,121</note>
+      </notes>
+      <segment>
+        <source>Inventory Sources</source>
+      </segment>
+    </unit>
+    <unit id="nav.email">
+      <notes>
+        <note category="location">src/app/app.routes.ts:33</note>
+        <note category="location">src/app/pages/email.ts:15,16</note>
+        <note category="location">src/app/shell.ts:121,122</note>
       </notes>
       <segment>
         <source>Email</source>
@@ -166,10 +176,10 @@
     </unit>
     <unit id="nav.backup">
       <notes>
-        <note category="location">src/app/app.routes.ts:34</note>
+        <note category="location">src/app/app.routes.ts:35</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
         <note category="location">src/app/shared/notice-text.ts:117</note>
-        <note category="location">src/app/shell.ts:138,139</note>
+        <note category="location">src/app/shell.ts:139,140</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -177,10 +187,10 @@
     </unit>
     <unit id="nav.certificates">
       <notes>
-        <note category="location">src/app/app.routes.ts:35</note>
+        <note category="location">src/app/app.routes.ts:36</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:108</note>
-        <note category="location">src/app/shell.ts:139,140</note>
+        <note category="location">src/app/shell.ts:140,141</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -188,9 +198,9 @@
     </unit>
     <unit id="nav.identitySources">
       <notes>
-        <note category="location">src/app/app.routes.ts:36</note>
+        <note category="location">src/app/app.routes.ts:37</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
-        <note category="location">src/app/shell.ts:128,129</note>
+        <note category="location">src/app/shell.ts:129,130</note>
       </notes>
       <segment>
         <source>Identity Sources</source>
@@ -198,9 +208,9 @@
     </unit>
     <unit id="nav.updates">
       <notes>
-        <note category="location">src/app/app.routes.ts:37</note>
+        <note category="location">src/app/app.routes.ts:38</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:137,138</note>
+        <note category="location">src/app/shell.ts:138,139</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -208,9 +218,9 @@
     </unit>
     <unit id="nav.time">
       <notes>
-        <note category="location">src/app/app.routes.ts:38</note>
+        <note category="location">src/app/app.routes.ts:39</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:141</note>
+        <note category="location">src/app/shell.ts:142</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -218,9 +228,9 @@
     </unit>
     <unit id="nav.services">
       <notes>
-        <note category="location">src/app/app.routes.ts:39</note>
+        <note category="location">src/app/app.routes.ts:40</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:141,142</note>
+        <note category="location">src/app/shell.ts:142,143</note>
       </notes>
       <segment>
         <source>Services</source>
@@ -228,9 +238,9 @@
     </unit>
     <unit id="nav.apiTokens">
       <notes>
-        <note category="location">src/app/app.routes.ts:40</note>
+        <note category="location">src/app/app.routes.ts:41</note>
         <note category="location">src/app/pages/api-tokens.ts:17,18</note>
-        <note category="location">src/app/shell.ts:129,130</note>
+        <note category="location">src/app/shell.ts:130,131</note>
       </notes>
       <segment>
         <source>API Tokens</source>
@@ -238,8 +248,8 @@
     </unit>
     <unit id="nav.audit">
       <notes>
-        <note category="location">src/app/app.routes.ts:41</note>
-        <note category="location">src/app/shell.ts:130,131</note>
+        <note category="location">src/app/app.routes.ts:42</note>
+        <note category="location">src/app/shell.ts:131,132</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -247,7 +257,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:820</note>
+        <note category="location">src/app/core/api.ts:870</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1434,7 +1444,7 @@
     <unit id="format.device">
       <notes>
         <note category="location">src/app/core/format.ts:105</note>
-        <note category="location">src/app/core/format.ts:195</note>
+        <note category="location">src/app/core/format.ts:196</note>
       </notes>
       <segment>
         <source>Device</source>
@@ -1467,7 +1477,7 @@
     <unit id="format.threatFeed">
       <notes>
         <note category="location">src/app/core/format.ts:109</note>
-        <note category="location">src/app/core/format.ts:218</note>
+        <note category="location">src/app/core/format.ts:219</note>
       </notes>
       <segment>
         <source>Threat feed</source>
@@ -1484,7 +1494,7 @@
     <unit id="format.direction">
       <notes>
         <note category="location">src/app/core/format.ts:111</note>
-        <note category="location">src/app/core/format.ts:196</note>
+        <note category="location">src/app/core/format.ts:197</note>
       </notes>
       <segment>
         <source>Direction</source>
@@ -1493,7 +1503,7 @@
     <unit id="format.application">
       <notes>
         <note category="location">src/app/core/format.ts:112</note>
-        <note category="location">src/app/core/format.ts:204</note>
+        <note category="location">src/app/core/format.ts:205</note>
       </notes>
       <segment>
         <source>Application</source>
@@ -1502,7 +1512,7 @@
     <unit id="format.sourceAddress">
       <notes>
         <note category="location">src/app/core/format.ts:113</note>
-        <note category="location">src/app/core/format.ts:198</note>
+        <note category="location">src/app/core/format.ts:199</note>
       </notes>
       <segment>
         <source>Source address</source>
@@ -1511,7 +1521,7 @@
     <unit id="format.destinationAddress">
       <notes>
         <note category="location">src/app/core/format.ts:114</note>
-        <note category="location">src/app/core/format.ts:199</note>
+        <note category="location">src/app/core/format.ts:200</note>
       </notes>
       <segment>
         <source>Destination address</source>
@@ -1536,7 +1546,7 @@
     <unit id="format.protocol">
       <notes>
         <note category="location">src/app/core/format.ts:117</note>
-        <note category="location">src/app/core/format.ts:203</note>
+        <note category="location">src/app/core/format.ts:204</note>
       </notes>
       <segment>
         <source>Protocol</source>
@@ -1545,7 +1555,7 @@
     <unit id="format.destinationPort">
       <notes>
         <note category="location">src/app/core/format.ts:118</note>
-        <note category="location">src/app/core/format.ts:202</note>
+        <note category="location">src/app/core/format.ts:203</note>
       </notes>
       <segment>
         <source>Destination port</source>
@@ -1554,7 +1564,7 @@
     <unit id="format.sourcePort">
       <notes>
         <note category="location">src/app/core/format.ts:119</note>
-        <note category="location">src/app/core/format.ts:201</note>
+        <note category="location">src/app/core/format.ts:202</note>
       </notes>
       <segment>
         <source>Source port</source>
@@ -1571,7 +1581,7 @@
     <unit id="format.sourceCountry">
       <notes>
         <note category="location">src/app/core/format.ts:121</note>
-        <note category="location">src/app/core/format.ts:210</note>
+        <note category="location">src/app/core/format.ts:211</note>
       </notes>
       <segment>
         <source>Source country</source>
@@ -1580,7 +1590,7 @@
     <unit id="format.destinationCountry">
       <notes>
         <note category="location">src/app/core/format.ts:122</note>
-        <note category="location">src/app/core/format.ts:211</note>
+        <note category="location">src/app/core/format.ts:212</note>
       </notes>
       <segment>
         <source>Destination country</source>
@@ -1589,7 +1599,7 @@
     <unit id="format.sourceAs">
       <notes>
         <note category="location">src/app/core/format.ts:123</note>
-        <note category="location">src/app/core/format.ts:213</note>
+        <note category="location">src/app/core/format.ts:214</note>
       </notes>
       <segment>
         <source>Source AS</source>
@@ -1598,7 +1608,7 @@
     <unit id="format.destinationAs">
       <notes>
         <note category="location">src/app/core/format.ts:124</note>
-        <note category="location">src/app/core/format.ts:214</note>
+        <note category="location">src/app/core/format.ts:215</note>
       </notes>
       <segment>
         <source>Destination AS</source>
@@ -1607,7 +1617,7 @@
     <unit id="format.exporter">
       <notes>
         <note category="location">src/app/core/format.ts:125</note>
-        <note category="location">src/app/core/format.ts:205</note>
+        <note category="location">src/app/core/format.ts:206</note>
       </notes>
       <segment>
         <source>Exporter</source>
@@ -1616,7 +1626,7 @@
     <unit id="format.inputInterface">
       <notes>
         <note category="location">src/app/core/format.ts:126</note>
-        <note category="location">src/app/core/format.ts:207</note>
+        <note category="location">src/app/core/format.ts:208</note>
       </notes>
       <segment>
         <source>Input interface</source>
@@ -1625,7 +1635,7 @@
     <unit id="format.outputInterface">
       <notes>
         <note category="location">src/app/core/format.ts:127</note>
-        <note category="location">src/app/core/format.ts:208</note>
+        <note category="location">src/app/core/format.ts:209</note>
       </notes>
       <segment>
         <source>Output interface</source>
@@ -1634,7 +1644,7 @@
     <unit id="format.dscp">
       <notes>
         <note category="location">src/app/core/format.ts:128</note>
-        <note category="location">src/app/core/format.ts:216</note>
+        <note category="location">src/app/core/format.ts:217</note>
       </notes>
       <segment>
         <source>DSCP</source>
@@ -1643,7 +1653,7 @@
     <unit id="format.ipVersion">
       <notes>
         <note category="location">src/app/core/format.ts:129</note>
-        <note category="location">src/app/core/format.ts:217</note>
+        <note category="location">src/app/core/format.ts:218</note>
       </notes>
       <segment>
         <source>IP version</source>
@@ -1652,7 +1662,7 @@
     <unit id="format.vlan">
       <notes>
         <note category="location">src/app/core/format.ts:130</note>
-        <note category="location">src/app/core/format.ts:215</note>
+        <note category="location">src/app/core/format.ts:216</note>
       </notes>
       <segment>
         <source>VLAN</source>
@@ -1668,7 +1678,7 @@
     </unit>
     <unit id="format.host">
       <notes>
-        <note category="location">src/app/core/format.ts:194</note>
+        <note category="location">src/app/core/format.ts:195</note>
       </notes>
       <segment>
         <source>Host</source>
@@ -1676,7 +1686,7 @@
     </unit>
     <unit id="format.hintHost">
       <notes>
-        <note category="location">src/app/core/format.ts:194</note>
+        <note category="location">src/app/core/format.ts:195</note>
       </notes>
       <segment>
         <source>10.0.0.5 or 10.0.0.0/8</source>
@@ -1684,7 +1694,7 @@
     </unit>
     <unit id="format.hintDevice">
       <notes>
-        <note category="location">src/app/core/format.ts:195</note>
+        <note category="location">src/app/core/format.ts:196</note>
       </notes>
       <segment>
         <source>MAC address, e.g. bc:24:11:52:d1:06</source>
@@ -1692,7 +1702,7 @@
     </unit>
     <unit id="5321881130377942895">
       <notes>
-        <note category="location">src/app/core/format.ts:196</note>
+        <note category="location">src/app/core/format.ts:197</note>
         <note category="description">Filter hint; keep download, upload, internal and transit untranslated</note>
       </notes>
       <segment>
@@ -1701,7 +1711,7 @@
     </unit>
     <unit id="format.peerEitherSide">
       <notes>
-        <note category="location">src/app/core/format.ts:197</note>
+        <note category="location">src/app/core/format.ts:198</note>
       </notes>
       <segment>
         <source>Peer (either side)</source>
@@ -1709,7 +1719,7 @@
     </unit>
     <unit id="format.hintPeer">
       <notes>
-        <note category="location">src/app/core/format.ts:197</note>
+        <note category="location">src/app/core/format.ts:198</note>
       </notes>
       <segment>
         <source>second host, e.g. with Host for one conversation</source>
@@ -1717,9 +1727,9 @@
     </unit>
     <unit id="format.hintIpOrCidr">
       <notes>
-        <note category="location">src/app/core/format.ts:198</note>
         <note category="location">src/app/core/format.ts:199</note>
-        <note category="location">src/app/core/format.ts:219</note>
+        <note category="location">src/app/core/format.ts:200</note>
+        <note category="location">src/app/core/format.ts:220</note>
       </notes>
       <segment>
         <source>IP or CIDR</source>
@@ -1727,7 +1737,7 @@
     </unit>
     <unit id="format.portEither">
       <notes>
-        <note category="location">src/app/core/format.ts:200</note>
+        <note category="location">src/app/core/format.ts:201</note>
       </notes>
       <segment>
         <source>Port (either)</source>
@@ -1735,7 +1745,7 @@
     </unit>
     <unit id="format.hintPort">
       <notes>
-        <note category="location">src/app/core/format.ts:200</note>
+        <note category="location">src/app/core/format.ts:201</note>
       </notes>
       <segment>
         <source>443 or 8000-8100</source>
@@ -1743,7 +1753,7 @@
     </unit>
     <unit id="7814486560188059636">
       <notes>
-        <note category="location">src/app/core/format.ts:203</note>
+        <note category="location">src/app/core/format.ts:204</note>
         <note category="description">Filter hint; keep tcp, udp and icmp untranslated</note>
       </notes>
       <segment>
@@ -1752,7 +1762,7 @@
     </unit>
     <unit id="format.hintExporter">
       <notes>
-        <note category="location">src/app/core/format.ts:205</note>
+        <note category="location">src/app/core/format.ts:206</note>
       </notes>
       <segment>
         <source>exporter IP</source>
@@ -1760,7 +1770,7 @@
     </unit>
     <unit id="format.interfaceEither">
       <notes>
-        <note category="location">src/app/core/format.ts:206</note>
+        <note category="location">src/app/core/format.ts:207</note>
       </notes>
       <segment>
         <source>Interface (either)</source>
@@ -1768,7 +1778,7 @@
     </unit>
     <unit id="format.countryEither">
       <notes>
-        <note category="location">src/app/core/format.ts:209</note>
+        <note category="location">src/app/core/format.ts:210</note>
       </notes>
       <segment>
         <source>Country (either)</source>
@@ -1776,7 +1786,7 @@
     </unit>
     <unit id="format.hintCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:209</note>
+        <note category="location">src/app/core/format.ts:210</note>
       </notes>
       <segment>
         <source>US or US,DE</source>
@@ -1784,7 +1794,7 @@
     </unit>
     <unit id="format.hintSrcCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:210</note>
+        <note category="location">src/app/core/format.ts:211</note>
       </notes>
       <segment>
         <source>ISO code, e.g. CN</source>
@@ -1792,7 +1802,7 @@
     </unit>
     <unit id="format.hintDstCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:211</note>
+        <note category="location">src/app/core/format.ts:212</note>
       </notes>
       <segment>
         <source>ISO code, e.g. US</source>
@@ -1800,7 +1810,7 @@
     </unit>
     <unit id="format.asEither">
       <notes>
-        <note category="location">src/app/core/format.ts:212</note>
+        <note category="location">src/app/core/format.ts:213</note>
       </notes>
       <segment>
         <source>AS (either)</source>
@@ -1808,7 +1818,7 @@
     </unit>
     <unit id="5622964876741782070">
       <notes>
-        <note category="location">src/app/core/format.ts:217</note>
+        <note category="location">src/app/core/format.ts:218</note>
         <note category="description">Filter hint; keep ipv4 and ipv6 untranslated</note>
       </notes>
       <segment>
@@ -1817,7 +1827,7 @@
     </unit>
     <unit id="format.hintThreat">
       <notes>
-        <note category="location">src/app/core/format.ts:218</note>
+        <note category="location">src/app/core/format.ts:219</note>
         <note category="description">Filter hint; keep * untranslated</note>
       </notes>
       <segment>
@@ -1826,7 +1836,7 @@
     </unit>
     <unit id="format.nextHop">
       <notes>
-        <note category="location">src/app/core/format.ts:219</note>
+        <note category="location">src/app/core/format.ts:220</note>
       </notes>
       <segment>
         <source>Next hop</source>
@@ -1834,7 +1844,7 @@
     </unit>
     <unit id="format.samplingOverride">
       <notes>
-        <note category="location">src/app/core/format.ts:249</note>
+        <note category="location">src/app/core/format.ts:250</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1843,7 +1853,7 @@
     </unit>
     <unit id="format.samplingOverrideHint">
       <notes>
-        <note category="location">src/app/core/format.ts:249</note>
+        <note category="location">src/app/core/format.ts:250</note>
       </notes>
       <segment>
         <source>Manual override set on this exporter</source>
@@ -1851,7 +1861,7 @@
     </unit>
     <unit id="format.samplingAnnouncedHint">
       <notes>
-        <note category="location">src/app/core/format.ts:252</note>
+        <note category="location">src/app/core/format.ts:253</note>
       </notes>
       <segment>
         <source>Announced by the device in its options data</source>
@@ -1859,7 +1869,7 @@
     </unit>
     <unit id="format.samplingRememberedHint">
       <notes>
-        <note category="location">src/app/core/format.ts:253</note>
+        <note category="location">src/app/core/format.ts:254</note>
       </notes>
       <segment>
         <source>Remembered from before the last restart; waiting for the device to confirm</source>
@@ -1867,7 +1877,7 @@
     </unit>
     <unit id="format.samplingPacketHint">
       <notes>
-        <note category="location">src/app/core/format.ts:254</note>
+        <note category="location">src/app/core/format.ts:255</note>
       </notes>
       <segment>
         <source>Carried in every datagram (sFlow / NetFlow v5)</source>
@@ -1875,7 +1885,7 @@
     </unit>
     <unit id="format.samplingUnsampledHint">
       <notes>
-        <note category="location">src/app/core/format.ts:255</note>
+        <note category="location">src/app/core/format.ts:256</note>
       </notes>
       <segment>
         <source>Device reports no sampling: every flow is exported</source>
@@ -1883,7 +1893,7 @@
     </unit>
     <unit id="format.samplingAnnounced">
       <notes>
-        <note category="location">src/app/core/format.ts:258</note>
+        <note category="location">src/app/core/format.ts:259</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1892,7 +1902,7 @@
     </unit>
     <unit id="format.samplingRemembered">
       <notes>
-        <note category="location">src/app/core/format.ts:259</note>
+        <note category="location">src/app/core/format.ts:260</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1901,7 +1911,7 @@
     </unit>
     <unit id="format.samplingPacket">
       <notes>
-        <note category="location">src/app/core/format.ts:260</note>
+        <note category="location">src/app/core/format.ts:261</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1910,7 +1920,7 @@
     </unit>
     <unit id="format.samplingUnsampled">
       <notes>
-        <note category="location">src/app/core/format.ts:261</note>
+        <note category="location">src/app/core/format.ts:262</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -2004,6 +2014,7 @@
         <note category="location">src/app/pages/api-tokens.ts:38</note>
         <note category="location">src/app/pages/audit.ts:17,18</note>
         <note category="location">src/app/pages/identity-sources.ts:88</note>
+        <note category="location">src/app/pages/inventory-sources.ts:98</note>
         <note category="location">src/app/pages/reports.ts:169</note>
         <note category="location">src/app/pages/services.ts:26,27</note>
         <note category="location">src/app/pages/threat-feeds.ts:45</note>
@@ -2198,13 +2209,16 @@
         <note category="location">src/app/pages/certificates.ts:269,270</note>
         <note category="location">src/app/pages/certificates.ts:289,290</note>
         <note category="location">src/app/pages/certificates.ts:298,299</note>
-        <note category="location">src/app/pages/devices.ts:117,118</note>
+        <note category="location">src/app/pages/devices.ts:251,253</note>
         <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
         <note category="location">src/app/pages/exporters.ts:131,132</note>
         <note category="location">src/app/pages/exporters.ts:142,143</note>
         <note category="location">src/app/pages/identity-sources.ts:162,164</note>
         <note category="location">src/app/pages/identity-sources.ts:507,508</note>
         <note category="location">src/app/pages/identity-sources.ts:518,519</note>
+        <note category="location">src/app/pages/inventory-sources.ts:210,212</note>
+        <note category="location">src/app/pages/inventory-sources.ts:439,441</note>
+        <note category="location">src/app/pages/inventory-sources.ts:474,476</note>
         <note category="location">src/app/pages/reports.ts:550,552</note>
         <note category="location">src/app/pages/reports.ts:591,593</note>
         <note category="location">src/app/pages/reports.ts:615,617</note>
@@ -2217,7 +2231,7 @@
         <note category="location">src/app/pages/users.ts:138,139</note>
         <note category="location">src/app/shared/filter-bar.ts:37,39</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:175,176</note>
+        <note category="location">src/app/shell.ts:176,177</note>
       </notes>
       <segment>
         <source>Cancel</source>
@@ -2311,7 +2325,7 @@
       <notes>
         <note category="location">src/app/pages/audit.ts:33,34</note>
         <note category="location">src/app/pages/certificates.ts:155,156</note>
-        <note category="location">src/app/pages/devices.ts:90,91</note>
+        <note category="location">src/app/pages/devices.ts:184,186</note>
         <note category="location">src/app/pages/explorer.ts:188,189</note>
         <note category="location">src/app/pages/exporter-detail.ts:105,106</note>
         <note category="location">src/app/pages/exporters.ts:94,95</note>
@@ -2869,7 +2883,7 @@
     <unit id="common.save">
       <notes>
         <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
-        <note category="location">src/app/pages/devices.ts:118,120</note>
+        <note category="location">src/app/pages/devices.ts:254,255</note>
         <note category="location">src/app/pages/email.ts:207,208</note>
         <note category="location">src/app/pages/enrichment.ts:374,375</note>
         <note category="location">src/app/pages/enrichment.ts:486,487</note>
@@ -2877,6 +2891,7 @@
         <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
         <note category="location">src/app/pages/exporters.ts:132,134</note>
         <note category="location">src/app/pages/identity-sources.ts:508,510</note>
+        <note category="location">src/app/pages/inventory-sources.ts:449,450</note>
         <note category="location">src/app/pages/local-networks.ts:107,109</note>
         <note category="location">src/app/pages/reports.ts:560,561</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
@@ -3671,7 +3686,7 @@
     <unit id="common.name">
       <notes>
         <note category="location">src/app/pages/certificates.ts:140,141</note>
-        <note category="location">src/app/pages/devices.ts:110,111</note>
+        <note category="location">src/app/pages/devices.ts:222,223</note>
         <note category="location">src/app/pages/exporter-detail.ts:71,72</note>
         <note category="location">src/app/pages/exporter-detail.ts:120,121</note>
         <note category="location">src/app/pages/identity-sources.ts:96,97</note>
@@ -4764,9 +4779,17 @@
         <source>talking to them</source>
       </segment>
     </unit>
-    <unit id="devices.sourceName">
+    <unit id="devices.sourceInventory">
       <notes>
         <note category="location">src/app/pages/devices.ts:14</note>
+      </notes>
+      <segment>
+        <source>From the inventory</source>
+      </segment>
+    </unit>
+    <unit id="devices.sourceName">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:15</note>
       </notes>
       <segment>
         <source>Named by an administrator</source>
@@ -4774,7 +4797,7 @@
     </unit>
     <unit id="devices.sourceDns">
       <notes>
-        <note category="location">src/app/pages/devices.ts:15</note>
+        <note category="location">src/app/pages/devices.ts:16</note>
       </notes>
       <segment>
         <source>Reverse DNS of its IPv4 address</source>
@@ -4782,7 +4805,7 @@
     </unit>
     <unit id="devices.sourceVendor">
       <notes>
-        <note category="location">src/app/pages/devices.ts:16</note>
+        <note category="location">src/app/pages/devices.ts:17</note>
       </notes>
       <segment>
         <source>Manufacturer from the MAC address</source>
@@ -4790,7 +4813,7 @@
     </unit>
     <unit id="devices.sourceMac">
       <notes>
-        <note category="location">src/app/pages/devices.ts:17</note>
+        <note category="location">src/app/pages/devices.ts:18</note>
       </notes>
       <segment>
         <source>No name known: rename it</source>
@@ -4798,15 +4821,15 @@
     </unit>
     <unit id="devices.subtitle">
       <notes>
-        <note category="location">src/app/pages/devices.ts:27,28</note>
+        <note category="location">src/app/pages/devices.ts:29,31</note>
       </notes>
       <segment>
-        <source>Local devices by MAC address, with every address they used · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
+        <source> Local devices by MAC address, with every address they used · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/> </source>
       </segment>
     </unit>
     <unit id="devices.col.device">
       <notes>
-        <note category="location">src/app/pages/devices.ts:37,38</note>
+        <note category="location">src/app/pages/devices.ts:46,47</note>
       </notes>
       <segment>
         <source>Device</source>
@@ -4814,7 +4837,7 @@
     </unit>
     <unit id="devices.col.mac">
       <notes>
-        <note category="location">src/app/pages/devices.ts:38,39</note>
+        <note category="location">src/app/pages/devices.ts:47,48</note>
       </notes>
       <segment>
         <source>MAC</source>
@@ -4822,7 +4845,7 @@
     </unit>
     <unit id="devices.col.vendor">
       <notes>
-        <note category="location">src/app/pages/devices.ts:39,40</note>
+        <note category="location">src/app/pages/devices.ts:48,49</note>
       </notes>
       <segment>
         <source>Vendor</source>
@@ -4830,7 +4853,7 @@
     </unit>
     <unit id="devices.col.ipv4">
       <notes>
-        <note category="location">src/app/pages/devices.ts:40,41</note>
+        <note category="location">src/app/pages/devices.ts:49,50</note>
       </notes>
       <segment>
         <source>IPv4</source>
@@ -4838,7 +4861,7 @@
     </unit>
     <unit id="devices.col.ipv6">
       <notes>
-        <note category="location">src/app/pages/devices.ts:41,42</note>
+        <note category="location">src/app/pages/devices.ts:50,51</note>
       </notes>
       <segment>
         <source>IPv6</source>
@@ -4846,7 +4869,7 @@
     </unit>
     <unit id="devices.col.traffic">
       <notes>
-        <note category="location">src/app/pages/devices.ts:42,43</note>
+        <note category="location">src/app/pages/devices.ts:52,54</note>
       </notes>
       <segment>
         <source>Traffic</source>
@@ -4854,7 +4877,7 @@
     </unit>
     <unit id="devices.col.lastSeen">
       <notes>
-        <note category="location">src/app/pages/devices.ts:43,45</note>
+        <note category="location">src/app/pages/devices.ts:55,58</note>
       </notes>
       <segment>
         <source>Last seen</source>
@@ -4862,7 +4885,7 @@
     </unit>
     <unit id="devices.rename">
       <notes>
-        <note category="location">src/app/pages/devices.ts:48,49</note>
+        <note category="location">src/app/pages/devices.ts:68,69</note>
       </notes>
       <segment>
         <source>Rename</source>
@@ -4870,7 +4893,7 @@
     </unit>
     <unit id="devices.analyze">
       <notes>
-        <note category="location">src/app/pages/devices.ts:50,51</note>
+        <note category="location">src/app/pages/devices.ts:73,74</note>
       </notes>
       <segment>
         <source>Analyze traffic</source>
@@ -4878,7 +4901,7 @@
     </unit>
     <unit id="devices.showFlows">
       <notes>
-        <note category="location">src/app/pages/devices.ts:51,52</note>
+        <note category="location">src/app/pages/devices.ts:77,78</note>
       </notes>
       <segment>
         <source>Show flows</source>
@@ -4886,7 +4909,7 @@
     </unit>
     <unit id="devices.privateMac">
       <notes>
-        <note category="location">src/app/pages/devices.ts:60,62</note>
+        <note category="location">src/app/pages/devices.ts:106,108</note>
       </notes>
       <segment>
         <source>Private MAC</source>
@@ -4894,7 +4917,7 @@
     </unit>
     <unit id="devices.ipv6Count">
       <notes>
-        <note category="location">src/app/pages/devices.ts:66</note>
+        <note category="location">src/app/pages/devices.ts:114,116</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 address} other {<ph id="0" equiv="INTERPOLATION"/> addresses}}</source>
@@ -4902,15 +4925,39 @@
     </unit>
     <unit id="devices.firstSeen">
       <notes>
-        <note category="location">src/app/pages/devices.ts:72</note>
+        <note category="location">src/app/pages/devices.ts:127</note>
       </notes>
       <segment>
         <source>First seen</source>
       </segment>
     </unit>
+    <unit id="devices.inventory">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:130,131</note>
+      </notes>
+      <segment>
+        <source>Inventory</source>
+      </segment>
+    </unit>
+    <unit id="devices.openIn">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:143,144</note>
+      </notes>
+      <segment>
+        <source>open in <ph id="0" equiv="INTERPOLATION" disp="{{ inv.source }}"/></source>
+      </segment>
+    </unit>
+    <unit id="devices.services">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:149,150</note>
+      </notes>
+      <segment>
+        <source>Documented services</source>
+      </segment>
+    </unit>
     <unit id="devices.flowsInRange">
       <notes>
-        <note category="location">src/app/pages/devices.ts:73</note>
+        <note category="location">src/app/pages/devices.ts:159,160</note>
       </notes>
       <segment>
         <source>Flows in range</source>
@@ -4918,7 +4965,7 @@
     </unit>
     <unit id="devices.addresses">
       <notes>
-        <note category="location">src/app/pages/devices.ts:75,76</note>
+        <note category="location">src/app/pages/devices.ts:163,164</note>
       </notes>
       <segment>
         <source>Addresses</source>
@@ -4926,7 +4973,7 @@
     </unit>
     <unit id="devices.placeholderEnrichment">
       <notes>
-        <note category="location">src/app/pages/devices.ts:86,88</note>
+        <note category="location">src/app/pages/devices.ts:177,180</note>
       </notes>
       <segment>
         <source> No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are set under Configuration → Local Networks. </source>
@@ -4934,7 +4981,7 @@
     </unit>
     <unit id="devices.footer">
       <notes>
-        <note category="location">src/app/pages/devices.ts:92,93</note>
+        <note category="location">src/app/pages/devices.ts:188,190</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -4943,7 +4990,7 @@
     </unit>
     <unit id="devices.empty">
       <notes>
-        <note category="location">src/app/pages/devices.ts:94,96</note>
+        <note category="location">src/app/pages/devices.ts:192,194</note>
       </notes>
       <segment>
         <source>No devices</source>
@@ -4951,7 +4998,7 @@
     </unit>
     <unit id="devices.hint">
       <notes>
-        <note category="location">src/app/pages/devices.ts:101,104</note>
+        <note category="location">src/app/pages/devices.ts:199,205</note>
       </notes>
       <segment>
         <source> A device is identified by the MAC address its traffic arrives from. Downloads are matched to devices through the addresses they used for uploads, which also groups rotating IPv6 privacy addresses. Phones and laptops often use a <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">private (randomized) MAC</pc> per network, so they have no vendor: give them a name. </source>
@@ -4959,7 +5006,7 @@
     </unit>
     <unit id="devices.renameTitle">
       <notes>
-        <note category="location">src/app/pages/devices.ts:105,106</note>
+        <note category="location">src/app/pages/devices.ts:210,211</note>
       </notes>
       <segment>
         <source>Rename device</source>
@@ -4967,7 +5014,7 @@
     </unit>
     <unit id="devices.unknownVendor">
       <notes>
-        <note category="location">src/app/pages/devices.ts:107,108</note>
+        <note category="location">src/app/pages/devices.ts:217,219</note>
       </notes>
       <segment>
         <source>unknown vendor</source>
@@ -4975,18 +5022,42 @@
     </unit>
     <unit id="devices.namePlaceholder">
       <notes>
-        <note category="location">src/app/pages/devices.ts:111</note>
+        <note category="location">src/app/pages/devices.ts:228,229</note>
       </notes>
       <segment>
         <source>e.g. Living room TV</source>
       </segment>
     </unit>
+    <unit id="devices.nameInInventory">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:233,234</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ inv.source }}"/> names this device <ph id="1" equiv="INTERPOLATION_1" disp="{{ inv.name }}"/>, which takes precedence: rename it there.</source>
+      </segment>
+    </unit>
     <unit id="devices.nameHelper">
       <notes>
-        <note category="location">src/app/pages/devices.ts:112,113</note>
+        <note category="location">src/app/pages/devices.ts:238,239</note>
       </notes>
       <segment>
         <source>Leave empty to use the DNS or vendor name again.</source>
+      </segment>
+    </unit>
+    <unit id="devices.kindVm">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:312</note>
+      </notes>
+      <segment>
+        <source>virtual machine</source>
+      </segment>
+    </unit>
+    <unit id="devices.kindDevice">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:313</note>
+      </notes>
+      <segment>
+        <source>device</source>
       </segment>
     </unit>
     <unit id="email.subtitle">
@@ -5218,6 +5289,7 @@
       <notes>
         <note category="location">src/app/pages/email.ts:293</note>
         <note category="location">src/app/pages/enrichment.ts:761</note>
+        <note category="location">src/app/pages/inventory-sources.ts:600</note>
       </notes>
       <segment>
         <source>Stored · leave empty to keep</source>
@@ -8003,7 +8075,7 @@
       <notes>
         <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
-        <note category="location">src/app/shell.ts:208,210</note>
+        <note category="location">src/app/shell.ts:209,211</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -8095,6 +8167,450 @@
       </notes>
       <segment>
         <source><ph id="0" equiv="claims" disp="want.join(&apos;, &apos;)"/> advertised</source>
+      </segment>
+    </unit>
+    <unit id="inventory.netboxDescription">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:15</note>
+      </notes>
+      <segment>
+        <source>Devices, virtual machines, addresses, MACs, services and prefixes from NetBox 4.2 or later, through its REST API.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.subtitle2">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:43,45</note>
+      </notes>
+      <segment>
+        <source> Names, roles and documented services from your source of truth. Read-only. </source>
+      </segment>
+    </unit>
+    <unit id="inventory.add">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:71,72</note>
+      </notes>
+      <segment>
+        <source>Add source</source>
+      </segment>
+    </unit>
+    <unit id="inventory.edit">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:75,76</note>
+      </notes>
+      <segment>
+        <source>Edit</source>
+      </segment>
+    </unit>
+    <unit id="inventory.syncNow">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:83,84</note>
+      </notes>
+      <segment>
+        <source>Sync now</source>
+      </segment>
+    </unit>
+    <unit id="inventory.delete">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:91,92</note>
+        <note category="location">src/app/pages/inventory-sources.ts:477,479</note>
+      </notes>
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="inventory.name">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:111,112</note>
+        <note category="location">src/app/pages/inventory-sources.ts:237,238</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="inventory.type">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:112,113</note>
+      </notes>
+      <segment>
+        <source>Type</source>
+      </segment>
+    </unit>
+    <unit id="inventory.url">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:113,114</note>
+        <note category="location">src/app/pages/inventory-sources.ts:255,256</note>
+      </notes>
+      <segment>
+        <source>Address</source>
+      </segment>
+    </unit>
+    <unit id="inventory.contents">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:114,115</note>
+      </notes>
+      <segment>
+        <source>Contents</source>
+      </segment>
+    </unit>
+    <unit id="inventory.synced">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:115,116</note>
+      </notes>
+      <segment>
+        <source>Synced</source>
+      </segment>
+    </unit>
+    <unit id="inventory.priority">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:117,119</note>
+        <note category="location">src/app/pages/inventory-sources.ts:353,355</note>
+      </notes>
+      <segment>
+        <source>Priority</source>
+      </segment>
+    </unit>
+    <unit id="inventory.disabled">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:123,125</note>
+      </notes>
+      <segment>
+        <source>disabled</source>
+      </segment>
+    </unit>
+    <unit id="inventory.countObjects">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:137,139</note>
+      </notes>
+      <segment>
+        <source> <ph id="0" equiv="ICU" disp="{c.objects, plural, =1 {1 device} other {{{ c.objects }} devices}}" subFlows="1197008502525385839"/> </source>
+      </segment>
+    </unit>
+    <unit id="260676601866367905">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:137,138</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 device} other {<ph id="0" equiv="INTERPOLATION"/> devices}}</source>
+      </segment>
+    </unit>
+    <unit id="inventory.countAddrs">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:140,142</note>
+      </notes>
+      <segment>
+        <source> <ph id="0" equiv="ICU" disp="{c.addrs, plural, =1 {1 address} other {{{ c.addrs }} addresses}}" subFlows="2823937866756791807"/> </source>
+      </segment>
+    </unit>
+    <unit id="6239054221558828317">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:140,141</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 address} other {<ph id="0" equiv="INTERPOLATION"/> addresses}}</source>
+      </segment>
+    </unit>
+    <unit id="inventory.countMacs">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:143,145</note>
+      </notes>
+      <segment>
+        <source> <ph id="0" equiv="ICU" disp="{c.macs, plural, =1 {1 MAC} other {{{ c.macs }} MACs}}" subFlows="2420131974798672714"/> </source>
+      </segment>
+    </unit>
+    <unit id="4097474296337613715">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:143,144</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 MAC} other {<ph id="0" equiv="INTERPOLATION"/> MACs}}</source>
+      </segment>
+    </unit>
+    <unit id="inventory.countServices">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:146,148</note>
+      </notes>
+      <segment>
+        <source> <ph id="0" equiv="ICU" disp="{c.services, plural, =1 {1 service} other {{{ c.services }} services}}" subFlows="7631765421822272585"/> </source>
+      </segment>
+    </unit>
+    <unit id="39335880892380882">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:146,147</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 service} other {<ph id="0" equiv="INTERPOLATION"/> services}}</source>
+      </segment>
+    </unit>
+    <unit id="inventory.countPrefixes">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:149,151</note>
+      </notes>
+      <segment>
+        <source> <ph id="0" equiv="ICU" disp="{c.prefixes, plural, =1 {1 prefix} other {{{ c.prefixes }} prefixes}}" subFlows="5456925798132167125"/> </source>
+      </segment>
+    </unit>
+    <unit id="5708595107145617188">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:149,150</note>
+      </notes>
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {1 prefix} other {<ph id="0" equiv="INTERPOLATION"/> prefixes}}</source>
+      </segment>
+    </unit>
+    <unit id="inventory.usingLast">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:164,165</note>
+      </notes>
+      <segment>
+        <source> using the copy from <ph id="0" equiv="INTERPOLATION" disp="{{ ago(s.lastSuccess) }}"/> </source>
+      </segment>
+    </unit>
+    <unit id="inventory.pending">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:170,172</note>
+      </notes>
+      <segment>
+        <source>pending</source>
+      </segment>
+    </unit>
+    <unit id="inventory.placeholder2">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:176,179</note>
+      </notes>
+      <segment>
+        <source>No inventory sources. Add one to name devices there once and see those names here.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.hint2">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:181,186</note>
+      </notes>
+      <segment>
+        <source> Inventory names take precedence over names set in Tributary and over reverse DNS, for past traffic too. With several sources, the lowest priority number wins where they disagree. Sources are only read; Tributary never changes them. </source>
+      </segment>
+    </unit>
+    <unit id="inventory.addTitle">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:192,193</note>
+      </notes>
+      <segment>
+        <source>Add inventory source</source>
+      </segment>
+    </unit>
+    <unit id="inventory.editTypeTitle">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:225,226</note>
+      </notes>
+      <segment>
+        <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(editing()?.type) }}"/> source</source>
+      </segment>
+    </unit>
+    <unit id="inventory.addTypeTitle">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:229,230</note>
+      </notes>
+      <segment>
+        <source>Add <ph id="0" equiv="INTERPOLATION" disp="{{ typeLabel(editing()?.type) }}"/> source</source>
+      </segment>
+    </unit>
+    <unit id="inventory.nameHelp">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:240,241</note>
+      </notes>
+      <segment>
+        <source>Shown next to names and links that come from this source.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.status">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:244,245</note>
+      </notes>
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="inventory.enabled">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:247,248</note>
+      </notes>
+      <segment>
+        <source>Enabled</source>
+      </segment>
+    </unit>
+    <unit id="inventory.connection">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:251,252</note>
+      </notes>
+      <segment>
+        <source>Connection</source>
+      </segment>
+    </unit>
+    <unit id="inventory.urlHelp">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:267,268</note>
+      </notes>
+      <segment>
+        <source>NetBox 4.2 or later. HTTPS certificates are checked against the system CAs and those under Appliance → Certificates.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.token">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:272,273</note>
+      </notes>
+      <segment>
+        <source>API token</source>
+      </segment>
+    </unit>
+    <unit id="inventory.tokenHelp">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:282,283</note>
+      </notes>
+      <segment>
+        <source>A read-only token (in NetBox: Admin → API Tokens, without &quot;Write enabled&quot;). Stored encrypted.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.scope">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:288,290</note>
+      </notes>
+      <segment>
+        <source>Scope</source>
+      </segment>
+    </unit>
+    <unit id="inventory.site">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:296</note>
+      </notes>
+      <segment>
+        <source>site</source>
+      </segment>
+    </unit>
+    <unit id="inventory.tenant">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:304</note>
+      </notes>
+      <segment>
+        <source>tenant</source>
+      </segment>
+    </unit>
+    <unit id="inventory.tag">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:312</note>
+      </notes>
+      <segment>
+        <source>tag</source>
+      </segment>
+    </unit>
+    <unit id="inventory.scopeHelp">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:316,318</note>
+      </notes>
+      <segment>
+        <source>Optional slugs: only devices in this site, tenant or with this tag.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.localTag">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:321,322</note>
+      </notes>
+      <segment>
+        <source>Local prefixes</source>
+      </segment>
+    </unit>
+    <unit id="inventory.localTagHelp2">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:329,330</note>
+      </notes>
+      <segment>
+        <source>Optional tag: prefixes with it are added to Local Networks.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.syncSection">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:335,336</note>
+      </notes>
+      <segment>
+        <source>Sync</source>
+      </segment>
+    </unit>
+    <unit id="inventory.interval">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:337,339</note>
+      </notes>
+      <segment>
+        <source>Sync every</source>
+      </segment>
+    </unit>
+    <unit id="inventory.intervalHelp">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:348,350</note>
+      </notes>
+      <segment>
+        <source>Minutes. Tributary keeps the last copy if the inventory is unreachable.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.priorityHelp">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:364,366</note>
+      </notes>
+      <segment>
+        <source>With several sources, the lowest number wins when they disagree.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.testOk">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:381,384</note>
+      </notes>
+      <segment>
+        <source>Found <ph id="0" equiv="INTERPOLATION" disp="{{ r.counts.objects }}"/> devices, <ph id="1" equiv="INTERPOLATION_1" disp="{{ r.counts.addrs }}"/> addresses, <ph id="2" equiv="INTERPOLATION_2" disp="{{ r.counts.macs }}"/> MACs, <ph id="3" equiv="INTERPOLATION_3" disp="{{ r.counts.services }}"/> services and <ph id="4" equiv="INTERPOLATION_4" disp="{{ r.counts.prefixes }}"/> prefixes</source>
+      </segment>
+    </unit>
+    <unit id="inventory.writable">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:391,392</note>
+      </notes>
+      <segment>
+        <source> This token can write. Tributary only reads: use a read-only token. </source>
+      </segment>
+    </unit>
+    <unit id="inventory.test">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:431,433</note>
+      </notes>
+      <segment>
+        <source> Test </source>
+      </segment>
+    </unit>
+    <unit id="inventory.deleteTitle">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:460,462</note>
+      </notes>
+      <segment>
+        <source> Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>? </source>
+      </segment>
+    </unit>
+    <unit id="inventory.deleteText">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:464,466</note>
+      </notes>
+      <segment>
+        <source> Its names and context disappear from Tributary. The inventory itself is not touched. </source>
+      </segment>
+    </unit>
+    <unit id="inventory.saved">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:674</note>
+      </notes>
+      <segment>
+        <source>Saved. Syncing <ph id="0" equiv="name" disp="saved.name"/> in the background.</source>
+      </segment>
+    </unit>
+    <unit id="inventory.syncing">
+      <notes>
+        <note category="location">src/app/pages/inventory-sources.ts:688</note>
+      </notes>
+      <segment>
+        <source>Syncing <ph id="0" equiv="name" disp="s.name"/>…</source>
       </segment>
     </unit>
     <unit id="localNetworks.subtitle">
@@ -12194,8 +12710,8 @@
     <unit id="shell.changePassword">
       <notes>
         <note category="location">src/app/shell.ts:72,73</note>
-        <note category="location">src/app/shell.ts:153,154</note>
-        <note category="location">src/app/shell.ts:176,178</note>
+        <note category="location">src/app/shell.ts:154,155</note>
+        <note category="location">src/app/shell.ts:177,179</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -12235,7 +12751,7 @@
     </unit>
     <unit id="nav.groupAccess">
       <notes>
-        <note category="location">src/app/shell.ts:125,126</note>
+        <note category="location">src/app/shell.ts:126,127</note>
       </notes>
       <segment>
         <source>Access</source>
@@ -12243,7 +12759,7 @@
     </unit>
     <unit id="nav.groupAppliance">
       <notes>
-        <note category="location">src/app/shell.ts:135,136</note>
+        <note category="location">src/app/shell.ts:136,137</note>
       </notes>
       <segment>
         <source>Appliance</source>
@@ -12251,7 +12767,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:157,158</note>
+        <note category="location">src/app/shell.ts:158,159</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -12259,7 +12775,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:161,162</note>
+        <note category="location">src/app/shell.ts:162,163</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -12267,7 +12783,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:163,164</note>
+        <note category="location">src/app/shell.ts:164,165</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -12275,7 +12791,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:166,167</note>
+        <note category="location">src/app/shell.ts:167,168</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -12283,7 +12799,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:185,187</note>
+        <note category="location">src/app/shell.ts:186,188</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -12291,7 +12807,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:187,188</note>
+        <note category="location">src/app/shell.ts:188,189</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -12299,7 +12815,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:190</note>
+        <note category="location">src/app/shell.ts:191</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -12307,7 +12823,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:194,195</note>
+        <note category="location">src/app/shell.ts:195,196</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -12315,7 +12831,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:201,203</note>
+        <note category="location">src/app/shell.ts:202,204</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -12323,7 +12839,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:203,204</note>
+        <note category="location">src/app/shell.ts:204,205</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -12331,7 +12847,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:204,207</note>
+        <note category="location">src/app/shell.ts:205,208</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -12339,7 +12855,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:373</note>
+        <note category="location">src/app/shell.ts:374</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

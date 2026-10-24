@@ -1,6 +1,7 @@
 # Design: inventory sources
 
-Status: draft. Tributary reads devices, addresses and services from an
+Status: implemented (NetBox), October 2026; open questions below were settled
+with the proposed answers. Tributary reads devices, addresses and services from an
 inventory (a CMDB or source of truth), starting with NetBox, so names and
 context are maintained in one place.
 
@@ -69,12 +70,11 @@ backend specifics.
 
 ## Sync and cache
 
-- Full snapshot every interval, stored in SQLite tables (`inv_objects`,
-  `inv_addrs`, `inv_macs`, `inv_services`, `inv_prefixes`) per source,
-  replaced in one transaction. Lookups are in-memory maps rebuilt after sync.
+- Full snapshot every interval, cached per source as one JSON row
+  (`inventory_snapshots`) and swapped in one transaction; lookups use an
+  in-memory index rebuilt after each sync (`internal/inventory`).
 - Ingest and queries never call the inventory. If it's unreachable, the last
-  snapshot stays in use; the source shows the error and a notice appears after
-  repeated failures (like threat feeds).
+  snapshot stays in use and the source shows the error.
 - Size: a lab is hundreds of objects, a large site tens of thousands; a full
   sync is cheap at that scale. Incremental sync (`last_updated__gte` plus the
   change log for deletions) and NetBox webhooks are later options.

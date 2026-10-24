@@ -161,6 +161,11 @@ func queryCtx(r *http.Request) (context.Context, context.CancelFunc) {
 // ---- labels ----
 
 func (s *Server) exporterLabel(addr string) string {
+	if ip, err := netip.ParseAddr(addr); err == nil {
+		if n := s.Inventory.Index().Name(ip); n != "" {
+			return n
+		}
+	}
 	if n := s.Config.ExporterName(addr); n != "" {
 		return n
 	}
@@ -350,7 +355,7 @@ func (s *Server) flows(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	names := s.RDNS.Names(r.Context(), addrs, time.Second)
+	names := s.hostNames(r.Context(), addrs, time.Second)
 	for i := range page.Rows {
 		f := &page.Rows[i]
 		if ip, err := netip.ParseAddr(f.SrcAddr); err == nil {
@@ -784,7 +789,7 @@ func (s *Server) details(ctx context.Context, dim string, rows []store.TopRow) {
 				addrs = append(addrs, ip)
 			}
 		}
-		names := s.RDNS.Names(ctx, addrs, 800*time.Millisecond)
+		names := s.hostNames(ctx, addrs, 800*time.Millisecond)
 		for i := range rows {
 			if ip, err := netip.ParseAddr(rows[i].Key); err == nil {
 				rows[i].Label, rows[i].Detail = s.endpoint(ip, names[ip], true)
@@ -805,7 +810,7 @@ func (s *Server) details(ctx context.Context, dim string, rows []store.TopRow) {
 				addrs = append(addrs, pa, pb)
 			}
 		}
-		names := s.RDNS.Names(ctx, addrs, 800*time.Millisecond)
+		names := s.hostNames(ctx, addrs, 800*time.Millisecond)
 		for i := range rows {
 			if !pairs[i][0].IsValid() {
 				continue

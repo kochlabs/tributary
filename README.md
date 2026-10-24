@@ -12,7 +12,7 @@ single Go binary with a web UI.
 
 - NetFlow v5/v9, IPFIX and sFlow v5, with sampling correction
 - Dashboard, traffic explorer, Sankey path analysis and flow search
-- GeoIP, ASN, MAC vendor and reverse DNS enrichment
+- GeoIP, ASN, MAC vendor and reverse DNS enrichment; names from NetBox
 - SNMP polling for interface names and speeds
 - Scheduled PDF reports by email
 - Threat-feed matching (Spamhaus DROP, Feodo Tracker, FireHOL, or your own lists)

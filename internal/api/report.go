@@ -152,7 +152,7 @@ func (s *Server) buildReport(ctx context.Context, def config.Report, from, to ti
 					addrs = append(addrs, a)
 				}
 			}
-			names := s.RDNS.Names(ctx, addrs, 800*time.Millisecond)
+			names := s.hostNames(ctx, addrs, 800*time.Millisecond)
 			rows := make([]report.Row, 0, len(list))
 			for _, e := range list {
 				label, detail := e.Addr, ""
@@ -161,7 +161,13 @@ func (s *Server) buildReport(ctx context.Context, def config.Report, from, to ti
 						label, detail = n, e.Addr
 					}
 				}
-				rows = append(rows, report.Row{Label: label, Detail: detail, Service: s.label("app", fmt.Sprintf("%d/%d", e.Proto, e.Port)),
+				svc := s.label("app", fmt.Sprintf("%d/%d", e.Proto, e.Port))
+				if a, err := netip.ParseAddr(e.Addr); err == nil {
+					if doc := s.Inventory.Index().ServiceName(a, protoName(e.Proto), int(e.Port)); doc != "" {
+						svc += " · " + doc // documented in the inventory
+					}
+				}
+				rows = append(rows, report.Row{Label: label, Detail: detail, Service: svc,
 					Sources: e.Sources, Flows: e.Flows, Bytes: e.Bytes})
 			}
 			out.Exposure = rows
@@ -230,6 +236,10 @@ func (s *Server) buildReport(ctx context.Context, def config.Report, from, to ti
 		}
 	}
 	return out, nil
+}
+
+func protoName(p uint8) string {
+	return map[uint8]string{6: "tcp", 17: "udp", 132: "sctp"}[p]
 }
 
 // periodLabel names a run's period for subjects and file names.

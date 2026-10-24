@@ -766,11 +766,61 @@ export interface TrustedCA extends CertDetails {
   createdAt: number;
 }
 
+/** What an inventory source (NetBox …) says about a device or address. */
+export interface InventoryRecord {
+  source: string;
+  kind: 'device' | 'vm';
+  id: number;
+  name: string;
+  role?: string;
+  site?: string;
+  tenant?: string;
+  status?: string;
+  url?: string;
+  tags?: string[];
+  services?: { name: string; protocol: string; ports: number[]; description?: string }[];
+}
+
+/** A read-only connection to an inventory (NetBox). */
+export interface InventorySource {
+  id: number;
+  name: string;
+  type: 'netbox';
+  enabled: boolean;
+  priority: number;
+  url: string;
+  /** Write-only: empty keeps the stored token. */
+  token?: string;
+  hasToken: boolean;
+  scopeSite: string;
+  scopeTenant: string;
+  scopeTag: string;
+  intervalMin: number;
+  localTag: string;
+  lastAttempt: number;
+  lastSuccess: number;
+  lastError: string;
+  counts: string;
+  createdAt: number;
+}
+
+export interface InventoryTest {
+  ok: boolean;
+  error?: string;
+  result?: {
+    counts: { objects: number; addrs: number; macs: number; services: number; prefixes: number };
+    sample: string[];
+    writable: boolean;
+    warning?: string;
+  };
+}
+
 export interface DeviceInfo {
   mac: string;
   name: string;
   customName: string;
-  nameSource: 'name' | 'dns' | 'vendor' | 'mac';
+  nameSource: 'inventory' | 'name' | 'dns' | 'vendor' | 'mac';
+  inventory?: InventoryRecord;
   vendor: string;
   randomized: boolean;
   firstSeen: number;
@@ -1086,6 +1136,25 @@ export class Api {
   deleteApiToken(id: number) {
     return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
   }
+  inventorySources() {
+    return this.get<InventorySource[]>('/api/inventory-sources');
+  }
+  saveInventorySource(s: Partial<InventorySource>) {
+    return firstValueFrom(
+      s.id
+        ? this.http.put<InventorySource>(`/api/inventory-sources/${s.id}`, s)
+        : this.http.post<InventorySource>('/api/inventory-sources', s),
+    );
+  }
+  deleteInventorySource(id: number) {
+    return firstValueFrom(this.http.delete(`/api/inventory-sources/${id}`));
+  }
+  testInventorySource(s: Partial<InventorySource>) {
+    return firstValueFrom(this.http.post<InventoryTest>('/api/inventory-sources/test', s));
+  }
+  syncInventorySource(id: number) {
+    return firstValueFrom(this.http.post(`/api/inventory-sources/${id}/sync`, {}));
+  }
   email() {
     return this.get<EmailConfig>('/api/email');
   }
@@ -1118,7 +1187,9 @@ export class Api {
   }
   /** A report for its period ending now, without keeping it. */
   previewReport(r: Partial<Report>) {
-    return pdfBlob(this.http.post('/api/reports/preview', reportDefinition(r), { responseType: 'blob' }));
+    return pdfBlob(
+      this.http.post('/api/reports/preview', reportDefinition(r), { responseType: 'blob' }),
+    );
   }
   reportRunPdf(runId: number) {
     return pdfBlob(this.http.get(`/api/reports/runs/${runId}/pdf`, { responseType: 'blob' }));

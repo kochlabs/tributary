@@ -27,6 +27,7 @@ import (
 	"github.com/kochlabs/tributary/internal/config"
 	"github.com/kochlabs/tributary/internal/enrich"
 	"github.com/kochlabs/tributary/internal/flow"
+	"github.com/kochlabs/tributary/internal/inventory"
 	"github.com/kochlabs/tributary/internal/offsite"
 	"github.com/kochlabs/tributary/internal/snmp"
 	"github.com/kochlabs/tributary/internal/store"
@@ -147,8 +148,15 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	asnCache := filepath.Join(dataDir, "geoip", "asn-online.json")
 	_ = geo.Online.Load(asnCache) // before collectors start, so labels and ingest use it
 	go geo.Online.Persist(ctx, asnCache, 5*time.Minute)
-	geo.SetLocalNetworks(settings.LocalPrefixes())
-	store.SetLocalNetworks(settings.LocalPrefixes())
+	// Local networks: the configured ones plus prefixes an inventory source
+	// marks as local; recomputed when either changes.
+	var inv *inventory.Manager
+	setLocal := func(ns config.Settings) {
+		ps := append(ns.LocalPrefixes(), inv.LocalPrefixes()...)
+		geo.SetLocalNetworks(ps)
+		store.SetLocalNetworks(ps)
+	}
+	setLocal(settings)
 	enrich.UserAgent = "Tributary/" + version
 	sources := cfg.Enrichment()
 	geo.SetSource(sources)
@@ -202,6 +210,13 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		}
 	}()
 
+	// Inventory sources (NetBox …): names and context, read-only and cached.
+	inv = &inventory.Manager{Cfg: cfg, Log: log, Client: trust.Client, Agent: "Tributary/" + version,
+		OnChange: func() { setLocal(cfg.Settings()) }}
+	if err := inv.Reload(); err != nil {
+		log.Warn("inventory could not be loaded", "err", err)
+	}
+
 	// Threat feeds: lists of known-bad addresses matched at ingest.
 	threats := &threat.Manager{Cfg: cfg, Log: log, Dir: filepath.Join(dataDir, "threat"), Client: trust.Client, Agent: "Tributary/" + version}
 	if err := threats.Reload(); err != nil {
@@ -234,14 +249,13 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 	srv := &api.Server{
 		Log: log, Config: cfg, Store: st, Writer: writer, Collector: col, Geo: geo, Vendors: vendors, RDNS: rdns, DataDir: dataDir, Restart: stop, Syslog: fwd, SNMP: poller,
 		Backups: &backup.Manager{Dir: dataDir, Version: version, Log: log, Snapshot: cfg.Snapshot,
-			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, Threats: threats, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
+			CH: backup.ClickHouse{URL: "http://" + chHTTP, User: chUser, Password: strings.TrimSpace(string(pw))}}, System: system.New(), Certs: certMgr, Trust: trust, Threats: threats, Inventory: inv, UI: webui.FS(), Version: version, SourceURL: sourceURL, SecureCookies: !plainHTTP,
 		ApplySettings: func(ctx context.Context, old, ns config.Settings) error {
 			var errs []error
 			rdns.Enabled.Store(ns.ReverseDNS)
 			enrich.SetDNSServers(ns.DNSServers)
 			geo.Online.Enabled.Store(ns.OnlineASNLookup)
-			geo.SetLocalNetworks(ns.LocalPrefixes())
-			store.SetLocalNetworks(ns.LocalPrefixes())
+			setLocal(ns)
 			col.SetAllowedSources(ns.AllowedExporterPrefixes())
 			if old.NetFlowPort != ns.NetFlowPort || old.IPFIXPort != ns.IPFIXPort || old.SFlowPort != ns.SFlowPort {
 				errs = append(errs, col.Start(collector.Ports{NetFlow: ns.NetFlowPort, IPFIX: ns.IPFIXPort, SFlow: ns.SFlowPort}))
@@ -274,6 +288,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		}
 	}(srv.SyncThreatFeedNames())
 	go srv.RunReports(ctx)
+	go inv.Run(ctx)
 	srv.Scheduler = &offsite.Scheduler{Cfg: cfg, Backups: srv.Backups, Log: log, RootCAs: trust.Pool}
 	go srv.Scheduler.Run(ctx)
 

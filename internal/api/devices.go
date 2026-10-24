@@ -10,19 +10,23 @@ import (
 
 	"github.com/kochlabs/tributary/internal/config"
 	"github.com/kochlabs/tributary/internal/enrich"
+	"github.com/kochlabs/tributary/internal/inventory"
 	"github.com/kochlabs/tributary/internal/store"
 )
 
-// deviceName picks the best available name for a MAC: the administrator's
-// name, then reverse DNS of its current IPv4 address, then vendor and the
-// last bytes of the MAC.
+// deviceName picks the best available name for a MAC: the inventory's (by
+// MAC, then by its current IPv4 address), the administrator's, reverse DNS
+// of its current IPv4 address, then vendor and the last bytes of the MAC.
 func (s *Server) deviceName(ctx context.Context, mac uint64, names map[netip.Addr]string) (name, source string) {
+	if r := s.inventoryDevice(mac); r != nil && r.Name != "" {
+		return r.Name, "inventory"
+	}
 	if n := s.Config.DeviceName(mac); n != "" {
 		return n, "name"
 	}
 	if ip, err := netip.ParseAddr(s.Config.RecentIPv4(mac)); err == nil {
 		if names == nil {
-			names = s.RDNS.Names(ctx, []netip.Addr{ip}, 500*time.Millisecond)
+			names = s.hostNames(ctx, []netip.Addr{ip}, 500*time.Millisecond)
 		}
 		if h := names[ip]; h != "" {
 			return strings.SplitN(h, ".", 2)[0], "dns"
@@ -37,6 +41,40 @@ func (s *Server) deviceName(ctx context.Context, mac uint64, names map[netip.Add
 		return shortVendor(v) + " " + m[9:], "vendor"
 	}
 	return m, "mac"
+}
+
+// inventoryDevice is the inventory's record for a MAC, matched by MAC or,
+// failing that, by the device's current IPv4 address.
+func (s *Server) inventoryDevice(mac uint64) *inventory.Record {
+	idx := s.Inventory.Index()
+	if r := idx.ByMAC(enrich.FormatMAC(mac)); r != nil {
+		return r
+	}
+	if ip, err := netip.ParseAddr(s.Config.RecentIPv4(mac)); err == nil {
+		return idx.ByIP(ip)
+	}
+	return nil
+}
+
+// hostNames names addresses: the inventory's name first, reverse DNS (within
+// timeout) for the rest.
+func (s *Server) hostNames(ctx context.Context, addrs []netip.Addr, timeout time.Duration) map[netip.Addr]string {
+	idx := s.Inventory.Index()
+	out := map[netip.Addr]string{}
+	var rest []netip.Addr
+	for _, a := range addrs {
+		if n := idx.Name(a); n != "" {
+			out[a] = n
+		} else {
+			rest = append(rest, a)
+		}
+	}
+	if len(rest) > 0 {
+		for a, n := range s.RDNS.Names(ctx, rest, timeout) {
+			out[a] = n
+		}
+	}
+	return out
 }
 
 // shortVendor trims corporate suffixes: "Synology Incorporated" -> "Synology".
@@ -59,12 +97,12 @@ func (s *Server) deviceDetails(ctx context.Context, rows []store.TopRow) {
 			}
 		}
 	}
-	names := s.RDNS.Names(ctx, v4, 800*time.Millisecond)
+	names := s.hostNames(ctx, v4, 800*time.Millisecond)
 	for i := range rows {
 		if macs[i] == 0 {
 			// Exporter reported no MAC: the row is the device's IP.
 			if ip, err := netip.ParseAddr(rows[i].Key); err == nil {
-				lbl, _ := s.endpoint(ip, s.RDNS.Names(ctx, []netip.Addr{ip}, 300*time.Millisecond)[ip], true)
+				lbl, _ := s.endpoint(ip, s.hostNames(ctx, []netip.Addr{ip}, 300*time.Millisecond)[ip], true)
 				rows[i].Label, rows[i].Detail = lbl, ip.String()+" · no MAC reported"
 			} else if rows[i].Key == "" {
 				rows[i].Label = "Unknown"
@@ -98,6 +136,8 @@ type deviceView struct {
 	Bytes      uint64            `json:"bytes"`
 	Flows      uint64            `json:"flows"`
 	IPs        []config.DeviceIP `json:"ips"`
+	// Inventory is the inventory's record (role, site, link), if any.
+	Inventory *inventory.Record `json:"inventory,omitempty"`
 }
 
 // devicesList returns every known device with its traffic in the requested
@@ -129,13 +169,13 @@ func (s *Server) devicesList(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	names := s.RDNS.Names(ctx, v4, time.Second)
+	names := s.hostNames(ctx, v4, time.Second)
 	out := make([]deviceView, 0, len(list))
 	for _, d := range list {
 		name, src := s.deviceName(ctx, d.MAC, names)
 		v := deviceView{MAC: enrich.FormatMAC(d.MAC), Name: name, CustomName: d.Name, NameSource: src, Vendor: enrich.Vendor(d.MAC),
 			Randomized: d.MAC&(0x02<<40) != 0, FirstSeen: d.FirstSeen, LastSeen: d.LastSeen, IPv4: []string{}, IPv6: []string{},
-			Bytes: traffic[d.MAC][0], Flows: traffic[d.MAC][1], IPs: d.IPs}
+			Bytes: traffic[d.MAC][0], Flows: traffic[d.MAC][1], IPs: d.IPs, Inventory: s.inventoryDevice(d.MAC)}
 		for _, ip := range d.IPs {
 			if strings.Contains(ip.IP, ":") {
 				v.IPv6 = append(v.IPv6, ip.IP)

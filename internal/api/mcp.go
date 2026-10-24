@@ -261,7 +261,7 @@ func (s *Server) addMCPTools(srv *mcp.Server) {
 			return map[string]any{"total": len(list), "devices": list[:min(n, len(list))]}, nil
 		}, readOnly)
 
-	addTool(s, srv, "lookup_address", "Everything known about one IP address: whether it is local, its hostname, country and AS, the threat feeds listing it, its traffic totals, and its top conversations and applications in the time range.",
+	addTool(s, srv, "lookup_address", "Everything known about one IP address: whether it is local, its hostname, country and AS, the threat feeds listing it, its inventory record (e.g. NetBox: name, role, site, documented services), its traffic totals, and its top conversations and applications in the time range.",
 		func(p map[string]*jsonschema.Schema) {
 			window(p)
 			p["address"].Description = "An IPv4 or IPv6 address."
@@ -397,13 +397,16 @@ func (s *Server) mcpLookup(ctx context.Context, u *config.User, in mcpLookupIn) 
 	if geo := s.Geo.Lookup(a); geo != (enrich.Info{}) {
 		out["geo"] = geo
 	}
-	if name := s.RDNS.Names(ctx, []netip.Addr{a}, 2*time.Second)[a]; name != "" {
+	if name := s.hostNames(ctx, []netip.Addr{a}, 2*time.Second)[a]; name != "" {
 		out["hostname"] = name
 	}
 	if s.Threats != nil {
 		if feeds := s.Threats.Feeds(a); len(feeds) > 0 {
 			out["threatFeeds"] = feeds
 		}
+	}
+	if rec := s.Inventory.Index().ByIP(a); rec != nil {
+		out["inventory"] = rec
 	}
 	for key, req := range map[string]struct {
 		h     http.HandlerFunc

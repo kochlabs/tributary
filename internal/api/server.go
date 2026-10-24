@@ -22,6 +22,7 @@ import (
 	"github.com/kochlabs/tributary/internal/collector"
 	"github.com/kochlabs/tributary/internal/config"
 	"github.com/kochlabs/tributary/internal/enrich"
+	"github.com/kochlabs/tributary/internal/inventory"
 	"github.com/kochlabs/tributary/internal/offsite"
 	"github.com/kochlabs/tributary/internal/snmp"
 	"github.com/kochlabs/tributary/internal/store"
@@ -43,6 +44,7 @@ type Server struct {
 	Certs         *certs.Manager
 	Trust         *certs.TrustStore
 	Threats       *threat.Manager
+	Inventory     *inventory.Manager // nil-safe
 	UI            fs.FS
 	Version       string
 	SourceURL     string
@@ -186,6 +188,12 @@ func (s *Server) Handler() http.Handler {
 	admin("GET /api/services", s.servicesList)
 	admin("POST /api/services/{unit}/{op}", s.serviceAction)
 	admin("GET /api/admin/result/{id}", s.adminResult)
+	admin("GET /api/inventory-sources", s.inventorySources)
+	admin("POST /api/inventory-sources", s.inventorySourceSave)
+	admin("PUT /api/inventory-sources/{id}", s.inventorySourceSave)
+	admin("DELETE /api/inventory-sources/{id}", s.inventorySourceDelete)
+	admin("POST /api/inventory-sources/test", s.inventorySourceTest)
+	admin("POST /api/inventory-sources/{id}/sync", s.inventorySourceSync)
 	admin("GET /api/email", s.emailGet)
 	admin("PUT /api/email", s.emailPut)
 	admin("POST /api/email/test", s.emailTest)

@@ -20,6 +20,10 @@
   GeoIP2, custom URLs, or files kept up to date by `geoipupdate`.
 - MAC vendors from the IEEE registry (default, refreshed weekly), a URL or a file.
 - Reverse DNS at query time, cached.
+- Inventory sources (NetBox 4.2+), read-only: device and VM names, roles,
+  sites and documented services, matched by MAC or IP and applied to past
+  traffic too; prefixes with a chosen tag can extend Local Networks
+  ([design](design/INVENTORY.md)).
 - SNMP v2c/v3 polling of IF-MIB every 15 minutes for interface names,
   descriptions and speeds. Values set by hand take precedence.
 
