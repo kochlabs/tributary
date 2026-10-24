@@ -30,6 +30,7 @@ import { EditorView, keymap, placeholder as cmPlaceholder } from '@codemirror/vi
 import { tags } from '@lezer/highlight';
 import { Api, errorMessage, QueryIssue, SavedQuery } from '../core/api';
 import { Auth } from '../core/auth';
+import { TimeRange } from '../core/time';
 
 /** Colours only: fields, keywords, operators, strings. Parsing is the appliance's. */
 const queryLanguage = StreamLanguage.define<null>({
@@ -106,6 +107,18 @@ const HISTORY_SIZE = 20;
   imports: [ClarityModule, FormsModule],
   template: `
     <div class="bar" [class.invalid]="!!error()" [class.dirty]="dirty()">
+      @if (aiEnabled()) {
+        <button
+          type="button"
+          class="btn btn-sm ai-btn"
+          [class.active]="aiOpen()"
+          (click)="toggleAI()"
+          title="Write a query from plain English"
+          i18n-title="@@queryBar.aiTitle"
+        >
+          AI
+        </button>
+      }
       <cds-icon shape="search" class="icon"></cds-icon>
       <div class="editor" #host></div>
       @if (text()) {
@@ -132,7 +145,7 @@ const HISTORY_SIZE = 20;
       <button
         type="button"
         class="btn btn-sm btn-link btn-icon"
-        (click)="helpOpen.set(!helpOpen()); savedOpen.set(false)"
+        (click)="helpOpen.set(!helpOpen()); savedOpen.set(false); aiOpen.set(false)"
         aria-label="Query syntax"
         i18n-aria-label="@@queryBar.help"
       >
@@ -168,6 +181,43 @@ const HISTORY_SIZE = 20;
           <span class="muted nothing" i18n="@@queryBar.matchesNothing">(matches nothing)</span>
         </div>
       }
+    }
+    @if (aiNote(); as n) {
+      <div class="issue ai-note"><span class="ai-tag">AI</span> {{ n }}</div>
+    }
+    @if (aiOpen()) {
+      <div class="ai card">
+        <div class="card-block">
+          <form class="ai-form" (ngSubmit)="askAI()">
+            <input
+              class="clr-input"
+              name="aiPrompt"
+              [(ngModel)]="aiPrompt"
+              placeholder="Describe the traffic, e.g. SSH from outside the US last week"
+              i18n-placeholder="@@queryBar.aiPlaceholder"
+              aria-label="Describe the traffic to find"
+              i18n-aria-label="@@queryBar.aiLabel"
+              autocomplete="off"
+              #aiInput
+            />
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+              [clrLoading]="aiBusy()"
+              [disabled]="!aiPrompt.trim()"
+              i18n="@@queryBar.aiWrite"
+            >
+              Write query
+            </button>
+          </form>
+          @if (aiError()) {
+            <div class="issue error">{{ aiError() }}</div>
+          }
+          <p class="muted small" i18n="@@queryBar.aiHelp">
+            The query goes into the bar for you to check; press Run to run it.
+          </p>
+        </div>
+      </div>
     }
     @if (savedOpen()) {
       <div class="saved card">
@@ -346,6 +396,49 @@ const HISTORY_SIZE = 20;
     .nothing {
       margin-left: 4px;
     }
+    .ai-btn {
+      margin: 0 4px 0 0;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      background:
+        linear-gradient(
+            var(--cds-alias-object-container-background, #fff),
+            var(--cds-alias-object-container-background, #fff)
+          )
+          padding-box,
+        linear-gradient(135deg, #e8743b, #b34fc4, #3fa7d6) border-box;
+      color: var(--cds-alias-typography-color-400);
+    }
+    .ai-btn.active,
+    .ai-btn:hover {
+      color: #b34fc4;
+    }
+    .ai {
+      margin: 8px 0 0;
+      max-width: 60rem;
+    }
+    .ai-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .ai-form .clr-input {
+      flex: 1;
+    }
+    .ai-form .btn {
+      margin: 0;
+    }
+    .ai-note {
+      color: var(--cds-alias-typography-color-300);
+    }
+    .ai-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #b34fc4;
+      margin-right: 2px;
+    }
     .btn.active {
       color: var(--cds-alias-status-info, #0072a3);
     }
@@ -410,6 +503,15 @@ export class QueryBar {
   readonly live = input(false);
 
   private api = inject(Api);
+  private time = inject(TimeRange);
+  private aiInput = viewChild<ElementRef<HTMLInputElement>>('aiInput');
+  readonly aiEnabled = signal(false);
+  readonly aiOpen = signal(false);
+  readonly aiBusy = signal(false);
+  readonly aiError = signal('');
+  /** The explanation of the query the assistant last put in the bar. */
+  readonly aiNote = signal('');
+  aiPrompt = '';
   readonly auth = inject(Auth);
   private host = viewChild.required<ElementRef<HTMLElement>>('host');
   private view?: EditorView;
@@ -429,6 +531,10 @@ export class QueryBar {
   readonly dirty = signal(false);
 
   constructor() {
+    this.api
+      .meta()
+      .then((m) => this.aiEnabled.set(!!m.ai))
+      .catch(() => {});
     effect(() => {
       const q = this.query();
       const v = this.view;
@@ -500,6 +606,8 @@ export class QueryBar {
           const t = u.state.doc.toString();
           this.text.set(t);
           this.error.set(null);
+          if (u.transactions.some((tr) => tr.isUserEvent('input') || tr.isUserEvent('delete')))
+            this.aiNote.set('');
           if (this.live()) this.query.set(t.trim());
           this.dirty.set(t !== this.query());
         }),
@@ -607,6 +715,40 @@ export class QueryBar {
     this.dirty.set(false);
   }
 
+  toggleAI() {
+    this.aiOpen.set(!this.aiOpen());
+    this.savedOpen.set(false);
+    this.helpOpen.set(false);
+    this.aiError.set('');
+    if (this.aiOpen()) setTimeout(() => this.aiInput()?.nativeElement.focus());
+  }
+
+  /** Has the assistant write a query; it goes into the bar, not run. */
+  async askAI() {
+    const prompt = this.aiPrompt.trim();
+    if (!prompt) return;
+    this.aiBusy.set(true);
+    this.aiError.set('');
+    try {
+      const r = await this.api.aiQuery(prompt);
+      this.view?.dispatch({
+        changes: { from: 0, to: this.view.state.doc.length, insert: r.query },
+      });
+      if (r.error) {
+        this.aiError.set(r.error.error + (r.error.hint ? ' · ' + r.error.hint : ''));
+        return;
+      }
+      if (r.range && !this.live()) this.time.setPreset(r.range);
+      this.aiOpen.set(false);
+      this.aiNote.set(r.explanation ?? '');
+      this.view?.focus();
+    } catch (err) {
+      this.aiError.set(errorMessage(err));
+    } finally {
+      this.aiBusy.set(false);
+    }
+  }
+
   async loadSaved() {
     try {
       this.saved.set(await this.api.savedQueries());
@@ -617,6 +759,7 @@ export class QueryBar {
 
   toggleSaved() {
     this.savedOpen.set(!this.savedOpen());
+    this.aiOpen.set(false);
     this.helpOpen.set(false);
     this.savedError.set('');
     if (this.savedOpen()) this.loadSaved();

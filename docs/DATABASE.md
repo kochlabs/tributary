@@ -341,6 +341,7 @@ erDiagram
 | `enrichment` | GeoIP / ASN sources (license key encrypted) |
 | `backup_schedule`, `backup_run` | scheduled backups and the last run |
 | `backup_ssh_key` | the appliance's SSH key for SFTP destinations (encrypted) |
+| `ai` | the AI assistant: provider, URL, model, names switch (API key encrypted) |
 | `notice_routing` | notice level and channels |
 | `notices_sent` | notices sent to channels, until they clear |
 | `threat_feeds_seeded` | the default feeds were added once |

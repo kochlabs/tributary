@@ -30,6 +30,7 @@ export const routes: Routes = [
           { path: 'local-networks', loadComponent: () => import('./pages/local-networks').then((m) => m.LocalNetworks), title: $localize`:@@nav.localNetworks:Local Networks` },
           { path: 'enrichment', loadComponent: () => import('./pages/enrichment').then((m) => m.EnrichmentPage), title: $localize`:@@nav.enrichment:Enrichment` },
           { path: 'notifications', loadComponent: () => import('./pages/notifications').then((m) => m.Notifications), title: $localize`:@@nav.notifications:Notifications` },
+          { path: 'ai', loadComponent: () => import('./pages/ai-settings').then((m) => m.AISettingsPage), title: $localize`:@@nav.ai:AI Assistant` },
           { path: 'inventory-sources', loadComponent: () => import('./pages/inventory-sources').then((m) => m.InventorySources), title: $localize`:@@nav.inventorySources:Inventory Sources` },
           { path: 'email', loadComponent: () => import('./pages/email').then((m) => m.EmailPage), title: $localize`:@@nav.email:Email` },
           { path: 'data-sources', redirectTo: 'enrichment' },

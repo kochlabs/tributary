@@ -12,6 +12,8 @@ single Go binary with a web UI.
 
 - NetFlow v5/v9, IPFIX and sFlow v5, with sampling correction
 - Dashboard, traffic explorer, Sankey path analysis and flow search
+- A query language with suggestions as you type, saved queries, and an
+  optional AI assistant that writes queries from plain English
 - GeoIP, ASN, MAC vendor and reverse DNS enrichment; names from NetBox
 - SNMP polling for interface names and speeds
 - Scheduled PDF reports by email
@@ -45,6 +47,7 @@ how ClickHouse is configured.
 - [Architecture](docs/ARCHITECTURE.md)
 - [Databases](docs/DATABASE.md)
 - [Queries](docs/QUERIES.md)
+- [AI assistant](docs/AI.md)
 - [Reports](docs/REPORTS.md)
 - [Notifications](docs/NOTIFICATIONS.md)
 - [Threat feeds](docs/THREAT-FEEDS.md)

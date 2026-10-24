@@ -42,6 +42,10 @@
   interfaces, VLAN, DSCP, threat feeds, devices and per-flow sizes, e.g.
   `host:nas AND NOT country:(US OR CA)`, with suggestions as you type
   ([QUERIES.md](QUERIES.md)).
+- Optional AI assistant: a model of your choice (Anthropic or any
+  OpenAI-compatible API, including local ones) writes queries from plain
+  English; the appliance checks them and nothing runs unseen
+  ([AI.md](AI.md)).
 
 ## Reports
 

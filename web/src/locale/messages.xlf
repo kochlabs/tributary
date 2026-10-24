@@ -127,7 +127,7 @@
         <note category="location">src/app/app.routes.ts:29</note>
         <note category="location">src/app/pages/users.ts:15,16</note>
         <note category="location">src/app/shared/notice-text.ts:113</note>
-        <note category="location">src/app/shell.ts:129,130</note>
+        <note category="location">src/app/shell.ts:130,131</note>
       </notes>
       <segment>
         <source>Users</source>
@@ -165,9 +165,19 @@
         <source>Notifications</source>
       </segment>
     </unit>
-    <unit id="nav.inventorySources">
+    <unit id="nav.ai">
       <notes>
         <note category="location">src/app/app.routes.ts:33</note>
+        <note category="location">src/app/pages/ai-settings.ts:17,18</note>
+        <note category="location">src/app/shell.ts:123,124</note>
+      </notes>
+      <segment>
+        <source>AI Assistant</source>
+      </segment>
+    </unit>
+    <unit id="nav.inventorySources">
+      <notes>
+        <note category="location">src/app/app.routes.ts:34</note>
         <note category="location">src/app/pages/inventory-sources.ts:41,42</note>
         <note category="location">src/app/shell.ts:120,121</note>
       </notes>
@@ -177,7 +187,7 @@
     </unit>
     <unit id="nav.email">
       <notes>
-        <note category="location">src/app/app.routes.ts:34</note>
+        <note category="location">src/app/app.routes.ts:35</note>
         <note category="location">src/app/pages/email.ts:15,16</note>
         <note category="location">src/app/shell.ts:121,122</note>
       </notes>
@@ -187,10 +197,10 @@
     </unit>
     <unit id="nav.backup">
       <notes>
-        <note category="location">src/app/app.routes.ts:36</note>
+        <note category="location">src/app/app.routes.ts:37</note>
         <note category="location">src/app/pages/backup.ts:16,17</note>
         <note category="location">src/app/shared/notice-text.ts:120</note>
-        <note category="location">src/app/shell.ts:140,141</note>
+        <note category="location">src/app/shell.ts:141,142</note>
       </notes>
       <segment>
         <source>Backup &amp; Restore</source>
@@ -198,10 +208,10 @@
     </unit>
     <unit id="nav.certificates">
       <notes>
-        <note category="location">src/app/app.routes.ts:37</note>
+        <note category="location">src/app/app.routes.ts:38</note>
         <note category="location">src/app/pages/certificates.ts:39,40</note>
         <note category="location">src/app/shared/notice-text.ts:111</note>
-        <note category="location">src/app/shell.ts:141,142</note>
+        <note category="location">src/app/shell.ts:142,143</note>
       </notes>
       <segment>
         <source>Certificates</source>
@@ -209,9 +219,9 @@
     </unit>
     <unit id="nav.identitySources">
       <notes>
-        <note category="location">src/app/app.routes.ts:38</note>
+        <note category="location">src/app/app.routes.ts:39</note>
         <note category="location">src/app/pages/identity-sources.ts:77,78</note>
-        <note category="location">src/app/shell.ts:130,131</note>
+        <note category="location">src/app/shell.ts:131,132</note>
       </notes>
       <segment>
         <source>Identity Sources</source>
@@ -219,9 +229,9 @@
     </unit>
     <unit id="nav.updates">
       <notes>
-        <note category="location">src/app/app.routes.ts:39</note>
+        <note category="location">src/app/app.routes.ts:40</note>
         <note category="location">src/app/pages/updates.ts:13,14</note>
-        <note category="location">src/app/shell.ts:139,140</note>
+        <note category="location">src/app/shell.ts:140,141</note>
       </notes>
       <segment>
         <source>Updates</source>
@@ -229,9 +239,9 @@
     </unit>
     <unit id="nav.time">
       <notes>
-        <note category="location">src/app/app.routes.ts:40</note>
+        <note category="location">src/app/app.routes.ts:41</note>
         <note category="location">src/app/pages/time.ts:17,18</note>
-        <note category="location">src/app/shell.ts:143</note>
+        <note category="location">src/app/shell.ts:144</note>
       </notes>
       <segment>
         <source>Time</source>
@@ -239,9 +249,9 @@
     </unit>
     <unit id="nav.services">
       <notes>
-        <note category="location">src/app/app.routes.ts:41</note>
+        <note category="location">src/app/app.routes.ts:42</note>
         <note category="location">src/app/pages/services.ts:23,24</note>
-        <note category="location">src/app/shell.ts:143,144</note>
+        <note category="location">src/app/shell.ts:144,145</note>
       </notes>
       <segment>
         <source>Services</source>
@@ -249,9 +259,9 @@
     </unit>
     <unit id="nav.apiTokens">
       <notes>
-        <note category="location">src/app/app.routes.ts:42</note>
+        <note category="location">src/app/app.routes.ts:43</note>
         <note category="location">src/app/pages/api-tokens.ts:17,18</note>
-        <note category="location">src/app/shell.ts:131,132</note>
+        <note category="location">src/app/shell.ts:132,133</note>
       </notes>
       <segment>
         <source>API Tokens</source>
@@ -259,8 +269,8 @@
     </unit>
     <unit id="nav.audit">
       <notes>
-        <note category="location">src/app/app.routes.ts:43</note>
-        <note category="location">src/app/shell.ts:132,133</note>
+        <note category="location">src/app/app.routes.ts:44</note>
+        <note category="location">src/app/shell.ts:133,134</note>
       </notes>
       <segment>
         <source>Audit Log</source>
@@ -1986,6 +1996,304 @@
         <source>Last 30 days</source>
       </segment>
     </unit>
+    <unit id="ai.subtitle">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:19,21</note>
+      </notes>
+      <segment>
+        <source> A language model that writes queries from plain English. It only writes them: the appliance checks each one, and nothing runs until you press Run. </source>
+      </segment>
+    </unit>
+    <unit id="ai.saved">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:29,30</note>
+      </notes>
+      <segment>
+        <source>Saved.</source>
+      </segment>
+    </unit>
+    <unit id="ai.model">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:47,48</note>
+      </notes>
+      <segment>
+        <source>Model</source>
+      </segment>
+    </unit>
+    <unit id="ai.assistant">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:50,51</note>
+      </notes>
+      <segment>
+        <source>Assistant</source>
+      </segment>
+    </unit>
+    <unit id="ai.enable">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:53,54</note>
+      </notes>
+      <segment>
+        <source>Show the AI button in query bars</source>
+      </segment>
+    </unit>
+    <unit id="ai.provider">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:57,58</note>
+      </notes>
+      <segment>
+        <source>API</source>
+      </segment>
+    </unit>
+    <unit id="ai.openai">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:78,79</note>
+      </notes>
+      <segment>
+        <source>OpenAI-compatible</source>
+      </segment>
+    </unit>
+    <unit id="ai.anthropicHelp">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:83,84</note>
+      </notes>
+      <segment>
+        <source>Claude&apos;s Messages API, or a gateway&apos;s Anthropic endpoint.</source>
+      </segment>
+    </unit>
+    <unit id="ai.openaiHelp">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:87,88</note>
+      </notes>
+      <segment>
+        <source>OpenAI, OpenRouter, Ollama, LM Studio, vLLM, llama.cpp or a gateway.</source>
+      </segment>
+    </unit>
+    <unit id="ai.url">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:94,95</note>
+      </notes>
+      <segment>
+        <source>URL</source>
+      </segment>
+    </unit>
+    <unit id="ai.urlAnthropic">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:110,111</note>
+      </notes>
+      <segment>
+        <source>Empty for <ph id="0" equiv="INTERPOLATION" disp="{{ anthropicUrl }}"/>; for a gateway, its Anthropic endpoint, such as https://gateway/anthropic.</source>
+      </segment>
+    </unit>
+    <unit id="ai.urlOpenai">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:115,116</note>
+      </notes>
+      <segment>
+        <source>The API&apos;s base, usually ending in /v1.</source>
+      </segment>
+    </unit>
+    <unit id="ai.key">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:121,122</note>
+      </notes>
+      <segment>
+        <source>API key</source>
+      </segment>
+    </unit>
+    <unit id="ai.keyHelp">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:131,132</note>
+      </notes>
+      <segment>
+        <source>Stored encrypted; local servers usually need none.</source>
+      </segment>
+    </unit>
+    <unit id="ai.clearKey">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:139,140</note>
+      </notes>
+      <segment>
+        <source>Remove the stored key</source>
+      </segment>
+    </unit>
+    <unit id="ai.modelLabel">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:144,145</note>
+      </notes>
+      <segment>
+        <source>Model</source>
+      </segment>
+    </unit>
+    <unit id="ai.modelSearch">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:153,154</note>
+      </notes>
+      <segment>
+        <source>Type to search</source>
+      </segment>
+    </unit>
+    <unit id="ai.loadingModels">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:164,165</note>
+      </notes>
+      <segment>
+        <source>Loading models…</source>
+      </segment>
+    </unit>
+    <unit id="ai.modelsCount">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:169,170</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ models().length }}"/> models offered; type to search.</source>
+      </segment>
+    </unit>
+    <unit id="ai.modelsHint">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:173,174</note>
+      </notes>
+      <segment>
+        <source>Models are listed once the URL (and key) are set.</source>
+      </segment>
+    </unit>
+    <unit id="ai.reloadModels">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:183,184</note>
+      </notes>
+      <segment>
+        <source> Reload </source>
+      </segment>
+    </unit>
+    <unit id="ai.privacy">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:191,192</note>
+      </notes>
+      <segment>
+        <source>What is sent</source>
+      </segment>
+    </unit>
+    <unit id="ai.names">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:194,195</note>
+      </notes>
+      <segment>
+        <source>Names</source>
+      </segment>
+    </unit>
+    <unit id="ai.sendNames">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:198,200</note>
+      </notes>
+      <segment>
+        <source>Send exporter, device, inventory and threat feed names</source>
+      </segment>
+    </unit>
+    <unit id="ai.sendNamesHelp">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:202,203</note>
+      </notes>
+      <segment>
+        <source>So the model can write host:waldorf for &quot;Waldorf&quot;. Off sends only the query language and your prompt. Flow data is never sent.</source>
+      </segment>
+    </unit>
+    <unit id="ai.testTitle">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:210,211</note>
+      </notes>
+      <segment>
+        <source>Test</source>
+      </segment>
+    </unit>
+    <unit id="ai.test">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:220,221</note>
+      </notes>
+      <segment>
+        <source> Write a sample query </source>
+      </segment>
+    </unit>
+    <unit id="ai.testHelp">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:223,224</note>
+      </notes>
+      <segment>
+        <source> Asks for &quot;web traffic to other countries than the US in the last day, excluding DNS&quot; with the settings above, saved or not. </source>
+      </segment>
+    </unit>
+    <unit id="common.save">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:262,263</note>
+        <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
+        <note category="location">src/app/pages/devices.ts:254,255</note>
+        <note category="location">src/app/pages/email.ts:207,208</note>
+        <note category="location">src/app/pages/enrichment.ts:374,375</note>
+        <note category="location">src/app/pages/enrichment.ts:486,487</note>
+        <note category="location">src/app/pages/enrichment.ts:613,614</note>
+        <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
+        <note category="location">src/app/pages/exporters.ts:132,134</note>
+        <note category="location">src/app/pages/identity-sources.ts:508,510</note>
+        <note category="location">src/app/pages/inventory-sources.ts:449,450</note>
+        <note category="location">src/app/pages/local-networks.ts:107,109</note>
+        <note category="location">src/app/pages/notifications.ts:267,268</note>
+        <note category="location">src/app/pages/notifications.ts:473,474</note>
+        <note category="location">src/app/pages/reports.ts:608,609</note>
+        <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
+        <note category="location">src/app/pages/threat-feeds.ts:190,192</note>
+        <note category="location">src/app/pages/time.ts:119,120</note>
+        <note category="location">src/app/pages/users.ts:119</note>
+        <note category="location">src/app/shared/snmp-settings.ts:88,89</note>
+      </notes>
+      <segment>
+        <source> Save </source>
+      </segment>
+    </unit>
+    <unit id="common.revert">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:271,272</note>
+        <note category="location">src/app/pages/email.ts:216,217</note>
+        <note category="location">src/app/pages/enrichment.ts:383,384</note>
+        <note category="location">src/app/pages/enrichment.ts:495,496</note>
+        <note category="location">src/app/pages/enrichment.ts:622,623</note>
+        <note category="location">src/app/pages/local-networks.ts:116,118</note>
+        <note category="location">src/app/pages/settings.ts:270,271</note>
+      </notes>
+      <segment>
+        <source> Revert </source>
+      </segment>
+    </unit>
+    <unit id="enrichment.unsaved">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:276,277</note>
+        <note category="location">src/app/pages/email.ts:221,222</note>
+        <note category="location">src/app/pages/enrichment.ts:402,403</note>
+        <note category="location">src/app/pages/enrichment.ts:500,501</note>
+        <note category="location">src/app/pages/enrichment.ts:643,644</note>
+        <note category="location">src/app/pages/local-networks.ts:121,123</note>
+      </notes>
+      <segment>
+        <source>Unsaved changes.</source>
+      </segment>
+    </unit>
+    <unit id="dataSources.storedKeep">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:351</note>
+        <note category="location">src/app/pages/email.ts:293</note>
+        <note category="location">src/app/pages/enrichment.ts:761</note>
+        <note category="location">src/app/pages/inventory-sources.ts:600</note>
+        <note category="location">src/app/pages/notifications.ts:702</note>
+      </notes>
+      <segment>
+        <source>Stored · leave empty to keep</source>
+      </segment>
+    </unit>
+    <unit id="ai.optional">
+      <notes>
+        <note category="location">src/app/pages/ai-settings.ts:352</note>
+      </notes>
+      <segment>
+        <source>Optional</source>
+      </segment>
+    </unit>
     <unit id="tokens.subtitle">
       <notes>
         <note category="location">src/app/pages/api-tokens.ts:18,22</note>
@@ -2246,7 +2554,7 @@
         <note category="location">src/app/pages/users.ts:129,130</note>
         <note category="location">src/app/pages/users.ts:138,139</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
-        <note category="location">src/app/shell.ts:177,178</note>
+        <note category="location">src/app/shell.ts:178,179</note>
       </notes>
       <segment>
         <source>Cancel</source>
@@ -2897,32 +3205,6 @@
         <source>Last: <ph id="0" equiv="INTERPOLATION" disp="{{ run.name }}"/> · <ph id="1" equiv="INTERPOLATION_1" disp="{{ fmtBytes(run.size ?? 0) }}"/> · <ph id="2" equiv="INTERPOLATION_2" disp="{{ dt(run.finished) }}"/></source>
       </segment>
     </unit>
-    <unit id="common.save">
-      <notes>
-        <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
-        <note category="location">src/app/pages/devices.ts:254,255</note>
-        <note category="location">src/app/pages/email.ts:207,208</note>
-        <note category="location">src/app/pages/enrichment.ts:374,375</note>
-        <note category="location">src/app/pages/enrichment.ts:486,487</note>
-        <note category="location">src/app/pages/enrichment.ts:613,614</note>
-        <note category="location">src/app/pages/exporter-detail.ts:150,152</note>
-        <note category="location">src/app/pages/exporters.ts:132,134</note>
-        <note category="location">src/app/pages/identity-sources.ts:508,510</note>
-        <note category="location">src/app/pages/inventory-sources.ts:449,450</note>
-        <note category="location">src/app/pages/local-networks.ts:107,109</note>
-        <note category="location">src/app/pages/notifications.ts:267,268</note>
-        <note category="location">src/app/pages/notifications.ts:473,474</note>
-        <note category="location">src/app/pages/reports.ts:608,609</note>
-        <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
-        <note category="location">src/app/pages/threat-feeds.ts:190,192</note>
-        <note category="location">src/app/pages/time.ts:119,120</note>
-        <note category="location">src/app/pages/users.ts:119</note>
-        <note category="location">src/app/shared/snmp-settings.ts:88,89</note>
-      </notes>
-      <segment>
-        <source>Save</source>
-      </segment>
-    </unit>
     <unit id="sched.runNow">
       <notes>
         <note category="location">src/app/pages/backup-schedule.ts:295,296</note>
@@ -3233,7 +3515,7 @@
         <note category="location">src/app/pages/identity-sources.ts:519,521</note>
         <note category="location">src/app/pages/users.ts:39,40</note>
         <note category="location">src/app/pages/users.ts:139,141</note>
-        <note category="location">src/app/shared/query-bar.ts:227</note>
+        <note category="location">src/app/shared/query-bar.ts:277</note>
       </notes>
       <segment>
         <source>Delete</source>
@@ -5278,42 +5560,6 @@
       </notes>
       <segment>
         <source>Sent. Check the inbox (and the spam folder).</source>
-      </segment>
-    </unit>
-    <unit id="common.revert">
-      <notes>
-        <note category="location">src/app/pages/email.ts:216,217</note>
-        <note category="location">src/app/pages/enrichment.ts:383,384</note>
-        <note category="location">src/app/pages/enrichment.ts:495,496</note>
-        <note category="location">src/app/pages/enrichment.ts:622,623</note>
-        <note category="location">src/app/pages/local-networks.ts:116,118</note>
-        <note category="location">src/app/pages/settings.ts:270,271</note>
-      </notes>
-      <segment>
-        <source> Revert </source>
-      </segment>
-    </unit>
-    <unit id="enrichment.unsaved">
-      <notes>
-        <note category="location">src/app/pages/email.ts:221,222</note>
-        <note category="location">src/app/pages/enrichment.ts:402,403</note>
-        <note category="location">src/app/pages/enrichment.ts:500,501</note>
-        <note category="location">src/app/pages/enrichment.ts:643,644</note>
-        <note category="location">src/app/pages/local-networks.ts:121,123</note>
-      </notes>
-      <segment>
-        <source>Unsaved changes.</source>
-      </segment>
-    </unit>
-    <unit id="dataSources.storedKeep">
-      <notes>
-        <note category="location">src/app/pages/email.ts:293</note>
-        <note category="location">src/app/pages/enrichment.ts:761</note>
-        <note category="location">src/app/pages/inventory-sources.ts:600</note>
-        <note category="location">src/app/pages/notifications.ts:702</note>
-      </notes>
-      <segment>
-        <source>Stored · leave empty to keep</source>
       </segment>
     </unit>
     <unit id="dataSources.geo.dbipLabel">
@@ -8096,7 +8342,7 @@
       <notes>
         <note category="location">src/app/pages/identity-sources.ts:507</note>
         <note category="location">src/app/shared/mfa-dialog.ts:59,60</note>
-        <note category="location">src/app/shell.ts:210,212</note>
+        <note category="location">src/app/shell.ts:211,213</note>
       </notes>
       <segment>
         <source>Close</source>
@@ -12919,9 +13165,17 @@
         <source>Unknown / internal</source>
       </segment>
     </unit>
-    <unit id="queryBar.clear">
+    <unit id="queryBar.aiTitle">
       <notes>
         <note category="location">src/app/shared/query-bar.ts:116,117</note>
+      </notes>
+      <segment>
+        <source>Write a query from plain English</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.clear">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:129,130</note>
       </notes>
       <segment>
         <source>Clear the query</source>
@@ -12929,7 +13183,7 @@
     </unit>
     <unit id="queryBar.saved">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:127,128</note>
+        <note category="location">src/app/shared/query-bar.ts:140,141</note>
       </notes>
       <segment>
         <source>Saved queries</source>
@@ -12937,7 +13191,7 @@
     </unit>
     <unit id="queryBar.help">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:136,137</note>
+        <note category="location">src/app/shared/query-bar.ts:149,150</note>
       </notes>
       <segment>
         <source>Query syntax</source>
@@ -12945,7 +13199,7 @@
     </unit>
     <unit id="queryBar.run">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:149,150</note>
+        <note category="location">src/app/shared/query-bar.ts:162,163</note>
       </notes>
       <segment>
         <source> Run </source>
@@ -12953,15 +13207,47 @@
     </unit>
     <unit id="queryBar.matchesNothing">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:168,172</note>
+        <note category="location">src/app/shared/query-bar.ts:181,185</note>
       </notes>
       <segment>
         <source>(matches nothing)</source>
       </segment>
     </unit>
+    <unit id="queryBar.aiPlaceholder">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:196,197</note>
+      </notes>
+      <segment>
+        <source>Describe the traffic, e.g. SSH from outside the US last week</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.aiLabel">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:198,199</note>
+      </notes>
+      <segment>
+        <source>Describe the traffic to find</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.aiWrite">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:210,211</note>
+      </notes>
+      <segment>
+        <source> Write query </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.aiHelp">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:217,219</note>
+      </notes>
+      <segment>
+        <source> The query goes into the bar for you to check; press Run to run it. </source>
+      </segment>
+    </unit>
     <unit id="queryBar.saveName">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:181,182</note>
+        <note category="location">src/app/shared/query-bar.ts:231,232</note>
       </notes>
       <segment>
         <source>Name this query</source>
@@ -12969,7 +13255,7 @@
     </unit>
     <unit id="queryBar.name">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:184</note>
+        <note category="location">src/app/shared/query-bar.ts:234</note>
       </notes>
       <segment>
         <source>Name</source>
@@ -12977,7 +13263,7 @@
     </unit>
     <unit id="queryBar.share">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:188,189</note>
+        <note category="location">src/app/shared/query-bar.ts:238,239</note>
       </notes>
       <segment>
         <source>Share with everyone</source>
@@ -12985,7 +13271,7 @@
     </unit>
     <unit id="queryBar.save">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:196,197</note>
+        <note category="location">src/app/shared/query-bar.ts:246,247</note>
       </notes>
       <segment>
         <source> Save </source>
@@ -12993,7 +13279,7 @@
     </unit>
     <unit id="queryBar.shared">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:220,221</note>
+        <note category="location">src/app/shared/query-bar.ts:270,271</note>
       </notes>
       <segment>
         <source>shared</source>
@@ -13001,7 +13287,7 @@
     </unit>
     <unit id="queryBar.sharedLabel">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:232,234</note>
+        <note category="location">src/app/shared/query-bar.ts:282,284</note>
       </notes>
       <segment>
         <source>shared</source>
@@ -13009,7 +13295,7 @@
     </unit>
     <unit id="queryBar.noneSaved">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:239,240</note>
+        <note category="location">src/app/shared/query-bar.ts:289,290</note>
       </notes>
       <segment>
         <source> No saved queries yet. Save the one in the bar to come back to it. </source>
@@ -13017,7 +13303,7 @@
     </unit>
     <unit id="queryBar.helpField">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:255,257</note>
+        <note category="location">src/app/shared/query-bar.ts:305,307</note>
       </notes>
       <segment>
         <source>a field and a value</source>
@@ -13025,7 +13311,7 @@
     </unit>
     <unit id="queryBar.helpList">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:259,261</note>
+        <note category="location">src/app/shared/query-bar.ts:309,311</note>
       </notes>
       <segment>
         <source>any of several values</source>
@@ -13033,7 +13319,7 @@
     </unit>
     <unit id="queryBar.helpRange">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:263,265</note>
+        <note category="location">src/app/shared/query-bar.ts:313,315</note>
       </notes>
       <segment>
         <source>a range (also 1-1023)</source>
@@ -13041,7 +13327,7 @@
     </unit>
     <unit id="queryBar.helpCompare">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:268,269</note>
+        <note category="location">src/app/shared/query-bar.ts:318,319</note>
       </notes>
       <segment>
         <source> a comparison: &gt; &gt;= &lt; &lt;= </source>
@@ -13049,7 +13335,7 @@
     </unit>
     <unit id="queryBar.helpAny">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:273,275</note>
+        <note category="location">src/app/shared/query-bar.ts:323,325</note>
       </notes>
       <segment>
         <source>any value</source>
@@ -13057,7 +13343,7 @@
     </unit>
     <unit id="queryBar.helpBool">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:278,279</note>
+        <note category="location">src/app/shared/query-bar.ts:328,329</note>
       </notes>
       <segment>
         <source> both; either; either (terms side by side are OR) </source>
@@ -13065,7 +13351,7 @@
     </unit>
     <unit id="queryBar.helpNot">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:284,285</note>
+        <note category="location">src/app/shared/query-bar.ts:334,335</note>
       </notes>
       <segment>
         <source> not; grouping (AND binds tighter than OR) </source>
@@ -13073,7 +13359,7 @@
     </unit>
     <unit id="queryBar.helpBare">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:290,291</note>
+        <note category="location">src/app/shared/query-bar.ts:340,341</note>
       </notes>
       <segment>
         <source> an address or name alone means host: </source>
@@ -13081,7 +13367,7 @@
     </unit>
     <unit id="queryBar.helpQuote">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:295,297</note>
+        <note category="location">src/app/shared/query-bar.ts:345,347</note>
       </notes>
       <segment>
         <source>quotes for values with spaces</source>
@@ -13089,7 +13375,7 @@
     </unit>
     <unit id="queryBar.helpKeys">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:300,302</note>
+        <note category="location">src/app/shared/query-bar.ts:350,352</note>
       </notes>
       <segment>
         <source> Tab or Enter picks a suggestion; Ctrl+Space shows them; ↑ in an empty bar recalls recent queries. </source>
@@ -13097,7 +13383,7 @@
     </unit>
     <unit id="queryBar.placeholder">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:407</note>
+        <note category="location">src/app/shared/query-bar.ts:500</note>
       </notes>
       <segment>
         <source>Query, e.g. host:nas AND NOT country:(US OR CA)</source>
@@ -13105,7 +13391,7 @@
     </unit>
     <unit id="queryBar.shareTitle">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:426</note>
+        <note category="location">src/app/shared/query-bar.ts:528</note>
       </notes>
       <segment>
         <source>Shared queries are listed for everyone; only you or an administrator can change them.</source>
@@ -13113,7 +13399,7 @@
     </unit>
     <unit id="queryBar.query">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:507</note>
+        <note category="location">src/app/shared/query-bar.ts:615</note>
       </notes>
       <segment>
         <source>Query</source>
@@ -13451,8 +13737,8 @@
     <unit id="shell.changePassword">
       <notes>
         <note category="location">src/app/shell.ts:72,73</note>
-        <note category="location">src/app/shell.ts:155,156</note>
-        <note category="location">src/app/shell.ts:178,180</note>
+        <note category="location">src/app/shell.ts:156,157</note>
+        <note category="location">src/app/shell.ts:179,181</note>
       </notes>
       <segment>
         <source>Change password</source>
@@ -13492,7 +13778,7 @@
     </unit>
     <unit id="nav.groupAccess">
       <notes>
-        <note category="location">src/app/shell.ts:127,128</note>
+        <note category="location">src/app/shell.ts:128,129</note>
       </notes>
       <segment>
         <source>Access</source>
@@ -13500,7 +13786,7 @@
     </unit>
     <unit id="nav.groupAppliance">
       <notes>
-        <note category="location">src/app/shell.ts:137,138</note>
+        <note category="location">src/app/shell.ts:138,139</note>
       </notes>
       <segment>
         <source>Appliance</source>
@@ -13508,7 +13794,7 @@
     </unit>
     <unit id="shell.currentPassword">
       <notes>
-        <note category="location">src/app/shell.ts:159,160</note>
+        <note category="location">src/app/shell.ts:160,161</note>
       </notes>
       <segment>
         <source>Current password</source>
@@ -13516,7 +13802,7 @@
     </unit>
     <unit id="shell.newPassword">
       <notes>
-        <note category="location">src/app/shell.ts:163,164</note>
+        <note category="location">src/app/shell.ts:164,165</note>
       </notes>
       <segment>
         <source>New password</source>
@@ -13524,7 +13810,7 @@
     </unit>
     <unit id="shell.passwordHint">
       <notes>
-        <note category="location">src/app/shell.ts:165,166</note>
+        <note category="location">src/app/shell.ts:166,167</note>
       </notes>
       <segment>
         <source>At least 8 characters.</source>
@@ -13532,7 +13818,7 @@
     </unit>
     <unit id="shell.confirmPassword">
       <notes>
-        <note category="location">src/app/shell.ts:168,169</note>
+        <note category="location">src/app/shell.ts:169,170</note>
       </notes>
       <segment>
         <source>Confirm new password</source>
@@ -13540,7 +13826,7 @@
     </unit>
     <unit id="shell.version">
       <notes>
-        <note category="location">src/app/shell.ts:187,189</note>
+        <note category="location">src/app/shell.ts:188,190</note>
       </notes>
       <segment>
         <source>Version <ph id="0" equiv="INTERPOLATION" disp="{{ version() }}"/></source>
@@ -13548,7 +13834,7 @@
     </unit>
     <unit id="shell.license">
       <notes>
-        <note category="location">src/app/shell.ts:189,190</note>
+        <note category="location">src/app/shell.ts:190,191</note>
       </notes>
       <segment>
         <source>Tributary is free software, licensed under the <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;LICENSE.txt&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">GNU Affero General Public License v3.0</pc> or later.</source>
@@ -13556,7 +13842,7 @@
     </unit>
     <unit id="shell.sourceCode">
       <notes>
-        <note category="location">src/app/shell.ts:192</note>
+        <note category="location">src/app/shell.ts:193</note>
       </notes>
       <segment>
         <source><pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a [href]=&quot;source()&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;" dispEnd="&lt;/a&gt;">Source code</pc> is available to everyone who uses it.</source>
@@ -13564,7 +13850,7 @@
     </unit>
     <unit id="shell.data">
       <notes>
-        <note category="location">src/app/shell.ts:196,197</note>
+        <note category="location">src/app/shell.ts:197,198</note>
       </notes>
       <segment>
         <source>Data</source>
@@ -13572,7 +13858,7 @@
     </unit>
     <unit id="shell.openSource">
       <notes>
-        <note category="location">src/app/shell.ts:203,205</note>
+        <note category="location">src/app/shell.ts:204,206</note>
       </notes>
       <segment>
         <source>Open-source components</source>
@@ -13580,7 +13866,7 @@
     </unit>
     <unit id="shell.serverComponents">
       <notes>
-        <note category="location">src/app/shell.ts:205,206</note>
+        <note category="location">src/app/shell.ts:206,207</note>
       </notes>
       <segment>
         <source>Server components</source>
@@ -13588,7 +13874,7 @@
     </unit>
     <unit id="shell.webComponents">
       <notes>
-        <note category="location">src/app/shell.ts:206,209</note>
+        <note category="location">src/app/shell.ts:207,210</note>
       </notes>
       <segment>
         <source>Web interface components</source>
@@ -13596,7 +13882,7 @@
     </unit>
     <unit id="shell.passwordMismatch">
       <notes>
-        <note category="location">src/app/shell.ts:375</note>
+        <note category="location">src/app/shell.ts:376</note>
       </notes>
       <segment>
         <source>New passwords do not match.</source>

@@ -949,6 +949,28 @@ export interface SavedQuery {
   updatedAt: number;
 }
 
+/** The AI query assistant's settings (Configuration → AI Assistant). */
+export interface AISettings {
+  enabled: boolean;
+  provider: 'anthropic' | 'openai';
+  url: string;
+  model: string;
+  /** Write-only; empty keeps the stored key. */
+  apiKey?: string;
+  hasKey: boolean;
+  clearKey?: boolean;
+  sendNames: boolean;
+}
+
+/** A query the assistant wrote, checked by the appliance. */
+export interface AIQueryResult {
+  query: string;
+  range?: string;
+  explanation?: string;
+  warnings: { warning: string; hint?: string; pos: number; len: number }[];
+  error?: { error: string; hint?: string; pos: number; len: number };
+}
+
 /** A report without its run status, as the API accepts it. */
 function reportDefinition(r: Partial<Report>): Partial<Report> {
   const def = { ...r };
@@ -1012,6 +1034,35 @@ export class Api {
     } catch (err) {
       return { warnings: [], error: { message: errorMessage(err), pos: 0, len: 0 } };
     }
+  }
+
+  private metaP?: Promise<{ ai: boolean; version: string; name: string }>;
+  /** Appliance facts the UI needs (cached; refresh after changing them). */
+  meta(refresh = false) {
+    if (refresh || !this.metaP) {
+      this.metaP = this.get<{ ai: boolean; version: string; name: string }>('/api/meta').catch(
+        (e) => {
+          this.metaP = undefined;
+          throw e;
+        },
+      );
+    }
+    return this.metaP;
+  }
+  aiSettings() {
+    return this.get<AISettings>('/api/ai');
+  }
+  saveAISettings(a: AISettings) {
+    return firstValueFrom(this.http.put<AISettings>('/api/ai', a));
+  }
+  aiModels(a: AISettings) {
+    return firstValueFrom(this.http.post<{ id: string; name?: string }[]>('/api/ai/models', a));
+  }
+  testAI(a: AISettings) {
+    return firstValueFrom(this.http.post<{ result: AIQueryResult; ms: number }>('/api/ai/test', a));
+  }
+  aiQuery(prompt: string) {
+    return firstValueFrom(this.http.post<AIQueryResult>('/api/ai/query', { prompt }));
   }
 
   savedQueries() {

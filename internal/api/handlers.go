@@ -243,7 +243,8 @@ func (s *Server) meta(w http.ResponseWriter, r *http.Request) {
 		filters = append(filters, k)
 	}
 	sort.Strings(filters)
-	writeJSON(w, http.StatusOK, map[string]any{"dimensions": dims, "filters": filters, "version": s.Version, "name": s.Config.Settings().ApplianceName})
+	writeJSON(w, http.StatusOK, map[string]any{"dimensions": dims, "filters": filters, "version": s.Version, "name": s.Config.Settings().ApplianceName,
+		"ai": s.aiEnabled()})
 }
 
 func (s *Server) summary(w http.ResponseWriter, r *http.Request) {
