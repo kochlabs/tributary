@@ -44,6 +44,7 @@ type mcpWindow struct {
 	From    string            `json:"from,omitempty"`
 	To      string            `json:"to,omitempty"`
 	Filters map[string]string `json:"filters,omitempty"`
+	Query   string            `json:"query,omitempty"`
 }
 
 type mcpTopIn struct {
@@ -168,6 +169,12 @@ func (s *Server) addMCPTools(srv *mcp.Server) {
 		props["range"].Description = "Time range ending now: a number with m, h or d, such as 15m, 6h or 7d. Default 1h."
 		props["from"].Description = "Start of a fixed time range (RFC 3339), instead of range."
 		props["to"].Description = "End of a fixed time range (RFC 3339), with from."
+		props["query"].Description = "Only flows matching this query, e.g. " +
+			`host:nas AND NOT country:(US OR CA), dst_port:[1 TO 1023], bytes:>100MB AND direction:upload, threat:*. ` +
+			"field:value terms combine with AND, OR (also by just writing terms next to each other), NOT and parentheses; " +
+			"a field's list is field:(a OR b); ranges are [lo TO hi] or lo-hi; comparisons field:>v, >=, <, <=; field:* means any value. " +
+			"Values: addresses, CIDR prefixes, MACs, names of hosts or devices, numbers, sizes (100MB, 2GiB), durations (500ms, 5m), two-letter country codes, proto/port. " +
+			"A bare address or name means host:it. Fields: " + strings.Join(store.QueryFieldNames(), ", ") + ". Preferred over filters; both may be given (AND)."
 		props["filters"].Description = "Only flows matching all of these, by field: " + strings.Join(filters, ", ") +
 			`. Values are addresses or CIDR prefixes, ports or port ranges (8000-8100), protocol names, AS numbers, two-letter country codes or app as proto/port (tcp/443); a comma means any of them, a leading ! means not. direction is download or upload; device is a MAC address. Example: {"host": "10.0.0.5", "app": "tcp/443"}.`
 	}
@@ -343,8 +350,12 @@ func (s *Server) mcpGet(ctx context.Context, u *config.User, h http.HandlerFunc,
 	if rec.status >= 400 {
 		var e struct {
 			Error string `json:"error"`
+			Hint  string `json:"hint"`
 		}
 		if json.Unmarshal(rec.body.Bytes(), &e) == nil && e.Error != "" {
+			if e.Hint != "" {
+				e.Error += " (" + e.Hint + ")"
+			}
 			return nil, errors.New(e.Error)
 		}
 		return nil, fmt.Errorf("request failed (%d)", rec.status)
@@ -355,6 +366,13 @@ func (s *Server) mcpGet(ctx context.Context, u *config.User, h http.HandlerFunc,
 	var out any
 	if err := json.Unmarshal(rec.body.Bytes(), &out); err != nil {
 		return nil, err
+	}
+	// A query's warnings (names that match nothing) go with the result.
+	if h := rec.header.Get(warningsHeader); h != "" {
+		var warns any
+		if json.Unmarshal([]byte(h), &warns) == nil {
+			return map[string]any{"result": out, "warnings": warns}, nil
+		}
 	}
 	return out, nil
 }
@@ -375,6 +393,9 @@ func (w mcpWindow) values() (url.Values, error) {
 		q.Set("range", w.Range)
 	default:
 		q.Set("range", "1h")
+	}
+	if w.Query != "" {
+		q.Set("q", w.Query)
 	}
 	for k, v := range w.Filters {
 		if _, ok := store.FilterFields[k]; !ok {

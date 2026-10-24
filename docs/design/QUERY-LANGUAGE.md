@@ -1,6 +1,8 @@
 # Design: query language
 
-Status: draft, October 2026. Today's filters are a set of fields, each with
+Status: phase 1 implemented, October 2026 (`internal/query`,
+`store.CompileQuery`, the `q` parameter and a query box beside the filter
+chips); phases 2 and 3 to come. Today's filters are a set of fields, each with
 a comma-separated list of values. They are combined with AND, and each field
 can be used once. This design replaces them with a typed query, closer to
 Graylog than to a form:
@@ -120,7 +122,7 @@ in total.
 | `proto` | name or number | | `tcp`, `udp`, `icmp`, … |
 | `app` | `proto/port` | | the application side of the flow |
 | `exporter` | address, name | | |
-| `iface`, `in_if`, `out_if` | index, `exporter/index`, interface name | | |
+| `iface`, `in_if`, `out_if` | index (interface names later) | | |
 | `as`, `src_as`, `dst_as`, `remote_as` | number, `AS` + number | | |
 | `country`, `src_country`, `dst_country`, `remote_country` | ISO code | | |
 | `direction` | `download`, `upload`, `internal`, `transit` | `in`, `out` | |
@@ -129,8 +131,8 @@ in total.
 | `threat` | feed name or ID, `*` | | either side listed |
 | `vlan`, `dscp`, `etype`, `flow_type` | as today | | |
 | `bytes`, `packets` | size / number, comparisons | | per record, sampling-corrected |
-| `duration` | duration, comparisons | | `time_end − time_start` |
-| `flags` | `syn`, `ack`, `fin`, `rst`, `psh`, `urg` | `tcp.flags.*` | the flag is set |
+| `duration` | duration, comparisons | | `time_end − time_start`, to the second (flows store seconds) |
+| `flags` | `fin`, `syn`, `rst`, `psh`, `ack`, `urg`, `ece`, `cwr` | | the TCP flag is set |
 | `sampling` | number, comparisons | | |
 
 `peer` is kept as an alias of `host`. With a real `AND`, `host:a AND
@@ -150,8 +152,9 @@ to IDs.
   results.
 - If a name matches more than 256 addresses, the query fails with a request
   to use a CIDR instead.
-- Matching ignores case and requires the whole name.
-  `host:nas*` matches by prefix.
+- Matching ignores case and requires the whole name, or the first label
+  of a DNS name (`nas` matches `nas.home.lan`). `host:nas*` matches by
+  prefix.
 
 ## Processing
 
@@ -164,12 +167,12 @@ flowchart LR
     check -.->|"error, position,<br/>suggestion"| err([error])
 ```
 
-- **Checker:** turns the syntax tree into a typed tree, using
-  `store.FilterFields` (extended with the new fields) as the single field
-  table. Each field states the value kinds and operators it accepts.
-- **Compiler:** produces the `WHERE` fragment with `?` parameters, through
-  the same column expressions the filters use today. No value is ever
-  pasted into SQL.
+- **Checker and compiler** (`store.CompileQuery`) check each term against
+  the field table and produce the `WHERE` fragment with `?` parameters.
+  Plain values of the classic fields go through the same conditions as the
+  filters (`FilterFields`), so a converted filter compiles to identical
+  SQL; the new forms (comparisons, ranges, names, `*`) are added around
+  them. No value is ever pasted into SQL.
 - **Planner:** if every field in the tree can use the rollup table, the
   existing rule applies (more than three hours, rollup columns only).
 - **Limits:** at most 2,000 characters, 64 terms, 100 values in a list and
@@ -198,11 +201,15 @@ suggestion when there is one. An error stops the query; a warning doesn't.
 - Every endpoint that takes filters also takes `q`. When both are given,
   they are combined with AND, so old links and scripts keep working.
 - `GET /api/query/check?q=…` returns the canonical form and any warnings,
-  or the error, with positions. The UI calls it as you type.
-- Responses to queries carry `warnings` next to the results.
-- `GET /api/query/suggest?q=…&pos=n` returns completions at the cursor:
-  field names, or values for the field (exporters, devices, feeds,
-  countries, protocols, recently seen hosts).
+  or the error, with positions, always with status 200: an invalid query
+  is a successful check. Positions count UTF-16 units, as browsers do.
+- Other endpoints answer an invalid query with 400 and the same error
+  object, and carry warnings in an `X-Query-Warnings` header (a JSON
+  array), so no response body changes shape. MCP returns them as
+  `{"result": …, "warnings": […]}`.
+- (Phase 2) `GET /api/query/suggest?q=…&pos=n` returns completions at
+  the cursor: field names, or values for the field (exporters, devices,
+  feeds, countries, protocols, recently seen hosts).
 - MCP tools take `query`, and their description includes a short syntax
   guide. `filters` stays for existing clients.
 - Saved reports convert their filters to a query once, on upgrade. Each
@@ -231,16 +238,20 @@ CodeMirror loads only with the pages that use the bar.
 
 ## Implementation
 
-- **Parser:** a quick prototype of both
-  [participle v2](https://github.com/alecthomas/participle) (with its
-  stateful lexer for values) and a hand-written recursive-descent parser
-  (about 300 lines), then keep one. The deciding factors are error quality
-  and how cleanly the context-dependent lexing of values works. Libraries
+- **Parser:** hand-written recursive descent, chosen over a
+  [participle v2](https://github.com/alecthomas/participle) prototype.
+  participle needed a fragile IPv6 regular expression ahead of its word
+  rule, let `AND` through as a value (`port:(1 AND 2)`) without extra
+  keyword handling, and reports errors as grammar dumps
+  (`unexpected token "<EOF>" (expected ("*" | ("(" …`) with no span to
+  underline. The hand-written parser decides by shape: a word that is an
+  address, prefix, range or MAC as a whole is a value, otherwise the part
+  before its first colon is the field. Libraries
   for Lucene and AIP-160 syntax were considered and rejected: their lexers
   need IPv6 addresses and CIDRs quoted, none outputs ClickHouse, and the
   field semantics have to be written here regardless.
-- **Package:** `internal/query`, covering the lexer, parser, checker and
-  printer. The compiler goes in `internal/store`, next to the columns.
+- **Packages:** `internal/query` holds the lexer, parser and printer;
+  the checker and compiler are in `internal/store`, next to the columns.
 - **Tests:**
   - table tests from query to canonical form and to SQL, and from query to
     error and position;

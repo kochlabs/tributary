@@ -434,7 +434,7 @@ const blank = (
                 >Filters</label
               >
               <div class="clr-control-container clr-col-12 clr-col-md-9">
-                <nfa-filter-bar [(filters)]="editFilters" />
+                <nfa-filter-bar [(filters)]="editFilters" [query]="false" />
                 <span class="clr-subtext" i18n="@@reports.filtersHelp"
                   >Optional: limit the whole report to matching traffic, e.g. one exporter.</span
                 >

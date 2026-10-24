@@ -128,6 +128,7 @@ func TestMCPEndpoint(t *testing.T) {
 	for args, want := range map[string]map[string]any{
 		"unknown filter": {"dimension": "app", "filters": map[string]any{"hostname": "x"}},
 		"RFC 3339":       {"dimension": "app", "from": "yesterday", "to": "now"},
+		"unknown field dst_prot (did you mean dst_port?)": {"dimension": "app", "query": "dst_prot:443"},
 	} {
 		res, err := sess.CallTool(context.Background(), &mcp.CallToolParams{Name: "top", Arguments: want})
 		if err != nil || !res.IsError || !strings.Contains(res.Content[0].(*mcp.TextContent).Text, args) {

@@ -1,10 +1,13 @@
-import { Component, computed, model, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { Filters } from '../core/api';
+import { Api, Filters, QueryIssue } from '../core/api';
 import { FILTER_FIELDS, filterLabel } from '../core/format';
 
-/** Editable list of filter chips bound to a Filters model. */
+/**
+ * Editable list of filter chips bound to a Filters model, with a query box
+ * (the "q" key, docs/design/QUERY-LANGUAGE.md) combined with them by AND.
+ */
 @Component({
   selector: 'nfa-filter-bar',
   imports: [ClarityModule, FormsModule],
@@ -39,6 +42,41 @@ import { FILTER_FIELDS, filterLabel } from '../core/format';
       }
     </div>
     <div class="filter-help" i18n="@@filterBar.help">Comma-separate values to match any of them; CIDR prefixes and port ranges (8000-8100) are supported.</div>
+    @if (query()) {
+      <form class="query-form" (ngSubmit)="runQuery()">
+        <cds-icon shape="search" class="filter-icon"></cds-icon>
+        <input
+          class="clr-input query-input"
+          name="query"
+          [(ngModel)]="queryText"
+          (ngModelChange)="queryError.set(null)"
+          placeholder="Query, e.g. host:nas AND NOT country:(US OR CA)"
+          i18n-placeholder="@@filterBar.queryPlaceholder"
+          aria-label="Query"
+          i18n-aria-label="@@filterBar.query"
+          spellcheck="false"
+          autocomplete="off"
+        />
+        <button class="btn btn-sm btn-primary" type="submit" [disabled]="checking()" i18n="@@filterBar.run">Run</button>
+        @if (filters()['q']) {
+          <button class="btn btn-sm btn-link" type="button" (click)="clearQuery()" i18n="@@filterBar.clearQuery">Clear</button>
+        }
+      </form>
+      @if (queryError(); as e) {
+        <div class="query-issue error" role="alert">
+          <code>{{ before(e) }}<mark>{{ marked(e) }}</mark>{{ after(e) }}</code>
+          <div>{{ e.message }}@if (e.hint) {&nbsp;· {{ e.hint }}}</div>
+        </div>
+      }
+      @if (!queryError()) {
+        @for (wn of queryWarnings(); track $index) {
+          <div class="query-issue warn">
+            <cds-icon shape="exclamation-triangle" status="warning" size="14"></cds-icon>
+            {{ wn.message }}@if (wn.hint) {&nbsp;· {{ wn.hint }}}<span class="muted nothing" i18n="@@filterBar.matchesNothing">(matches nothing)</span>
+          </div>
+        }
+      }
+    }
   `,
   styles: `
     .filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 36px; }
@@ -51,13 +89,30 @@ import { FILTER_FIELDS, filterLabel } from '../core/format';
     .neg { font-size: 12px; display: inline-flex; align-items: center; gap: 4px; }
     .filter-help { font-size: 11px; color: var(--cds-alias-typography-color-300); margin-top: 2px; }
     .add-btn { margin: 0; }
+    .query-form { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .query-input { flex: 1; font-family: var(--cds-global-typography-monospace-font-family, monospace); font-size: 13px; }
+    .query-form .btn { margin: 0; }
+    .query-issue { font-size: 12px; margin: 4px 0 0 22px; }
+    .query-issue.error { color: var(--cds-alias-status-danger); }
+    .query-issue code { display: block; white-space: pre-wrap; color: var(--cds-alias-typography-color-400); background: none; padding: 0; }
+    .query-issue mark { background: none; color: var(--cds-alias-status-danger); text-decoration: underline wavy var(--cds-alias-status-danger); }
+    .muted { color: var(--cds-alias-typography-color-300); }
+    .nothing { margin-left: 4px; }
   `,
 })
 export class FilterBar {
   readonly filters = model<Filters>({});
+  /** Show the query box (reports don't store queries yet). */
+  readonly query = input(true);
   readonly fields = FILTER_FIELDS;
   readonly editing = signal(false);
-  readonly entries = computed(() => Object.entries(this.filters()).filter(([, v]) => !!v));
+  readonly entries = computed(() => Object.entries(this.filters()).filter(([k, v]) => !!v && k !== 'q'));
+  private api = inject(Api);
+  queryText = '';
+  readonly checking = signal(false);
+  readonly queryError = signal<QueryIssue | null>(null);
+  readonly queryWarnings = signal<QueryIssue[]>([]);
+  private checked = '';
   field = 'host';
   value = '';
   neg = false;
@@ -106,4 +161,50 @@ export class FilterBar {
   clear() {
     this.filters.set({});
   }
+
+  constructor() {
+    // A query from the URL (or set by a page) shows in the box, with its warnings.
+    effect(() => {
+      const q = this.filters()['q'] ?? '';
+      if (q === this.checked) return;
+      this.queryText = q;
+      this.checked = q;
+      this.queryWarnings.set([]);
+      if (q) this.api.checkQuery(q).then((r) => this.queryWarnings.set(r.warnings));
+    });
+  }
+
+  async runQuery() {
+    const text = this.queryText.trim();
+    if (!text) {
+      this.clearQuery();
+      return;
+    }
+    this.checking.set(true);
+    const r = await this.api.checkQuery(text);
+    this.checking.set(false);
+    if (r.error) {
+      this.queryError.set(r.error);
+      return;
+    }
+    this.queryError.set(null);
+    this.queryWarnings.set(r.warnings);
+    this.checked = r.query ?? '';
+    this.queryText = this.checked;
+    this.filters.set({ ...this.filters(), q: this.checked });
+  }
+
+  clearQuery() {
+    const f = { ...this.filters() };
+    delete f['q'];
+    this.queryText = '';
+    this.queryError.set(null);
+    this.queryWarnings.set([]);
+    this.filters.set(f);
+  }
+
+  // The error's text, split around the part it is about.
+  before = (e: QueryIssue) => this.queryText.slice(0, e.pos);
+  marked = (e: QueryIssue) => this.queryText.slice(e.pos, e.pos + e.len) || ' ';
+  after = (e: QueryIssue) => this.queryText.slice(e.pos + e.len);
 }

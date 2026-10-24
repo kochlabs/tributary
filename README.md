@@ -44,6 +44,7 @@ how ClickHouse is configured.
 - [Features](docs/FEATURES.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Databases](docs/DATABASE.md)
+- [Queries](docs/QUERIES.md)
 - [Reports](docs/REPORTS.md)
 - [Notifications](docs/NOTIFICATIONS.md)
 - [Threat feeds](docs/THREAT-FEEDS.md)

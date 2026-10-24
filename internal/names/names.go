@@ -96,3 +96,19 @@ func TCPFlags(f uint8) string {
 	}
 	return strings.Join(s, ",")
 }
+
+// Match tells whether name answers to pattern in a query: the same name or
+// the same first label of a DNS name ("nas" matches "nas.home.lan"),
+// ignoring case; a trailing * matches a prefix of either.
+func Match(name, pattern string) bool {
+	name = strings.ToLower(strings.TrimSuffix(name, "."))
+	pattern = strings.ToLower(pattern)
+	if name == "" || pattern == "" {
+		return false
+	}
+	short, _, _ := strings.Cut(name, ".")
+	if p, ok := strings.CutSuffix(pattern, "*"); ok {
+		return p != "" && (strings.HasPrefix(name, p) || strings.HasPrefix(short, p))
+	}
+	return name == pattern || short == pattern
+}

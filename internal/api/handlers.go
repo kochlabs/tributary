@@ -81,23 +81,7 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 
 // ---- query parameters ----
 
-// errBadRequest marks client input errors so they map to HTTP 400.
-var errBadRequest = errors.New("bad request")
-
-type badRequest struct{ msg string }
-
-func (e badRequest) Error() string        { return e.msg }
-func (e badRequest) Is(target error) bool { return target == errBadRequest }
-
 var rangeUnits = map[byte]time.Duration{'m': time.Minute, 'h': time.Hour, 'd': 24 * time.Hour}
-
-func parseQuery(r *http.Request) (store.Query, error) {
-	q, err := parseQueryParams(r)
-	if err != nil {
-		return q, badRequest{err.Error()}
-	}
-	return q, nil
-}
 
 func parseQueryParams(r *http.Request) (store.Query, error) {
 	v := r.URL.Query()
@@ -263,9 +247,8 @@ func (s *Server) meta(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) summary(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	ctx, cancel := queryCtx(r)
@@ -279,9 +262,8 @@ func (s *Server) summary(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) timeseries(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	if q.Limit == 0 {
@@ -306,9 +288,8 @@ func (s *Server) timeseries(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) top(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	q.GroupBy = r.URL.Query().Get("dimension")
@@ -329,22 +310,28 @@ func (s *Server) top(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, res)
 }
 
-func (s *Server) flowPage(r *http.Request) (*store.FlowPage, error) {
-	q, err := parseQuery(r)
-	if err != nil {
-		return nil, err
+// flowPage reads one page of flow records; on failure it writes the error
+// and returns nil.
+func (s *Server) flowPage(w http.ResponseWriter, r *http.Request) *store.FlowPage {
+	q, ok := s.parseQuery(w, r)
+	if !ok {
+		return nil
 	}
 	v := r.URL.Query()
 	offset, _ := strconv.Atoi(v.Get("offset"))
 	ctx, cancel := queryCtx(r)
 	defer cancel()
-	return s.Store.Flows(ctx, q, v.Get("sort"), v.Get("desc") != "false", offset)
+	page, err := s.Store.Flows(ctx, q, v.Get("sort"), v.Get("desc") != "false", offset)
+	if err != nil {
+		s.dbErr(w, err)
+		return nil
+	}
+	return page
 }
 
 func (s *Server) flows(w http.ResponseWriter, r *http.Request) {
-	page, err := s.flowPage(r)
-	if err != nil {
-		s.dbErr(w, err)
+	page := s.flowPage(w, r)
+	if page == nil {
 		return
 	}
 	var addrs []netip.Addr
@@ -373,9 +360,8 @@ func (s *Server) flows(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) flowsCSV(w http.ResponseWriter, r *http.Request) {
 	r.URL.RawQuery += "&limit=5000"
-	page, err := s.flowPage(r)
-	if err != nil {
-		s.dbErr(w, err)
+	page := s.flowPage(w, r)
+	if page == nil {
 		return
 	}
 	w.Header().Set("Content-Type", "text/csv")
@@ -397,8 +383,6 @@ func u64[T uint8 | uint16 | uint32 | uint64](v T) string { return strconv.Format
 func (s *Server) dbErr(w http.ResponseWriter, err error) {
 	var msg = err.Error()
 	switch {
-	case errors.Is(err, errBadRequest):
-		writeErr(w, http.StatusBadRequest, msg)
 	case errors.Is(err, context.DeadlineExceeded):
 		writeErr(w, http.StatusGatewayTimeout, "query timed out — narrow the time range or add filters")
 	case strings.HasPrefix(msg, "unknown dimension"):
@@ -430,9 +414,8 @@ type exporterSNMP struct {
 }
 
 func (s *Server) exporters(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	ctx, cancel := queryCtx(r)
@@ -533,9 +516,8 @@ func (s *Server) interfaces(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	ctx, cancel := queryCtx(r)
@@ -1085,9 +1067,8 @@ func (s *Server) storageEstimate(w http.ResponseWriter, r *http.Request) {
 
 // paths returns a Sankey diagram of traffic across 2–3 dimensions.
 func (s *Server) paths(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	dims := strings.Split(r.URL.Query().Get("dims"), ",")

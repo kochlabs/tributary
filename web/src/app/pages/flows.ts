@@ -9,7 +9,7 @@ import { ExpandedRows, filtersFromParams, loader, trackByKey } from '../core/uti
 import { FilterBar } from '../shared/filter-bar';
 import { RangeBar } from '../shared/range-bar';
 
-const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
+const FILTER_KEYS = [...FILTER_FIELDS.map((f) => f.id), 'q'];
 
 @Component({
   selector: 'nfa-flows',

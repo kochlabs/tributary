@@ -143,9 +143,8 @@ type deviceView struct {
 // devicesList returns every known device with its traffic in the requested
 // time window.
 func (s *Server) devicesList(w http.ResponseWriter, r *http.Request) {
-	q, err := parseQuery(r)
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	q, ok := s.parseQuery(w, r)
+	if !ok {
 		return
 	}
 	ctx, cancel := queryCtx(r)

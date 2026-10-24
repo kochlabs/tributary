@@ -167,3 +167,17 @@ func GenericPTR(a netip.Addr, name string) bool {
 	}
 	return false
 }
+
+// AddrsMatching lists cached addresses whose name matches.
+func (r *Resolver) AddrsMatching(match func(name string) bool) []netip.Addr {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	now := time.Now()
+	var out []netip.Addr
+	for a, e := range r.cache {
+		if e.name != "" && now.Before(e.exp) && match(e.name) {
+			out = append(out, a)
+		}
+	}
+	return out
+}

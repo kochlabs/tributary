@@ -39,6 +39,8 @@
 - Devices: local hosts identified by MAC address and vendor.
 - Filters: IP/CIDR (v4 and v6), ports and ranges, protocols, AS, country,
   interface, VLAN, DSCP, threat feed, `proto/port`; `,` for OR, `!` for NOT.
+- Queries: `AND`/`OR`/`NOT`, grouping, ranges, comparisons and names, e.g.
+  `host:nas AND NOT country:(US OR CA)` ([QUERIES.md](QUERIES.md)).
 
 ## Reports
 

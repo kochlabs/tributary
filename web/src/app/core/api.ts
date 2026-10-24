@@ -915,6 +915,21 @@ export function errorMessage(err: unknown): string {
   return String(err);
 }
 
+/** A query problem and where it is in the text (docs/design/QUERY-LANGUAGE.md). */
+export interface QueryIssue {
+  message: string;
+  hint?: string;
+  pos: number;
+  len: number;
+}
+
+/** A checked query: its canonical form and warnings, or the error. */
+export interface QueryCheck {
+  query?: string;
+  warnings: QueryIssue[];
+  error?: QueryIssue;
+}
+
 /** A report without its run status, as the API accepts it. */
 function reportDefinition(r: Partial<Report>): Partial<Report> {
   const def = { ...r };
@@ -954,6 +969,30 @@ export class Api {
     for (const [k, v] of Object.entries(extra))
       if (v !== undefined && v !== '') p = p.set(k, String(v));
     return p;
+  }
+
+  /** Validates a query as typed: its canonical form and warnings, or the error. */
+  async checkQuery(q: string): Promise<QueryCheck> {
+    type Issue = { warning?: string; error?: string; hint?: string; pos: number; len: number };
+    const issue = (i: Issue): QueryIssue => ({
+      message: i.warning ?? i.error ?? '',
+      hint: i.hint,
+      pos: i.pos,
+      len: i.len,
+    });
+    try {
+      const r = await this.get<{ query?: string; warnings?: Issue[]; error?: Issue }>(
+        '/api/query/check',
+        new HttpParams().set('q', q),
+      );
+      return {
+        query: r.query,
+        warnings: (r.warnings ?? []).map(issue),
+        error: r.error && issue(r.error),
+      };
+    } catch (err) {
+      return { warnings: [], error: { message: errorMessage(err), pos: 0, len: 0 } };
+    }
   }
 
   private get<T>(url: string, params?: HttpParams) {

@@ -11,7 +11,7 @@ import { FilterBar } from '../shared/filter-bar';
 import { RangeBar } from '../shared/range-bar';
 import { sankeyOption, timeSeriesOption } from '../shared/options';
 
-const FILTER_KEYS = FILTER_FIELDS.map((f) => f.id);
+const FILTER_KEYS = [...FILTER_FIELDS.map((f) => f.id), 'q'];
 
 // Dimensions that count a flow on both sides can't be path columns.
 const PATH_EXCLUDED = new Set(['host', 'country', 'local_host', 'remote_host']);

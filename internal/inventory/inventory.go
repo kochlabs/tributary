@@ -219,3 +219,37 @@ func (x *Index) TaggedPrefixes(tag string) []netip.Prefix {
 	}
 	return out
 }
+
+// AddrsMatching lists the addresses whose object or DNS name matches (see
+// names.Match).
+func (x *Index) AddrsMatching(match func(name string) bool) []netip.Addr {
+	if x == nil {
+		return nil
+	}
+	var out []netip.Addr
+	for ip, r := range x.byIP {
+		if match(r.Name) {
+			out = append(out, ip)
+		}
+	}
+	for ip, n := range x.dnsName {
+		if match(n) && x.byIP[ip] == nil {
+			out = append(out, ip)
+		}
+	}
+	return out
+}
+
+// MACsMatching lists the MACs ("aa:bb:..") whose object's name matches.
+func (x *Index) MACsMatching(match func(name string) bool) []string {
+	if x == nil {
+		return nil
+	}
+	var out []string
+	for mac, r := range x.byMAC {
+		if match(r.Name) {
+			out = append(out, mac)
+		}
+	}
+	return out
+}
