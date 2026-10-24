@@ -1,8 +1,19 @@
 # Queries
 
-The query box on the Traffic Explorer and Flow Search narrows traffic down
-with a query, combined (AND) with any filter chips. The API takes the same
-query as `q`, and the MCP tools as `query`.
+The query bar on the Traffic Explorer, Flow Search and Detections, and in
+reports, narrows traffic down. The API takes the same query as `q`, and the
+MCP tools as `query`.
+
+## The query bar
+
+- Fields and values are suggested as you type (exporters, devices, names,
+  threat feeds, countries, services). Tab or Enter picks one; Ctrl+Space
+  shows them.
+- Mistakes are underlined as you type; hover for the reason. Enter runs
+  the query, which goes into the page's address for bookmarking.
+- ↑ in an empty bar recalls recent queries (kept in this browser).
+- Clicking an address, row or chart series adds `AND field:value`;
+  Alt-click on Flow Search excludes it instead.
 
 ```
 src:10.0.0.0/8 AND dst_port:[1 TO 1023] AND NOT country:(US OR CA)

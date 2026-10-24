@@ -3,11 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, Channel, errorMessage, Filters, Report, ReportRun } from '../core/api';
+import { Api, Channel, errorMessage, Report, ReportRun } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
-import { FilterBar } from '../shared/filter-bar';
+import { QueryBar } from '../shared/query-bar';
 
 const TEMPLATES: Record<string, string> = {
   summary: $localize`:@@reports.template.summary:Network summary`,
@@ -57,7 +57,7 @@ const blank = (
   template,
   sections,
   period: template === 'security' ? 'last_week' : 'last_7d',
-  filters: {},
+  query: '',
   schedule: 'off',
   hour: 7,
   weekday: 1,
@@ -70,7 +70,7 @@ const blank = (
 /** Saved reports, rendered as PDF on the appliance (Reports). */
 @Component({
   selector: 'nfa-reports',
-  imports: [ClarityModule, FormsModule, RouterLink, FilterBar],
+  imports: [ClarityModule, FormsModule, RouterLink, QueryBar],
   template: `
     <div class="page-header">
       <div>
@@ -193,7 +193,7 @@ const blank = (
               <div class="muted small">
                 {{ templateLabel(r.template) }}
                 @if (filterCount(r)) {
-                  · <ng-container i18n="@@reports.filtered">filtered</ng-container>
+                  · <span [title]="r.query" i18n="@@reports.filtered">filtered</span>
                 }
               </div></clr-dg-cell
             >
@@ -430,13 +430,14 @@ const blank = (
               </select>
             </clr-select-container>
             <div class="clr-form-control clr-row">
-              <label class="clr-control-label clr-col-12 clr-col-md-3" i18n="@@reports.filters"
-                >Filters</label
+              <label class="clr-control-label clr-col-12 clr-col-md-3" i18n="@@reports.query"
+                >Query</label
               >
               <div class="clr-control-container clr-col-12 clr-col-md-9">
-                <nfa-filter-bar [(filters)]="editFilters" [query]="false" />
-                <span class="clr-subtext" i18n="@@reports.filtersHelp"
-                  >Optional: limit the whole report to matching traffic, e.g. one exporter.</span
+                <nfa-query-bar [(query)]="editQuery" [live]="true" />
+                <span class="clr-subtext" i18n="@@reports.queryHelp"
+                  >Optional: limit the whole report to matching traffic, e.g.
+                  exporter:core-router.</span
                 >
               </div>
             </div>
@@ -787,7 +788,7 @@ export class Reports {
     (id) => this.api.reportRuns(id),
   );
   readonly editing = signal<Partial<Report> | null>(null);
-  readonly editFilters = signal<Filters>({});
+  readonly editQuery = signal('');
   readonly confirmRun = signal<Report | null>(null);
   readonly confirmDelete = signal<Report | null>(null);
   readonly busy = signal(false);
@@ -829,7 +830,7 @@ export class Reports {
   periodLabel = (p: string) => PERIODS.find((x) => x.id === p)?.label ?? p;
   pad = (n: number) => String(n).padStart(2, '0');
   kb = (n: number) => `${Math.max(1, Math.round(n / 1024))} KB`;
-  filterCount = (r: Report) => Object.keys(r.filters ?? {}).length;
+  filterCount = (r: Report) => (r.query ? 1 : 0);
   channelNames = (r: Report) =>
     (r.channels ?? []).flatMap((id) => this.channelList().find((c) => c.id === id)?.name ?? []);
   canDeliver = (r: Report | null) =>
@@ -869,7 +870,7 @@ export class Reports {
     const e = r
       ? { ...r, sections: [...r.sections], channels: [...(r.channels ?? [])] }
       : blank(template, [...(tpl[template] ?? [])]);
-    this.editFilters.set({ ...(e.filters ?? {}) });
+    this.editQuery.set(e.query ?? '');
     this.editing.set(e);
     this.formError.set('');
   }
@@ -911,7 +912,7 @@ export class Reports {
     this.busy.set(true);
     this.formError.set('');
     try {
-      const saved = await this.api.saveReport({ ...e, filters: this.editFilters() });
+      const saved = await this.api.saveReport({ ...e, query: this.editQuery() });
       this.editing.set(null);
       this.list.reload();
       this.select(saved);

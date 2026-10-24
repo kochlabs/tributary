@@ -2,7 +2,6 @@ package report
 
 import (
 	"fmt"
-	"strings"
 )
 
 // section draws one section of s (its heading is already drawn).
@@ -140,18 +139,4 @@ func (d *doc) kpis(s *Report) {
 		d.CellFormat(tileW-6, 4, d.fit(t.sub, tileW-6), "", 0, "L", false, 0, "")
 	}
 	d.SetXY(margin, y0+2*tileH+gap+2)
-}
-
-// Describe lists filters for a report header: "exporter = 10.0.0.1 · threat = *".
-func Describe(filters map[string]string, label func(string) string) string {
-	var parts []string
-	for _, k := range sortedKeys(filters) {
-		v := filters[k]
-		op := "="
-		if strings.HasPrefix(v, "!") {
-			op, v = "≠", v[1:]
-		}
-		parts = append(parts, label(k)+" "+op+" "+v)
-	}
-	return strings.Join(parts, " · ")
 }

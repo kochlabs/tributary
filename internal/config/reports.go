@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS reports (
 	monthday    INTEGER NOT NULL DEFAULT 1,
 	recipients  TEXT NOT NULL DEFAULT '',
 	channels    TEXT NOT NULL DEFAULT '[]',
+	query       TEXT NOT NULL DEFAULT '',
 	keep        INTEGER NOT NULL DEFAULT 12,
 	created_by  TEXT NOT NULL DEFAULT '',
 	created_at  INTEGER NOT NULL,
@@ -66,12 +67,15 @@ var (
 func ReportSections() []string { return slices.Clone(reportSections) }
 
 type Report struct {
-	ID       int64             `json:"id"`
-	Name     string            `json:"name"`
-	Template string            `json:"template"`
-	Sections []string          `json:"sections"`
-	Period   string            `json:"period"`
-	Filters  map[string]string `json:"filters"`
+	ID       int64    `json:"id"`
+	Name     string   `json:"name"`
+	Template string   `json:"template"`
+	Sections []string `json:"sections"`
+	Period   string   `json:"period"`
+	// Query narrows the traffic (docs/QUERIES.md). Filters is the older
+	// form, converted to Query when saved.
+	Query   string            `json:"query"`
+	Filters map[string]string `json:"filters,omitempty"`
 	// Schedule: off | daily | weekly | monthly, at Hour (local time) on
 	// Weekday (0 = Sunday) or Monthday (1–28).
 	Schedule   string `json:"schedule"`
@@ -113,10 +117,61 @@ func (c *DB) migrateReports() error {
 		return err
 	}
 	if n == 0 {
-		_, err := c.db.Exec("ALTER TABLE reports ADD COLUMN channels TEXT NOT NULL DEFAULT '[]'")
+		if _, err := c.db.Exec("ALTER TABLE reports ADD COLUMN channels TEXT NOT NULL DEFAULT '[]'"); err != nil {
+			return err
+		}
+	}
+	if err := c.db.QueryRow("SELECT count(*) FROM pragma_table_info('reports') WHERE name = 'query'").Scan(&n); err != nil {
+		return err
+	}
+	if n == 0 {
+		_, err := c.db.Exec("ALTER TABLE reports ADD COLUMN query TEXT NOT NULL DEFAULT ''")
 		return err
 	}
 	return nil
+}
+
+// ConvertReportFilters rewrites the filters of reports saved before
+// queries as queries (convert writes filters as a query), once.
+func (c *DB) ConvertReportFilters(convert func(map[string]string) string) error {
+	rows, err := c.db.Query("SELECT id, filters, query FROM reports WHERE filters NOT IN ('', '{}', 'null')")
+	if err != nil {
+		return err
+	}
+	type conv struct {
+		id    int64
+		query string
+	}
+	var todo []conv
+	for rows.Next() {
+		var id int64
+		var filters, q string
+		if err := rows.Scan(&id, &filters, &q); err != nil {
+			rows.Close()
+			return err
+		}
+		var f map[string]string
+		_ = json.Unmarshal([]byte(filters), &f)
+		todo = append(todo, conv{id, AndQueries(convert(f), q)})
+	}
+	rows.Close()
+	for _, t := range todo {
+		if _, err := c.db.Exec("UPDATE reports SET query = ?, filters = '{}' WHERE id = ?", t.query, t.id); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// AndQueries combines queries with AND; either may be empty.
+func AndQueries(a, b string) string {
+	switch {
+	case a == "":
+		return b
+	case b == "":
+		return a
+	}
+	return "(" + a + ") AND (" + b + ")"
 }
 
 // ValidateReport checks and normalises r.
@@ -146,6 +201,10 @@ func ValidateReport(r *Report) error {
 	r.Sections = secs
 	if !slices.Contains(reportPeriods, r.Period) {
 		return fmt.Errorf("unknown period %q", r.Period)
+	}
+	r.Query = strings.TrimSpace(r.Query)
+	if len(r.Query) > 2000 {
+		return errors.New("the query is too long")
 	}
 	if r.Filters == nil {
 		r.Filters = map[string]string{}
@@ -249,13 +308,13 @@ func NextReportRun(r Report, t time.Time, loc *time.Location) time.Time {
 	return time.Time{}
 }
 
-const reportCols = "id, name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, channels, keep, created_by, created_at, updated_at, next_run"
+const reportCols = "id, name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, channels, keep, created_by, created_at, updated_at, next_run, query"
 
 func scanReport(row interface{ Scan(...any) error }) (Report, error) {
 	var r Report
 	var secs, filters, chans string
 	err := row.Scan(&r.ID, &r.Name, &r.Template, &secs, &r.Period, &filters, &r.Schedule, &r.Hour, &r.Weekday, &r.Monthday,
-		&r.Recipients, &chans, &r.Keep, &r.CreatedBy, &r.CreatedAt, &r.UpdatedAt, &r.NextRun)
+		&r.Recipients, &chans, &r.Keep, &r.CreatedBy, &r.CreatedAt, &r.UpdatedAt, &r.NextRun, &r.Query)
 	if err != nil {
 		return r, err
 	}
@@ -316,17 +375,17 @@ func (c *DB) SaveReport(r Report, now time.Time, loc *time.Location) (Report, er
 	var err error
 	if r.ID == 0 {
 		var res sql.Result
-		res, err = c.db.Exec(`INSERT INTO reports(name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, channels, keep, created_by, created_at, updated_at, next_run)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, string(chans), r.Keep, r.CreatedBy, ms, ms, next)
+		res, err = c.db.Exec(`INSERT INTO reports(name, template, sections, period, filters, schedule, hour, weekday, monthday, recipients, channels, keep, created_by, created_at, updated_at, next_run, query)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, string(chans), r.Keep, r.CreatedBy, ms, ms, next, r.Query)
 		if err == nil {
 			r.ID, err = res.LastInsertId()
 		}
 	} else {
 		var res sql.Result
 		res, err = c.db.Exec(`UPDATE reports SET name = ?, template = ?, sections = ?, period = ?, filters = ?, schedule = ?, hour = ?, weekday = ?, monthday = ?,
-			recipients = ?, channels = ?, keep = ?, updated_at = ?, next_run = ? WHERE id = ?`,
-			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, string(chans), r.Keep, ms, next, r.ID)
+			recipients = ?, channels = ?, keep = ?, updated_at = ?, next_run = ?, query = ? WHERE id = ?`,
+			r.Name, r.Template, string(secs), r.Period, string(filters), r.Schedule, r.Hour, r.Weekday, r.Monthday, r.Recipients, string(chans), r.Keep, ms, next, r.Query, r.ID)
 		if err == nil {
 			if n, _ := res.RowsAffected(); n == 0 {
 				return r, ErrNotFound

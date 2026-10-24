@@ -30,10 +30,24 @@ Packages bundled into the web interface. Their full license texts ship with the 
 | [@angular/router](https://www.npmjs.com/package/@angular/router) | 22.2.2 | MIT |
 | [@clr/angular](https://www.npmjs.com/package/@clr/angular) | 18.4.0 | MIT |
 | [@clr/ui](https://www.npmjs.com/package/@clr/ui) | 18.4.0 | MIT |
+| [@codemirror/autocomplete](https://www.npmjs.com/package/@codemirror/autocomplete) | 6.20.4 | MIT |
+| [@codemirror/commands](https://www.npmjs.com/package/@codemirror/commands) | 6.11.1 | MIT |
+| [@codemirror/language](https://www.npmjs.com/package/@codemirror/language) | 6.13.1 | MIT |
+| [@codemirror/lint](https://www.npmjs.com/package/@codemirror/lint) | 6.9.7 | MIT |
+| [@codemirror/state](https://www.npmjs.com/package/@codemirror/state) | 6.7.6 | MIT |
+| [@codemirror/streamparser](https://www.npmjs.com/package/@codemirror/streamparser) | 6.0.0 | MIT |
+| [@codemirror/view](https://www.npmjs.com/package/@codemirror/view) | 6.43.15 | MIT |
+| [@lezer/common](https://www.npmjs.com/package/@lezer/common) | 1.5.4 | MIT |
+| [@lezer/highlight](https://www.npmjs.com/package/@lezer/highlight) | 1.2.5 | MIT |
+| [@lezer/lr](https://www.npmjs.com/package/@lezer/lr) | 1.4.11 | MIT |
+| [@marijn/find-cluster-break](https://www.npmjs.com/package/@marijn/find-cluster-break) | 1.0.4 | MIT |
 | [@standard-schema/spec](https://www.npmjs.com/package/@standard-schema/spec) | 1.1.0 | MIT |
+| [crelt](https://www.npmjs.com/package/crelt) | 1.0.7 | MIT |
 | [echarts](https://www.npmjs.com/package/echarts) | 6.1.0 | Apache-2.0 |
 | [rxjs](https://www.npmjs.com/package/rxjs) | 7.8.2 | Apache-2.0 |
+| [style-mod](https://www.npmjs.com/package/style-mod) | 4.1.4 | MIT |
 | [tslib](https://www.npmjs.com/package/tslib) | 2.8.1 | 0BSD |
+| [w3c-keyname](https://www.npmjs.com/package/w3c-keyname) | 2.2.8 | MIT |
 | [zod](https://www.npmjs.com/package/zod) | 4.6.5 | MIT |
 | [zrender](https://www.npmjs.com/package/zrender) | 6.1.0 | BSD-3-Clause |
 

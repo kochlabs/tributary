@@ -123,6 +123,7 @@ func (s *Server) Handler() http.Handler {
 	auth("GET /api/paths", s.paths)
 	auth("GET /api/flows.csv", s.flowsCSV)
 	auth("GET /api/query/check", s.queryCheck)
+	auth("GET /api/query/suggest", s.querySuggest)
 	auth("GET /api/exporters", s.exporters)
 	auth("GET /api/devices", s.devicesList)
 	auth("GET /api/exporters/{addr}/interfaces", s.interfaces)

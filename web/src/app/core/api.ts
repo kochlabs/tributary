@@ -362,7 +362,8 @@ export interface Report {
   template: 'summary' | 'security';
   sections: string[];
   period: 'yesterday' | 'last_week' | 'last_month' | 'last_24h' | 'last_7d' | 'last_30d';
-  filters: Record<string, string>;
+  /** Narrows the report's traffic (docs/QUERIES.md). */
+  query: string;
   schedule: 'off' | 'daily' | 'weekly' | 'monthly';
   hour: number;
   weekday: number;
@@ -907,7 +908,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 export function errorMessage(err: unknown): string {
   if (err instanceof HttpErrorResponse) {
     if (err.error && typeof err.error === 'object' && 'error' in err.error)
-      return String(err.error.error);
+      return String(err.error.error) + (err.error.hint ? ' · ' + err.error.hint : '');
     if (err.status === 0) return $localize`:@@api.unreachable:Cannot reach the appliance.`;
     return `${err.status} ${err.statusText}`;
   }
@@ -928,6 +929,13 @@ export interface QueryCheck {
   query?: string;
   warnings: QueryIssue[];
   error?: QueryIssue;
+}
+
+/** Completions at a cursor in a query. from/to are what they replace. */
+export interface QuerySuggestions {
+  from: number;
+  to: number;
+  options: { label: string; apply: string; detail?: string; kind: 'field' | 'value' | 'keyword' }[];
 }
 
 /** A report without its run status, as the API accepts it. */
@@ -993,6 +1001,14 @@ export class Api {
     } catch (err) {
       return { warnings: [], error: { message: errorMessage(err), pos: 0, len: 0 } };
     }
+  }
+
+  /** Completions for a query at a cursor position. */
+  suggestQuery(q: string, pos: number) {
+    return this.get<QuerySuggestions>(
+      '/api/query/suggest',
+      new HttpParams().set('q', q).set('pos', pos),
+    );
   }
 
   private get<T>(url: string, params?: HttpParams) {

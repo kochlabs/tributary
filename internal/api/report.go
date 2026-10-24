@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"context"
 	"fmt"
-	"maps"
 	"net/netip"
 	"slices"
 	"sync"
@@ -29,13 +28,12 @@ func (s *Server) buildReport(ctx context.Context, def config.Report, from, to ti
 	}
 	out := &report.Report{Title: title, Appliance: s.Config.Settings().ApplianceName, Version: s.Version, From: from, To: to,
 		Generated: time.Now(), Sections: def.Sections}
-	filter, err := store.ParseFilter(def.Filters)
+	text := config.AndQueries(store.FiltersToQuery(def.Filters), def.Query)
+	filter, err := s.reportFilter(text)
 	if err != nil {
-		return nil, fmt.Errorf("filters: %w", err)
+		return nil, err
 	}
-	if len(def.Filters) > 0 {
-		out.Scope = report.Describe(def.Filters, func(k string) string { return k })
-	}
+	out.Scope = text
 	q := store.Query{From: from, To: to, Metric: "bps", Filter: filter}
 	want := func(sec string) bool { return slices.Contains(def.Sections, sec) }
 
@@ -122,16 +120,9 @@ func (s *Server) buildReport(ctx context.Context, def config.Report, from, to ti
 			}
 		}
 		if out.ThreatFeedsEnabled > 0 {
-			params := maps.Clone(def.Filters)
-			if params == nil {
-				params = map[string]string{}
-			}
-			if _, ok := params["threat"]; !ok {
-				params["threat"] = "*"
-			}
 			fq := q
 			fq.Metric = "fps" // ranked by flows: matches are usually small
-			if fq.Filter, err = store.ParseFilter(params); err != nil {
+			if fq.Filter, err = s.reportFilter(config.AndQueries(text, "threat:*")); err != nil {
 				return nil, err
 			}
 			topInto(fq, "threat", 10, &out.ThreatFeeds)
@@ -261,4 +252,17 @@ func reportFileName(name string, from time.Time) string {
 		}
 	}
 	return string(clean) + "-" + from.Format("2006-01-02") + ".pdf"
+}
+
+// reportFilter compiles a report's query; names that match nothing match
+// nothing, as on the pages.
+func (s *Server) reportFilter(text string) (*store.Filter, error) {
+	if text == "" {
+		return nil, nil
+	}
+	f, _, _, err := s.compileQuery(text)
+	if err != nil {
+		return nil, fmt.Errorf("query: %w", err)
+	}
+	return f, nil
 }

@@ -253,3 +253,16 @@ func (x *Index) MACsMatching(match func(name string) bool) []string {
 	}
 	return out
 }
+
+// Names lists the objects' names.
+func (x *Index) Names() []string {
+	if x == nil {
+		return nil
+	}
+	out := make([]string, 0, len(x.byName))
+	for _, r := range x.byName {
+		out = append(out, r.Name)
+	}
+	slices.Sort(out)
+	return out
+}

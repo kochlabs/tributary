@@ -1,12 +1,14 @@
-import { Component, computed, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, TopRow } from '../core/api';
 import { Auth } from '../core/auth';
 import { ago, bytes, count, drillFilter } from '../core/format';
+import { andQuery, term } from '../core/query';
 import { TimeRange } from '../core/time';
 import { loader } from '../core/util';
 import { ConversationTable } from '../shared/conversation-table';
+import { QueryBar } from '../shared/query-bar';
 import { RangeBar } from '../shared/range-bar';
 import { TopTable } from '../shared/top-table';
 
@@ -23,7 +25,7 @@ const PANELS = [
 /** Traffic to and from addresses on threat feeds (Security → Detections). */
 @Component({
   selector: 'nfa-detections',
-  imports: [ClarityModule, RouterLink, RangeBar, TopTable, ConversationTable],
+  imports: [ClarityModule, RouterLink, QueryBar, RangeBar, TopTable, ConversationTable],
   template: `
     <div class="page-header">
       <div>
@@ -47,6 +49,8 @@ const PANELS = [
         </span></div></div></div>
       }
     }
+    <div class="card toolbar"><div class="card-block"><nfa-query-bar [(query)]="query" /></div></div>
+
     @if (summary.error() || status.error()) {
       <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ summary.error() || status.error() }}</span></div></div></div>
     }
@@ -66,7 +70,7 @@ const PANELS = [
         <div class="card panel" [class.wide]="p.wide">
           <div class="card-header">
             <span>{{ p.title }} <span class="card-hint">{{ p.hint }}</span></span>
-            <a class="card-link" [routerLink]="['/explorer']" [queryParams]="{ threat: '*', groupBy: p.dim }"><ng-container i18n="@@dashboard.explore">Explore</ng-container> <cds-icon shape="angle" direction="right"></cds-icon></a>
+            <a class="card-link" [routerLink]="['/explorer']" [queryParams]="{ q: matchedQuery(), groupBy: p.dim }"><ng-container i18n="@@dashboard.explore">Explore</ng-container> <cds-icon shape="angle" direction="right"></cds-icon></a>
           </div>
           <div class="card-block">
             @let res = tops[i].value();
@@ -128,6 +132,7 @@ const PANELS = [
   styles: `
     .header-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .alert { margin: 0 0 12px; }
+    .toolbar { margin: 0 0 12px; }
     .alert a { margin-left: 6px; }
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .card-hint { font-size: 11px; font-weight: 400; color: var(--cds-alias-typography-color-300); margin-left: 6px; }
@@ -151,13 +156,27 @@ export class Detections {
   readonly auth = inject(Auth);
   private api = inject(Api);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   readonly panels = PANELS;
+  /** Narrows the matches further, e.g. to one device. */
+  readonly query = signal<string>(this.route.snapshot.queryParams['q'] ?? '');
+  readonly matched = computed(() => (this.query() ? { ...MATCHED, q: this.query() } : MATCHED));
+  readonly matchedQuery = computed(() => andQuery('threat:*', this.query()));
   count = count;
   ago = ago;
 
   readonly status = loader(() => this.time.tick(), () => this.api.threatStatus());
-  readonly summary = loader(() => this.time.window(), (w) => this.api.summary(w, MATCHED));
-  readonly tops = PANELS.map((p) => loader(() => this.time.window(), (w) => this.api.top(w, MATCHED, p.dim, 'bps', p.wide ? 12 : 8)));
+  readonly summary = loader(() => ({ w: this.time.window(), f: this.matched() }), (p) => this.api.summary(p.w, p.f));
+  readonly tops = PANELS.map((pn) =>
+    loader(() => ({ w: this.time.window(), f: this.matched() }), (p) => this.api.top(p.w, p.f, pn.dim, 'bps', pn.wide ? 12 : 8)),
+  );
+
+  constructor() {
+    effect(() => {
+      const q = this.query() || null;
+      untracked(() => this.router.navigate([], { queryParams: { q }, replaceUrl: true }));
+    });
+  }
 
   readonly kpis = computed(() => {
     const s = this.summary.value();
@@ -180,6 +199,7 @@ export class Detections {
   }
 
   toFlows(f: Record<string, string>) {
-    this.router.navigate(['/flows'], { queryParams: { threat: '*', ...f } });
+    const terms = Object.keys(f).map((k) => term(k, f[k]));
+    this.router.navigate(['/flows'], { queryParams: { q: andQuery(this.matchedQuery(), ...terms) } });
   }
 }

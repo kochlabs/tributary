@@ -20,6 +20,13 @@
     "@angular/router": "^22.2.0",
     "@clr/angular": "^18.4.0",
     "@clr/ui": "^18.4.0",
+    "@codemirror/autocomplete": "^6.20.4",
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/lint": "^6.9.7",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@lezer/highlight": "^1.2.5",
     "echarts": "^6.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

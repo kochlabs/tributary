@@ -28,6 +28,16 @@ func prec(n Node) int {
 	return 3
 }
 
+// inner is the precedence an item of an AND or OR needs to go without
+// parentheses. AND and OR are associative, so a group of the same kind
+// needs none: (a AND b) AND c prints as a AND b AND c.
+func inner(x Node, min int) int {
+	if prec(x) == min-1 {
+		return min - 1
+	}
+	return min
+}
+
 func format(b *strings.Builder, n Node, min int) {
 	if prec(n) < min {
 		b.WriteByte('(')
@@ -39,14 +49,14 @@ func format(b *strings.Builder, n Node, min int) {
 			if i > 0 {
 				b.WriteString(" OR ")
 			}
-			format(b, x, 2)
+			format(b, x, inner(x, 2))
 		}
 	case *And:
 		for i, x := range n.Items {
 			if i > 0 {
 				b.WriteString(" AND ")
 			}
-			format(b, x, 3)
+			format(b, x, inner(x, 3))
 		}
 	case *Not:
 		b.WriteString("NOT ")

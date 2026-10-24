@@ -37,10 +37,11 @@
 - Flow Search: individual records, server-side paging and sorting, CSV export.
 - Exporter and interface pages with utilization.
 - Devices: local hosts identified by MAC address and vendor.
-- Filters: IP/CIDR (v4 and v6), ports and ranges, protocols, AS, country,
-  interface, VLAN, DSCP, threat feed, `proto/port`; `,` for OR, `!` for NOT.
-- Queries: `AND`/`OR`/`NOT`, grouping, ranges, comparisons and names, e.g.
-  `host:nas AND NOT country:(US OR CA)` ([QUERIES.md](QUERIES.md)).
+- Queries: `AND`/`OR`/`NOT`, grouping, ranges, comparisons and names over
+  addresses and prefixes (v4 and v6), ports, protocols, AS, country,
+  interfaces, VLAN, DSCP, threat feeds, devices and per-flow sizes, e.g.
+  `host:nas AND NOT country:(US OR CA)`, with suggestions as you type
+  ([QUERIES.md](QUERIES.md)).
 
 ## Reports
 

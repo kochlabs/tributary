@@ -23,7 +23,7 @@
     <unit id="nav.explorer">
       <notes>
         <note category="location">src/app/app.routes.ts:15</note>
-        <note category="location">src/app/pages/explorer.ts:31,32</note>
+        <note category="location">src/app/pages/explorer.ts:38,39</note>
         <note category="location">src/app/shell.ts:93,94</note>
       </notes>
       <segment>
@@ -33,7 +33,7 @@
     <unit id="nav.flows">
       <notes>
         <note category="location">src/app/app.routes.ts:16</note>
-        <note category="location">src/app/pages/flows.ts:20,21</note>
+        <note category="location">src/app/pages/flows.ts:19,20</note>
         <note category="location">src/app/shell.ts:94,95</note>
       </notes>
       <segment>
@@ -84,7 +84,7 @@
     <unit id="nav.detections">
       <notes>
         <note category="location">src/app/app.routes.ts:21</note>
-        <note category="location">src/app/pages/detections.ts:30,31</note>
+        <note category="location">src/app/pages/detections.ts:32,33</note>
         <note category="location">src/app/shared/notice-text.ts:122</note>
         <note category="location">src/app/shell.ts:101,102</note>
       </notes>
@@ -268,7 +268,7 @@
     </unit>
     <unit id="api.unreachable">
       <notes>
-        <note category="location">src/app/core/api.ts:911</note>
+        <note category="location">src/app/core/api.ts:912</note>
       </notes>
       <segment>
         <source>Cannot reach the appliance.</source>
@@ -1455,7 +1455,7 @@
     <unit id="format.device">
       <notes>
         <note category="location">src/app/core/format.ts:105</note>
-        <note category="location">src/app/core/format.ts:196</note>
+        <note category="location">src/app/core/format.ts:200</note>
       </notes>
       <segment>
         <source>Device</source>
@@ -1488,7 +1488,7 @@
     <unit id="format.threatFeed">
       <notes>
         <note category="location">src/app/core/format.ts:109</note>
-        <note category="location">src/app/core/format.ts:219</note>
+        <note category="location">src/app/core/format.ts:223</note>
       </notes>
       <segment>
         <source>Threat feed</source>
@@ -1505,7 +1505,7 @@
     <unit id="format.direction">
       <notes>
         <note category="location">src/app/core/format.ts:111</note>
-        <note category="location">src/app/core/format.ts:197</note>
+        <note category="location">src/app/core/format.ts:201</note>
       </notes>
       <segment>
         <source>Direction</source>
@@ -1514,7 +1514,7 @@
     <unit id="format.application">
       <notes>
         <note category="location">src/app/core/format.ts:112</note>
-        <note category="location">src/app/core/format.ts:205</note>
+        <note category="location">src/app/core/format.ts:209</note>
       </notes>
       <segment>
         <source>Application</source>
@@ -1523,7 +1523,7 @@
     <unit id="format.sourceAddress">
       <notes>
         <note category="location">src/app/core/format.ts:113</note>
-        <note category="location">src/app/core/format.ts:199</note>
+        <note category="location">src/app/core/format.ts:203</note>
       </notes>
       <segment>
         <source>Source address</source>
@@ -1532,7 +1532,7 @@
     <unit id="format.destinationAddress">
       <notes>
         <note category="location">src/app/core/format.ts:114</note>
-        <note category="location">src/app/core/format.ts:200</note>
+        <note category="location">src/app/core/format.ts:204</note>
       </notes>
       <segment>
         <source>Destination address</source>
@@ -1557,7 +1557,7 @@
     <unit id="format.protocol">
       <notes>
         <note category="location">src/app/core/format.ts:117</note>
-        <note category="location">src/app/core/format.ts:204</note>
+        <note category="location">src/app/core/format.ts:208</note>
       </notes>
       <segment>
         <source>Protocol</source>
@@ -1566,7 +1566,7 @@
     <unit id="format.destinationPort">
       <notes>
         <note category="location">src/app/core/format.ts:118</note>
-        <note category="location">src/app/core/format.ts:203</note>
+        <note category="location">src/app/core/format.ts:207</note>
       </notes>
       <segment>
         <source>Destination port</source>
@@ -1575,7 +1575,7 @@
     <unit id="format.sourcePort">
       <notes>
         <note category="location">src/app/core/format.ts:119</note>
-        <note category="location">src/app/core/format.ts:202</note>
+        <note category="location">src/app/core/format.ts:206</note>
       </notes>
       <segment>
         <source>Source port</source>
@@ -1592,7 +1592,7 @@
     <unit id="format.sourceCountry">
       <notes>
         <note category="location">src/app/core/format.ts:121</note>
-        <note category="location">src/app/core/format.ts:211</note>
+        <note category="location">src/app/core/format.ts:215</note>
       </notes>
       <segment>
         <source>Source country</source>
@@ -1601,7 +1601,7 @@
     <unit id="format.destinationCountry">
       <notes>
         <note category="location">src/app/core/format.ts:122</note>
-        <note category="location">src/app/core/format.ts:212</note>
+        <note category="location">src/app/core/format.ts:216</note>
       </notes>
       <segment>
         <source>Destination country</source>
@@ -1610,7 +1610,7 @@
     <unit id="format.sourceAs">
       <notes>
         <note category="location">src/app/core/format.ts:123</note>
-        <note category="location">src/app/core/format.ts:214</note>
+        <note category="location">src/app/core/format.ts:218</note>
       </notes>
       <segment>
         <source>Source AS</source>
@@ -1619,7 +1619,7 @@
     <unit id="format.destinationAs">
       <notes>
         <note category="location">src/app/core/format.ts:124</note>
-        <note category="location">src/app/core/format.ts:215</note>
+        <note category="location">src/app/core/format.ts:219</note>
       </notes>
       <segment>
         <source>Destination AS</source>
@@ -1628,7 +1628,7 @@
     <unit id="format.exporter">
       <notes>
         <note category="location">src/app/core/format.ts:125</note>
-        <note category="location">src/app/core/format.ts:206</note>
+        <note category="location">src/app/core/format.ts:210</note>
       </notes>
       <segment>
         <source>Exporter</source>
@@ -1637,7 +1637,7 @@
     <unit id="format.inputInterface">
       <notes>
         <note category="location">src/app/core/format.ts:126</note>
-        <note category="location">src/app/core/format.ts:208</note>
+        <note category="location">src/app/core/format.ts:212</note>
       </notes>
       <segment>
         <source>Input interface</source>
@@ -1646,7 +1646,7 @@
     <unit id="format.outputInterface">
       <notes>
         <note category="location">src/app/core/format.ts:127</note>
-        <note category="location">src/app/core/format.ts:209</note>
+        <note category="location">src/app/core/format.ts:213</note>
       </notes>
       <segment>
         <source>Output interface</source>
@@ -1655,7 +1655,7 @@
     <unit id="format.dscp">
       <notes>
         <note category="location">src/app/core/format.ts:128</note>
-        <note category="location">src/app/core/format.ts:217</note>
+        <note category="location">src/app/core/format.ts:221</note>
       </notes>
       <segment>
         <source>DSCP</source>
@@ -1664,7 +1664,7 @@
     <unit id="format.ipVersion">
       <notes>
         <note category="location">src/app/core/format.ts:129</note>
-        <note category="location">src/app/core/format.ts:218</note>
+        <note category="location">src/app/core/format.ts:222</note>
       </notes>
       <segment>
         <source>IP version</source>
@@ -1673,7 +1673,7 @@
     <unit id="format.vlan">
       <notes>
         <note category="location">src/app/core/format.ts:130</note>
-        <note category="location">src/app/core/format.ts:216</note>
+        <note category="location">src/app/core/format.ts:220</note>
       </notes>
       <segment>
         <source>VLAN</source>
@@ -1689,7 +1689,7 @@
     </unit>
     <unit id="format.host">
       <notes>
-        <note category="location">src/app/core/format.ts:195</note>
+        <note category="location">src/app/core/format.ts:199</note>
       </notes>
       <segment>
         <source>Host</source>
@@ -1697,7 +1697,7 @@
     </unit>
     <unit id="format.hintHost">
       <notes>
-        <note category="location">src/app/core/format.ts:195</note>
+        <note category="location">src/app/core/format.ts:199</note>
       </notes>
       <segment>
         <source>10.0.0.5 or 10.0.0.0/8</source>
@@ -1705,7 +1705,7 @@
     </unit>
     <unit id="format.hintDevice">
       <notes>
-        <note category="location">src/app/core/format.ts:196</note>
+        <note category="location">src/app/core/format.ts:200</note>
       </notes>
       <segment>
         <source>MAC address, e.g. bc:24:11:52:d1:06</source>
@@ -1713,7 +1713,7 @@
     </unit>
     <unit id="5321881130377942895">
       <notes>
-        <note category="location">src/app/core/format.ts:197</note>
+        <note category="location">src/app/core/format.ts:201</note>
         <note category="description">Filter hint; keep download, upload, internal and transit untranslated</note>
       </notes>
       <segment>
@@ -1722,7 +1722,7 @@
     </unit>
     <unit id="format.peerEitherSide">
       <notes>
-        <note category="location">src/app/core/format.ts:198</note>
+        <note category="location">src/app/core/format.ts:202</note>
       </notes>
       <segment>
         <source>Peer (either side)</source>
@@ -1730,7 +1730,7 @@
     </unit>
     <unit id="format.hintPeer">
       <notes>
-        <note category="location">src/app/core/format.ts:198</note>
+        <note category="location">src/app/core/format.ts:202</note>
       </notes>
       <segment>
         <source>second host, e.g. with Host for one conversation</source>
@@ -1738,9 +1738,9 @@
     </unit>
     <unit id="format.hintIpOrCidr">
       <notes>
-        <note category="location">src/app/core/format.ts:199</note>
-        <note category="location">src/app/core/format.ts:200</note>
-        <note category="location">src/app/core/format.ts:220</note>
+        <note category="location">src/app/core/format.ts:203</note>
+        <note category="location">src/app/core/format.ts:204</note>
+        <note category="location">src/app/core/format.ts:224</note>
       </notes>
       <segment>
         <source>IP or CIDR</source>
@@ -1748,7 +1748,7 @@
     </unit>
     <unit id="format.portEither">
       <notes>
-        <note category="location">src/app/core/format.ts:201</note>
+        <note category="location">src/app/core/format.ts:205</note>
       </notes>
       <segment>
         <source>Port (either)</source>
@@ -1756,7 +1756,7 @@
     </unit>
     <unit id="format.hintPort">
       <notes>
-        <note category="location">src/app/core/format.ts:201</note>
+        <note category="location">src/app/core/format.ts:205</note>
       </notes>
       <segment>
         <source>443 or 8000-8100</source>
@@ -1764,7 +1764,7 @@
     </unit>
     <unit id="7814486560188059636">
       <notes>
-        <note category="location">src/app/core/format.ts:204</note>
+        <note category="location">src/app/core/format.ts:208</note>
         <note category="description">Filter hint; keep tcp, udp and icmp untranslated</note>
       </notes>
       <segment>
@@ -1773,7 +1773,7 @@
     </unit>
     <unit id="format.hintExporter">
       <notes>
-        <note category="location">src/app/core/format.ts:206</note>
+        <note category="location">src/app/core/format.ts:210</note>
       </notes>
       <segment>
         <source>exporter IP</source>
@@ -1781,7 +1781,7 @@
     </unit>
     <unit id="format.interfaceEither">
       <notes>
-        <note category="location">src/app/core/format.ts:207</note>
+        <note category="location">src/app/core/format.ts:211</note>
       </notes>
       <segment>
         <source>Interface (either)</source>
@@ -1789,7 +1789,7 @@
     </unit>
     <unit id="format.countryEither">
       <notes>
-        <note category="location">src/app/core/format.ts:210</note>
+        <note category="location">src/app/core/format.ts:214</note>
       </notes>
       <segment>
         <source>Country (either)</source>
@@ -1797,7 +1797,7 @@
     </unit>
     <unit id="format.hintCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:210</note>
+        <note category="location">src/app/core/format.ts:214</note>
       </notes>
       <segment>
         <source>US or US,DE</source>
@@ -1805,7 +1805,7 @@
     </unit>
     <unit id="format.hintSrcCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:211</note>
+        <note category="location">src/app/core/format.ts:215</note>
       </notes>
       <segment>
         <source>ISO code, e.g. CN</source>
@@ -1813,7 +1813,7 @@
     </unit>
     <unit id="format.hintDstCountry">
       <notes>
-        <note category="location">src/app/core/format.ts:212</note>
+        <note category="location">src/app/core/format.ts:216</note>
       </notes>
       <segment>
         <source>ISO code, e.g. US</source>
@@ -1821,7 +1821,7 @@
     </unit>
     <unit id="format.asEither">
       <notes>
-        <note category="location">src/app/core/format.ts:213</note>
+        <note category="location">src/app/core/format.ts:217</note>
       </notes>
       <segment>
         <source>AS (either)</source>
@@ -1829,7 +1829,7 @@
     </unit>
     <unit id="5622964876741782070">
       <notes>
-        <note category="location">src/app/core/format.ts:218</note>
+        <note category="location">src/app/core/format.ts:222</note>
         <note category="description">Filter hint; keep ipv4 and ipv6 untranslated</note>
       </notes>
       <segment>
@@ -1838,7 +1838,7 @@
     </unit>
     <unit id="format.hintThreat">
       <notes>
-        <note category="location">src/app/core/format.ts:219</note>
+        <note category="location">src/app/core/format.ts:223</note>
         <note category="description">Filter hint; keep * untranslated</note>
       </notes>
       <segment>
@@ -1847,7 +1847,7 @@
     </unit>
     <unit id="format.nextHop">
       <notes>
-        <note category="location">src/app/core/format.ts:220</note>
+        <note category="location">src/app/core/format.ts:224</note>
       </notes>
       <segment>
         <source>Next hop</source>
@@ -1855,7 +1855,7 @@
     </unit>
     <unit id="format.samplingOverride">
       <notes>
-        <note category="location">src/app/core/format.ts:250</note>
+        <note category="location">src/app/core/format.ts:254</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1864,7 +1864,7 @@
     </unit>
     <unit id="format.samplingOverrideHint">
       <notes>
-        <note category="location">src/app/core/format.ts:250</note>
+        <note category="location">src/app/core/format.ts:254</note>
       </notes>
       <segment>
         <source>Manual override set on this exporter</source>
@@ -1872,7 +1872,7 @@
     </unit>
     <unit id="format.samplingAnnouncedHint">
       <notes>
-        <note category="location">src/app/core/format.ts:253</note>
+        <note category="location">src/app/core/format.ts:257</note>
       </notes>
       <segment>
         <source>Announced by the device in its options data</source>
@@ -1880,7 +1880,7 @@
     </unit>
     <unit id="format.samplingRememberedHint">
       <notes>
-        <note category="location">src/app/core/format.ts:254</note>
+        <note category="location">src/app/core/format.ts:258</note>
       </notes>
       <segment>
         <source>Remembered from before the last restart; waiting for the device to confirm</source>
@@ -1888,7 +1888,7 @@
     </unit>
     <unit id="format.samplingPacketHint">
       <notes>
-        <note category="location">src/app/core/format.ts:255</note>
+        <note category="location">src/app/core/format.ts:259</note>
       </notes>
       <segment>
         <source>Carried in every datagram (sFlow / NetFlow v5)</source>
@@ -1896,7 +1896,7 @@
     </unit>
     <unit id="format.samplingUnsampledHint">
       <notes>
-        <note category="location">src/app/core/format.ts:256</note>
+        <note category="location">src/app/core/format.ts:260</note>
       </notes>
       <segment>
         <source>Device reports no sampling: every flow is exported</source>
@@ -1904,7 +1904,7 @@
     </unit>
     <unit id="format.samplingAnnounced">
       <notes>
-        <note category="location">src/app/core/format.ts:259</note>
+        <note category="location">src/app/core/format.ts:263</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1913,7 +1913,7 @@
     </unit>
     <unit id="format.samplingRemembered">
       <notes>
-        <note category="location">src/app/core/format.ts:260</note>
+        <note category="location">src/app/core/format.ts:264</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1922,7 +1922,7 @@
     </unit>
     <unit id="format.samplingPacket">
       <notes>
-        <note category="location">src/app/core/format.ts:261</note>
+        <note category="location">src/app/core/format.ts:265</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -1931,7 +1931,7 @@
     </unit>
     <unit id="format.samplingUnsampled">
       <notes>
-        <note category="location">src/app/core/format.ts:262</note>
+        <note category="location">src/app/core/format.ts:266</note>
         <note category="description">Sampling rate source</note>
       </notes>
       <segment>
@@ -2235,9 +2235,9 @@
         <note category="location">src/app/pages/notifications.ts:463,465</note>
         <note category="location">src/app/pages/notifications.ts:522,524</note>
         <note category="location">src/app/pages/notifications.ts:551,553</note>
-        <note category="location">src/app/pages/reports.ts:597,599</note>
-        <note category="location">src/app/pages/reports.ts:638,640</note>
-        <note category="location">src/app/pages/reports.ts:662,664</note>
+        <note category="location">src/app/pages/reports.ts:598,600</note>
+        <note category="location">src/app/pages/reports.ts:639,641</note>
+        <note category="location">src/app/pages/reports.ts:663,665</note>
         <note category="location">src/app/pages/services.ts:84,85</note>
         <note category="location">src/app/pages/threat-feeds.ts:189,190</note>
         <note category="location">src/app/pages/threat-feeds.ts:198,199</note>
@@ -2245,7 +2245,6 @@
         <note category="location">src/app/pages/users.ts:118,119</note>
         <note category="location">src/app/pages/users.ts:129,130</note>
         <note category="location">src/app/pages/users.ts:138,139</note>
-        <note category="location">src/app/shared/filter-bar.ts:40,42</note>
         <note category="location">src/app/shared/time-range.ts:55,56</note>
         <note category="location">src/app/shell.ts:177,178</note>
       </notes>
@@ -2344,7 +2343,7 @@
         <note category="location">src/app/pages/audit.ts:33,34</note>
         <note category="location">src/app/pages/certificates.ts:155,156</note>
         <note category="location">src/app/pages/devices.ts:184,186</note>
-        <note category="location">src/app/pages/explorer.ts:188,189</note>
+        <note category="location">src/app/pages/explorer.ts:195,196</note>
         <note category="location">src/app/pages/exporter-detail.ts:105,106</note>
         <note category="location">src/app/pages/exporters.ts:94,95</note>
         <note category="location">src/app/pages/identity-sources.ts:115,116</note>
@@ -2913,7 +2912,7 @@
         <note category="location">src/app/pages/local-networks.ts:107,109</note>
         <note category="location">src/app/pages/notifications.ts:267,268</note>
         <note category="location">src/app/pages/notifications.ts:473,474</note>
-        <note category="location">src/app/pages/reports.ts:607,608</note>
+        <note category="location">src/app/pages/reports.ts:608,609</note>
         <note category="location">src/app/pages/syslog-settings.ts:108,109</note>
         <note category="location">src/app/pages/threat-feeds.ts:190,192</note>
         <note category="location">src/app/pages/time.ts:119,120</note>
@@ -4206,7 +4205,7 @@
     <unit id="dashboard.panel.conversations">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:28</note>
-        <note category="location">src/app/pages/detections.ts:20</note>
+        <note category="location">src/app/pages/detections.ts:22</note>
       </notes>
       <segment>
         <source>Top Conversations</source>
@@ -4215,7 +4214,7 @@
     <unit id="dashboard.panel.conversationsHint">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:28</note>
-        <note category="location">src/app/pages/detections.ts:20</note>
+        <note category="location">src/app/pages/detections.ts:22</note>
       </notes>
       <segment>
         <source>Who talks to whom, your device first</source>
@@ -4232,7 +4231,7 @@
     <unit id="dashboard.panel.devicesCol">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:29</note>
-        <note category="location">src/app/pages/detections.ts:17</note>
+        <note category="location">src/app/pages/detections.ts:19</note>
       </notes>
       <segment>
         <source>Device</source>
@@ -4273,7 +4272,7 @@
     <unit id="dashboard.panel.apps">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:31</note>
-        <note category="location">src/app/pages/detections.ts:19</note>
+        <note category="location">src/app/pages/detections.ts:21</note>
       </notes>
       <segment>
         <source>Applications</source>
@@ -4282,7 +4281,7 @@
     <unit id="dashboard.panel.appsCol">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:31</note>
-        <note category="location">src/app/pages/detections.ts:19</note>
+        <note category="location">src/app/pages/detections.ts:21</note>
       </notes>
       <segment>
         <source>Protocol / port</source>
@@ -4291,7 +4290,7 @@
     <unit id="dashboard.panel.appsHint">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:31</note>
-        <note category="location">src/app/pages/detections.ts:19</note>
+        <note category="location">src/app/pages/detections.ts:21</note>
       </notes>
       <segment>
         <source>Well-known port of the flow</source>
@@ -4477,7 +4476,7 @@
     <unit id="dashboard.explore">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:129</note>
-        <note category="location">src/app/pages/detections.ts:69</note>
+        <note category="location">src/app/pages/detections.ts:73</note>
       </notes>
       <segment>
         <source>Explore</source>
@@ -4486,7 +4485,7 @@
     <unit id="dashboard.loading">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:136,137</note>
-        <note category="location">src/app/pages/detections.ts:76,77</note>
+        <note category="location">src/app/pages/detections.ts:80,81</note>
       </notes>
       <segment>
         <source>Loading…</source>
@@ -4520,7 +4519,7 @@
     <unit id="dashboard.kpi.volume">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:208</note>
-        <note category="location">src/app/pages/detections.ts:169</note>
+        <note category="location">src/app/pages/detections.ts:188</note>
       </notes>
       <segment>
         <source>Total volume</source>
@@ -4569,7 +4568,7 @@
     <unit id="dashboard.kpi.flows">
       <notes>
         <note category="location">src/app/pages/dashboard.ts:211</note>
-        <note category="location">src/app/pages/detections.ts:168</note>
+        <note category="location">src/app/pages/detections.ts:187</note>
       </notes>
       <segment>
         <source>Flows</source>
@@ -4593,7 +4592,7 @@
     </unit>
     <unit id="detections.panel.hosts">
       <notes>
-        <note category="location">src/app/pages/detections.ts:16</note>
+        <note category="location">src/app/pages/detections.ts:18</note>
       </notes>
       <segment>
         <source>Listed Hosts</source>
@@ -4601,7 +4600,7 @@
     </unit>
     <unit id="detections.panel.hostsCol">
       <notes>
-        <note category="location">src/app/pages/detections.ts:16</note>
+        <note category="location">src/app/pages/detections.ts:18</note>
       </notes>
       <segment>
         <source>Remote host</source>
@@ -4609,7 +4608,7 @@
     </unit>
     <unit id="detections.panel.hostsHint">
       <notes>
-        <note category="location">src/app/pages/detections.ts:16</note>
+        <note category="location">src/app/pages/detections.ts:18</note>
       </notes>
       <segment>
         <source>Addresses on a threat feed</source>
@@ -4617,7 +4616,7 @@
     </unit>
     <unit id="detections.panel.devices">
       <notes>
-        <note category="location">src/app/pages/detections.ts:17</note>
+        <note category="location">src/app/pages/detections.ts:19</note>
       </notes>
       <segment>
         <source>Local Devices</source>
@@ -4625,7 +4624,7 @@
     </unit>
     <unit id="detections.panel.devicesHint">
       <notes>
-        <note category="location">src/app/pages/detections.ts:17</note>
+        <note category="location">src/app/pages/detections.ts:19</note>
       </notes>
       <segment>
         <source>Talking to listed hosts</source>
@@ -4633,7 +4632,7 @@
     </unit>
     <unit id="detections.panel.feeds">
       <notes>
-        <note category="location">src/app/pages/detections.ts:18</note>
+        <note category="location">src/app/pages/detections.ts:20</note>
       </notes>
       <segment>
         <source>By Feed</source>
@@ -4641,7 +4640,7 @@
     </unit>
     <unit id="detections.panel.feedsCol">
       <notes>
-        <note category="location">src/app/pages/detections.ts:18</note>
+        <note category="location">src/app/pages/detections.ts:20</note>
       </notes>
       <segment>
         <source>Feed</source>
@@ -4649,7 +4648,7 @@
     </unit>
     <unit id="detections.panel.feedsHint">
       <notes>
-        <note category="location">src/app/pages/detections.ts:18</note>
+        <note category="location">src/app/pages/detections.ts:20</note>
       </notes>
       <segment>
         <source>First feed listing the host</source>
@@ -4657,7 +4656,7 @@
     </unit>
     <unit id="detections.subtitle">
       <notes>
-        <note category="location">src/app/pages/detections.ts:31,32</note>
+        <note category="location">src/app/pages/detections.ts:33,34</note>
       </notes>
       <segment>
         <source>Traffic with addresses on threat feeds · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
@@ -4665,7 +4664,7 @@
     </unit>
     <unit id="detections.noFeeds">
       <notes>
-        <note category="location">src/app/pages/detections.ts:40,41</note>
+        <note category="location">src/app/pages/detections.ts:42,43</note>
       </notes>
       <segment>
         <source>No threat feeds are enabled, so nothing is matched.</source>
@@ -4673,7 +4672,7 @@
     </unit>
     <unit id="detections.notLoaded">
       <notes>
-        <note category="location">src/app/pages/detections.ts:42,44</note>
+        <note category="location">src/app/pages/detections.ts:44,46</note>
       </notes>
       <segment>
         <source>The threat feeds haven&apos;t been downloaded yet.</source>
@@ -4681,7 +4680,7 @@
     </unit>
     <unit id="detections.manageFeeds">
       <notes>
-        <note category="location">src/app/pages/detections.ts:45,47</note>
+        <note category="location">src/app/pages/detections.ts:47,49</note>
       </notes>
       <segment>
         <source>Manage threat feeds</source>
@@ -4689,7 +4688,7 @@
     </unit>
     <unit id="detections.feeds">
       <notes>
-        <note category="location">src/app/pages/detections.ts:91</note>
+        <note category="location">src/app/pages/detections.ts:95</note>
       </notes>
       <segment>
         <source>Enabled feeds</source>
@@ -4697,7 +4696,7 @@
     </unit>
     <unit id="detections.feedsHint">
       <notes>
-        <note category="location">src/app/pages/detections.ts:91,92</note>
+        <note category="location">src/app/pages/detections.ts:95,96</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ count(st.ranges) }}"/> address ranges matched</source>
@@ -4705,7 +4704,7 @@
     </unit>
     <unit id="detections.manage">
       <notes>
-        <note category="location">src/app/pages/detections.ts:93</note>
+        <note category="location">src/app/pages/detections.ts:97</note>
       </notes>
       <segment>
         <source>Manage</source>
@@ -4713,7 +4712,7 @@
     </unit>
     <unit id="detections.col.feed">
       <notes>
-        <note category="location">src/app/pages/detections.ts:100,101</note>
+        <note category="location">src/app/pages/detections.ts:104,105</note>
       </notes>
       <segment>
         <source>Feed</source>
@@ -4721,7 +4720,7 @@
     </unit>
     <unit id="detections.col.entries">
       <notes>
-        <note category="location">src/app/pages/detections.ts:101,102</note>
+        <note category="location">src/app/pages/detections.ts:105,106</note>
       </notes>
       <segment>
         <source>Entries</source>
@@ -4729,7 +4728,7 @@
     </unit>
     <unit id="detections.col.updated">
       <notes>
-        <note category="location">src/app/pages/detections.ts:102,103</note>
+        <note category="location">src/app/pages/detections.ts:106,107</note>
       </notes>
       <segment>
         <source>Updated</source>
@@ -4737,7 +4736,7 @@
     </unit>
     <unit id="detections.col.hosts24">
       <notes>
-        <note category="location">src/app/pages/detections.ts:103,104</note>
+        <note category="location">src/app/pages/detections.ts:107,108</note>
       </notes>
       <segment>
         <source>Hosts seen (24 h)</source>
@@ -4745,7 +4744,7 @@
     </unit>
     <unit id="detections.col.flows24">
       <notes>
-        <note category="location">src/app/pages/detections.ts:104,106</note>
+        <note category="location">src/app/pages/detections.ts:108,110</note>
       </notes>
       <segment>
         <source>Flows (24 h)</source>
@@ -4753,7 +4752,7 @@
     </unit>
     <unit id="detections.noNotices">
       <notes>
-        <note category="location">src/app/pages/detections.ts:111,112</note>
+        <note category="location">src/app/pages/detections.ts:115,116</note>
       </notes>
       <segment>
         <source>no notices</source>
@@ -4761,7 +4760,7 @@
     </unit>
     <unit id="detections.pending">
       <notes>
-        <note category="location">src/app/pages/detections.ts:114,115</note>
+        <note category="location">src/app/pages/detections.ts:118,119</note>
       </notes>
       <segment>
         <source>pending</source>
@@ -4769,7 +4768,7 @@
     </unit>
     <unit id="detections.kpi.listed">
       <notes>
-        <note category="location">src/app/pages/detections.ts:166</note>
+        <note category="location">src/app/pages/detections.ts:185</note>
       </notes>
       <segment>
         <source>Listed hosts</source>
@@ -4777,7 +4776,7 @@
     </unit>
     <unit id="detections.kpi.listedSub">
       <notes>
-        <note category="location">src/app/pages/detections.ts:166</note>
+        <note category="location">src/app/pages/detections.ts:185</note>
       </notes>
       <segment>
         <source>seen in range</source>
@@ -4785,7 +4784,7 @@
     </unit>
     <unit id="detections.kpi.local">
       <notes>
-        <note category="location">src/app/pages/detections.ts:167</note>
+        <note category="location">src/app/pages/detections.ts:186</note>
       </notes>
       <segment>
         <source>Local addresses</source>
@@ -4793,7 +4792,7 @@
     </unit>
     <unit id="detections.kpi.localSub">
       <notes>
-        <note category="location">src/app/pages/detections.ts:167</note>
+        <note category="location">src/app/pages/detections.ts:186</note>
       </notes>
       <segment>
         <source>talking to them</source>
@@ -5869,7 +5868,7 @@
     </unit>
     <unit id="explorer.subtitle">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:32,33</note>
+        <note category="location">src/app/pages/explorer.ts:39,40</note>
       </notes>
       <segment>
         <source>Break traffic down by any dimension · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
@@ -5877,7 +5876,7 @@
     </unit>
     <unit id="explorer.showMatchingFlows">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:36,38</note>
+        <note category="location">src/app/pages/explorer.ts:43,45</note>
       </notes>
       <segment>
         <source>Show matching flows</source>
@@ -5885,7 +5884,7 @@
     </unit>
     <unit id="explorer.view">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:44</note>
+        <note category="location">src/app/pages/explorer.ts:51</note>
       </notes>
       <segment>
         <source>View</source>
@@ -5893,7 +5892,7 @@
     </unit>
     <unit id="explorer.viewChart">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:45,46</note>
+        <note category="location">src/app/pages/explorer.ts:52,53</note>
       </notes>
       <segment>
         <source>Chart</source>
@@ -5901,7 +5900,7 @@
     </unit>
     <unit id="explorer.viewPaths">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:46,47</note>
+        <note category="location">src/app/pages/explorer.ts:53,54</note>
       </notes>
       <segment>
         <source>Paths</source>
@@ -5909,7 +5908,7 @@
     </unit>
     <unit id="explorer.pathNone">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:55,57</note>
+        <note category="location">src/app/pages/explorer.ts:62,64</note>
       </notes>
       <segment>
         <source>— none —</source>
@@ -5917,7 +5916,7 @@
     </unit>
     <unit id="explorer.perColumn">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:63,64</note>
+        <note category="location">src/app/pages/explorer.ts:70,71</note>
       </notes>
       <segment>
         <source>Per column</source>
@@ -5925,8 +5924,8 @@
     </unit>
     <unit id="explorer.topN">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:66,67</note>
-        <note category="location">src/app/pages/explorer.ts:94,95</note>
+        <note category="location">src/app/pages/explorer.ts:73,74</note>
+        <note category="location">src/app/pages/explorer.ts:101,102</note>
       </notes>
       <segment>
         <source>Top <ph id="0" equiv="INTERPOLATION" disp="{{ n }}"/></source>
@@ -5934,8 +5933,8 @@
     </unit>
     <unit id="explorer.metric">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:70</note>
-        <note category="location">src/app/pages/explorer.ts:98</note>
+        <note category="location">src/app/pages/explorer.ts:77</note>
+        <note category="location">src/app/pages/explorer.ts:105</note>
       </notes>
       <segment>
         <source>Metric</source>
@@ -5943,7 +5942,7 @@
     </unit>
     <unit id="explorer.directionGroup">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:75</note>
+        <note category="location">src/app/pages/explorer.ts:82</note>
       </notes>
       <segment>
         <source>Direction</source>
@@ -5951,7 +5950,7 @@
     </unit>
     <unit id="explorer.dirBoth">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:76,77</note>
+        <note category="location">src/app/pages/explorer.ts:83,84</note>
       </notes>
       <segment>
         <source>Both</source>
@@ -5959,7 +5958,7 @@
     </unit>
     <unit id="explorer.dirDownload">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:77,78</note>
+        <note category="location">src/app/pages/explorer.ts:84,85</note>
       </notes>
       <segment>
         <source>Download</source>
@@ -5967,7 +5966,7 @@
     </unit>
     <unit id="explorer.dirUpload">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:78,80</note>
+        <note category="location">src/app/pages/explorer.ts:85,87</note>
       </notes>
       <segment>
         <source>Upload</source>
@@ -5975,7 +5974,7 @@
     </unit>
     <unit id="explorer.groupBy">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:82,83</note>
+        <note category="location">src/app/pages/explorer.ts:89,90</note>
       </notes>
       <segment>
         <source>Group by</source>
@@ -5983,7 +5982,7 @@
     </unit>
     <unit id="explorer.groupByNone">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:84,85</note>
+        <note category="location">src/app/pages/explorer.ts:91,92</note>
       </notes>
       <segment>
         <source>— none (total) —</source>
@@ -5991,7 +5990,7 @@
     </unit>
     <unit id="explorer.series">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:91,92</note>
+        <note category="location">src/app/pages/explorer.ts:98,99</note>
       </notes>
       <segment>
         <source>Series</source>
@@ -5999,7 +5998,7 @@
     </unit>
     <unit id="explorer.chartStyle">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:103</note>
+        <note category="location">src/app/pages/explorer.ts:110</note>
       </notes>
       <segment>
         <source>Chart style</source>
@@ -6007,7 +6006,7 @@
     </unit>
     <unit id="explorer.stacked">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:104,105</note>
+        <note category="location">src/app/pages/explorer.ts:111,112</note>
       </notes>
       <segment>
         <source>Stacked</source>
@@ -6015,7 +6014,7 @@
     </unit>
     <unit id="explorer.lines">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:105,107</note>
+        <note category="location">src/app/pages/explorer.ts:112,114</note>
       </notes>
       <segment>
         <source>Lines</source>
@@ -6023,7 +6022,7 @@
     </unit>
     <unit id="explorer.pathsTitle">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:119,120</note>
+        <note category="location">src/app/pages/explorer.ts:126,127</note>
       </notes>
       <segment>
         <source>Traffic paths</source>
@@ -6031,7 +6030,7 @@
     </unit>
     <unit id="explorer.pathsHint">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:121,122</note>
+        <note category="location">src/app/pages/explorer.ts:128,129</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ sourceLabel(p.source) }}"/> · click a node or path to filter on it</source>
@@ -6039,8 +6038,8 @@
     </unit>
     <unit id="explorer.noMatch">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:126,128</note>
-        <note category="location">src/app/pages/explorer.ts:182,183</note>
+        <note category="location">src/app/pages/explorer.ts:133,135</note>
+        <note category="location">src/app/pages/explorer.ts:189,190</note>
       </notes>
       <segment>
         <source>No traffic matches the current filters.</source>
@@ -6048,7 +6047,7 @@
     </unit>
     <unit id="explorer.totalTraffic">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:138,140</note>
+        <note category="location">src/app/pages/explorer.ts:145,147</note>
       </notes>
       <segment>
         <source>Total traffic</source>
@@ -6056,7 +6055,7 @@
     </unit>
     <unit id="explorer.resolution">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:141,143</note>
+        <note category="location">src/app/pages/explorer.ts:148,150</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ s.step }}"/>s resolution · <ph id="1" equiv="INTERPOLATION_1" disp="{{ sourceLabel(s.source) }}"/> · drag to zoom</source>
@@ -6064,7 +6063,7 @@
     </unit>
     <unit id="explorer.col.avg">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:153,154</note>
+        <note category="location">src/app/pages/explorer.ts:160,161</note>
       </notes>
       <segment>
         <source>Avg <ph id="0" equiv="INTERPOLATION" disp="{{ metricName() }}"/></source>
@@ -6072,7 +6071,7 @@
     </unit>
     <unit id="explorer.col.bytes">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:154,155</note>
+        <note category="location">src/app/pages/explorer.ts:161,162</note>
       </notes>
       <segment>
         <source>Bytes</source>
@@ -6080,7 +6079,7 @@
     </unit>
     <unit id="explorer.col.packets">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:155,156</note>
+        <note category="location">src/app/pages/explorer.ts:162,163</note>
       </notes>
       <segment>
         <source>Packets</source>
@@ -6088,7 +6087,7 @@
     </unit>
     <unit id="explorer.col.flows">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:156,157</note>
+        <note category="location">src/app/pages/explorer.ts:163,164</note>
       </notes>
       <segment>
         <source>Flows</source>
@@ -6096,7 +6095,7 @@
     </unit>
     <unit id="explorer.col.share">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:157,159</note>
+        <note category="location">src/app/pages/explorer.ts:164,166</note>
       </notes>
       <segment>
         <source>Share</source>
@@ -6104,7 +6103,7 @@
     </unit>
     <unit id="explorer.filterOn">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:161,162</note>
+        <note category="location">src/app/pages/explorer.ts:168,169</note>
       </notes>
       <segment>
         <source>Filter on this</source>
@@ -6112,7 +6111,7 @@
     </unit>
     <unit id="explorer.exclude">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:162,163</note>
+        <note category="location">src/app/pages/explorer.ts:169,170</note>
       </notes>
       <segment>
         <source>Exclude this</source>
@@ -6120,7 +6119,7 @@
     </unit>
     <unit id="explorer.showFlows">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:163,164</note>
+        <note category="location">src/app/pages/explorer.ts:170,171</note>
       </notes>
       <segment>
         <source>Show flows</source>
@@ -6128,7 +6127,7 @@
     </unit>
     <unit id="explorer.totals">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:185,186</note>
+        <note category="location">src/app/pages/explorer.ts:192,193</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ fmtBytes(t.total.bytes) }}"/> total · <ph id="1" equiv="INTERPOLATION_1" disp="{{ fmtCount(t.total.flows) }}"/> flows</source>
@@ -6136,7 +6135,7 @@
     </unit>
     <unit id="explorer.footer">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:190,191</note>
+        <note category="location">src/app/pages/explorer.ts:197,198</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -6145,7 +6144,7 @@
     </unit>
     <unit id="explorer.empty">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:192,194</note>
+        <note category="location">src/app/pages/explorer.ts:199,201</note>
       </notes>
       <segment>
         <source>No rows</source>
@@ -6153,7 +6152,7 @@
     </unit>
     <unit id="explorer.unit.bps">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:282</note>
+        <note category="location">src/app/pages/explorer.ts:297</note>
       </notes>
       <segment>
         <source>bits/s</source>
@@ -6161,7 +6160,7 @@
     </unit>
     <unit id="explorer.unit.pps">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:282</note>
+        <note category="location">src/app/pages/explorer.ts:297</note>
       </notes>
       <segment>
         <source>packets/s</source>
@@ -6169,7 +6168,7 @@
     </unit>
     <unit id="explorer.unit.fps">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:282</note>
+        <note category="location">src/app/pages/explorer.ts:297</note>
       </notes>
       <segment>
         <source>flows/s</source>
@@ -6177,7 +6176,7 @@
     </unit>
     <unit id="explorer.source.rollup">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:285</note>
+        <note category="location">src/app/pages/explorer.ts:300</note>
       </notes>
       <segment>
         <source>1-minute rollup</source>
@@ -6185,7 +6184,7 @@
     </unit>
     <unit id="explorer.source.raw">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:285</note>
+        <note category="location">src/app/pages/explorer.ts:300</note>
       </notes>
       <segment>
         <source>raw flows</source>
@@ -6193,7 +6192,7 @@
     </unit>
     <unit id="explorer.pathFrom">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:322</note>
+        <note category="location">src/app/pages/explorer.ts:336</note>
       </notes>
       <segment>
         <source>From</source>
@@ -6201,7 +6200,7 @@
     </unit>
     <unit id="explorer.pathThrough">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:322</note>
+        <note category="location">src/app/pages/explorer.ts:336</note>
       </notes>
       <segment>
         <source>Through</source>
@@ -6209,7 +6208,7 @@
     </unit>
     <unit id="explorer.pathTo">
       <notes>
-        <note category="location">src/app/pages/explorer.ts:322</note>
+        <note category="location">src/app/pages/explorer.ts:336</note>
       </notes>
       <segment>
         <source>To</source>
@@ -6760,7 +6759,7 @@
     </unit>
     <unit id="flows.subtitle">
       <notes>
-        <note category="location">src/app/pages/flows.ts:21,22</note>
+        <note category="location">src/app/pages/flows.ts:20,21</note>
       </notes>
       <segment>
         <source>Individual flow records · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/></source>
@@ -6768,7 +6767,7 @@
     </unit>
     <unit id="flows.exportCsv">
       <notes>
-        <note category="location">src/app/pages/flows.ts:25,26</note>
+        <note category="location">src/app/pages/flows.ts:24,25</note>
       </notes>
       <segment>
         <source>Export CSV</source>
@@ -6776,7 +6775,7 @@
     </unit>
     <unit id="flows.col.received">
       <notes>
-        <note category="location">src/app/pages/flows.ts:36,37</note>
+        <note category="location">src/app/pages/flows.ts:35,36</note>
       </notes>
       <segment>
         <source>Received</source>
@@ -6784,7 +6783,7 @@
     </unit>
     <unit id="flows.col.exporter">
       <notes>
-        <note category="location">src/app/pages/flows.ts:37,38</note>
+        <note category="location">src/app/pages/flows.ts:36,37</note>
       </notes>
       <segment>
         <source>Exporter</source>
@@ -6792,7 +6791,7 @@
     </unit>
     <unit id="flows.col.source">
       <notes>
-        <note category="location">src/app/pages/flows.ts:38,39</note>
+        <note category="location">src/app/pages/flows.ts:37,38</note>
       </notes>
       <segment>
         <source>Source</source>
@@ -6800,7 +6799,7 @@
     </unit>
     <unit id="flows.col.destination">
       <notes>
-        <note category="location">src/app/pages/flows.ts:39,40</note>
+        <note category="location">src/app/pages/flows.ts:38,39</note>
       </notes>
       <segment>
         <source>Destination</source>
@@ -6808,7 +6807,7 @@
     </unit>
     <unit id="flows.col.service">
       <notes>
-        <note category="location">src/app/pages/flows.ts:40,41</note>
+        <note category="location">src/app/pages/flows.ts:39,40</note>
       </notes>
       <segment>
         <source>Service</source>
@@ -6816,7 +6815,7 @@
     </unit>
     <unit id="flows.col.bytes">
       <notes>
-        <note category="location">src/app/pages/flows.ts:41,42</note>
+        <note category="location">src/app/pages/flows.ts:40,41</note>
       </notes>
       <segment>
         <source>Bytes</source>
@@ -6824,7 +6823,7 @@
     </unit>
     <unit id="flows.col.packets">
       <notes>
-        <note category="location">src/app/pages/flows.ts:42,43</note>
+        <note category="location">src/app/pages/flows.ts:41,42</note>
       </notes>
       <segment>
         <source>Packets</source>
@@ -6832,7 +6831,7 @@
     </unit>
     <unit id="flows.col.duration">
       <notes>
-        <note category="location">src/app/pages/flows.ts:43,45</note>
+        <note category="location">src/app/pages/flows.ts:42,44</note>
       </notes>
       <segment>
         <source>Duration</source>
@@ -6840,7 +6839,7 @@
     </unit>
     <unit id="flows.detail.flowStart">
       <notes>
-        <note category="location">src/app/pages/flows.ts:67,68</note>
+        <note category="location">src/app/pages/flows.ts:66,67</note>
       </notes>
       <segment>
         <source>Flow start</source>
@@ -6848,7 +6847,7 @@
     </unit>
     <unit id="flows.detail.flowEnd">
       <notes>
-        <note category="location">src/app/pages/flows.ts:68,69</note>
+        <note category="location">src/app/pages/flows.ts:67,68</note>
       </notes>
       <segment>
         <source>Flow end</source>
@@ -6856,7 +6855,7 @@
     </unit>
     <unit id="flows.interfaces">
       <notes>
-        <note category="location">src/app/pages/flows.ts:69</note>
+        <note category="location">src/app/pages/flows.ts:68</note>
       </notes>
       <segment>
         <source>Interfaces (in → out)</source>
@@ -6864,7 +6863,7 @@
     </unit>
     <unit id="flows.detail.flowProtocol">
       <notes>
-        <note category="location">src/app/pages/flows.ts:70,71</note>
+        <note category="location">src/app/pages/flows.ts:69,70</note>
       </notes>
       <segment>
         <source>Flow protocol</source>
@@ -6872,7 +6871,7 @@
     </unit>
     <unit id="flows.detail.sampling">
       <notes>
-        <note category="location">src/app/pages/flows.ts:71,72</note>
+        <note category="location">src/app/pages/flows.ts:70,71</note>
       </notes>
       <segment>
         <source>Sampling</source>
@@ -6880,7 +6879,7 @@
     </unit>
     <unit id="flows.detail.nextHop">
       <notes>
-        <note category="location">src/app/pages/flows.ts:72,73</note>
+        <note category="location">src/app/pages/flows.ts:71,72</note>
       </notes>
       <segment>
         <source>Next hop</source>
@@ -6888,7 +6887,7 @@
     </unit>
     <unit id="flows.detail.sourceHost">
       <notes>
-        <note category="location">src/app/pages/flows.ts:73,74</note>
+        <note category="location">src/app/pages/flows.ts:72,73</note>
       </notes>
       <segment>
         <source>Source host</source>
@@ -6896,7 +6895,7 @@
     </unit>
     <unit id="flows.detail.destinationHost">
       <notes>
-        <note category="location">src/app/pages/flows.ts:74,75</note>
+        <note category="location">src/app/pages/flows.ts:73,74</note>
       </notes>
       <segment>
         <source>Destination host</source>
@@ -6904,7 +6903,7 @@
     </unit>
     <unit id="flows.detail.sourceAs">
       <notes>
-        <note category="location">src/app/pages/flows.ts:75</note>
+        <note category="location">src/app/pages/flows.ts:74</note>
       </notes>
       <segment>
         <source>Source AS</source>
@@ -6912,7 +6911,7 @@
     </unit>
     <unit id="flows.detail.destinationAs">
       <notes>
-        <note category="location">src/app/pages/flows.ts:76</note>
+        <note category="location">src/app/pages/flows.ts:75</note>
       </notes>
       <segment>
         <source>Destination AS</source>
@@ -6920,7 +6919,7 @@
     </unit>
     <unit id="flows.detail.deviceMac">
       <notes>
-        <note category="location">src/app/pages/flows.ts:77</note>
+        <note category="location">src/app/pages/flows.ts:76</note>
       </notes>
       <segment>
         <source>Device (MAC)</source>
@@ -6928,7 +6927,7 @@
     </unit>
     <unit id="flows.detail.srcDstMac">
       <notes>
-        <note category="location">src/app/pages/flows.ts:78</note>
+        <note category="location">src/app/pages/flows.ts:77</note>
       </notes>
       <segment>
         <source>Source / destination MAC</source>
@@ -6936,7 +6935,7 @@
     </unit>
     <unit id="flows.detail.sourceCountry">
       <notes>
-        <note category="location">src/app/pages/flows.ts:79,80</note>
+        <note category="location">src/app/pages/flows.ts:78,79</note>
       </notes>
       <segment>
         <source>Source country</source>
@@ -6944,7 +6943,7 @@
     </unit>
     <unit id="flows.detail.destinationCountry">
       <notes>
-        <note category="location">src/app/pages/flows.ts:80,81</note>
+        <note category="location">src/app/pages/flows.ts:79,80</note>
       </notes>
       <segment>
         <source>Destination country</source>
@@ -6952,7 +6951,7 @@
     </unit>
     <unit id="flows.detail.threat">
       <notes>
-        <note category="location">src/app/pages/flows.ts:82</note>
+        <note category="location">src/app/pages/flows.ts:81</note>
       </notes>
       <segment>
         <source>Threat feed</source>
@@ -6960,7 +6959,7 @@
     </unit>
     <unit id="flows.detail.dscpTos">
       <notes>
-        <note category="location">src/app/pages/flows.ts:84</note>
+        <note category="location">src/app/pages/flows.ts:83</note>
       </notes>
       <segment>
         <source>DSCP / ToS</source>
@@ -6968,7 +6967,7 @@
     </unit>
     <unit id="flows.detail.vlan">
       <notes>
-        <note category="location">src/app/pages/flows.ts:85</note>
+        <note category="location">src/app/pages/flows.ts:84</note>
       </notes>
       <segment>
         <source>VLAN</source>
@@ -6976,7 +6975,7 @@
     </unit>
     <unit id="flows.untagged">
       <notes>
-        <note category="location">src/app/pages/flows.ts:85,86</note>
+        <note category="location">src/app/pages/flows.ts:84,85</note>
       </notes>
       <segment>
         <source>untagged</source>
@@ -6984,7 +6983,7 @@
     </unit>
     <unit id="flows.detail.tcpFlags">
       <notes>
-        <note category="location">src/app/pages/flows.ts:86</note>
+        <note category="location">src/app/pages/flows.ts:85</note>
       </notes>
       <segment>
         <source>TCP flags</source>
@@ -6992,7 +6991,7 @@
     </unit>
     <unit id="flows.detail.avgPacketSize">
       <notes>
-        <note category="location">src/app/pages/flows.ts:87</note>
+        <note category="location">src/app/pages/flows.ts:86</note>
       </notes>
       <segment>
         <source>Avg packet size</source>
@@ -7000,7 +6999,7 @@
     </unit>
     <unit id="flows.placeholder">
       <notes>
-        <note category="location">src/app/pages/flows.ts:92,93</note>
+        <note category="location">src/app/pages/flows.ts:91,92</note>
       </notes>
       <segment>
         <source>No flows match the current filters and time range.</source>
@@ -7008,7 +7007,7 @@
     </unit>
     <unit id="flows.perPage">
       <notes>
-        <note category="location">src/app/pages/flows.ts:95,96</note>
+        <note category="location">src/app/pages/flows.ts:94,95</note>
       </notes>
       <segment>
         <source>Flows per page</source>
@@ -7016,7 +7015,7 @@
     </unit>
     <unit id="flows.footer">
       <notes>
-        <note category="location">src/app/pages/flows.ts:97,98</note>
+        <note category="location">src/app/pages/flows.ts:96,97</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -7025,7 +7024,7 @@
     </unit>
     <unit id="flows.empty">
       <notes>
-        <note category="location">src/app/pages/flows.ts:99,100</note>
+        <note category="location">src/app/pages/flows.ts:98,99</note>
       </notes>
       <segment>
         <source>No flows</source>
@@ -8975,7 +8974,7 @@
     <unit id="notify.disabled">
       <notes>
         <note category="location">src/app/pages/notifications.ts:141,143</note>
-        <note category="location">src/app/pages/reports.ts:543,545</note>
+        <note category="location">src/app/pages/reports.ts:544,546</note>
         <note category="location">src/app/pages/threat-feeds.ts:161,162</note>
       </notes>
       <segment>
@@ -9602,7 +9601,7 @@
     <unit id="reports.runNow">
       <notes>
         <note category="location">src/app/pages/reports.ts:154,155</note>
-        <note category="location">src/app/pages/reports.ts:641,643</note>
+        <note category="location">src/app/pages/reports.ts:642,644</note>
       </notes>
       <segment>
         <source>Run now</source>
@@ -9611,7 +9610,7 @@
     <unit id="reports.delete">
       <notes>
         <note category="location">src/app/pages/reports.ts:162,163</note>
-        <note category="location">src/app/pages/reports.ts:665,667</note>
+        <note category="location">src/app/pages/reports.ts:666,668</note>
       </notes>
       <segment>
         <source>Delete</source>
@@ -9638,7 +9637,7 @@
     <unit id="reports.col.schedule">
       <notes>
         <note category="location">src/app/pages/reports.ts:184,185</note>
-        <note category="location">src/app/pages/reports.ts:444,446</note>
+        <note category="location">src/app/pages/reports.ts:445,447</note>
       </notes>
       <segment>
         <source>Schedule</source>
@@ -9647,7 +9646,7 @@
     <unit id="reports.col.recipients">
       <notes>
         <note category="location">src/app/pages/reports.ts:185,186</note>
-        <note category="location">src/app/pages/reports.ts:506,508</note>
+        <note category="location">src/app/pages/reports.ts:507,509</note>
       </notes>
       <segment>
         <source>Email to</source>
@@ -9671,7 +9670,7 @@
     </unit>
     <unit id="reports.filtered">
       <notes>
-        <note category="location">src/app/pages/reports.ts:196,197</note>
+        <note category="location">src/app/pages/reports.ts:196,198</note>
       </notes>
       <segment>
         <source>filtered</source>
@@ -9813,25 +9812,25 @@
         <source>Sections</source>
       </segment>
     </unit>
-    <unit id="reports.filters">
+    <unit id="reports.query">
       <notes>
         <note category="location">src/app/pages/reports.ts:434,436</note>
       </notes>
       <segment>
-        <source>Filters</source>
+        <source>Query</source>
       </segment>
     </unit>
-    <unit id="reports.filtersHelp">
+    <unit id="reports.queryHelp">
       <notes>
         <note category="location">src/app/pages/reports.ts:439,441</note>
       </notes>
       <segment>
-        <source>Optional: limit the whole report to matching traffic, e.g. one exporter.</source>
+        <source>Optional: limit the whole report to matching traffic, e.g. exporter:core-router.</source>
       </segment>
     </unit>
     <unit id="reports.schedule.off">
       <notes>
-        <note category="location">src/app/pages/reports.ts:451,452</note>
+        <note category="location">src/app/pages/reports.ts:452,453</note>
       </notes>
       <segment>
         <source>Off: run on demand</source>
@@ -9839,7 +9838,7 @@
     </unit>
     <unit id="reports.schedule.daily">
       <notes>
-        <note category="location">src/app/pages/reports.ts:452,453</note>
+        <note category="location">src/app/pages/reports.ts:453,454</note>
       </notes>
       <segment>
         <source>Daily</source>
@@ -9847,7 +9846,7 @@
     </unit>
     <unit id="reports.schedule.weekly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:453,454</note>
+        <note category="location">src/app/pages/reports.ts:454,455</note>
       </notes>
       <segment>
         <source>Weekly</source>
@@ -9855,7 +9854,7 @@
     </unit>
     <unit id="reports.schedule.monthly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:454,456</note>
+        <note category="location">src/app/pages/reports.ts:455,457</note>
       </notes>
       <segment>
         <source>Monthly</source>
@@ -9863,7 +9862,7 @@
     </unit>
     <unit id="reports.at">
       <notes>
-        <note category="location">src/app/pages/reports.ts:460,461</note>
+        <note category="location">src/app/pages/reports.ts:461,462</note>
       </notes>
       <segment>
         <source>At</source>
@@ -9871,7 +9870,7 @@
     </unit>
     <unit id="reports.weekday">
       <notes>
-        <note category="location">src/app/pages/reports.ts:468,469</note>
+        <note category="location">src/app/pages/reports.ts:469,470</note>
       </notes>
       <segment>
         <source>Day of the week</source>
@@ -9879,7 +9878,7 @@
     </unit>
     <unit id="reports.dayOfMonth">
       <notes>
-        <note category="location">src/app/pages/reports.ts:477,478</note>
+        <note category="location">src/app/pages/reports.ts:478,479</note>
       </notes>
       <segment>
         <source>day</source>
@@ -9887,7 +9886,7 @@
     </unit>
     <unit id="reports.monthday">
       <notes>
-        <note category="location">src/app/pages/reports.ts:482,483</note>
+        <note category="location">src/app/pages/reports.ts:483,484</note>
       </notes>
       <segment>
         <source>Day of the month</source>
@@ -9895,7 +9894,7 @@
     </unit>
     <unit id="reports.hour">
       <notes>
-        <note category="location">src/app/pages/reports.ts:495</note>
+        <note category="location">src/app/pages/reports.ts:496</note>
       </notes>
       <segment>
         <source>Hour</source>
@@ -9903,7 +9902,7 @@
     </unit>
     <unit id="reports.recipientsHelp">
       <notes>
-        <note category="location">src/app/pages/reports.ts:518,520</note>
+        <note category="location">src/app/pages/reports.ts:519,521</note>
       </notes>
       <segment>
         <source>Scheduled runs are emailed here as a PDF attachment. Leave empty to only keep them on the appliance.</source>
@@ -9911,7 +9910,7 @@
     </unit>
     <unit id="reports.recipientsEmailOff">
       <notes>
-        <note category="location">src/app/pages/reports.ts:523,525</note>
+        <note category="location">src/app/pages/reports.ts:524,526</note>
       </notes>
       <segment>
         <source>Email is turned off (Configuration → Email): runs are kept on the appliance only.</source>
@@ -9919,7 +9918,7 @@
     </unit>
     <unit id="reports.channels">
       <notes>
-        <note category="location">src/app/pages/reports.ts:530,531</note>
+        <note category="location">src/app/pages/reports.ts:531,532</note>
       </notes>
       <segment>
         <source>Send to channels</source>
@@ -9927,7 +9926,7 @@
     </unit>
     <unit id="reports.channelsHelp">
       <notes>
-        <note category="location">src/app/pages/reports.ts:551,553</note>
+        <note category="location">src/app/pages/reports.ts:552,554</note>
       </notes>
       <segment>
         <source>Scheduled runs, and failures, are sent here too. Telegram gets the PDF.</source>
@@ -9935,7 +9934,7 @@
     </unit>
     <unit id="reports.noChannels">
       <notes>
-        <note category="location">src/app/pages/reports.ts:556,558</note>
+        <note category="location">src/app/pages/reports.ts:557,559</note>
       </notes>
       <segment>
         <source>No channels yet: add webhooks or Telegram under <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;/admin/notifications&quot;&gt;" dispEnd="&lt;/a
@@ -9944,7 +9943,7 @@
     </unit>
     <unit id="reports.keep">
       <notes>
-        <note category="location">src/app/pages/reports.ts:564,565</note>
+        <note category="location">src/app/pages/reports.ts:565,566</note>
       </notes>
       <segment>
         <source>Keep</source>
@@ -9952,7 +9951,7 @@
     </unit>
     <unit id="reports.keepHelp">
       <notes>
-        <note category="location">src/app/pages/reports.ts:575,576</note>
+        <note category="location">src/app/pages/reports.ts:576,577</note>
       </notes>
       <segment>
         <source>Runs kept on the appliance; older ones are deleted.</source>
@@ -9960,7 +9959,7 @@
     </unit>
     <unit id="reports.runTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:617,618</note>
+        <note category="location">src/app/pages/reports.ts:618,619</note>
       </notes>
       <segment>
         <source>Run <ph id="0" equiv="INTERPOLATION" disp="{{ confirmRun()?.name }}"/> now?</source>
@@ -9968,7 +9967,7 @@
     </unit>
     <unit id="reports.runText">
       <notes>
-        <note category="location">src/app/pages/reports.ts:620,622</note>
+        <note category="location">src/app/pages/reports.ts:621,623</note>
       </notes>
       <segment>
         <source> The report is generated for its period as of now and kept in its history. </source>
@@ -9976,7 +9975,7 @@
     </unit>
     <unit id="reports.runDeliver">
       <notes>
-        <note category="location">src/app/pages/reports.ts:626,628</note>
+        <note category="location">src/app/pages/reports.ts:627,629</note>
       </notes>
       <segment>
         <source>Also send it to its recipients and channels</source>
@@ -9984,7 +9983,7 @@
     </unit>
     <unit id="reports.deleteTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:651,652</note>
+        <note category="location">src/app/pages/reports.ts:652,653</note>
       </notes>
       <segment>
         <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ confirmDelete()?.name }}"/>?</source>
@@ -9992,7 +9991,7 @@
     </unit>
     <unit id="reports.deleteText">
       <notes>
-        <note category="location">src/app/pages/reports.ts:653,655</note>
+        <note category="location">src/app/pages/reports.ts:654,656</note>
       </notes>
       <segment>
         <source>Its schedule stops and its kept runs are deleted.</source>
@@ -10000,7 +9999,7 @@
     </unit>
     <unit id="reports.newTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:806</note>
+        <note category="location">src/app/pages/reports.ts:807</note>
       </notes>
       <segment>
         <source>New report</source>
@@ -10008,7 +10007,7 @@
     </unit>
     <unit id="reports.editTitle">
       <notes>
-        <note category="location">src/app/pages/reports.ts:807</note>
+        <note category="location">src/app/pages/reports.ts:808</note>
       </notes>
       <segment>
         <source>Edit report</source>
@@ -10016,7 +10015,7 @@
     </unit>
     <unit id="reports.trigger.schedule">
       <notes>
-        <note category="location">src/app/pages/reports.ts:808</note>
+        <note category="location">src/app/pages/reports.ts:809</note>
       </notes>
       <segment>
         <source>scheduled</source>
@@ -10024,7 +10023,7 @@
     </unit>
     <unit id="reports.trigger.manual">
       <notes>
-        <note category="location">src/app/pages/reports.ts:809</note>
+        <note category="location">src/app/pages/reports.ts:810</note>
       </notes>
       <segment>
         <source>run now</source>
@@ -10032,7 +10031,7 @@
     </unit>
     <unit id="reports.when.daily">
       <notes>
-        <note category="location">src/app/pages/reports.ts:845</note>
+        <note category="location">src/app/pages/reports.ts:846</note>
       </notes>
       <segment>
         <source>Daily at <ph id="0" equiv="time" disp="at"/></source>
@@ -10040,7 +10039,7 @@
     </unit>
     <unit id="reports.when.weekly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:847</note>
+        <note category="location">src/app/pages/reports.ts:848</note>
       </notes>
       <segment>
         <source>Weekly on <ph id="0" equiv="day" disp="day"/> at <ph id="1" equiv="time" disp="at"/></source>
@@ -10048,7 +10047,7 @@
     </unit>
     <unit id="reports.when.monthly">
       <notes>
-        <note category="location">src/app/pages/reports.ts:849</note>
+        <note category="location">src/app/pages/reports.ts:850</note>
       </notes>
       <segment>
         <source>Monthly on day <ph id="0" equiv="day" disp="r.monthday"/> at <ph id="1" equiv="time" disp="at"/></source>
@@ -10056,7 +10055,7 @@
     </unit>
     <unit id="reports.when.off">
       <notes>
-        <note category="location">src/app/pages/reports.ts:851</note>
+        <note category="location">src/app/pages/reports.ts:852</note>
       </notes>
       <segment>
         <source>On demand</source>
@@ -10064,7 +10063,7 @@
     </unit>
     <unit id="reports.ranEmailed">
       <notes>
-        <note category="location">src/app/pages/reports.ts:936</note>
+        <note category="location">src/app/pages/reports.ts:937</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="name" disp="r.name"/> was generated and emailed.</source>
@@ -10072,7 +10071,7 @@
     </unit>
     <unit id="reports.ranSent">
       <notes>
-        <note category="location">src/app/pages/reports.ts:938</note>
+        <note category="location">src/app/pages/reports.ts:939</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="name" disp="r.name"/> was generated and sent to its channels.</source>
@@ -10080,7 +10079,7 @@
     </unit>
     <unit id="reports.ran">
       <notes>
-        <note category="location">src/app/pages/reports.ts:939</note>
+        <note category="location">src/app/pages/reports.ts:940</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="name" disp="r.name"/> was generated; it&apos;s in its history.</source>
@@ -12563,119 +12562,6 @@
         <source><ph id="0" equiv="count" disp="count(r.flows)"/> flows</source>
       </segment>
     </unit>
-    <unit id="filterBar.addFilter">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:26,27</note>
-      </notes>
-      <segment>
-        <source>Add filter</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.clearAll">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:28,30</note>
-      </notes>
-      <segment>
-        <source>Clear all</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.field">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:32</note>
-      </notes>
-      <segment>
-        <source>Filter field</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.not">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:37,38</note>
-        <note category="description">Checkbox negating a filter</note>
-      </notes>
-      <segment>
-        <source>not</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.value">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:38</note>
-      </notes>
-      <segment>
-        <source>Filter value</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.apply">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:39,40</note>
-      </notes>
-      <segment>
-        <source>Apply</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.help">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:44,46</note>
-      </notes>
-      <segment>
-        <source>Comma-separate values to match any of them; CIDR prefixes and port ranges (8000-8100) are supported.</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.queryPlaceholder">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:53,54</note>
-      </notes>
-      <segment>
-        <source>Query, e.g. host:nas AND NOT country:(US OR CA)</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.query">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:56</note>
-      </notes>
-      <segment>
-        <source>Query</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.run">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:60,61</note>
-      </notes>
-      <segment>
-        <source>Run</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.clearQuery">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:62,65</note>
-      </notes>
-      <segment>
-        <source>Clear</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.matchesNothing">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:75,78</note>
-      </notes>
-      <segment>
-        <source>(matches nothing)</source>
-      </segment>
-    </unit>
-    <unit id="filterBar.editTitle">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:122</note>
-      </notes>
-      <segment>
-        <source>Edit <ph id="0" equiv="field" disp="this.label(key)"/></source>
-      </segment>
-    </unit>
-    <unit id="filterBar.removeLabel">
-      <notes>
-        <note category="location">src/app/shared/filter-bar.ts:126</note>
-      </notes>
-      <segment>
-        <source>Remove <ph id="0" equiv="field" disp="this.label(key)"/> filter</source>
-      </segment>
-    </unit>
     <unit id="listEditor.moveUp">
       <notes>
         <note category="location">src/app/shared/list-editor.ts:58</note>
@@ -13030,6 +12916,134 @@
       </notes>
       <segment>
         <source>Unknown / internal</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.clear">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:114,115</note>
+      </notes>
+      <segment>
+        <source>Clear the query</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.help">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:124,125</note>
+      </notes>
+      <segment>
+        <source>Query syntax</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.run">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:137,138</note>
+      </notes>
+      <segment>
+        <source> Run </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.matchesNothing">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:156,160</note>
+      </notes>
+      <segment>
+        <source>(matches nothing)</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpField">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:167,169</note>
+      </notes>
+      <segment>
+        <source>a field and a value</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpList">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:171,173</note>
+      </notes>
+      <segment>
+        <source>any of several values</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpRange">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:175,177</note>
+      </notes>
+      <segment>
+        <source>a range (also 1-1023)</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpCompare">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:180,181</note>
+      </notes>
+      <segment>
+        <source> a comparison: &gt; &gt;= &lt; &lt;= </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpAny">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:185,187</note>
+      </notes>
+      <segment>
+        <source>any value</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpBool">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:190,191</note>
+      </notes>
+      <segment>
+        <source> both; either; either (terms side by side are OR) </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpNot">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:196,197</note>
+      </notes>
+      <segment>
+        <source> not; grouping (AND binds tighter than OR) </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpBare">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:202,203</note>
+      </notes>
+      <segment>
+        <source> an address or name alone means host: </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpQuote">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:207,209</note>
+      </notes>
+      <segment>
+        <source>quotes for values with spaces</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.helpKeys">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:212,214</note>
+      </notes>
+      <segment>
+        <source> Tab or Enter picks a suggestion; Ctrl+Space shows them; ↑ in an empty bar recalls recent queries. </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.placeholder">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:281</note>
+      </notes>
+      <segment>
+        <source>Query, e.g. host:nas AND NOT country:(US OR CA)</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.query">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:374</note>
+      </notes>
+      <segment>
+        <source>Query</source>
       </segment>
     </unit>
     <unit id="rangeBar.timeRange">

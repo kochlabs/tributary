@@ -3,15 +3,22 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, Filters, Metric, TopRow } from '../core/api';
-import { bytes, count, DIMENSIONS, dimLabel, drillFilter, FILTER_FIELDS, METRICS, rate } from '../core/format';
+import { bytes, count, DIMENSIONS, dimLabel, drillFilter, METRICS, rate } from '../core/format';
 import { TimeRange } from '../core/time';
-import { filtersFromParams, loader, trackByKey } from '../core/util';
+import { andQuery, clearedLegacyParams, narrow, queryFromParams, term } from '../core/query';
+import { loader, trackByKey } from '../core/util';
 import { Chart, OTHER_COLOR, PALETTE } from '../shared/chart';
-import { FilterBar } from '../shared/filter-bar';
+import { QueryBar } from '../shared/query-bar';
 import { RangeBar } from '../shared/range-bar';
 import { sankeyOption, timeSeriesOption } from '../shared/options';
 
-const FILTER_KEYS = [...FILTER_FIELDS.map((f) => f.id), 'q'];
+/** Terms for a drill-down; excluding negates all but the exporter it is on. */
+function drillTerms(f: Filters, exclude = false): string {
+  return Object.keys(f)
+    .sort()
+    .map((k) => term(k, f[k], exclude && k !== 'exporter'))
+    .join(' AND ');
+}
 
 // Dimensions that count a flow on both sides can't be path columns.
 const PATH_EXCLUDED = new Set(['host', 'country', 'local_host', 'remote_host']);
@@ -24,7 +31,7 @@ function parsePathDims(v: string | undefined): string[] {
 
 @Component({
   selector: 'nfa-explorer',
-  imports: [ClarityModule, FormsModule, Chart, FilterBar, RangeBar],
+  imports: [ClarityModule, FormsModule, Chart, QueryBar, RangeBar],
   template: `
     <div class="page-header">
       <div>
@@ -39,7 +46,7 @@ function parsePathDims(v: string | undefined): string[] {
 
     <div class="card toolbar">
       <div class="card-block">
-        <nfa-filter-bar [(filters)]="filters" />
+        <nfa-query-bar [(query)]="query" />
         <div class="controls">
           <div class="btn-group btn-sm" role="group" aria-label="View" i18n-aria-label="@@explorer.view">
             <button class="btn" [class.btn-primary]="view() === 'chart'" [class.btn-outline]="view() !== 'chart'" (click)="view.set('chart')"><cds-icon shape="line-chart"></cds-icon> <ng-container i18n="@@explorer.viewChart">Chart</ng-container></button>
@@ -231,7 +238,15 @@ export class Explorer {
   readonly dimLabel = dimLabel;
 
   private qp = this.route.snapshot.queryParams as Record<string, string>;
-  readonly filters = signal<Filters>(filtersFromParams(this.qp, FILTER_KEYS));
+  // The query, plus older links' filters; direction has its own buttons.
+  readonly query = signal<string>(queryFromParams(this.qp, ['direction']));
+  readonly dir = signal<string>(this.qp['direction'] ?? '');
+  readonly filters = computed<Filters>(() => {
+    const f: Filters = {};
+    if (this.query()) f['q'] = this.query();
+    if (this.dir()) f['direction'] = this.dir();
+    return f;
+  });
   readonly groupBy = signal<string>(this.qp['groupBy'] ?? 'app');
   readonly metric = signal<Metric>((this.qp['metric'] as Metric) ?? 'bps');
   readonly limit = signal<number>(+(this.qp['limit'] ?? 10));
@@ -239,7 +254,7 @@ export class Explorer {
   readonly view = signal<'chart' | 'paths'>(this.qp['view'] === 'paths' ? 'paths' : 'chart');
   readonly pathDims = signal<string[]>(parsePathDims(this.qp['path']));
   readonly pathDimOptions = DIMENSIONS.filter((d) => !PATH_EXCLUDED.has(d.id));
-  readonly direction = computed(() => this.filters()['direction'] ?? '');
+  readonly direction = computed(() => this.dir());
 
   readonly paths = loader(
     () => (this.view() === 'paths' ? { w: this.time.window(), f: this.filters(), m: this.metric(), d: this.pathDims(), l: this.limit() } : undefined),
@@ -288,8 +303,9 @@ export class Explorer {
   constructor() {
     // Keep the URL in sync so views can be bookmarked and shared.
     effect(() => {
-      const qp: Record<string, string | null> = {};
-      for (const k of FILTER_KEYS) qp[k] = this.filters()[k] || null;
+      const qp: Record<string, string | null> = clearedLegacyParams();
+      qp['q'] = this.query() || null;
+      qp['direction'] = this.dir() || null;
       qp['groupBy'] = this.groupBy() || null;
       qp['metric'] = this.metric() === 'bps' ? null : this.metric();
       qp['limit'] = this.limit() === 10 ? null : String(this.limit());
@@ -306,12 +322,10 @@ export class Explorer {
   fmtBytes = bytes;
   fmtCount = count;
 
-  addFilter(r: TopRow, exclude: boolean) {
+  async addFilter(r: TopRow, exclude: boolean) {
     const f = drillFilter(this.groupBy(), r.key, r.label);
     if (!f) return;
-    const next = { ...this.filters() };
-    for (const [k, v] of Object.entries(f)) next[k] = (exclude && k !== 'exporter' ? '!' : '') + v;
-    this.filters.set(next);
+    this.query.set(await narrow(this.api, this.query(), drillTerms(f, exclude)));
   }
 
   seriesClick(ev: { seriesId?: string }) {
@@ -330,10 +344,7 @@ export class Explorer {
   }
 
   setDirection(v: string) {
-    const f = { ...this.filters() };
-    if (v) f['direction'] = v;
-    else delete f['direction'];
-    this.filters.set(f);
+    this.dir.set(v);
   }
 
   /** Clicking a node filters on its value; a path filters on both ends. */
@@ -342,12 +353,11 @@ export class Explorer {
     const idx = (ev.data as { index?: number })?.index;
     if (!p || idx === undefined) return;
     const nodes = ev.dataType === 'edge' ? [p.nodes[p.links[idx].source], p.nodes[p.links[idx].target]] : [p.nodes[idx]];
-    const next = { ...this.filters() };
-    for (const n of nodes) {
-      if (n.key === '__other__') continue;
-      Object.assign(next, drillFilter(p.dimensions[n.column], n.key, n.label) ?? {});
-    }
-    this.filters.set(next);
+    const terms = nodes
+      .filter((n) => n.key !== '__other__')
+      .map((n) => drillTerms(drillFilter(p.dimensions[n.column], n.key, n.label) ?? {}))
+      .filter(Boolean);
+    narrow(this.api, this.query(), terms.join(' AND ')).then((q) => this.query.set(q));
   }
 
   showFlowsFor(r: TopRow) {
@@ -355,6 +365,7 @@ export class Explorer {
   }
 
   showFlows(extra: Filters) {
-    this.router.navigate(['/flows'], { queryParams: { ...this.filters(), ...extra } });
+    const q = andQuery(this.query(), this.dir() ? term('direction', this.dir()) : '', drillTerms(extra));
+    this.router.navigate(['/flows'], { queryParams: q ? { q } : {} });
   }
 }

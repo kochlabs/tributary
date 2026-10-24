@@ -1,11 +1,11 @@
 # Design: query language
 
-Status: phase 1 implemented, October 2026 (`internal/query`,
-`store.CompileQuery`, the `q` parameter and a query box beside the filter
-chips); phases 2 and 3 to come. Today's filters are a set of fields, each with
-a comma-separated list of values. They are combined with AND, and each field
-can be used once. This design replaces them with a typed query, closer to
-Graylog than to a form:
+Status: phases 1 and 2 implemented, October 2026: the language, the `q`
+parameter, the query bar on the Explorer, Flow Search, Detections and
+reports, and suggestions. Phase 3 (saved queries) to come. The filters it
+replaced were a set of fields, each with a comma-separated list of values,
+combined with AND, each field used once. This design replaces them with a
+typed query, closer to Graylog than to a form:
 
 ```
 src:10.0.0.0/8 AND dst_port:[1 TO 1023] AND NOT country:(US OR CA)
@@ -232,9 +232,15 @@ suggestion when there is one. An error stops the query; a warning doesn't.
 - **History:** recent queries per user in the browser, with ↑ in an
   empty bar.
 - **Help:** a `?` popover with the syntax table and examples.
-- **Reports:** the report editor uses the same bar.
+- **Reports:** the report editor uses the same bar, following the text as
+  it is typed (no Run button); the appliance checks the query on save.
+- **Older links:** pages still accept the classic filter parameters
+  (`?host=…&threat=*`) and turn them into a query, so links from other
+  pages and bookmarks keep working. The Explorer's direction buttons stay
+  their own parameter.
 
-CodeMirror loads only with the pages that use the bar.
+CodeMirror loads only with the pages that use the bar (about 100 KB
+compressed, shared by them).
 
 ## Implementation
 

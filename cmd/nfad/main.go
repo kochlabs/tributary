@@ -89,6 +89,10 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		return err
 	}
 	defer cfg.Close()
+	// Reports saved with filters keep them as queries (once).
+	if err := cfg.ConvertReportFilters(store.FiltersToQuery); err != nil {
+		log.Warn("converting report filters to queries failed", "err", err)
+	}
 	if restored {
 		// Sessions from the backup's appliance mean nothing here.
 		_ = cfg.DeleteAllSessions()

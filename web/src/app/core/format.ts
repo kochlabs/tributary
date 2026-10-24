@@ -163,8 +163,12 @@ export function drillFilter(dim: string, key: string, label?: string): Record<st
       const [a, b] = key.split(' ⇄ ');
       return a && b ? { host: a, peer: b } : null;
     }
-    case 'app':
-      return { app: key };
+    case 'app': {
+      // "6/443" reads better as "tcp/443".
+      const [p, port] = key.split('/');
+      const name = { '6': 'tcp', '17': 'udp', '132': 'sctp' }[p];
+      return { app: name && port ? `${name}/${port}` : key };
+    }
     case 'proto':
       return { proto: key };
     case 'src_port':

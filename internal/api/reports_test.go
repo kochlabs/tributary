@@ -41,6 +41,20 @@ func TestReportsAPI(t *testing.T) {
 		t.Fatalf("create: %d %s", code, raw)
 	}
 	id := int64(out["id"].(float64))
+	// Filters are saved as a query, in canonical form.
+	if out["query"] != "exporter:192.168.20.1" || out["filters"] != nil {
+		t.Fatalf("filters not converted: %s", raw)
+	}
+	q := map[string]any{"name": "Q", "template": "summary", "period": "last_7d", "query": "dst_port:(80 443) and not country:us"}
+	code, out, raw = a.do("POST", "/api/reports", q)
+	if code != 200 || out["query"] != "dst_port:(80 OR 443) AND NOT country:us" {
+		t.Fatalf("query: %d %s", code, raw)
+	}
+	a.do("DELETE", "/api/reports/"+itoa64(int64(out["id"].(float64))), nil)
+	q["name"], q["query"] = "Q2", "dst_prot:443"
+	if code, out, raw := a.do("POST", "/api/reports", q); code != 400 || out["hint"] != "did you mean dst_port?" {
+		t.Fatalf("bad query: %d %s", code, raw)
+	}
 	bad := map[string]any{"name": "Bad", "template": "summary", "period": "last_7d", "filters": map[string]string{"nonsense": "1"}}
 	if code, _, _ := a.do("POST", "/api/reports", bad); code != http.StatusBadRequest {
 		t.Fatalf("unknown filter accepted: %d", code)

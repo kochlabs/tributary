@@ -110,3 +110,23 @@ func TestReports(t *testing.T) {
 		t.Fatal("runs left")
 	}
 }
+
+func TestConvertReportFilters(t *testing.T) {
+	db := openTestDB(t)
+	r, err := db.SaveReport(Report{Name: "Old", Template: "summary", Period: "last_7d", Filters: map[string]string{"host": "10.0.0.5"}, Query: "proto:tcp"}, time.Now(), time.UTC)
+	if err != nil {
+		t.Fatal(err)
+	}
+	conv := func(f map[string]string) string { return "host:" + f["host"] }
+	if err := db.ConvertReportFilters(conv); err != nil {
+		t.Fatal(err)
+	}
+	got, _ := db.Report(r.ID)
+	if got.Query != "(host:10.0.0.5) AND (proto:tcp)" || len(got.Filters) != 0 {
+		t.Fatalf("%q %v", got.Query, got.Filters)
+	}
+	// Once: nothing left to convert.
+	if err := db.ConvertReportFilters(func(map[string]string) string { t.Fatal("converted twice"); return "" }); err != nil {
+		t.Fatal(err)
+	}
+}

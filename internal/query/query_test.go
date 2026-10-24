@@ -16,6 +16,9 @@ func TestFormat(t *testing.T) {
 		{"a:1 && b:2 || c:3", "a:1 AND b:2 OR c:3"},
 		{"not a:1 and !b:2", "NOT a:1 AND NOT b:2"},
 		{"NOT (a:1 OR b:2)", "NOT (a:1 OR b:2)"},
+		{"(a:1 AND b:2) AND c:3", "a:1 AND b:2 AND c:3"},
+		{"(a:1 OR b:2) OR (c:3 d:4)", "a:1 OR b:2 OR c:3 OR d:4"},
+		{"(a:1 OR b:2) AND (c:3 AND d:4)", "(a:1 OR b:2) AND c:3 AND d:4"},
 		{"country:!US", "country:!US"},
 		{"country:(US OR CA DE)", "country:(US OR CA OR DE)"},
 		{"dst_port:[1 TO 1023]", "dst_port:[1 TO 1023]"},
@@ -146,4 +149,45 @@ func FuzzParse(f *testing.F) {
 			t.Fatalf("%q: canonical %q does not round-trip (%v)", s, out, err)
 		}
 	})
+}
+
+func TestComplete(t *testing.T) {
+	for _, c := range []struct {
+		q          string // | marks the cursor
+		kind       CompletionKind
+		field, pre string
+		from, to   int
+		after      bool
+	}{
+		{"|", CompleteField, "", "", 0, 0, false},
+		{"dst_p|", CompleteField, "", "dst_p", 0, 5, false},
+		{"dst_p|ort:443", CompleteField, "", "dst_p", 0, 9, false}, // in the field part: replace up to the colon
+		{"host:|", CompleteValue, "host", "", 5, 5, false},
+		{"host:na|", CompleteValue, "host", "na", 5, 7, false},
+		{"host:na|s AND x:1", CompleteValue, "host", "na", 5, 8, false},
+		{"host: na|", CompleteValue, "host", "na", 6, 8, false},
+		{"country:!|", CompleteValue, "country", "", 9, 9, false},
+		{"country:(US OR |", CompleteValue, "country", "", 15, 15, false},
+		{"country:(US |CA)", CompleteValue, "country", "", 12, 14, false},
+		{"dst_port:[1 TO |", CompleteValue, "dst_port", "", 15, 15, false},
+		{"(host:nas OR |", CompleteField, "", "", 13, 13, false},
+		{"host:nas |", CompleteField, "", "", 9, 9, true},
+		{"host:nas A|", CompleteField, "", "A", 9, 10, true},
+		{"host:nas AND |", CompleteField, "", "", 13, 13, false},
+		{"bytes:>|", CompleteNone, "", "", 0, 0, false},
+		{`device:"Liv|`, CompleteNone, "", "", 0, 0, false},
+		{"fe80::|", CompleteField, "", "fe80::", 0, 6, false},
+		{"host:fe80::|", CompleteValue, "host", "fe80::", 5, 11, false},
+	} {
+		pos := strings.Index(c.q, "|")
+		q := strings.Replace(c.q, "|", "", 1)
+		got := Complete(q, pos)
+		want := Completion{Kind: c.kind, Field: c.field, Prefix: c.pre, From: c.from, To: c.to, AfterTerm: c.after}
+		if c.kind == CompleteNone {
+			want = Completion{}
+		}
+		if got != want {
+			t.Errorf("%q: got %+v, want %+v", c.q, got, want)
+		}
+	}
 }

@@ -13,7 +13,9 @@ them, everyone can preview them and download past runs.
   exporters.
 - **Period:** yesterday, last week (Monday to Sunday) or last month, in the
   appliance's time zone; or the last 24 hours, 7 days or 30 days.
-- **Filters:** optional, as in the Traffic Explorer, e.g. one exporter.
+- **Query:** optional, as in the Traffic Explorer, e.g.
+  `exporter:core-router` ([QUERIES.md](QUERIES.md)). Reports saved with
+  filters before queries were converted to queries.
 - **Schedule:** off, daily, weekly or monthly at a set hour. Pair a calendar
   period with its schedule (yesterday daily, last week weekly) to cover each
   period once.

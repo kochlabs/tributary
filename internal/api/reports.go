@@ -64,6 +64,17 @@ func (s *Server) reportSave(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	// Filters (the older form) become part of the query.
+	rep.Query = config.AndQueries(store.FiltersToQuery(rep.Filters), rep.Query)
+	rep.Filters = nil
+	if rep.Query != "" {
+		_, _, canonical, err := s.compileQuery(rep.Query)
+		if err != nil {
+			writeQueryErr(w, rep.Query, err)
+			return
+		}
+		rep.Query = canonical
+	}
 	rep.Channels = s.existingChannels(rep.Channels)
 	saved, err := s.Config.SaveReport(rep, time.Now(), time.Local)
 	if err != nil {

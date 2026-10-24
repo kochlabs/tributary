@@ -3,6 +3,7 @@ package names
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -111,4 +112,14 @@ func Match(name, pattern string) bool {
 		return p != "" && (strings.HasPrefix(name, p) || strings.HasPrefix(short, p))
 	}
 	return name == pattern || short == pattern
+}
+
+// WellKnownPorts lists the ports Service names, ascending.
+func WellKnownPorts() []uint16 {
+	out := make([]uint16, 0, len(services))
+	for p := range services {
+		out = append(out, p)
+	}
+	slices.Sort(out)
+	return out
 }

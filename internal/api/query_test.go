@@ -3,7 +3,9 @@ package api
 import (
 	"encoding/json"
 	"net/http/httptest"
+	"net/url"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -63,5 +65,46 @@ func TestParseQueryParam(t *testing.T) {
 	json.Unmarshal(w.Body.Bytes(), &res)
 	if w.Code != 200 || res.Query != "dst_port:(80 OR 443) OR NOT country:us" || res.Warnings == nil {
 		t.Fatalf("check: %d %s", w.Code, w.Body)
+	}
+}
+
+func TestQuerySuggest(t *testing.T) {
+	cfg, err := config.Open(filepath.Join(t.TempDir(), "config.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cfg.Close()
+	cfg.SeenExporter("10.0.0.1")
+	cfg.UpdateExporter(config.Exporter{Addr: "10.0.0.1", Name: "core router"})
+	s := &Server{Config: cfg}
+	suggest := func(q string) (from, to int, labels []string, applies []string) {
+		pos := strings.Index(q, "|")
+		q = strings.Replace(q, "|", "", 1)
+		w := httptest.NewRecorder()
+		s.querySuggest(w, httptest.NewRequest("GET", "/api/query/suggest?q="+url.QueryEscape(q)+"&pos="+strconv.Itoa(pos), nil))
+		var res struct {
+			From, To int
+			Options  []suggestion
+		}
+		json.Unmarshal(w.Body.Bytes(), &res)
+		for _, o := range res.Options {
+			labels, applies = append(labels, o.Label), append(applies, o.Apply)
+		}
+		return res.From, res.To, labels, applies
+	}
+	if _, _, labels, applies := suggest("dst_p|"); len(labels) != 1 || labels[0] != "dst_port" || applies[0] != "dst_port:" {
+		t.Fatalf("field: %v %v", labels, applies)
+	}
+	if from, to, labels, applies := suggest("exporter:co|"); from != 9 || to != 11 || len(labels) != 1 || applies[0] != `"core router" ` {
+		t.Fatalf("value: %d-%d %v %v", from, to, labels, applies)
+	}
+	if _, _, labels, _ := suggest("dst_port:ss|"); len(labels) == 0 || labels[0] != "22" {
+		t.Fatalf("a service's name finds its port: %v", labels)
+	}
+	if _, _, labels, _ := suggest("host:nas |"); labels[0] != "AND" {
+		t.Fatalf("after a term: %v", labels)
+	}
+	if from, _, _, _ := suggest(`device:"Café" exporter:|`); from != 23 {
+		t.Fatalf("UTF-16 positions: %d", from)
 	}
 }

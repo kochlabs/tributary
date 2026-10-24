@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"maps"
 	"net/netip"
 	"os"
 	"path/filepath"
@@ -542,4 +543,11 @@ func (g *Geo) AutoUpdate(ctx context.Context, enabled func() bool) {
 			check()
 		}
 	}
+}
+
+// Countries returns the country names known so far, by ISO code.
+func (g *Geo) Countries() map[string]string {
+	g.namesMu.RLock()
+	defer g.namesMu.RUnlock()
+	return maps.Clone(g.countries)
 }

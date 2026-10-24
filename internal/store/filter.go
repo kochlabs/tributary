@@ -3,6 +3,7 @@ package store
 import (
 	"fmt"
 	"net/netip"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -261,4 +262,14 @@ func parseMAC(s string) (uint64, bool) {
 	}
 	v, err := strconv.ParseUint(h, 16, 64)
 	return v, err == nil
+}
+
+// ProtoNames lists the protocol names filters and queries accept.
+func ProtoNames() []string {
+	out := make([]string, 0, len(protoByName))
+	for n := range protoByName {
+		out = append(out, n)
+	}
+	sort.Strings(out)
+	return out
 }

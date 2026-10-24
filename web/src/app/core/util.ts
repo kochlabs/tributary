@@ -60,13 +60,6 @@ export class Theme {
   }
 }
 
-/** Parses "k=v" filter params from a route query map. */
-export function filtersFromParams(params: Record<string, string>, allowed: string[]): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const k of allowed) if (params[k]) out[k] = params[k];
-  return out;
-}
-
 /**
  * trackBy for Clarity datagrids. Reloaded data arrives as new objects; a
  * stable key lets the grid update rows in place, so expanded details,

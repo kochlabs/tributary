@@ -3,17 +3,16 @@ import { Component, computed, effect, inject, signal, untracked } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClarityModule, ClrDatagridStateInterface } from '@clr/angular';
 import { Api, Filters, FlowRow } from '../core/api';
-import { appPort, bytes, count, dateTime, FILTER_FIELDS, FLOW_TYPES, proto, serviceName, shortTime, tcpFlags } from '../core/format';
+import { appPort, bytes, count, dateTime, FLOW_TYPES, proto, serviceName, shortTime, tcpFlags } from '../core/format';
+import { clearedLegacyParams, narrow, queryFromParams, term } from '../core/query';
 import { TimeRange } from '../core/time';
-import { ExpandedRows, filtersFromParams, loader, trackByKey } from '../core/util';
-import { FilterBar } from '../shared/filter-bar';
+import { ExpandedRows, loader, trackByKey } from '../core/util';
+import { QueryBar } from '../shared/query-bar';
 import { RangeBar } from '../shared/range-bar';
-
-const FILTER_KEYS = [...FILTER_FIELDS.map((f) => f.id), 'q'];
 
 @Component({
   selector: 'nfa-flows',
-  imports: [ClarityModule, FilterBar, NgFor, RangeBar],
+  imports: [ClarityModule, NgFor, QueryBar, RangeBar],
   template: `
     <div class="page-header">
       <div>
@@ -26,7 +25,7 @@ const FILTER_KEYS = [...FILTER_FIELDS.map((f) => f.id), 'q'];
       </div>
     </div>
 
-    <div class="card toolbar"><div class="card-block"><nfa-filter-bar [(filters)]="filters" /></div></div>
+    <div class="card toolbar"><div class="card-block"><nfa-query-bar [(query)]="query" /></div></div>
 
     @if (page.error()) {
       <div class="alert alert-danger" role="alert"><div class="alert-items"><div class="alert-item static"><span class="alert-text">{{ page.error() }}</span></div></div></div>
@@ -44,15 +43,15 @@ const FILTER_KEYS = [...FILTER_FIELDS.map((f) => f.id), 'q'];
 
       <clr-dg-row *ngFor="let f of rows(); trackBy: flowKey" [clrDgItem]="f" [clrDgExpanded]="expanded.has(key(f))" (clrDgExpandedChange)="expanded.set(key(f), $event)">
         <clr-dg-cell class="nowrap" [title]="dt(f.timeReceived)">{{ st(f.timeReceived) }}</clr-dg-cell>
-        <clr-dg-cell><a href="#" (click)="$event.preventDefault(); filterOn('exporter', f.exporter)" [title]="f.exporter">{{ f.exporterName || f.exporter }}</a></clr-dg-cell>
+        <clr-dg-cell><a href="#" (click)="$event.preventDefault(); filterOn('exporter', f.exporter, $event)" [title]="f.exporter">{{ f.exporterName || f.exporter }}</a></clr-dg-cell>
         <clr-dg-cell>
-          <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.srcAddr)">{{ f.srcAddr }}</a>{{ f.srcPort ? ':' + f.srcPort : '' }}
+          <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.srcAddr, $event)">{{ f.srcAddr }}</a>{{ f.srcPort ? ':' + f.srcPort : '' }}
             @if (f.srcCountry) {<span class="cc" [title]="f.srcAsName || ''">{{ f.srcCountry }}</span>}
             @if (f.srcThreat) {<span class="label label-danger threat" [title]="f.srcThreat">{{ listedLabel }}</span>}</div>
           @if (f.srcHost) {<div class="host" [title]="f.srcHost">{{ f.srcHost }}</div>}
         </clr-dg-cell>
         <clr-dg-cell>
-          <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.dstAddr)">{{ f.dstAddr }}</a>{{ f.dstPort ? ':' + f.dstPort : '' }}
+          <div class="mono"><a href="#" (click)="$event.preventDefault(); filterOn('host', f.dstAddr, $event)">{{ f.dstAddr }}</a>{{ f.dstPort ? ':' + f.dstPort : '' }}
             @if (f.dstCountry) {<span class="cc" [title]="f.dstAsName || ''">{{ f.dstCountry }}</span>}
             @if (f.dstThreat) {<span class="label label-danger threat" [title]="f.dstThreat">{{ listedLabel }}</span>}</div>
           @if (f.dstHost) {<div class="host" [title]="f.dstHost">{{ f.dstHost }}</div>}
@@ -128,7 +127,8 @@ export class Flows {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  readonly filters = signal<Filters>(filtersFromParams(this.route.snapshot.queryParams as Record<string, string>, FILTER_KEYS));
+  readonly query = signal<string>(queryFromParams(this.route.snapshot.queryParams as Record<string, string>));
+  readonly filters = computed<Filters>(() => (this.query() ? { q: this.query() } : ({} as Filters)));
   private state = signal<{ sort: string; desc: boolean; offset: number; limit: number } | undefined>(undefined);
 
   readonly page = loader(
@@ -155,8 +155,7 @@ export class Flows {
 
   constructor() {
     effect(() => {
-      const qp: Record<string, string | null> = {};
-      for (const k of FILTER_KEYS) qp[k] = this.filters()[k] || null;
+      const qp: Record<string, string | null> = { ...clearedLegacyParams(), q: this.query() || null };
       untracked(() => this.router.navigate([], { queryParams: qp, replaceUrl: true }));
     });
   }
@@ -172,8 +171,9 @@ export class Flows {
     });
   }
 
-  filterOn(key: string, value: string) {
-    this.filters.set({ ...this.filters(), [key]: value });
+  /** Clicking a value narrows to it; Alt-click excludes it. */
+  async filterOn(key: string, value: string, ev?: MouseEvent) {
+    this.query.set(await narrow(this.api, this.query(), term(key, value, !!ev?.altKey)));
   }
 
   service(f: FlowRow) {
