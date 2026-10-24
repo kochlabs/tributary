@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   DestroyRef,
   ElementRef,
   effect,
@@ -10,6 +11,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import {
   acceptCompletion,
@@ -26,7 +28,7 @@ import { linter, type Diagnostic } from '@codemirror/lint';
 import { EditorState, Prec } from '@codemirror/state';
 import { EditorView, keymap, placeholder as cmPlaceholder } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
-import { Api, QueryIssue } from '../core/api';
+import { Api, errorMessage, QueryIssue, SavedQuery } from '../core/api';
 import { Auth } from '../core/auth';
 
 /** Colours only: fields, keywords, operators, strings. Parsing is the appliance's. */
@@ -101,7 +103,7 @@ const HISTORY_SIZE = 20;
  */
 @Component({
   selector: 'nfa-query-bar',
-  imports: [ClarityModule],
+  imports: [ClarityModule, FormsModule],
   template: `
     <div class="bar" [class.invalid]="!!error()" [class.dirty]="dirty()">
       <cds-icon shape="search" class="icon"></cds-icon>
@@ -120,7 +122,17 @@ const HISTORY_SIZE = 20;
       <button
         type="button"
         class="btn btn-sm btn-link btn-icon"
-        (click)="helpOpen.set(!helpOpen())"
+        [class.active]="savedOpen()"
+        (click)="toggleSaved()"
+        aria-label="Saved queries"
+        i18n-aria-label="@@queryBar.saved"
+      >
+        <cds-icon shape="bookmark"></cds-icon>
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-link btn-icon"
+        (click)="helpOpen.set(!helpOpen()); savedOpen.set(false)"
         aria-label="Query syntax"
         i18n-aria-label="@@queryBar.help"
       >
@@ -156,6 +168,82 @@ const HISTORY_SIZE = 20;
           <span class="muted nothing" i18n="@@queryBar.matchesNothing">(matches nothing)</span>
         </div>
       }
+    }
+    @if (savedOpen()) {
+      <div class="saved card">
+        <div class="card-block">
+          @if (!live()) {
+            <form class="save-form" (ngSubmit)="saveCurrent()">
+              <input
+                class="clr-input"
+                name="savedName"
+                [(ngModel)]="saveName"
+                placeholder="Name this query"
+                i18n-placeholder="@@queryBar.saveName"
+                aria-label="Name"
+                i18n-aria-label="@@queryBar.name"
+              />
+              <label class="share"
+                ><input type="checkbox" name="saveShared" [(ngModel)]="saveShared" />
+                <ng-container i18n="@@queryBar.share">Share with everyone</ng-container></label
+              >
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                [disabled]="!text().trim() || !saveName.trim()"
+                i18n="@@queryBar.save"
+              >
+                Save
+              </button>
+            </form>
+          }
+          @if (savedError()) {
+            <div class="issue error">{{ savedError() }}</div>
+          }
+          <table class="table table-compact table-noborder">
+            <tbody>
+              @for (q of saved(); track q.id) {
+                <tr>
+                  <td class="left name">
+                    <a href="#" (click)="$event.preventDefault(); use(q.query)">{{ q.name }}</a>
+                    @if (q.owner !== me()) {
+                      <div class="muted small">{{ q.owner }}</div>
+                    }
+                  </td>
+                  <td class="left">
+                    <code>{{ q.query }}</code>
+                  </td>
+                  <td class="right actions">
+                    @if (q.owner === me() || auth.isAdmin()) {
+                      <label class="share small" [title]="shareTitle"
+                        ><input type="checkbox" [checked]="q.shared" (change)="toggleShared(q)" />
+                        <ng-container i18n="@@queryBar.shared">shared</ng-container></label
+                      >
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link btn-icon"
+                        (click)="remove(q)"
+                        aria-label="Delete"
+                        i18n-aria-label="@@common.delete"
+                      >
+                        <cds-icon shape="trash"></cds-icon>
+                      </button>
+                    } @else if (q.shared) {
+                      <span class="label" i18n="@@queryBar.sharedLabel">shared</span>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td class="left muted" i18n="@@queryBar.noneSaved">
+                    No saved queries yet. Save the one in the bar to come back to it.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
     }
     @if (helpOpen()) {
       <div class="help card">
@@ -258,6 +346,44 @@ const HISTORY_SIZE = 20;
     .nothing {
       margin-left: 4px;
     }
+    .btn.active {
+      color: var(--cds-alias-status-info, #0072a3);
+    }
+    .saved {
+      margin: 8px 0 0;
+      max-width: 60rem;
+    }
+    .saved .table {
+      margin: 6px 0 0;
+    }
+    .saved code {
+      word-break: break-word;
+    }
+    .saved .name {
+      white-space: nowrap;
+    }
+    .saved .actions {
+      white-space: nowrap;
+      text-align: right;
+    }
+    .save-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .save-form .clr-input {
+      width: 16rem;
+    }
+    .share {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .small {
+      font-size: 11px;
+    }
     .help {
       margin: 8px 0 0;
       max-width: 46rem;
@@ -284,7 +410,7 @@ export class QueryBar {
   readonly live = input(false);
 
   private api = inject(Api);
-  private auth = inject(Auth);
+  readonly auth = inject(Auth);
   private host = viewChild.required<ElementRef<HTMLElement>>('host');
   private view?: EditorView;
 
@@ -293,6 +419,13 @@ export class QueryBar {
   readonly warnings = signal<QueryIssue[]>([]);
   readonly running = signal(false);
   readonly helpOpen = signal(false);
+  readonly savedOpen = signal(false);
+  readonly saved = signal<SavedQuery[]>([]);
+  readonly savedError = signal('');
+  readonly me = computed(() => this.auth.user()?.username ?? '');
+  readonly shareTitle = $localize`:@@queryBar.shareTitle:Shared queries are listed for everyone; only you or an administrator can change them.`;
+  saveName = '';
+  saveShared = false;
   readonly dirty = signal(false);
 
   constructor() {
@@ -383,14 +516,18 @@ export class QueryBar {
     const doc = ctx.state.doc.toString();
     if (!doc) {
       if (!ctx.explicit) return null;
-      const recent = this.recent();
-      return recent.length
-        ? {
-            from: 0,
-            options: recent.map((q): Completion => ({ label: q, type: 'text' })),
-            filter: false,
-          }
-        : null;
+      await this.loadSaved();
+      const options: Completion[] = [
+        ...this.saved().map((q): Completion => ({
+          label: q.name,
+          apply: q.query,
+          detail: q.query,
+          type: 'saved',
+          boost: 1,
+        })),
+        ...this.recent().map((q): Completion => ({ label: q, type: 'text' })),
+      ];
+      return options.length ? { from: 0, options, filter: false } : null;
     }
     if (!ctx.explicit && !ctx.matchBefore(/[^\s()[\]!<>&|{}]+$|[:(]\s*$/)) return null;
     let r;
@@ -468,6 +605,67 @@ export class QueryBar {
       v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: q } });
     this.query.set(q);
     this.dirty.set(false);
+  }
+
+  async loadSaved() {
+    try {
+      this.saved.set(await this.api.savedQueries());
+    } catch {
+      /* keep what we have */
+    }
+  }
+
+  toggleSaved() {
+    this.savedOpen.set(!this.savedOpen());
+    this.helpOpen.set(false);
+    this.savedError.set('');
+    if (this.savedOpen()) this.loadSaved();
+  }
+
+  /** Puts a saved query in the bar and runs it. */
+  use(q: string) {
+    this.view?.dispatch({ changes: { from: 0, to: this.view.state.doc.length, insert: q } });
+    this.savedOpen.set(false);
+    if (this.live()) this.query.set(q);
+    else this.run();
+  }
+
+  async saveCurrent() {
+    this.savedError.set('');
+    try {
+      const mine = this.saved().find(
+        (q) => q.owner === this.me() && q.name === this.saveName.trim(),
+      );
+      await this.api.saveQuery({
+        id: mine?.id,
+        name: this.saveName.trim(),
+        query: this.text().trim(),
+        shared: this.saveShared,
+      });
+      this.saveName = '';
+      this.saveShared = false;
+      await this.loadSaved();
+    } catch (err) {
+      this.savedError.set(errorMessage(err));
+    }
+  }
+
+  async toggleShared(q: SavedQuery) {
+    try {
+      await this.api.saveQuery({ ...q, shared: !q.shared });
+    } catch (err) {
+      this.savedError.set(errorMessage(err));
+    }
+    await this.loadSaved();
+  }
+
+  async remove(q: SavedQuery) {
+    try {
+      await this.api.deleteQuery(q.id);
+    } catch (err) {
+      this.savedError.set(errorMessage(err));
+    }
+    await this.loadSaved();
   }
 
   clear() {

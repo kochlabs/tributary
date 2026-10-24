@@ -117,6 +117,9 @@ func Open(path string) (*DB, error) {
 	if err := c.migrateChannels(); err != nil {
 		return nil, fmt.Errorf("notification schema: %w", err)
 	}
+	if err := c.migrateSavedQueries(); err != nil {
+		return nil, fmt.Errorf("saved query schema: %w", err)
+	}
 	if err := c.reload(); err != nil {
 		return nil, err
 	}

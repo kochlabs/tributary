@@ -11,7 +11,12 @@ MCP tools as `query`.
   shows them.
 - Mistakes are underlined as you type; hover for the reason. Enter runs
   the query, which goes into the page's address for bookmarking.
-- ↑ in an empty bar recalls recent queries (kept in this browser).
+- ↑ in an empty bar lists saved queries, then recent ones (kept in this
+  browser).
+- The bookmark button saves the query in the bar under a name, and lists
+  saved queries: yours, and ones others share. A saved query is private
+  unless you share it; only you or an administrator can change or delete
+  it. Saving under a name you already use updates that query.
 - Clicking an address, row or chart series adds `AND field:value`;
   Alt-click on Flow Search excludes it instead.
 

@@ -938,6 +938,17 @@ export interface QuerySuggestions {
   options: { label: string; apply: string; detail?: string; kind: 'field' | 'value' | 'keyword' }[];
 }
 
+/** A named query: private to its owner unless shared. */
+export interface SavedQuery {
+  id: number;
+  name: string;
+  query: string;
+  owner: string;
+  shared: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
 /** A report without its run status, as the API accepts it. */
 function reportDefinition(r: Partial<Report>): Partial<Report> {
   const def = { ...r };
@@ -1001,6 +1012,20 @@ export class Api {
     } catch (err) {
       return { warnings: [], error: { message: errorMessage(err), pos: 0, len: 0 } };
     }
+  }
+
+  savedQueries() {
+    return this.get<SavedQuery[]>('/api/queries');
+  }
+  saveQuery(q: Partial<SavedQuery>) {
+    return firstValueFrom(
+      q.id
+        ? this.http.put<SavedQuery>(`/api/queries/${q.id}`, q)
+        : this.http.post<SavedQuery>('/api/queries', q),
+    );
+  }
+  deleteQuery(id: number) {
+    return firstValueFrom(this.http.delete(`/api/queries/${id}`));
   }
 
   /** Completions for a query at a cursor position. */

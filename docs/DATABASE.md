@@ -90,6 +90,7 @@ JSON lists, addresses).
 erDiagram
     users ||--o{ sessions : has
     users ||--o{ api_tokens : has
+    users ||--o{ saved_queries : owns
     identity_sources |o..o{ users : "signs in (source_id)"
     users ||..o{ audit : "username"
 
@@ -110,6 +111,15 @@ erDiagram
         text token_hash PK
         text username FK
         int expires_at
+    }
+    saved_queries {
+        int id PK
+        text name "unique per owner"
+        text query "canonical form"
+        text owner FK
+        int shared
+        int created_at
+        int updated_at
     }
     api_tokens {
         int id PK
@@ -260,7 +270,8 @@ erDiagram
         text template "summary | security"
         text sections "JSON"
         text period
-        text filters "JSON"
+        text query "docs/QUERIES.md"
+        text filters "older form, converted to query"
         text schedule "off | daily | weekly | monthly"
         int hour
         int weekday

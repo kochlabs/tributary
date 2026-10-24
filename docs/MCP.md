@@ -53,11 +53,13 @@ your own CA.
 | `devices` | local devices by MAC address |
 | `lookup_address` | geo, AS, hostname, threat feeds, inventory record and top traffic of one address |
 | `threat_feeds` | enabled threat feeds and their matches in the last 24 hours |
+| `saved_queries` | queries people saved (their own and shared ones) |
 | `appliance_health` | collector, database, disk and notices |
 
-Most take a `range` (`15m`, `24h`, `7d`) or `from`/`to`, and `filters` with the
-same syntax as the UI. `threat=*` finds traffic with addresses on threat feeds;
-the `threat` and `threat_host` dimensions break it down.
+Most take a `range` (`15m`, `24h`, `7d`) or `from`/`to`, and a `query` in
+the UI's query language ([QUERIES.md](QUERIES.md)), e.g.
+`threat:* AND NOT country:US`; the `threat` and `threat_host` dimensions
+break threat traffic down. The older `filters` argument still works.
 
 ## Security
 

@@ -1,8 +1,9 @@
 # Design: query language
 
-Status: phases 1 and 2 implemented, October 2026: the language, the `q`
-parameter, the query bar on the Explorer, Flow Search, Detections and
-reports, and suggestions. Phase 3 (saved queries) to come. The filters it
+Status: implemented, October 2026: the language, the `q` parameter, the
+query bar on the Explorer, Flow Search, Detections and reports,
+suggestions and saved queries. Detection queries built on `q` follow their
+own design ([DETECTION-QUERIES.md](DETECTION-QUERIES.md)). The filters it
 replaced were a set of fields, each with a comma-separated list of values,
 combined with AND, each field used once. This design replaces them with a
 typed query, closer to Graylog than to a form:
@@ -212,6 +213,8 @@ suggestion when there is one. An error stops the query; a warning doesn't.
   feeds, countries, protocols, recently seen hosts).
 - MCP tools take `query`, and their description includes a short syntax
   guide. `filters` stays for existing clients.
+- `GET/POST /api/queries`, `PUT/DELETE /api/queries/{id}` list, save,
+  change and delete saved queries.
 - Saved reports convert their filters to a query once, on upgrade. Each
   `key=v1,v2` becomes `key:(v1 OR v2)` and `!` becomes `NOT`. The report
   then stores a `query`.
@@ -279,7 +282,10 @@ compressed, shared by them).
 A saved query has a name, the query in canonical form, an owner and a
 **shared** switch. Private ones are seen only by their owner; shared ones
 by everyone, and only the owner (or an administrator) can change or delete
-them. They are listed in the query bar's menu and in MCP (`saved_queries`).
+them. Names are unique per owner. They are listed in the query bar's
+bookmark panel, with ↑ in an empty bar, and in MCP (`saved_queries`). A
+private query of someone else's answers 404, so its existence doesn't
+show.
 
 | Column | |
 |---|---|

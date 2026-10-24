@@ -2,6 +2,8 @@ package api
 
 import (
 	"encoding/json"
+	"io"
+	"log/slog"
 	"net/http/httptest"
 	"net/url"
 	"path/filepath"
@@ -106,5 +108,53 @@ func TestQuerySuggest(t *testing.T) {
 	}
 	if from, _, _, _ := suggest(`device:"Café" exporter:|`); from != 23 {
 		t.Fatalf("UTF-16 positions: %d", from)
+	}
+}
+
+func TestSavedQueriesAPI(t *testing.T) {
+	cfg, err := config.Open(filepath.Join(t.TempDir(), "config.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cfg.Close()
+	s := &Server{Log: slog.New(slog.NewTextHandler(io.Discard, nil)), Config: cfg}
+	app := httptest.NewServer(s.Handler())
+	defer app.Close()
+	cfg.CreateUser(config.User{Username: "admin", Role: "admin"}, "Admin-pass-12")
+	cfg.CreateUser(config.User{Username: "ann", Role: "viewer"}, "Ann-pass-1234")
+	cfg.CreateUser(config.User{Username: "bob", Role: "viewer"}, "Bob-pass-1234")
+	login := func(u, p string) *client {
+		c := newClient(t, app.URL)
+		c.post("/api/auth/login", map[string]string{"username": u, "password": p})
+		return c
+	}
+	ann, bob, admin := login("ann", "Ann-pass-1234"), login("bob", "Bob-pass-1234"), login("admin", "Admin-pass-12")
+
+	// Saved in canonical form; a bad query is refused with its hint.
+	code, out, raw := ann.do("POST", "/api/queries", map[string]any{"name": "Web", "query": "dst_port:(80 443)"})
+	if code != 200 || out["query"] != "dst_port:(80 OR 443)" || out["owner"] != "ann" {
+		t.Fatalf("save: %d %s", code, raw)
+	}
+	id := itoa64(int64(out["id"].(float64)))
+	if code, out, _ := ann.do("POST", "/api/queries", map[string]any{"name": "Bad", "query": "dst_prot:1"}); code != 400 || out["hint"] != "did you mean dst_port?" {
+		t.Fatalf("bad query: %d %v", code, out)
+	}
+	// Private: bob can't see or touch it.
+	if code, _, raw := bob.do("GET", "/api/queries", nil); code != 200 || raw != "[]\n" {
+		t.Fatalf("bob sees: %s", raw)
+	}
+	if code, _, _ := bob.do("DELETE", "/api/queries/"+id, nil); code != 404 {
+		t.Fatalf("bob deleted a private query: %d", code)
+	}
+	// Shared: bob sees it but can't change it; an administrator can.
+	ann.do("PUT", "/api/queries/"+id, map[string]any{"name": "Web", "query": "dst_port:(80 443)", "shared": true})
+	if code, _, raw := bob.do("GET", "/api/queries", nil); code != 200 || !strings.Contains(raw, `"Web"`) {
+		t.Fatalf("shared: %s", raw)
+	}
+	if code, _, _ := bob.do("PUT", "/api/queries/"+id, map[string]any{"name": "Mine", "query": "x:1"}); code != 403 {
+		t.Fatalf("bob changed a shared query: %d", code)
+	}
+	if code, _, _ := admin.do("DELETE", "/api/queries/"+id, nil); code != 204 {
+		t.Fatalf("admin delete: %d", code)
 	}
 }

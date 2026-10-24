@@ -281,6 +281,11 @@ func (s *Server) addMCPTools(srv *mcp.Server) {
 			return s.mcpGet(ctx, u, s.threatStatus, "/api/threats", mcpWindow{}, nil, nil)
 		}, readOnly)
 
+	addTool(s, srv, "saved_queries", "Queries saved by people on this appliance (their own and shared ones): name, query and owner. Pass a query as the query argument of the other tools.",
+		nil, func(ctx context.Context, u *config.User, _ mcpNoInput) (any, error) {
+			return s.mcpGet(ctx, u, s.savedQueriesList, "/api/queries", mcpWindow{}, nil, nil)
+		}, readOnly)
+
 	addTool(s, srv, "appliance_health", "The appliance's own state: collector listeners and counters, database health and disk space, and current notices (problems needing attention).",
 		nil, func(ctx context.Context, u *config.User, _ mcpNoInput) (any, error) {
 			sys, err := s.mcpGet(ctx, u, s.system, "/api/system", mcpWindow{}, nil, nil)

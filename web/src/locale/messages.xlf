@@ -3233,6 +3233,7 @@
         <note category="location">src/app/pages/identity-sources.ts:519,521</note>
         <note category="location">src/app/pages/users.ts:39,40</note>
         <note category="location">src/app/pages/users.ts:139,141</note>
+        <note category="location">src/app/shared/query-bar.ts:227</note>
       </notes>
       <segment>
         <source>Delete</source>
@@ -12920,15 +12921,23 @@
     </unit>
     <unit id="queryBar.clear">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:114,115</note>
+        <note category="location">src/app/shared/query-bar.ts:116,117</note>
       </notes>
       <segment>
         <source>Clear the query</source>
       </segment>
     </unit>
+    <unit id="queryBar.saved">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:127,128</note>
+      </notes>
+      <segment>
+        <source>Saved queries</source>
+      </segment>
+    </unit>
     <unit id="queryBar.help">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:124,125</note>
+        <note category="location">src/app/shared/query-bar.ts:136,137</note>
       </notes>
       <segment>
         <source>Query syntax</source>
@@ -12936,7 +12945,7 @@
     </unit>
     <unit id="queryBar.run">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:137,138</note>
+        <note category="location">src/app/shared/query-bar.ts:149,150</note>
       </notes>
       <segment>
         <source> Run </source>
@@ -12944,15 +12953,71 @@
     </unit>
     <unit id="queryBar.matchesNothing">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:156,160</note>
+        <note category="location">src/app/shared/query-bar.ts:168,172</note>
       </notes>
       <segment>
         <source>(matches nothing)</source>
       </segment>
     </unit>
+    <unit id="queryBar.saveName">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:181,182</note>
+      </notes>
+      <segment>
+        <source>Name this query</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.name">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:184</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.share">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:188,189</note>
+      </notes>
+      <segment>
+        <source>Share with everyone</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.save">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:196,197</note>
+      </notes>
+      <segment>
+        <source> Save </source>
+      </segment>
+    </unit>
+    <unit id="queryBar.shared">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:220,221</note>
+      </notes>
+      <segment>
+        <source>shared</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.sharedLabel">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:232,234</note>
+      </notes>
+      <segment>
+        <source>shared</source>
+      </segment>
+    </unit>
+    <unit id="queryBar.noneSaved">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:239,240</note>
+      </notes>
+      <segment>
+        <source> No saved queries yet. Save the one in the bar to come back to it. </source>
+      </segment>
+    </unit>
     <unit id="queryBar.helpField">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:167,169</note>
+        <note category="location">src/app/shared/query-bar.ts:255,257</note>
       </notes>
       <segment>
         <source>a field and a value</source>
@@ -12960,7 +13025,7 @@
     </unit>
     <unit id="queryBar.helpList">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:171,173</note>
+        <note category="location">src/app/shared/query-bar.ts:259,261</note>
       </notes>
       <segment>
         <source>any of several values</source>
@@ -12968,7 +13033,7 @@
     </unit>
     <unit id="queryBar.helpRange">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:175,177</note>
+        <note category="location">src/app/shared/query-bar.ts:263,265</note>
       </notes>
       <segment>
         <source>a range (also 1-1023)</source>
@@ -12976,7 +13041,7 @@
     </unit>
     <unit id="queryBar.helpCompare">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:180,181</note>
+        <note category="location">src/app/shared/query-bar.ts:268,269</note>
       </notes>
       <segment>
         <source> a comparison: &gt; &gt;= &lt; &lt;= </source>
@@ -12984,7 +13049,7 @@
     </unit>
     <unit id="queryBar.helpAny">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:185,187</note>
+        <note category="location">src/app/shared/query-bar.ts:273,275</note>
       </notes>
       <segment>
         <source>any value</source>
@@ -12992,7 +13057,7 @@
     </unit>
     <unit id="queryBar.helpBool">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:190,191</note>
+        <note category="location">src/app/shared/query-bar.ts:278,279</note>
       </notes>
       <segment>
         <source> both; either; either (terms side by side are OR) </source>
@@ -13000,7 +13065,7 @@
     </unit>
     <unit id="queryBar.helpNot">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:196,197</note>
+        <note category="location">src/app/shared/query-bar.ts:284,285</note>
       </notes>
       <segment>
         <source> not; grouping (AND binds tighter than OR) </source>
@@ -13008,7 +13073,7 @@
     </unit>
     <unit id="queryBar.helpBare">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:202,203</note>
+        <note category="location">src/app/shared/query-bar.ts:290,291</note>
       </notes>
       <segment>
         <source> an address or name alone means host: </source>
@@ -13016,7 +13081,7 @@
     </unit>
     <unit id="queryBar.helpQuote">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:207,209</note>
+        <note category="location">src/app/shared/query-bar.ts:295,297</note>
       </notes>
       <segment>
         <source>quotes for values with spaces</source>
@@ -13024,7 +13089,7 @@
     </unit>
     <unit id="queryBar.helpKeys">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:212,214</note>
+        <note category="location">src/app/shared/query-bar.ts:300,302</note>
       </notes>
       <segment>
         <source> Tab or Enter picks a suggestion; Ctrl+Space shows them; ↑ in an empty bar recalls recent queries. </source>
@@ -13032,15 +13097,23 @@
     </unit>
     <unit id="queryBar.placeholder">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:281</note>
+        <note category="location">src/app/shared/query-bar.ts:407</note>
       </notes>
       <segment>
         <source>Query, e.g. host:nas AND NOT country:(US OR CA)</source>
       </segment>
     </unit>
+    <unit id="queryBar.shareTitle">
+      <notes>
+        <note category="location">src/app/shared/query-bar.ts:426</note>
+      </notes>
+      <segment>
+        <source>Shared queries are listed for everyone; only you or an administrator can change them.</source>
+      </segment>
+    </unit>
     <unit id="queryBar.query">
       <notes>
-        <note category="location">src/app/shared/query-bar.ts:374</note>
+        <note category="location">src/app/shared/query-bar.ts:507</note>
       </notes>
       <segment>
         <source>Query</source>

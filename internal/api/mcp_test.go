@@ -121,7 +121,7 @@ func TestMCPEndpoint(t *testing.T) {
 			t.Fatalf("%s is not marked read-only", tl.Name)
 		}
 	}
-	if len(names) != 11 {
+	if len(names) != 12 {
 		t.Fatalf("tools: %v", names)
 	}
 	// Input errors come back as tool errors the assistant can read.

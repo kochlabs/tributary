@@ -57,6 +57,7 @@ import {
   calendarIcon,
   infoStandardIcon,
   bellIcon,
+  bookmarkIcon,
   syncIcon,
   fileGroupIcon,
 } from '@clr/angular';
@@ -80,6 +81,6 @@ export function registerIcons() {
     firewallIcon, hardDiskIcon, historyIcon, infoCircleIcon, lineChartIcon, listIcon, lockIcon, logoutIcon, moonIcon, networkGlobeIcon,
     networkSwitchIcon, pencilIcon, plusIcon, refreshIcon, routerIcon, searchIcon, rackServerIcon, sunIcon, tableIcon, timesIcon, trashIcon,
     userIcon, usersIcon, hostIcon, memoryIcon, cpuIcon, dataClusterIcon, storageIcon, shieldIcon, errorStandardIcon, successStandardIcon,
-    warningStandardIcon, pieChartIcon, treeViewIcon, bellIcon, syncIcon, fileGroupIcon,
+    warningStandardIcon, pieChartIcon, treeViewIcon, bellIcon, bookmarkIcon, syncIcon, fileGroupIcon,
   );
 }
