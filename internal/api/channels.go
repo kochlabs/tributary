@@ -21,7 +21,7 @@ func (s *Server) channelsList(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"channels": list, "publicUrl": s.Config.Settings().PublicURL})
+	writeJSON(w, http.StatusOK, map[string]any{"channels": list, "notices": s.Config.NoticeRouting(), "publicUrl": s.Config.Settings().PublicURL})
 }
 
 func (s *Server) channelSave(w http.ResponseWriter, r *http.Request) {

@@ -425,6 +425,8 @@ export interface ThreatFeed {
   enabled: boolean;
   notify: boolean;
   intervalHours: number;
+  /** Notification channels matches are sent to. */
+  channels: number[];
   lastAttempt: number;
   lastSuccess: number;
   lastError: string;
@@ -782,6 +784,12 @@ export interface InventoryRecord {
   url?: string;
   tags?: string[];
   services?: { name: string; protocol: string; ports: number[]; description?: string }[];
+}
+
+/** Appliance notices at or above a level go to these channels. */
+export interface NoticeRouting {
+  level: 'info' | 'warning' | 'danger';
+  channels: number[];
 }
 
 /** Where notifications go: a signed webhook or Telegram. */
@@ -1170,7 +1178,12 @@ export class Api {
     return firstValueFrom(this.http.delete(`/api/tokens/${id}`));
   }
   channels() {
-    return this.get<{ channels: Channel[]; publicUrl: string }>('/api/channels');
+    return this.get<{ channels: Channel[]; notices: NoticeRouting; publicUrl: string }>(
+      '/api/channels',
+    );
+  }
+  saveNoticeRouting(r: NoticeRouting) {
+    return firstValueFrom(this.http.put<NoticeRouting>('/api/channels/notices', r));
   }
   saveChannel(c: Partial<Channel>) {
     return firstValueFrom(

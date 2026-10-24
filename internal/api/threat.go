@@ -114,6 +114,7 @@ func (s *Server) threatFeedSave(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	f.Channels = s.existingChannels(f.Channels)
 	id, err := s.Config.SaveThreatFeed(f)
 	if err != nil {
 		code := http.StatusBadRequest

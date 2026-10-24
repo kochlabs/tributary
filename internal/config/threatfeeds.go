@@ -2,6 +2,7 @@ package config
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
@@ -33,7 +34,8 @@ CREATE TABLE IF NOT EXISTS threat_feeds (
 	last_error     TEXT NOT NULL DEFAULT '',
 	entries        INTEGER NOT NULL DEFAULT 0,
 	created_at     INTEGER NOT NULL,
-	position       INTEGER NOT NULL DEFAULT 0
+	position       INTEGER NOT NULL DEFAULT 0,
+	channels       TEXT NOT NULL DEFAULT '[]'
 );
 `
 
@@ -55,6 +57,8 @@ type ThreatFeed struct {
 	// as Tor exit nodes) that are worth seeing but not worth a warning.
 	Notify        bool `json:"notify"`
 	IntervalHours int  `json:"intervalHours"`
+	// Channels are notification channels that matches are sent to (IDs).
+	Channels []int64 `json:"channels"`
 
 	LastAttempt int64  `json:"lastAttempt"`
 	LastSuccess int64  `json:"lastSuccess"`
@@ -89,6 +93,14 @@ func (c *DB) migrateThreatFeeds() error {
 			return err
 		}
 		if _, err := c.db.Exec("UPDATE threat_feeds SET position = id"); err != nil {
+			return err
+		}
+	}
+	if err := c.db.QueryRow("SELECT count(*) FROM pragma_table_info('threat_feeds') WHERE name = 'channels'").Scan(&n); err != nil {
+		return err
+	}
+	if n == 0 {
+		if _, err := c.db.Exec("ALTER TABLE threat_feeds ADD COLUMN channels TEXT NOT NULL DEFAULT '[]'"); err != nil {
 			return err
 		}
 	}
@@ -175,20 +187,25 @@ func (f *ThreatFeed) normalize() error {
 	if f.IntervalHours < 1 || f.IntervalHours > 24*30 {
 		return errors.New("update every 1 hour to 30 days")
 	}
-	return nil
+	var err error
+	f.Channels, err = CleanChannelIDs(f.Channels)
+	return err
 }
 
 // ValidateThreatFeed checks a feed as saving would.
 func ValidateThreatFeed(f *ThreatFeed) error { return f.normalize() }
 
-const threatFeedCols = "id, name, url, format, field, column_no, delimiter, enabled, notify, interval_hours, last_attempt, last_success, last_error, entries, created_at"
+const threatFeedCols = "id, name, url, format, field, column_no, delimiter, enabled, notify, interval_hours, last_attempt, last_success, last_error, entries, created_at, channels"
 
 func scanThreatFeed(row interface{ Scan(...any) error }) (ThreatFeed, error) {
 	var f ThreatFeed
 	var en, no int
+	var chans string
 	err := row.Scan(&f.ID, &f.Name, &f.URL, &f.Format, &f.Field, &f.Column, &f.Delimiter, &en, &no, &f.IntervalHours,
-		&f.LastAttempt, &f.LastSuccess, &f.LastError, &f.Entries, &f.CreatedAt)
+		&f.LastAttempt, &f.LastSuccess, &f.LastError, &f.Entries, &f.CreatedAt, &chans)
 	f.Enabled, f.Notify = en == 1, no == 1
+	f.Channels = []int64{}
+	_ = json.Unmarshal([]byte(chans), &f.Channels)
 	return f, err
 }
 
@@ -230,22 +247,23 @@ func (c *DB) SaveThreatFeed(f ThreatFeed) (int64, error) {
 		}
 		return 0
 	}
+	chans, _ := json.Marshal(f.Channels)
 	var err error
 	if f.ID == 0 {
 		var res sql.Result
 		// New feeds go last.
-		res, err = c.db.Exec(`INSERT INTO threat_feeds(name, url, format, field, column_no, delimiter, enabled, notify, interval_hours, created_at, position)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT coalesce(max(position), 0) + 1 FROM threat_feeds))`, f.Name, f.URL, f.Format, f.Field, f.Column, f.Delimiter, b(f.Enabled), b(f.Notify), f.IntervalHours, time.Now().UnixMilli())
+		res, err = c.db.Exec(`INSERT INTO threat_feeds(name, url, format, field, column_no, delimiter, enabled, notify, interval_hours, channels, created_at, position)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT coalesce(max(position), 0) + 1 FROM threat_feeds))`, f.Name, f.URL, f.Format, f.Field, f.Column, f.Delimiter, b(f.Enabled), b(f.Notify), f.IntervalHours, string(chans), time.Now().UnixMilli())
 		if err == nil {
 			f.ID, err = res.LastInsertId()
 		}
 	} else {
 		var res sql.Result
 		// A changed source starts over: its old status doesn't apply.
-		res, err = c.db.Exec(`UPDATE threat_feeds SET name = ?, format = ?, field = ?, column_no = ?, delimiter = ?, enabled = ?, notify = ?, interval_hours = ?,
+		res, err = c.db.Exec(`UPDATE threat_feeds SET name = ?, format = ?, field = ?, column_no = ?, delimiter = ?, enabled = ?, notify = ?, interval_hours = ?, channels = ?,
 				last_attempt = CASE WHEN url = ? THEN last_attempt ELSE 0 END, last_success = CASE WHEN url = ? THEN last_success ELSE 0 END,
 				last_error = CASE WHEN url = ? THEN last_error ELSE '' END, entries = CASE WHEN url = ? THEN entries ELSE 0 END, url = ?
-			WHERE id = ?`, f.Name, f.Format, f.Field, f.Column, f.Delimiter, b(f.Enabled), b(f.Notify), f.IntervalHours, f.URL, f.URL, f.URL, f.URL, f.URL, f.ID)
+			WHERE id = ?`, f.Name, f.Format, f.Field, f.Column, f.Delimiter, b(f.Enabled), b(f.Notify), f.IntervalHours, string(chans), f.URL, f.URL, f.URL, f.URL, f.URL, f.ID)
 		if err == nil {
 			if n, _ := res.RowsAffected(); n == 0 {
 				return 0, ErrNotFound

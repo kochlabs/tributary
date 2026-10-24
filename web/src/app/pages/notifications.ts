@@ -1,8 +1,8 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, Channel, errorMessage } from '../core/api';
+import { Api, Channel, errorMessage, NoticeRouting } from '../core/api';
 import { ago, dateTime } from '../core/format';
 import { loader, trackByKey } from '../core/util';
 
@@ -45,9 +45,9 @@ const blank = (type: ChannelType): Partial<Channel> => ({
     <div class="page-header">
       <div>
         <h2 i18n="@@nav.notifications">Notifications</h2>
-        <p class="subtitle" i18n="@@notify.subtitle2">
-          Where notifications go: webhooks and Telegram. Reports choose their channels. Delivered in
-          the background and retried for a day.
+        <p class="subtitle" i18n="@@notify.subtitle3">
+          Where notifications go: webhooks and Telegram. Notices, threat feeds and reports choose
+          their channels. Delivered in the background and retried for a day.
         </p>
       </div>
     </div>
@@ -224,6 +224,56 @@ const blank = (type: ChannelType): Partial<Channel> => ({
       </div>
     }
 
+    @if (list.value(); as l) {
+      <div class="card routing">
+        <div class="card-header" i18n="@@notify.noticesTitle">Appliance notices</div>
+        <div class="card-block">
+          <p class="muted small" i18n="@@notify.noticesHelp">
+            Notices (disk space, silent exporters, certificates, failed backups, …) are sent when
+            they appear and when they clear. Threat feed matches are sent per feed, under
+            <a routerLink="/security/threat-feeds">Security → Threat Feeds</a>.
+          </p>
+          @if (l.channels.length) {
+            <form clrForm clrLayout="horizontal" (ngSubmit)="saveRouting()">
+              <clr-select-container>
+                <label i18n="@@notify.noticeLevel">Send</label>
+                <select clrSelect name="routingLevel" [(ngModel)]="routing.level">
+                  <option value="info" i18n="@@notify.level.info">Information and up</option>
+                  <option value="warning" i18n="@@notify.level.warning">Warnings and up</option>
+                  <option value="danger" i18n="@@notify.level.danger">Problems only</option>
+                </select>
+              </clr-select-container>
+              <clr-checkbox-container>
+                <label i18n="@@notify.noticeChannels">To channels</label>
+                @for (c of l.channels; track c.id) {
+                  <clr-checkbox-wrapper>
+                    <input
+                      type="checkbox"
+                      clrCheckbox
+                      [name]="'rt-' + c.id"
+                      [checked]="routing.channels.includes(c.id)"
+                      (change)="toggleRouting(c.id)"
+                    />
+                    <label>{{ c.name }}</label>
+                  </clr-checkbox-wrapper>
+                }
+              </clr-checkbox-container>
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                [clrLoading]="savingRouting()"
+                i18n="@@common.save"
+              >
+                Save
+              </button>
+            </form>
+          } @else {
+            <p class="muted" i18n="@@notify.noticesNoChannels">Add a channel first.</p>
+          }
+        </div>
+      </div>
+    }
+
     <!-- Type chooser -->
     <clr-modal
       [clrModalOpen]="chooserOpen()"
@@ -362,7 +412,6 @@ const blank = (type: ChannelType): Partial<Channel> => ({
                 </clr-input-container>
               }
             }
-
           </form>
           @if (test(); as t) {
             @if (t.ok) {
@@ -542,6 +591,16 @@ const blank = (type: ChannelType): Partial<Channel> => ({
       font-size: 13px;
       margin: 0 0 12px;
     }
+    .routing {
+      margin-top: 24px;
+      max-width: 48rem;
+    }
+    .routing .card-block > p:first-child {
+      margin-top: 0;
+    }
+    .routing .btn {
+      margin-top: 12px;
+    }
     .deliveries {
       margin-top: 16px;
     }
@@ -711,6 +770,32 @@ export class Notifications {
       this.pageError.set(errorMessage(err));
     } finally {
       this.testing.set(false);
+    }
+  }
+
+  /** The notice routing being edited, from the last load. */
+  routing: NoticeRouting = { level: 'warning', channels: [] };
+  readonly savingRouting = signal(false);
+  private readonly syncRouting = effect(() => {
+    const r = this.list.value()?.notices;
+    if (r) this.routing = { level: r.level, channels: [...r.channels] };
+  });
+
+  toggleRouting(id: number) {
+    const cur = this.routing.channels;
+    this.routing.channels = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id];
+  }
+
+  async saveRouting() {
+    this.savingRouting.set(true);
+    this.pageError.set('');
+    try {
+      this.routing = await this.api.saveNoticeRouting(this.routing);
+      this.flash($localize`:@@notify.routingSaved:Notice settings saved.`);
+    } catch (err) {
+      this.pageError.set(errorMessage(err));
+    } finally {
+      this.savingRouting.set(false);
     }
   }
 

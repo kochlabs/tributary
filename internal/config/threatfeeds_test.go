@@ -3,6 +3,7 @@ package config
 import (
 	"slices"
 	"testing"
+	"time"
 )
 
 func TestThreatFeedOrder(t *testing.T) {
@@ -57,5 +58,35 @@ func TestThreatFeedOrder(t *testing.T) {
 	}
 	if got := names(); got[0] != feeds[2].Name || got[1] != feeds[0].Name {
 		t.Fatalf("after delete: %v", got)
+	}
+}
+
+func TestThreatAlertDue(t *testing.T) {
+	c := openTestDB(t)
+	now := time.Now()
+	due := func(at time.Time) bool {
+		ok, err := c.ThreatAlertDue(1, "192.168.1.10", at, 24*time.Hour)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return ok
+	}
+	if !due(now) || due(now.Add(time.Hour)) || !due(now.Add(25*time.Hour)) {
+		t.Fatal("once a day per host and feed")
+	}
+	if ok, _ := c.ThreatAlertDue(2, "192.168.1.10", now.Add(time.Hour), 24*time.Hour); !ok {
+		t.Fatal("feeds are separate")
+	}
+}
+
+func TestThreatFeedChannels(t *testing.T) {
+	db := openTestDB(t)
+	id, err := db.SaveThreatFeed(ThreatFeed{Name: "x", URL: "https://example.com/x.txt", Channels: []int64{3, 1, 3}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, _ := db.ThreatFeed(id)
+	if !slices.Equal(f.Channels, []int64{1, 3}) {
+		t.Fatalf("channels %v", f.Channels)
 	}
 }

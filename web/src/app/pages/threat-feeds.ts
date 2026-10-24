@@ -1,18 +1,19 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { Api, errorMessage, ThreatFeed } from '../core/api';
+import { Api, Channel, errorMessage, ThreatFeed } from '../core/api';
 import { ago, count } from '../core/format';
 import { loader, trackByKey } from '../core/util';
 
 type TestResult = { ok: boolean; error?: string; entries?: number; skipped?: number; sample?: string[] };
 
-const blank = (): Partial<ThreatFeed> => ({ name: '', url: '', format: 'text', field: '', column: 1, delimiter: ',', enabled: true, notify: true, intervalHours: 12 });
+const blank = (): Partial<ThreatFeed> => ({ name: '', url: '', format: 'text', field: '', column: 1, delimiter: ',', enabled: true, notify: true, intervalHours: 12, channels: [] });
 
 /** Lists of known-bad addresses that flows are matched against (Security → Threat Feeds). */
 @Component({
   selector: 'nfa-threat-feeds',
-  imports: [ClarityModule, FormsModule],
+  imports: [ClarityModule, FormsModule, RouterLink],
   template: `
     <div class="page-header">
       <div>
@@ -54,6 +55,7 @@ const blank = (): Partial<ThreatFeed> => ({ name: '', url: '', format: 'text', f
       <clr-dg-column i18n="@@feeds.entries">Entries</clr-dg-column>
       <clr-dg-column i18n="@@feeds.updated">Updated</clr-dg-column>
       <clr-dg-column i18n="@@feeds.notices">Notices</clr-dg-column>
+      <clr-dg-column i18n="@@feeds.sendTo">Send to</clr-dg-column>
       <clr-dg-row *clrDgItems="let f of list.value()?.feeds ?? []; trackBy: byId; let i = index" [clrDgItem]="f">
         <clr-dg-cell class="order-col">{{ i + 1 }}</clr-dg-cell>
         <clr-dg-cell class="toggle-col">
@@ -77,6 +79,7 @@ const blank = (): Partial<ThreatFeed> => ({ name: '', url: '', format: 'text', f
           }
         </clr-dg-cell>
         <clr-dg-cell>@if (f.notify) {<cds-icon shape="bell"></cds-icon>} @else {<span class="muted" i18n="@@feeds.off">off</span>}</clr-dg-cell>
+        <clr-dg-cell>@for (n of channelNames(f); track $index) {<div>{{ n }}</div>} @empty {<span class="muted">–</span>}</clr-dg-cell>
       </clr-dg-row>
       <clr-dg-placeholder i18n="@@feeds.placeholder">No threat feeds.</clr-dg-placeholder>
       <clr-dg-footer>
@@ -150,6 +153,22 @@ const blank = (): Partial<ThreatFeed> => ({ name: '', url: '', format: 'text', f
               </clr-checkbox-wrapper>
               <clr-control-helper i18n="@@feeds.notifyHelp">Turn off for informational lists, such as Tor exit nodes: matches are still tagged.</clr-control-helper>
             </clr-checkbox-container>
+            <clr-checkbox-container>
+              <label i18n="@@feeds.channels">Send to channels</label>
+              @for (c of channels(); track c.id) {
+                <clr-checkbox-wrapper>
+                  <input type="checkbox" clrCheckbox [name]="'ch-' + c.id" [checked]="e.channels!.includes(c.id)" (change)="toggleChannel(e, c.id)" />
+                  <label>{{ c.name }} @if (!c.enabled) {<span class="muted" i18n="@@notify.disabled">disabled</span>}</label>
+                </clr-checkbox-wrapper>
+              }
+              <clr-control-helper>
+                @if (channels().length) {
+                  <ng-container i18n="@@feeds.channelsHelp">Each device that talks to an address on this feed is sent once a day while it continues.</ng-container>
+                } @else {
+                  <ng-container i18n="@@feeds.noChannels">No channels yet: add webhooks or Telegram under <a routerLink="/admin/notifications">Configuration → Notifications</a>.</ng-container>
+                }
+              </clr-control-helper>
+            </clr-checkbox-container>
           </form>
           @if (test(); as t) {
             @if (t.ok) {
@@ -204,6 +223,8 @@ export class ThreatFeeds {
   readonly byId = trackByKey<{ id: number }>((f) => f.id);
   private api = inject(Api);
   readonly list = loader(() => true, () => this.api.threatFeeds());
+  readonly channelList = loader(() => true, () => this.api.channels());
+  readonly channels = computed<Channel[]>(() => this.channelList.value()?.channels ?? []);
   // By id, so the selection survives reloads (e.g. while reordering).
   readonly selectedId = signal<number | undefined>(undefined);
   readonly position = computed(() => (this.list.value()?.feeds ?? []).findIndex((f) => f.id === this.selectedId()));
@@ -238,8 +259,15 @@ export class ThreatFeeds {
     return $localize`:@@feeds.text:Text`;
   }
 
+  channelNames = (f: ThreatFeed) => (f.channels ?? []).flatMap((id) => this.channels().find((c) => c.id === id)?.name ?? []);
+
+  toggleChannel(e: Partial<ThreatFeed>, id: number) {
+    const cur = e.channels ?? [];
+    e.channels = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id];
+  }
+
   openEdit(f?: ThreatFeed) {
-    this.editing.set(f ? { ...f } : blank());
+    this.editing.set(f ? { ...f, channels: [...(f.channels ?? [])] } : blank());
     this.test.set(null);
     this.formError.set('');
   }

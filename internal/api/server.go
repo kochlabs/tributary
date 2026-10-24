@@ -194,6 +194,7 @@ func (s *Server) Handler() http.Handler {
 	admin("POST /api/channels", s.channelSave)
 	admin("PUT /api/channels/{id}", s.channelSave)
 	admin("DELETE /api/channels/{id}", s.channelDelete)
+	admin("PUT /api/channels/notices", s.noticeRoutingSave)
 	admin("POST /api/channels/test", s.channelTest)
 	admin("POST /api/channels/{id}/secret", s.channelRegenerate)
 	admin("GET /api/channels/{id}/deliveries", s.channelDeliveries)

@@ -74,7 +74,7 @@
   retention at both ends; encryption to an age public key lets the appliance
   write backups it cannot read.
 - Notification channels: signed webhooks (Standard Webhooks) and Telegram,
-  queued and retried; reports choose which channels they go to
+  queued and retried, for notices, threat feed matches and reports
   ([NOTIFICATIONS.md](NOTIFICATIONS.md)).
 - Email through your SMTP server (STARTTLS, TLS or a plain relay; trusted CAs
   apply), with a test send; used by scheduled reports.

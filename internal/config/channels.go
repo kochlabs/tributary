@@ -4,9 +4,11 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
+	"slices"
 	"strings"
 	"time"
 )
@@ -46,6 +48,13 @@ CREATE TABLE IF NOT EXISTS notify_deliveries (
 );
 CREATE INDEX IF NOT EXISTS notify_deliveries_due ON notify_deliveries(status, next_attempt);
 CREATE INDEX IF NOT EXISTS notify_deliveries_channel ON notify_deliveries(channel_id, created_at);
+-- When a host was last reported to a threat feed's channels.
+CREATE TABLE IF NOT EXISTS threat_alerts (
+	feed_id   INTEGER NOT NULL,
+	host      TEXT NOT NULL,
+	last_sent INTEGER NOT NULL,
+	PRIMARY KEY (feed_id, host)
+);
 `
 
 type Channel struct {
@@ -351,5 +360,93 @@ func (c *DB) PruneDeliveries(d time.Duration) error {
 	_, err := c.db.Exec(`DELETE FROM notify_deliveries WHERE status <> 'pending' AND done_at < ? AND id NOT IN (
 		SELECT id FROM (SELECT id, ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY id DESC) AS n FROM notify_deliveries) WHERE n <= 50)`,
 		time.Now().Add(-d).UnixMilli())
+	return err
+}
+
+// CleanChannelIDs sorts and de-duplicates the channels a source sends to.
+func CleanChannelIDs(ids []int64) ([]int64, error) {
+	if ids == nil {
+		return []int64{}, nil
+	}
+	slices.Sort(ids)
+	ids = slices.Compact(ids)
+	if len(ids) > 20 {
+		return nil, errors.New("at most 20 channels")
+	}
+	return ids, nil
+}
+
+// NoticeRouting sends appliance notices at or above Level to Channels.
+type NoticeRouting struct {
+	Level    string  `json:"level"` // info | warning | danger
+	Channels []int64 `json:"channels"`
+}
+
+func (c *DB) NoticeRouting() NoticeRouting {
+	r := NoticeRouting{Level: "warning", Channels: []int64{}}
+	var v string
+	if c.db.QueryRow("SELECT value FROM settings WHERE key = 'notice_routing'").Scan(&v) == nil {
+		_ = json.Unmarshal([]byte(v), &r)
+	}
+	return r
+}
+
+func (c *DB) SaveNoticeRouting(r NoticeRouting) error {
+	switch r.Level {
+	case "info", "warning", "danger":
+	default:
+		return errors.New("level must be info, warning or danger")
+	}
+	var err error
+	if r.Channels, err = CleanChannelIDs(r.Channels); err != nil {
+		return err
+	}
+	return c.putSetting("notice_routing", r)
+}
+
+// SentNotice is a notice that was sent to channels, until it clears.
+type SentNotice struct {
+	ID       string `json:"id"`
+	Kind     string `json:"kind"`
+	Title    string `json:"title"`
+	LastSeen int64  `json:"lastSeen"` // ms
+}
+
+func (c *DB) SentNotices() []SentNotice {
+	out := []SentNotice{}
+	var v string
+	if c.db.QueryRow("SELECT value FROM settings WHERE key = 'notices_sent'").Scan(&v) == nil {
+		_ = json.Unmarshal([]byte(v), &out)
+	}
+	return out
+}
+
+func (c *DB) SaveSentNotices(list []SentNotice) error { return c.putSetting("notices_sent", list) }
+
+func (c *DB) putSetting(key string, v any) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	_, err = c.db.Exec("INSERT INTO settings(key, value) VALUES(?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value", key, string(b))
+	return err
+}
+
+// ThreatAlertDue reports whether host's matches on a feed may be sent again
+// (never sent, or not since every), and if so records them as sent at now.
+func (c *DB) ThreatAlertDue(feedID int64, host string, now time.Time, every time.Duration) (bool, error) {
+	res, err := c.db.Exec(`INSERT INTO threat_alerts(feed_id, host, last_sent) VALUES(?, ?, ?)
+		ON CONFLICT(feed_id, host) DO UPDATE SET last_sent = excluded.last_sent WHERE last_sent < ?`,
+		feedID, host, now.UnixMilli(), now.Add(-every).UnixMilli())
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n > 0, err
+}
+
+// PruneThreatAlerts forgets alerts sent before t.
+func (c *DB) PruneThreatAlerts(t time.Time) error {
+	_, err := c.db.Exec("DELETE FROM threat_alerts WHERE last_sent < ?", t.UnixMilli())
 	return err
 }

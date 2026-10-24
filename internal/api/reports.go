@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -65,11 +64,7 @@ func (s *Server) reportSave(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	// Channels deleted since the editor loaded are dropped.
-	rep.Channels = slices.DeleteFunc(rep.Channels, func(id int64) bool {
-		_, err := s.Config.Channel(id)
-		return err != nil
-	})
+	rep.Channels = s.existingChannels(rep.Channels)
 	saved, err := s.Config.SaveReport(rep, time.Now(), time.Local)
 	if err != nil {
 		code := http.StatusBadRequest

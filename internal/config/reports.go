@@ -187,13 +187,9 @@ func ValidateReport(r *Report) error {
 		return errors.New("at most 50 recipients")
 	}
 	r.Recipients = strings.Join(to, ", ")
-	if r.Channels == nil {
-		r.Channels = []int64{}
-	}
-	slices.Sort(r.Channels)
-	r.Channels = slices.Compact(r.Channels)
-	if len(r.Channels) > 20 {
-		return errors.New("at most 20 channels")
+	var err error
+	if r.Channels, err = CleanChannelIDs(r.Channels); err != nil {
+		return err
 	}
 	if r.Keep == 0 {
 		r.Keep = 12

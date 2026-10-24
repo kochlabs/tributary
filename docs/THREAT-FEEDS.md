@@ -3,7 +3,9 @@
 Flows to or from addresses on threat feeds (lists of known-bad addresses) are
 tagged at ingest with the name of the first feed listing the address.
 **Security → Detections** shows the matches; a notice appears when traffic
-matches a feed in the last hour.
+matches a feed in the last hour. A feed's **Send to channels** sends each
+matching host to webhooks or Telegram, once a day while it continues
+([NOTIFICATIONS.md](NOTIFICATIONS.md)).
 
 ## Feeds
 

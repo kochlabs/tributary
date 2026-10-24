@@ -2,7 +2,13 @@
 
 **Configuration → Notifications** sets up channels: webhooks and Telegram.
 A channel is only a destination; what gets sent there is chosen where it
-comes from (a report's **Send to channels**; later, rules). Deliveries
+comes from:
+
+- **Appliance notices:** on the same page, a minimum level and channels.
+- **Threat feeds:** each feed's **Send to channels** (Security → Threat Feeds).
+- **Reports:** each report's **Send to channels**.
+
+Deliveries
 are queued and retried (1 min, 5 min, 30 min, 2 h, then every 6 h) for up to
 a day; a channel failing for a day is turned off and a notice says so. Set
 **Configuration → Settings → Appliance address** to get links back to
@@ -12,6 +18,9 @@ Tributary in messages.
 
 | Type | When |
 |---|---|
+| `notice.raised` | a notice appears, or changes (more updates, disk space from warning to danger) |
+| `notice.cleared` | no notice of its kind is left, for 5 minutes |
+| `threat.detected` | a host talks to addresses on a feed; once a day per host and feed while it continues |
 | `report.completed` | a scheduled report run finishes, or one run with **Also send** (Telegram gets the PDF) |
 | `report.failed` | it fails |
 | `test` | **Send test** |

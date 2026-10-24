@@ -712,6 +712,45 @@ func (s *Store) ThreatHits(ctx context.Context, from time.Time) ([]ThreatHit, er
 	return out, rows.Err()
 }
 
+// ThreatMatch is one host's traffic with a threat feed's addresses.
+type ThreatMatch struct {
+	Feed    string   // the feed's ID, as flows store it
+	Host    string   // the side that isn't listed
+	Remotes []string // listed addresses, up to 5
+	Count   uint64   // distinct listed addresses
+	Flows   uint64
+	Bytes   uint64
+	First   int64 // ms
+	Last    int64 // ms
+}
+
+// ThreatMatches lists traffic with listed addresses since from, by feed and
+// host, busiest first.
+func (s *Store) ThreatMatches(ctx context.Context, from time.Time, limit int) ([]ThreatMatch, error) {
+	rows, err := s.conn.Query(ctx, fmt.Sprintf(`SELECT feed, host, groupUniqArray(5)(remote), uniq(remote), count(), sum(bytes),
+			toUnixTimestamp(min(time_received)), toUnixTimestamp(max(time_received))
+		FROM (SELECT if(src_threat != '', src_threat, dst_threat) AS feed,
+				%s AS host, %s AS remote, bytes, time_received
+			FROM netflow.flows WHERE time_received >= toDateTime(?) AND (src_threat != '' OR dst_threat != ''))
+		GROUP BY feed, host ORDER BY count() DESC LIMIT %d`,
+		ipstr("if(src_threat != '', dst_addr, src_addr)"), ipstr("if(src_threat != '', src_addr, dst_addr)"), max(limit, 1)), from.Unix())
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []ThreatMatch{}
+	for rows.Next() {
+		var m ThreatMatch
+		var first, last uint32
+		if err := rows.Scan(&m.Feed, &m.Host, &m.Remotes, &m.Count, &m.Flows, &m.Bytes, &first, &last); err != nil {
+			return nil, err
+		}
+		m.First, m.Last = int64(first)*1000, int64(last)*1000
+		out = append(out, m)
+	}
+	return out, rows.Err()
+}
+
 // ExposedService is a local host and port that remote hosts connect to.
 type ExposedService struct {
 	Addr    string `json:"addr"`

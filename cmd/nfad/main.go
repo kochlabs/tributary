@@ -281,6 +281,7 @@ func run(log *slog.Logger, listen string, plainHTTP bool, redirect, dataDir, chA
 		TLSConfig:         &tls.Config{MinVersion: tls.VersionTLS12, GetCertificate: certMgr.GetCertificate},
 	}
 	go srv.RunNotices(ctx)
+	go srv.RunThreatAlerts(ctx)
 	go threats.Run(ctx)
 	// Flows store threat feed IDs; matches stored by name before are
 	// converted once (in the background: it rewrites two columns).

@@ -50,6 +50,7 @@ func (s *Server) RunNotices(ctx context.Context) {
 		case <-t.C:
 			list := s.checkNotices(ctx)
 			s.notices.Store(&list)
+			s.routeNotices(list, time.Now())
 			t.Reset(noticeInterval)
 		}
 	}
