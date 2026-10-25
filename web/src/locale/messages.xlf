@@ -43,7 +43,7 @@
     <unit id="nav.devices">
       <notes>
         <note category="location">src/app/app.routes.ts:17</note>
-        <note category="location">src/app/pages/devices.ts:27,28</note>
+        <note category="location">src/app/pages/devices.ts:28,29</note>
         <note category="location">src/app/shell.ts:109,110</note>
       </notes>
       <segment>
@@ -2216,7 +2216,7 @@
       <notes>
         <note category="location">src/app/pages/ai-settings.ts:252,253</note>
         <note category="location">src/app/pages/backup-schedule.ts:294,295</note>
-        <note category="location">src/app/pages/devices.ts:254,255</note>
+        <note category="location">src/app/pages/devices.ts:287,288</note>
         <note category="location">src/app/pages/email.ts:207,208</note>
         <note category="location">src/app/pages/enrichment.ts:374,375</note>
         <note category="location">src/app/pages/enrichment.ts:486,487</note>
@@ -2521,7 +2521,7 @@
         <note category="location">src/app/pages/certificates.ts:269,270</note>
         <note category="location">src/app/pages/certificates.ts:289,290</note>
         <note category="location">src/app/pages/certificates.ts:298,299</note>
-        <note category="location">src/app/pages/devices.ts:251,253</note>
+        <note category="location">src/app/pages/devices.ts:284,286</note>
         <note category="location">src/app/pages/exporter-detail.ts:149,150</note>
         <note category="location">src/app/pages/exporters.ts:131,132</note>
         <note category="location">src/app/pages/exporters.ts:142,143</note>
@@ -2642,7 +2642,7 @@
       <notes>
         <note category="location">src/app/pages/audit.ts:33,34</note>
         <note category="location">src/app/pages/certificates.ts:155,156</note>
-        <note category="location">src/app/pages/devices.ts:184,186</note>
+        <note category="location">src/app/pages/devices.ts:217,219</note>
         <note category="location">src/app/pages/explorer.ts:195,196</note>
         <note category="location">src/app/pages/exporter-detail.ts:105,106</note>
         <note category="location">src/app/pages/exporters.ts:94,95</note>
@@ -3980,7 +3980,7 @@
     <unit id="common.name">
       <notes>
         <note category="location">src/app/pages/certificates.ts:140,141</note>
-        <note category="location">src/app/pages/devices.ts:222,223</note>
+        <note category="location">src/app/pages/devices.ts:255,256</note>
         <note category="location">src/app/pages/exporter-detail.ts:71,72</note>
         <note category="location">src/app/pages/exporter-detail.ts:120,121</note>
         <note category="location">src/app/pages/identity-sources.ts:96,97</note>
@@ -5075,7 +5075,7 @@
     </unit>
     <unit id="devices.sourceInventory">
       <notes>
-        <note category="location">src/app/pages/devices.ts:14</note>
+        <note category="location">src/app/pages/devices.ts:15</note>
       </notes>
       <segment>
         <source>From the inventory</source>
@@ -5083,7 +5083,7 @@
     </unit>
     <unit id="devices.sourceName">
       <notes>
-        <note category="location">src/app/pages/devices.ts:15</note>
+        <note category="location">src/app/pages/devices.ts:16</note>
       </notes>
       <segment>
         <source>Named by an administrator</source>
@@ -5091,7 +5091,7 @@
     </unit>
     <unit id="devices.sourceDns">
       <notes>
-        <note category="location">src/app/pages/devices.ts:16</note>
+        <note category="location">src/app/pages/devices.ts:17</note>
       </notes>
       <segment>
         <source>Reverse DNS of its IPv4 address</source>
@@ -5099,7 +5099,7 @@
     </unit>
     <unit id="devices.sourceVendor">
       <notes>
-        <note category="location">src/app/pages/devices.ts:17</note>
+        <note category="location">src/app/pages/devices.ts:18</note>
       </notes>
       <segment>
         <source>Manufacturer from the MAC address</source>
@@ -5107,7 +5107,7 @@
     </unit>
     <unit id="devices.sourceMac">
       <notes>
-        <note category="location">src/app/pages/devices.ts:18</note>
+        <note category="location">src/app/pages/devices.ts:19</note>
       </notes>
       <segment>
         <source>No name known: rename it</source>
@@ -5115,15 +5115,47 @@
     </unit>
     <unit id="devices.subtitle">
       <notes>
-        <note category="location">src/app/pages/devices.ts:29,31</note>
+        <note category="location">src/app/pages/devices.ts:30,32</note>
       </notes>
       <segment>
         <source> Local devices by MAC address, with every address they used · <ph id="0" equiv="INTERPOLATION" disp="{{ time.label() }}"/> </source>
       </segment>
     </unit>
+    <unit id="devices.findPlaceholder">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:54,55</note>
+      </notes>
+      <segment>
+        <source>Find by name, IP or MAC (any format: aa:bb:cc…, aabb.ccdd.eeff, aabbcc…)</source>
+      </segment>
+    </unit>
+    <unit id="devices.findLabel">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:56,57</note>
+      </notes>
+      <segment>
+        <source>Find devices</source>
+      </segment>
+    </unit>
+    <unit id="common.clear">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:68</note>
+      </notes>
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="devices.findCount">
+      <notes>
+        <note category="location">src/app/pages/devices.ts:73,75</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ shown().length }}"/> of <ph id="1" equiv="INTERPOLATION_1" disp="{{ list.value()?.length ?? 0 }}"/></source>
+      </segment>
+    </unit>
     <unit id="devices.col.device">
       <notes>
-        <note category="location">src/app/pages/devices.ts:46,47</note>
+        <note category="location">src/app/pages/devices.ts:79,80</note>
       </notes>
       <segment>
         <source>Device</source>
@@ -5131,7 +5163,7 @@
     </unit>
     <unit id="devices.col.mac">
       <notes>
-        <note category="location">src/app/pages/devices.ts:47,48</note>
+        <note category="location">src/app/pages/devices.ts:80,81</note>
       </notes>
       <segment>
         <source>MAC</source>
@@ -5139,7 +5171,7 @@
     </unit>
     <unit id="devices.col.vendor">
       <notes>
-        <note category="location">src/app/pages/devices.ts:48,49</note>
+        <note category="location">src/app/pages/devices.ts:81,82</note>
       </notes>
       <segment>
         <source>Vendor</source>
@@ -5147,7 +5179,7 @@
     </unit>
     <unit id="devices.col.ipv4">
       <notes>
-        <note category="location">src/app/pages/devices.ts:49,50</note>
+        <note category="location">src/app/pages/devices.ts:82,83</note>
       </notes>
       <segment>
         <source>IPv4</source>
@@ -5155,7 +5187,7 @@
     </unit>
     <unit id="devices.col.ipv6">
       <notes>
-        <note category="location">src/app/pages/devices.ts:50,51</note>
+        <note category="location">src/app/pages/devices.ts:83,84</note>
       </notes>
       <segment>
         <source>IPv6</source>
@@ -5163,7 +5195,7 @@
     </unit>
     <unit id="devices.col.traffic">
       <notes>
-        <note category="location">src/app/pages/devices.ts:52,54</note>
+        <note category="location">src/app/pages/devices.ts:85,87</note>
       </notes>
       <segment>
         <source>Traffic</source>
@@ -5171,7 +5203,7 @@
     </unit>
     <unit id="devices.col.lastSeen">
       <notes>
-        <note category="location">src/app/pages/devices.ts:55,58</note>
+        <note category="location">src/app/pages/devices.ts:88,91</note>
       </notes>
       <segment>
         <source>Last seen</source>
@@ -5179,7 +5211,7 @@
     </unit>
     <unit id="devices.rename">
       <notes>
-        <note category="location">src/app/pages/devices.ts:68,69</note>
+        <note category="location">src/app/pages/devices.ts:101,102</note>
       </notes>
       <segment>
         <source>Rename</source>
@@ -5187,7 +5219,7 @@
     </unit>
     <unit id="devices.analyze">
       <notes>
-        <note category="location">src/app/pages/devices.ts:73,74</note>
+        <note category="location">src/app/pages/devices.ts:106,107</note>
       </notes>
       <segment>
         <source>Analyze traffic</source>
@@ -5195,7 +5227,7 @@
     </unit>
     <unit id="devices.showFlows">
       <notes>
-        <note category="location">src/app/pages/devices.ts:77,78</note>
+        <note category="location">src/app/pages/devices.ts:110,111</note>
       </notes>
       <segment>
         <source>Show flows</source>
@@ -5203,7 +5235,7 @@
     </unit>
     <unit id="devices.privateMac">
       <notes>
-        <note category="location">src/app/pages/devices.ts:106,108</note>
+        <note category="location">src/app/pages/devices.ts:139,141</note>
       </notes>
       <segment>
         <source>Private MAC</source>
@@ -5211,7 +5243,7 @@
     </unit>
     <unit id="devices.ipv6Count">
       <notes>
-        <note category="location">src/app/pages/devices.ts:114,116</note>
+        <note category="location">src/app/pages/devices.ts:147,149</note>
       </notes>
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 address} other {<ph id="0" equiv="INTERPOLATION"/> addresses}}</source>
@@ -5219,7 +5251,7 @@
     </unit>
     <unit id="devices.firstSeen">
       <notes>
-        <note category="location">src/app/pages/devices.ts:127</note>
+        <note category="location">src/app/pages/devices.ts:160</note>
       </notes>
       <segment>
         <source>First seen</source>
@@ -5227,7 +5259,7 @@
     </unit>
     <unit id="devices.inventory">
       <notes>
-        <note category="location">src/app/pages/devices.ts:130,131</note>
+        <note category="location">src/app/pages/devices.ts:163,164</note>
       </notes>
       <segment>
         <source>Inventory</source>
@@ -5235,7 +5267,7 @@
     </unit>
     <unit id="devices.openIn">
       <notes>
-        <note category="location">src/app/pages/devices.ts:143,144</note>
+        <note category="location">src/app/pages/devices.ts:176,177</note>
       </notes>
       <segment>
         <source>open in <ph id="0" equiv="INTERPOLATION" disp="{{ inv.source }}"/></source>
@@ -5243,7 +5275,7 @@
     </unit>
     <unit id="devices.services">
       <notes>
-        <note category="location">src/app/pages/devices.ts:149,150</note>
+        <note category="location">src/app/pages/devices.ts:182,183</note>
       </notes>
       <segment>
         <source>Documented services</source>
@@ -5251,7 +5283,7 @@
     </unit>
     <unit id="devices.flowsInRange">
       <notes>
-        <note category="location">src/app/pages/devices.ts:159,160</note>
+        <note category="location">src/app/pages/devices.ts:192,193</note>
       </notes>
       <segment>
         <source>Flows in range</source>
@@ -5259,7 +5291,7 @@
     </unit>
     <unit id="devices.addresses">
       <notes>
-        <note category="location">src/app/pages/devices.ts:163,164</note>
+        <note category="location">src/app/pages/devices.ts:196,197</note>
       </notes>
       <segment>
         <source>Addresses</source>
@@ -5267,7 +5299,7 @@
     </unit>
     <unit id="devices.placeholderEnrichment">
       <notes>
-        <note category="location">src/app/pages/devices.ts:177,180</note>
+        <note category="location">src/app/pages/devices.ts:210,213</note>
       </notes>
       <segment>
         <source> No devices yet. Devices are learned from exporters that report MAC addresses (e.g. UniFi gateways, sFlow switches). Make sure your local networks are set under Configuration → Local Networks. </source>
@@ -5275,7 +5307,7 @@
     </unit>
     <unit id="devices.footer">
       <notes>
-        <note category="location">src/app/pages/devices.ts:188,190</note>
+        <note category="location">src/app/pages/devices.ts:221,223</note>
         <note category="description">Datagrid footer: first–last of total</note>
       </notes>
       <segment>
@@ -5284,7 +5316,7 @@
     </unit>
     <unit id="devices.empty">
       <notes>
-        <note category="location">src/app/pages/devices.ts:192,194</note>
+        <note category="location">src/app/pages/devices.ts:225,227</note>
       </notes>
       <segment>
         <source>No devices</source>
@@ -5292,7 +5324,7 @@
     </unit>
     <unit id="devices.hint">
       <notes>
-        <note category="location">src/app/pages/devices.ts:199,205</note>
+        <note category="location">src/app/pages/devices.ts:232,238</note>
       </notes>
       <segment>
         <source> A device is identified by the MAC address its traffic arrives from. Downloads are matched to devices through the addresses they used for uploads, which also groups rotating IPv6 privacy addresses. Phones and laptops often use a <pc id="0" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">private (randomized) MAC</pc> per network, so they have no vendor: give them a name. </source>
@@ -5300,7 +5332,7 @@
     </unit>
     <unit id="devices.renameTitle">
       <notes>
-        <note category="location">src/app/pages/devices.ts:210,211</note>
+        <note category="location">src/app/pages/devices.ts:243,244</note>
       </notes>
       <segment>
         <source>Rename device</source>
@@ -5308,7 +5340,7 @@
     </unit>
     <unit id="devices.unknownVendor">
       <notes>
-        <note category="location">src/app/pages/devices.ts:217,219</note>
+        <note category="location">src/app/pages/devices.ts:250,252</note>
       </notes>
       <segment>
         <source>unknown vendor</source>
@@ -5316,7 +5348,7 @@
     </unit>
     <unit id="devices.namePlaceholder">
       <notes>
-        <note category="location">src/app/pages/devices.ts:228,229</note>
+        <note category="location">src/app/pages/devices.ts:261,262</note>
       </notes>
       <segment>
         <source>e.g. Living room TV</source>
@@ -5324,7 +5356,7 @@
     </unit>
     <unit id="devices.nameInInventory">
       <notes>
-        <note category="location">src/app/pages/devices.ts:233,234</note>
+        <note category="location">src/app/pages/devices.ts:266,267</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="INTERPOLATION" disp="{{ inv.source }}"/> names this device <ph id="1" equiv="INTERPOLATION_1" disp="{{ inv.name }}"/>, which takes precedence: rename it there.</source>
@@ -5332,7 +5364,7 @@
     </unit>
     <unit id="devices.nameHelper">
       <notes>
-        <note category="location">src/app/pages/devices.ts:238,239</note>
+        <note category="location">src/app/pages/devices.ts:271,272</note>
       </notes>
       <segment>
         <source>Leave empty to use the DNS or vendor name again.</source>
@@ -5340,7 +5372,7 @@
     </unit>
     <unit id="devices.kindVm">
       <notes>
-        <note category="location">src/app/pages/devices.ts:312</note>
+        <note category="location">src/app/pages/devices.ts:363</note>
       </notes>
       <segment>
         <source>virtual machine</source>
@@ -5348,7 +5380,7 @@
     </unit>
     <unit id="devices.kindDevice">
       <notes>
-        <note category="location">src/app/pages/devices.ts:313</note>
+        <note category="location">src/app/pages/devices.ts:364</note>
       </notes>
       <segment>
         <source>device</source>

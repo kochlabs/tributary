@@ -1,10 +1,11 @@
 import { NgFor } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { Api, DeviceInfo, errorMessage } from '../core/api';
 import { Auth } from '../core/auth';
+import { deviceMatches, searchWords } from '../core/device-search';
 import { ago, bytes, dateTime } from '../core/format';
 import { TimeRange } from '../core/time';
 import { ExpandedRows, loader, trackByKey } from '../core/util';
@@ -42,6 +43,38 @@ const SOURCE_HINT: Record<string, string> = {
       </div>
     }
 
+    <div class="find">
+      <cds-icon shape="search"></cds-icon>
+      <input
+        class="clr-input"
+        name="find"
+        [ngModel]="find()"
+        (ngModelChange)="find.set($event)"
+        (keydown.escape)="find.set('')"
+        placeholder="Find by name, IP or MAC (any format: aa:bb:cc…, aabb.ccdd.eeff, aabbcc…)"
+        i18n-placeholder="@@devices.findPlaceholder"
+        aria-label="Find devices"
+        i18n-aria-label="@@devices.findLabel"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      />
+      @if (find()) {
+        <button
+          type="button"
+          class="btn btn-sm btn-link btn-icon"
+          (click)="find.set('')"
+          aria-label="Clear"
+          i18n-aria-label="@@common.clear"
+        >
+          <cds-icon shape="times"></cds-icon>
+        </button>
+        <span class="count" i18n="@@devices.findCount"
+          >{{ shown().length }} of {{ list.value()?.length ?? 0 }}</span
+        >
+      }
+    </div>
+
     <clr-datagrid class="datagrid-compact" [clrDgLoading]="list.loading() && !list.value()">
       <clr-dg-column [clrDgField]="'name'" i18n="@@devices.col.device">Device</clr-dg-column>
       <clr-dg-column [clrDgField]="'mac'" i18n="@@devices.col.mac">MAC</clr-dg-column>
@@ -56,7 +89,7 @@ const SOURCE_HINT: Record<string, string> = {
       >
 
       <clr-dg-row
-        *clrDgItems="let d of list.value() ?? []; trackBy: byMac"
+        *clrDgItems="let d of shown(); trackBy: byMac"
         [clrDgItem]="d"
         [clrDgExpanded]="expanded.has(d.mac)"
         (clrDgExpandedChange)="expanded.set(d.mac, $event)"
@@ -257,6 +290,24 @@ const SOURCE_HINT: Record<string, string> = {
     </clr-modal>
   `,
   styles: `
+    .find {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 4px;
+      max-width: 44rem;
+    }
+    .find .clr-input {
+      flex: 1;
+    }
+    .find .btn {
+      margin: 0;
+    }
+    .find .count {
+      font-size: 12px;
+      color: var(--cds-alias-typography-color-300);
+      white-space: nowrap;
+    }
     .name {
       font-weight: 600;
     }
@@ -315,12 +366,33 @@ export class Devices {
     () => this.time.window(),
     (w) => this.api.devices(w),
   );
+  private route = inject(ActivatedRoute);
+  /** The find box: words that must all match (see core/device-search). */
+  readonly find = signal<string>(this.route.snapshot.queryParams['find'] ?? '');
+  readonly shown = computed(() => {
+    const words = searchWords(this.find());
+    return (this.list.value() ?? []).filter((d) => deviceMatches(d, words));
+  });
   readonly renaming = signal<DeviceInfo | null>(null);
   readonly error = signal('');
   newName = '';
   ago = ago;
   dt = dateTime;
   fmtBytes = bytes;
+
+  constructor() {
+    // The search is part of the address, for links and bookmarks.
+    effect(() => {
+      const find = this.find().trim() || null;
+      untracked(() =>
+        this.router.navigate([], {
+          queryParams: { find },
+          replaceUrl: true,
+          queryParamsHandling: 'merge',
+        }),
+      );
+    });
+  }
 
   hint(d: DeviceInfo) {
     return SOURCE_HINT[d.nameSource] ?? '';
